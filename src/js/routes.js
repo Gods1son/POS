@@ -3,6 +3,7 @@ import HomePage from '../pages/home.f7.html';
 import IngredientPage from '../pages/ingredient.f7.html';
 import ProductsPage from '../pages/products.f7.html';
 import SalesPage from '../pages/sales.f7.html';
+import ExpensesPage from '../pages/expenses.f7.html';
 import FormPage from '../pages/form.f7.html';
 
 
@@ -26,6 +27,10 @@ var routes = [
   {
     path: '/sales/',
     component: SalesPage,
+  },
+  {
+    path: '/expenses/',
+    component: ExpensesPage,
   },
   {
     path: '/form/',

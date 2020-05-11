@@ -1,0 +1,383 @@
+<template>
+<div class="page" data-name="expenses">
+  <div class="navbar">
+    <div class="navbar navbar-bg"></div>
+    <div class="navbar-inner sliding">
+      <div class="left">
+        <a href="#" class="link back">
+          <i class="icon icon-back"></i>
+          <span class="if-not-md">Back</span>
+        </a>
+      </div>
+      <div class="title">Expenses</div>
+    </div>
+  </div>
+
+      <!--fab-->
+    <div class="fab fab-extended fab-right-bottom">
+      <a href="#" @click="openPopUp(null)">
+        <i class="icon f7-icons">plus</i>
+        <!-- Element with FAB text  -->
+        <div class="fab-text">Expense</div>
+      </a>
+    </div>
+    <!--fab-->
+
+  <div class="page-content">
+    
+    <div class="item-content block-title margin-bottom-half margin-top-half">
+        <div class="row">
+            <div class="col">
+                You have {{totalMat}} {{js "this.totalMat > 1 ? 'expenses' : 'expense'"}}
+            </div>
+    
+                <div class="col">
+                    <span class="item-after float-right margin-left-half">
+                        <label class="toggle toggle-init color-red showInactiveExpenses">
+                        <input type="checkbox">
+                        <span class="toggle-icon"></span>
+                        </label>
+                    </span>
+                    <span class="item-title float-right">Show inactive</span>
+                </div>
+            </div>
+    </div>
+    <div class="card data-table">
+      <table id="expenseTable">
+        <thead>
+          <tr>
+            <th class="label-cell">ID</th>
+            <th class="input-cell">
+              <span class="table-head-label">Name</span>
+              <div class="input">
+                <form data-search-container=".search-content-list" data-search-item="tr" data-search-in=".searchRow" class="searchbar searchbar-inline searchbar-init">
+                    <input type="search" placeholder="Filter">
+                  </form>
+              </div>
+            </th>
+            <th class="numeric-cell">Amount to pay</th>
+            <th class="numeric-cell">Amount paid</th>
+            <th class="label-cell">Recurring Payment</th>
+            <th class="label-cell">Date paid</th>
+            <th class="label-cell">Created Date</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody class="search-content-list">
+          {{#each expenses}}
+            <tr>
+              <td class="label-cell">{{js "@index + 1"}}</td>
+              <td class="label-cell searchRow">{{name}}</td>
+              <td class="label-cell">{{money amount_to_pay}}</td>
+              <td class="label-cell">{{money amount_paid}}</td>
+              <td class="label-cell">
+                    <!-- Toggle element -->
+                    <label class="toggle toggle-init expense-{{id}}">
+                    <!-- Toggle input -->
+                    <input type="checkbox" {{js "this.recurring == 1 ? 'checked' : ''"}} disabled>
+                    <!-- Toggle icon -->
+                    <span class="toggle-icon"></span>
+                    </label>
+                  </td>
+              <td class="label-cell"><span class={{js "this.amount_paid < this.amount_to_pay ? 'display-none' : ''"}}>{{convertDate date_paid}}</span></td>
+              <td class="label-cell">{{convertDate created_date}}</td>
+              <td>
+                  <p class="row">
+                      <button class="col button button-fill" @click="openPopUp({{id}})">Edit</button>
+                    <button class="col button button-fill color-red" @click="deleteExpense({{id}})">
+                        {{js "this.status == 1 ? 'delete' : 'activate'"}}
+                    </button>
+                  </p>
+              </td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+      <div class="data-table-footer">
+        <div class="data-table-rows-select">
+          Per page:
+          <div class="input input-dropdown">
+            <select>
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="all">All</option>
+            </select>
+          </div>
+        </div>
+        <div class="data-table-pagination">
+          <span class="data-table-pagination-label">1-5 of 10</span>
+          <a href="#" class="link disabled">
+            <i class="icon icon-prev color-gray"></i>
+          </a>
+          <a href="#" class="link">
+            <i class="icon icon-next color-gray"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!--pop up-->
+  <div class="popup newExpense popup-tablet-fullscreen">
+    <div class="view">
+      <div class="page">
+        <div class="navbar">
+          <div class="navbar-bg"></div>
+          <div class="navbar-inner">
+            <div class="title">Add New Expense</div>
+            <div class="right">
+              <!-- Link to close popup -->
+              <a class="link popup-close">Close</a>
+            </div>
+          </div>
+        </div>
+        <div class="page-content">
+            <div class="list no-hairlines-md margin-top-half margin-bottom-half expenseForm">
+              <ul>
+                <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-title">Expense Name</div>
+                      <div class="item-input-wrap">
+                        <input type="text" class="name" placeholder="expense name" required validate/>
+                        <span class="input-clear-button"></span>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-title">Amount To Pay</div>
+                      <div class="item-input-wrap">
+                        <input type="text" class="amount_to_pay" placeholder="Amount to pay" value="0" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                        <span class="input-clear-button"></span>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-title">Amount Paid</div>
+                      <div class="item-input-wrap">
+                        <input type="text" class="amount_paid" placeholder="Amount Paid" value="0" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                        <span class="input-clear-button"></span>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content">
+                    <div class="item-inner-1">
+                      <span class="item-title">Recurring Payment</span>
+                      <!--<div class="item-after">-->
+                        <label class="toggle toggle-init recurring margin-left-half">
+                          <input type="checkbox">
+                          <span class="toggle-icon"></span>
+                        </label>
+                      <!--</div>-->
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <a href="#" class="col button button-fill" @click='saveData'>Save Expense</a>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+        </div>
+      </div>
+    </div>
+  
+  </div>
+  <!--Pop -up-->
+
+</div>
+</template>
+<script>
+import Dom7 from 'dom7';
+import Dexie from 'dexie';
+
+var db = new Dexie("BizExpenseManagerDB");
+          db.version(1).stores({
+            ingredients: "++id,name,unit_size,unit,cost_per_unit,status,created_date",
+            products: "++id,name,cost,status,created_date",
+            product_ingredient: "++id,productID,ingredientID,unit_size,cost,status,created_date",
+            product_otherMaterials: "++id,productID,name,cost,status,created_date",
+            sales: "++id,product_name,buyer_name,cost,amountPaid,isPaid,date_paid,created_date,status",
+            expenses: "++id,name,amount_to_pay,amount_paid,date_paid,created_date,recurring,status",
+
+            ingredients_history: "++id,ingID,name,unit_size,unit,cost_per_unit,status,created_date",
+            products_history: "++id,prodID,name,cost,status,created_date",
+            sales_history: "++id,salesID,product_name,buyer_name,cost,amountPaid,isPaid,date_paid,created_date,status",
+            expenses_history: "++id,expID,name,amount_to_pay,amount_paid,date_paid,created_date,recurring,status"
+          })
+
+var $$ = Dom7;
+export default {
+  data: function () {
+      // Must return an object
+      return {
+        expenses: null,
+        totalMat:0,
+        currentExpense:null
+      }
+    },
+  methods:{
+    deleteExpense: function(id){
+        var self = this;
+        var checked = 0;
+        var text = "delete?"
+        var toggle = self.$app.toggle.get(".showInactiveExpenses");
+        if(toggle != undefined){
+            if(toggle.checked){
+                text = "activate?";
+                checked = 1;
+            }
+        }
+        self.$app.dialog.confirm("Are you sure you want to " + text, function(){
+            db.expenses.update(Number(id), {status: checked}).then(function (updated) {
+              if (updated){
+                self.expenses = self.expenses.filter(function(e){ 
+                      return e.id != Number(id);
+                  });
+                  //console.log(self.ings);
+                  self.$setState({
+                      expenses:self.expenses,
+                      totalMat:self.expenses.length
+                  });
+              }
+            });
+        }, null);
+    },
+    openPopUp: function(id){
+        var self = this;
+        var popup = self.$app.popup.open('.newExpense', true);
+        popup.once("opened", function(){
+          if(id != null || id != undefined){
+              var item = self.expenses.find(function(e){ 
+                        return e.id == Number(id);
+                    });
+                    self.$setState({
+                      currentExpense:Number(id)
+                    });
+                    $$("input.name").val(item.name);
+                    $$("input.amount_to_pay").val(item.amount_to_pay);
+                    $$("input.amount_paid").val(item.amount_paid);
+                    var toggle = self.$app.toggle.get(".recurring").checked;
+                    if((toggle == true && item.recurring == 0) || (toggle == false && item.recurring == 1)){
+                        toggle.toggle();
+                    }
+
+            } else{
+              self.$setState({
+                  currentExpense:null
+              });
+            }
+        })
+        
+    },
+    closePopUp: function(){
+        var self = this;
+        var popup = self.$app.popup.close('.newExpense', true);
+        popup.once("closed", function(){
+
+        });
+    },
+    saveData: function(){
+      //var $$ = this.Dom7;
+      var self = this;
+      var elem = $$("input:required");
+      var err = self.$app.input.validateInputs(".expenseForm");
+      var toggle = self.$app.toggle.get(".recurring");
+      var isRecur = toggle.checked == true ? 1 : 0;
+      var toPay = $$("input.amount_to_pay").val();
+      var paid = $$("input.amount_paid").val();
+      var paidDate = null; var today = Date.parse(new Date($.now()));
+      if(Number(paid) > 0 && Number(paid) >= Number(toPay)){
+            paidDate = Date.parse(new Date($.now()));
+      }
+      if(err){
+            if(Number(toPay) == 0){
+                self.$app.dialog.alert("Amount to pay cannot be 0");
+                return;
+            }
+        var obj = {
+                name: $$("input.name").val(), 
+                amount_to_pay: $$("input.amount_to_pay").val(), 
+                amount_paid: $$("input.amount_paid").val(), 
+                recurring: isRecur,
+                date_paid: paidDate,
+                //created_date: today, 
+                status:1
+              };
+            if(self.currentExpense != null){
+              obj.id = self.currentExpense;
+              var select = self.expenses.find(function(e){ 
+                    return e.id == Number(self.currentExpense);
+                });
+                obj.created_date = select.created_date;
+            }else{
+                obj.created_date = today;
+            }
+          db.expenses.put(obj).then(function(id) {
+                  db.expenses.get(id).then(function(item) {
+                    self.$app.dialog.alert("Item saved.");
+                    $$("input.name,input.amount_to_pay,input.amount_paid").val("");
+                    self.getData();
+                })
+              })
+          }else{
+              self.$app.dialog.alert("Please fill all required fields");
+          }
+    },
+    getData: function(){
+      var self = this;
+      var checked = 1;
+        var toggle = self.$app.toggle.get(".showInactiveExpenses");
+      if(toggle != undefined){
+        checked = toggle.checked == true ? 0 : 1;
+      }
+      //console.log(checked);
+      var collection = db.expenses.where('status').equals(checked).toArray(function(arr){
+        //var collection = db.ingredients.toArray(function(arr){
+        //console.log(arr);
+        //console.log("fretched - " + checked);
+          self.$setState({
+                expenses: arr,
+                totalMat:arr.length
+              });
+      });
+    }
+  },
+  on: {
+      pageInit: function(e, page) {
+        var self = this;
+        //console.log("test inactive init");
+        $$(".showInactiveExpenses").on("change", function(){
+          //console.log("inactive change");
+            self.getData();
+        })
+        //console.log("test inactive init 2");
+        self.getData();
+      },
+      pageReinit: function(e, page) {
+        var self = this;
+        //console.log("test inactive reinit");
+        $$(".showInactiveExpenses").on("change", function(){
+          //console.log("inactive change");
+            self.getData();
+        })
+        //console.log("test inactive reinit 2");
+        self.getData();
+      }
+  }
+
+} 
+</script>
