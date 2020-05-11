@@ -1,0 +1,418 @@
+<template>
+<div class="page" data-name="sales">
+  <div class="navbar">
+    <div class="navbar navbar-bg"></div>
+    <div class="navbar-inner sliding">
+      <div class="left">
+        <a href="#" class="link back">
+          <i class="icon icon-back"></i>
+          <span class="if-not-md">Back</span>
+        </a>
+      </div>
+      <div class="title">Sales</div>
+    </div>
+  </div>
+
+      <!--fab-->
+    <!--<div class="fab fab-extended fab-right-bottom">
+      <a href="#" @click="openPopUp(null)">
+        <i class="icon f7-icons">plus</i>
+        
+        <div class="fab-text">Raw Material</div>
+      </a>
+    </div>-->
+    <!--fab-->
+
+  <div class="page-content">
+    
+    <div class="item-content block-title margin-bottom-half margin-top-half">
+        <div class="row">
+            <div class="col">
+                You have {{totalMat}} {{js "this.totalMat > 1 ? 'sales' : 'sales'"}}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                You have made {{money totalMoney}} sales
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                You have {{money totalPaid}} paid 
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                You have {{totalUnpaid}} sales that aren't fully paid 
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                You have {{money totalDifference}} total unpaid 
+            </div>
+        </div>
+    </div>
+    <!--<div class="row">
+            <div class="col">-->
+                
+                <div class="list no-hairlines-md no-margin-bottom margin-top-half">
+                <ul>
+                    <li>
+                    <div class="item-content item-input">
+                        <div class="item-inner">
+                        <div class="item-input-wrap">
+                            <input type="text" placeholder="Filter sales by date" readonly="readonly" id="demo-calendar-modal"/>
+                            <span class="input-clear-button" @click="resetTable"></span>
+                        </div>
+                        </div>
+                    </div>
+                    </li>
+                </ul>
+                </div>
+            <!--</div>
+        </div>-->
+
+    <div class="card data-table">
+      <table id="salesTable">
+        <thead>
+          <tr>
+            <th class="label-cell">ID</th>
+            <th class="input-cell">
+              <span class="table-head-label">Product Name</span>
+              <div class="input">
+                <form data-search-container=".search-content-list" data-search-item="tr" data-search-in=".searchRow" class="searchbar searchbar-inline searchbar-init">
+                    <input type="search" placeholder="Filter">
+                  </form>
+              </div>
+            </th>
+            <th class="input-cell">
+              <span class="table-head-label">Buyer Name</span>
+              <div class="input">
+                <form data-search-container=".search-content-list" data-search-item="tr" data-search-in=".searchRow" class="searchbar searchbar-inline searchbar-init">
+                    <input type="search" placeholder="Filter">
+                  </form>
+              </div>
+            </th>
+            <th class="numerical-cell">Cost</th>
+            <th class="label-cell">Is Paid</th>
+            <th class="numerical-cell">Amount paid</th>
+            <th class="label-cell">Date Paid</th>
+            <th class="label-cell">Purchase Made</th>
+            <th class="label-cell"></th>
+          </tr>
+        </thead>
+        <tbody class="search-content-list">
+          {{#each sales}}
+            <tr>
+              <td class="label-cell">{{js "@index + 1"}}</td>
+              <td class="label-cell searchRow">{{product_name}}</td>
+              <td class="label-cell searchRow">{{buyer_name}}</td>
+              <td class="numeric-cell">{{money cost}}</td>
+              <td class="label-cell">
+                    <!-- Toggle element -->
+                    <label class="toggle toggle-init product-{{id}}">
+                    <!-- Toggle input -->
+                    <input type="checkbox" {{js "this.amountPaid >= this.cost ? 'checked' : ''"}} {{js "this.amountPaid >= this.cost ? 'disabled' : ''"}} @change="userpaid({{id}},{{cost}})">
+                    <!-- Toggle icon -->
+                    <span class="toggle-icon"></span>
+                    </label>
+                  </td>
+              <td class="numeric-cell">{{money amountPaid}}</td>
+              <td class="label-cell"><span class={{js "this.amountPaid < this.cost ? 'display-none' : ''"}}>{{convertDate date_paid}}</span></td>
+              <td class="label-cell">{{convertDate created_date}}</td>
+              <td>
+                  <p class="row">
+                    <button class="col button button-fill color-red" @click="deleteSale({{id}})">Delete</button>
+                  </p>
+              </td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+      <div class="data-table-footer">
+        <div class="data-table-rows-select">
+          Per page:
+          <div class="input input-dropdown">
+            <select>
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="all">All</option>
+            </select>
+          </div>
+        </div>
+        <div class="data-table-pagination">
+          <span class="data-table-pagination-label">1-5 of 10</span>
+          <a href="#" class="link disabled">
+            <i class="icon icon-prev color-gray"></i>
+          </a>
+          <a href="#" class="link">
+            <i class="icon icon-next color-gray"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!--pop up-->
+  <div class="popup showCalendar popup-tablet-fullscreen">
+    <div class="view">
+      <div class="page">
+        <div class="navbar">
+          <div class="navbar-bg"></div>
+          <div class="navbar-inner">
+            <div class="title">Calendar</div>
+            <div class="right">
+              <!-- Link to close popup -->
+              <a class="link popup-close">Close</a>
+            </div>
+          </div>
+        </div>
+        <div class="page-content">
+            
+        </div>
+      </div>
+    </div>
+  
+  </div>
+  <!--Pop -up-->
+
+</div>
+</template>
+<script>
+import Dom7 from 'dom7';
+import Dexie from 'dexie';
+
+var db = new Dexie("BizExpenseManagerDB");
+          db.version(1).stores({
+            ingredients: "++id,name,unit_size,unit,cost_per_unit,status,created_date",
+            products: "++id,name,cost,status,created_date",
+            product_ingredient: "++id,productID,ingredientID,unit_size,cost,status,created_date",
+            product_otherMaterials: "++id,productID,name,cost,status,created_date",
+            sales: "++id,product_name,buyer_name,cost,amountPaid,isPaid,date_paid,created_date,status",
+            expenses: "++id,name,amount_to_pay,amount_paid,date_paid,created_date,recurring,status",
+
+            ingredients_history: "++id,ingID,name,unit_size,unit,cost_per_unit,status,created_date",
+            products_history: "++id,prodID,name,cost,status,created_date",
+            sales_history: "++id,salesID,product_name,buyer_name,cost,amountPaid,isPaid,date_paid,created_date,status",
+            expenses_history: "++id,expID,name,amount_to_pay,amount_paid,date_paid,created_date,recurring,status"
+          })
+
+var $$ = Dom7;
+export default {
+  data: function () {
+      // Must return an object
+      return {
+        sales: null,
+        totalMat:0,
+        totalMoney: 0,
+        totalPaid: 0,
+        totalUnpaid: 0,
+        totalDifference: 0
+      }
+    },
+  methods:{
+    userpaid: function(id,cost){
+        var self = this;
+        if(self.$app.toggle.get(".product-" + id).checked){
+            self.$app.dialog.prompt("How much did the buyer pay?", function(value){
+                var val = Number(value);
+                if(isNaN(val)){
+                    self.$app.dialog.alert("Please enter valid amount");
+                    return;
+                }else{
+                    if(val == "0"){
+                        self.$app.dialog.alert("Please enter amount greater than 0");
+                        self.$app.toggle.get(".product-" + id).toggle();
+                        return;
+                    }
+                    var newDate = Date.parse(new Date($.now()));
+                    //self.$app.dialog.alert(val + " " + id);
+                    var fullyPaid = 0;
+                    if(Number(val) >= Number(cost)){
+                        fullyPaid = 1;
+                    }
+                    db.sales.update(Number(id), {amountPaid: Number(val), isPaid: fullyPaid, date_paid:newDate}).then(function (updated) {
+                        if (updated){
+                        self.sales.forEach(function(item, i) { 
+                            if (item.id == Number(id)){
+                                    self.sales[i].isPaid = fullyPaid;
+                                    self.sales[i].amountPaid = Number(val);
+                                    self.sales[i].date_paid = newDate;
+                                }  
+                        });
+                        self.showToast("Payment updated!", "center");
+                        if(fullyPaid == 0){
+                            self.$app.toggle.get(".product-" + id).toggle();
+                        }
+                        //console.log(self.ings);
+                        self.$setState({
+                            sales:self.sales
+                        }, function(){
+                            self.calculateTotalMoney();
+                        });
+                        }else{
+                            self.showToast("An error occured, please try again", "center");
+                            //self.$app.dialog.alert("An error occured, please try again");
+                        }
+                    });
+                }
+            }, function(){
+                self.$app.toggle.get(".product-" + id).toggle();
+            });
+        }
+    },
+    deleteSale: function(id){
+        var self = this;
+        self.$app.dialog.confirm("Are you sure you want to delete this sale?", function(){
+            db.sales.update(Number(id), {status: 0}).then(function (updated) {
+                if (updated){
+                self.sales = self.sales.filter(function(e){ 
+                      return e.id != Number(id);
+                  });
+                  self.showToast("Sale deleted!", "center");
+                  //console.log(self.ings);
+                  self.$setState({
+                      sales:self.sales
+                  }, function(){
+                      self.calculateTotalMoney();
+                  });
+                }else{
+                    self.showToast("An error occured, please try again", "center");
+                    //self.$app.dialog.alert("An error occured, please try again");
+                }
+            });
+        });
+    },
+    showToast: function(text, position){
+        var self = this;
+        self.$app.toast.create({
+                        text: text,
+                        position: position,
+                        closeTimeout: 2000,
+                        }).open();
+    },
+    calculateTotalMoney: function(){
+        var self = this;
+        var totalPaid = 0;
+        var totalUnpaid = 0;
+        var totalMoney = 0;
+        $.each(self.sales, function(index,item){
+            if(item.amountPaid != 0 && item.amountPaid != ""){
+                totalPaid += Number(item.amountPaid);
+            }
+            if(item.amountPaid < item.cost){
+                totalUnpaid += 1;
+            }
+            totalMoney += Number(item.cost);
+        })
+        self.$setState({
+            totalMoney: totalMoney,
+            totalPaid: totalPaid,
+            totalUnpaid: totalUnpaid,
+            totalDifference: (totalMoney - totalPaid),
+            totalMat: self.sales.length
+        });
+    },
+    resetTable: function(){
+        var self = this;
+        console.log("empty");
+        self.getData();
+    },
+    showCalendarPopup: function(){
+        var self = this;
+        var calendarModal = self.$app.calendar.create({
+            inputEl: '#demo-calendar-modal',
+            openIn: 'sheet',
+            header: true,
+            footer: true
+        });
+      },
+    openPopUp: function(id){
+        var self = this
+        
+    },
+    closePopUp: function(){
+        var self = this;
+        var popup = self.$app.popup.close('.showCalendar', true);
+        popup.once("closed", function(){
+
+        });
+    },
+    getData: function(){
+      var self = this;
+      var checked = 1;
+
+      var collection = db.sales.where('status').equals(checked).toArray(function(arr){
+        //var collection = db.ingredients.toArray(function(arr){
+        //console.log(arr);
+          self.$setState({
+                sales: arr,
+                totalMat:arr.length
+              }, function(){
+                  self.calculateTotalMoney();
+              });
+      });
+    }
+  },
+  on: {
+      pageInit: function(e, page) {
+        var self = this;
+        var calendarModal = self.$app.calendar.create({
+            inputEl: '#demo-calendar-modal',
+            openIn: 'customModal',
+            rangePicker: true,
+            header: true,
+            footer: true
+        });
+        calendarModal.on("closed", function(){
+            //console.log(calendarModal.getValue());
+            var days = calendarModal.getValue();
+            var from = null; var to = null;
+            if(days.length == 1){
+                var date1 = days[0];
+                date1.setDate(date1.getDate() + 1);
+                from = Date.parse(days[0]);
+                to = Date.parse(date1);
+            }
+            else if(days.length > 1){
+                //var date1 = days[0];
+                //date1.setDate(date1.getDate() + 1);
+                from = Date.parse(days[0]);
+                var date2 = days[1];
+                date2.setDate(date2.getDate() + 1);
+                to = Date.parse(date2);
+            }else{
+                self.getData();
+            }
+            if(from != null && to != null){
+                console.log(from);
+                console.log(to);
+                var checked = 1;
+
+                var collection = db.sales.where('created_date').between(from, to)
+                .filter(function (sale) {
+                    return sale.status === 1;
+                }).toArray(function(arr){
+                    //var collection = db.ingredients.toArray(function(arr){
+                    //console.log(arr);
+                    self.$setState({
+                            sales: arr,
+                            totalMat:arr.length
+                        }, function(){
+                            self.calculateTotalMoney();
+                        });
+                });
+            }
+        })        
+        self.getData();
+      },
+      pageReinit: function(e, page) {
+        var self = this;
+        self.getData();
+      }
+  }
+
+} 
+</script>

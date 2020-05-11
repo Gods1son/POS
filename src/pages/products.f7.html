@@ -1,0 +1,1008 @@
+<template>
+<div class="page" data-name="products">
+  <div class="navbar">
+    <div class="navbar navbar-bg"></div>
+    <div class="navbar-inner sliding">
+      <div class="left">
+        <a href="#" class="link back">
+          <i class="icon icon-back"></i>
+          <span class="if-not-md">Back</span>
+        </a>
+      </div>
+      <div class="title">Products</div>
+    </div>
+  </div>
+
+    <!--fab-->
+    <div class="fab fab-extended fab-right-bottom">
+      <a href="#" @click="openPopUp(null)">
+        <i class="icon f7-icons">plus</i>
+        <!-- Element with FAB text  -->
+        <div class="fab-text">Product</div>
+      </a>
+    </div>
+    <!--fab-->
+
+  <div class="page-content">
+      <div class="item-content block-title margin-bottom-half margin-top-half">
+        <div class="row">
+            <div class="col">
+                You have {{totalMat}} {{js "this.totalMat > 1 ? 'products' : 'product'"}}
+            </div>
+    
+                <div class="col">
+                    <span class="item-after float-right margin-left-half">
+                        <label class="toggle toggle-init color-red showInactive">
+                        <input type="checkbox">
+                        <span class="toggle-icon"></span>
+                        </label>
+                    </span>
+                    <span class="item-title float-right">Show inactive</span>
+                </div>
+            </div>
+    </div>
+    <div class="card data-table">
+      <table>
+        <thead>
+          <tr>
+            <th class="label-cell">ID</th>
+            <th class="input-cell">
+              <span class="table-head-label">Name</span>
+              <div class="input">
+                <form data-search-container=".search-content-list-ing" data-search-item="tr" data-search-in=".searchRowIng" class="searchbar searchbar-inline searchbar-init">
+                    <input type="search" placeholder="Filter">
+                  </form>
+              </div>
+            </th>
+            <th class="numeric-cell">Cost</th>
+            <th class="label-cell"></th>
+          </tr>
+        </thead>
+        <tbody class="search-content-list-ing">
+          {{#each products}}
+            <tr>
+              <td class="label-cell">{{js "@index + 1"}}</td>
+              <td class="label-cell searchRowIng">{{name}}</td>
+              <td class="numeric-cell">{{money cost}}</td>
+              <td>
+                <p class="row">
+                    <button class="col button button-fill color-green" @click="openPopUpSellProduct({{id}})">Sell</button>
+                    <button class="col button button-fill" @click="openPopUp({{id}})">Edit</button>
+                    <button class="col button button-fill color-orange deleteButton" @click="openPopUpIngredients({{id}})">
+                            Add Raw Materials
+                    </button>
+                    <button class="col button button-fill color-red deleteButton" @click="DeleteItem({{id}})">
+                            {{js "this.status == 1 ? 'delete' : 'activate'"}}
+                        </button>
+                    
+                </p>
+              </td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+      <div class="data-table-footer">
+        <div class="data-table-rows-select">
+          Per page:
+          <div class="input input-dropdown">
+            <select>
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="all">All</option>
+            </select>
+          </div>
+        </div>
+        <div class="data-table-pagination">
+          <span class="data-table-pagination-label">1-5 of 10</span>
+          <a href="#" class="link disabled">
+            <i class="icon icon-prev color-gray"></i>
+          </a>
+          <a href="#" class="link">
+            <i class="icon icon-next color-gray"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!--pop up add new product-->
+  <div class="popup newProduct popup-tablet-fullscreen">
+    <div class="view">
+      <div class="page">
+        <div class="navbar">
+          <div class="navbar-bg"></div>
+          <div class="navbar-inner">
+            <div class="title">Add New Product</div>
+            <div class="right">
+              <!-- Link to close popup -->
+              <a class="link popup-close">Close</a>
+            </div>
+          </div>
+        </div>
+        <div class="page-content">
+            <div class="list no-hairlines-md margin-top-half margin-bottom-half productForm">
+              <ul>
+                <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-title">Product Name</div>
+                      <div class="item-input-wrap">
+                        <input type="text" class="name" placeholder="Product name" required validate/>
+                        <span class="input-clear-button"></span>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-title">Cost of product</div>
+                      <div class="item-input-wrap">
+                        <input type="text" class="cost_of_product" placeholder="Cost of product" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                        <span class="input-clear-button"></span>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <a href="#" class="col button button-fill" @click='saveData'>Save Product</a>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+        </div>
+      </div>
+    </div>
+  
+  </div>
+  <!--Pop -up-->
+
+    <!--pop up make a sale-->
+  <div class="popup sellProduct popup-tablet-fullscreen">
+    <div class="view">
+      <div class="page">
+        <div class="navbar">
+          <div class="navbar-bg"></div>
+          <div class="navbar-inner">
+            <div class="title">Sell Product</div>
+            <div class="right">
+              <!-- Link to close popup -->
+              <a class="link popup-close">Close</a>
+            </div>
+          </div>
+        </div>
+        <div class="page-content">
+            <div class="list no-hairlines-md margin-top-half margin-bottom-half">
+              <ul>
+                <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-title">Product Name</div>
+                      <div class="item-input-wrap">
+                        <input type="text" class="name_sell" placeholder="Product name" disabled="true"/>
+                        <span class="input-clear-button"></span>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-title">Cost of product</div>
+                      <div class="item-input-wrap">
+                        <input type="text" class="cost_sell" placeholder="Cost of product" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                        <span class="input-clear-button"></span>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-title">Buyer Name</div>
+                      <div class="item-input-wrap">
+                        <input type="text" class="buyer_sell" placeholder="Buyer name"/>
+                        <span class="input-clear-button"></span>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-title">Amount Paid</div>
+                      <div class="item-input-wrap">
+                        <input type="text" class="amountpaid_sell" placeholder="Amount paid" value="0" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                        <span class="input-clear-button"></span>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content">
+                    <div class="item-inner-1">
+                      <span class="item-title">Payment made</span>
+                      <!--<div class="item-after">-->
+                        <label class="toggle toggle-init paid_sell margin-left-half">
+                          <input type="checkbox">
+                          <span class="toggle-icon"></span>
+                        </label>
+                      <!--</div>-->
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <a href="#" class="col button button-fill color-green" @click='saveDataSell'>Sell Product</a>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+        </div>
+      </div>
+    </div>
+  
+  </div>
+  <!--pop up make a sale-->
+
+  <!--pop up for add ingredients-->
+  <div class="popup ProductIngredients popup-tablet-fullscreen">
+    <div class="view">
+      <div class="page">
+        <div class="navbar">
+          <div class="navbar-bg"></div>
+          <div class="navbar-inner">
+            <div class="title">Add Product Raw Materials</div>
+            <div class="right">
+              <!-- Link to close popup -->
+              <a class="link" @click="closePopUp">Close</a>
+            </div>
+          </div>
+        </div>
+        <div class="page-content">
+            <div class="block margin-top-half margin-bottom-half">
+                  <div class="block-title block-title-medium">{{productToEdit}}</div>
+            </div>
+
+            <div class="data-table card">
+              <div class="card-header">
+                    <!-- Table title -->
+                    <div class="data-table-title">Selected Raw Materials</div>
+                </div>
+                <div class="card-content">
+                    <table>
+                      <thead>
+                          <tr>
+                              <th class="label-cell">Name</th>
+                              <th class="numerical-cell">Cost/Size</th>
+                              <th class="label-cell">Quantity</th>
+                              <th class="label-cell">Cost</th>
+                              <th class="label-cell"></th>   
+                          </tr>
+                      </thead>
+                      <tbody>
+                          {{#each productIngs}}
+                                <tr class="eachCostParent par-{{id}}">
+                                  <td class="label-cell">{{name}}</td>
+                                  <td class="label-cell">
+                                    {{money cost_per_unit}}/{{unit_size}}{{unit}}
+                                    <!--<input type="text" placeholder="quantity" data-cost="{{cost_per_unit}}" data-unit="{{unit}}">-->
+                                  </td>
+                                  <td class="label-cell">
+                                    <!--<div class="list inline-labels no-hairlines-md"><ul><li>-->
+                                    <div class="item-content item-input">
+                                      <div class="item-inner">
+                                        <div class="item-input-wrap">
+                                          <input class="costvalue" type="text" placeholder="quantity" data-cost="{{cost_per_unit}}" data-unit="{{unit_size}}" 
+                                          @keyup="typingvalue" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" 
+                                          value="{{js 'this.select_unit_size != undefined ? this.select_unit_size : 0'}}">
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <!--</li></ul></div>-->
+                                  </td>
+                                  <td class="label-cell eachCost">{{js "this.select_cost != undefined ? this.select_cost : ''"}}</td>
+                                  <td>
+                                      <p class="row">
+                                          <button class="col button button-fill color-red removeCost" data-itemID="{{id}}" @click="RemoveItem">Remove</button>
+                                      </p>
+                                  </td>
+                                  </tr>
+                              {{/each}}
+                            </tbody>
+                            <table>
+                              <tbody>
+                            <tr class="bg-color-white">
+                              <td class="label-cell"><button class="col button button-fill color-blue customcharges" @click="AddNewCost">Add Custom Charges</button></td>
+                              <td class="label-cell"></td>
+                              <td class="label-cell"></td>
+                              <td class="label-cell"></td>
+                              <td class="label-cell"></td>   
+                          </tr>
+                          <tr class="bg-color-white">
+                              <td class="label-cell">Add Profit in %</td>
+                              <td class="label-cell"></td>
+                              <td class="label-cell">
+                                <div class="item-content item-input">
+                                      <div class="item-inner">
+                                        <div class="item-input-wrap">
+                                          <input class="profitpercent" type="text" placeholder="profit 0 to 100" @keyup="calculateprofit" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" value="0">
+                                        </div>
+                                      </div>
+                                    </div>
+                              </td>
+                              <td class="label-cell profitvalue"></td>
+                              <td class="label-cell"></td>   
+                          </tr>
+                          <tr class="bg-color-gray">
+                              <td class="label-cell"></td>
+                              <td class="numerical-cell"></td>
+                              <td class="label-cell"></td>
+                              <td class="label-cell"><div class="col totalAmount block-title-medium margin-left-half text-color-white"></div></td>
+                              <td class="label-cell">
+                                  <button class="col button button-fill color-white text-color-green calculateTotalButton" @click="CalculateTotal">Calculate</button>
+                                </td>   
+                          </tr>
+                          <tr class="bg-color-gray">
+                              <td class="label-cell"></td>
+                              <td class="numerical-cell"></td>
+                              <td class="label-cell"></td>
+                              <td class="label-cell"></td>
+                              <td class="label-cell">
+                                  <button class="col button button-fill color-green saveTotalButton" @click="SaveTotal">Save</button>
+                                </td>   
+                          </tr>
+                              </tbody>
+                            </table>
+
+                    </table>
+                    <!--<div class="data-table-footer">
+                        <p class="row">
+                            <button class="col button button-fill color-green" @click="CalculateTotal">Calculate</button>
+                        </p>
+                        <div class="col totalAmount block-title-medium margin-left-half"></div>
+                    </div>-->
+                </div>
+            </div>
+
+            <div class="card data-table data-table-init">
+              <div class="card-header">
+                    <!-- Table title -->
+                    <div class="data-table-title">All Raw Materials</div>
+                </div>
+                <div class="card-content">
+                    <table id="ingredientTable">
+                        <thead>
+                        <tr>
+                            <!--<th> class="checkbox-cell">-->
+                            <!--<label class="checkbox">
+                                <input type="checkbox"/>
+                                <i class="icon-checkbox"></i>
+                            </label>
+                            </th>-->
+                            <th class="label-cell">ID</th>
+                            <th class="input-cell">
+                            <span class="table-head-label">Name</span>
+                            <div class="input">
+                                <form data-search-container=".search-content-list" data-search-item="tr" data-search-in=".searchRow" class="searchbar searchbar-inline searchbar-init">
+                                    <input type="search" placeholder="Filter">
+                                </form>
+                            </div>
+                            </th>
+                            <th class="label-cell">Unit Size</th>
+                            <th class="numeric-cell">Cost</th>
+                            <th class="label-cell"></th>
+                        </tr>
+                        </thead>
+                        <tbody class="search-content-list">
+                        {{#each ings}}
+                            <tr>
+                            <!--<td class="checkbox-cell">
+                            <label class="checkbox">
+                                <input type="checkbox"/>
+                                <i class="icon-checkbox"></i>
+                            </label>
+                            </td>-->
+                            <td class="label-cell">{{js "@index + 1"}}</td>
+                            <td class="label-cell searchRow">{{name}}</td>
+                            <td class="label-cell">{{unit_size}}{{unit}}</td>
+                            <td class="numeric-cell">{{money cost_per_unit}}</td>
+                            <td>
+                                <p class="row">
+                                    <button class="col button button-fill ing-{{id}}" @click="SelectItem({{id}})">Select</button>
+                                </p>
+                            </td>
+                            </tr>
+                        {{/each}}
+                        </tbody>
+                    </table>
+                    <div class="data-table-footer">
+                        <div class="data-table-rows-select">
+                        Per page:
+                        <div class="input input-dropdown">
+                            <select>
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="all">All</option>
+                            </select>
+                        </div>
+                        </div>
+                        <div class="data-table-pagination">
+                        <span class="data-table-pagination-label">1-5 of 10</span>
+                        <a href="#" class="link disabled">
+                            <i class="icon icon-prev color-gray"></i>
+                        </a>
+                        <a href="#" class="link">
+                            <i class="icon icon-next color-gray"></i>
+                        </a>
+                        </div>
+                    </div>
+                </div>
+                </div>
+        </div>
+      </div>
+    </div>
+  
+  </div>
+  <!--Pop -up for add ingredients-->
+
+</div>
+</template>
+<script>
+import Dom7 from 'dom7';
+import Dexie from 'dexie';
+
+var db = new Dexie("BizExpenseManagerDB");
+          db.version(1).stores({
+            ingredients: "++id,name,unit_size,unit,cost_per_unit,status,created_date",
+            products: "++id,name,cost,status,created_date",
+            product_ingredient: "++id,productID,ingredientID,unit_size,cost,status,created_date",
+            product_otherMaterials: "++id,productID,name,cost,status,created_date",
+            sales: "++id,product_name,buyer_name,cost,amountPaid,isPaid,date_paid,created_date,status",
+            expenses: "++id,name,amount_to_pay,amount_paid,date_paid,created_date,recurring,status",
+
+            ingredients_history: "++id,ingID,name,unit_size,unit,cost_per_unit,status,created_date",
+            products_history: "++id,prodID,name,cost,status,created_date",
+            sales_history: "++id,salesID,product_name,buyer_name,cost,amountPaid,isPaid,date_paid,created_date,status",
+            expenses_history: "++id,expID,name,amount_to_pay,amount_paid,date_paid,created_date,recurring,status"
+          })
+
+var $$ = Dom7;
+export default {
+  data: function () {
+      // Must return an object
+      return {
+        products: null,
+        totalMat:0,
+        currentProduct: null,
+        totalMatIngredients:0,
+        ings:null,
+        productToEdit: null,
+        productToEditID: null,
+        productIngs:[]
+      }
+    },
+  methods:{
+    calculateprofit: function(){
+      var self = this;
+        self.CalculateTotal();
+    },
+    CalculateTotal: function(){
+      var totalCost = 0;
+      $$(".eachCost").forEach(function(curr, i){
+        var cost = 0;
+        if($$(".eachCost")[i].type == "text"){
+            cost = Number($$(".eachCost")[i].value);
+        }else{
+            cost = Number($$(".eachCost")[i].textContent);
+        }
+          
+          if(!isNaN(cost)){
+              totalCost += cost;
+              //console.log(totalCost);
+          }else{
+              $$(".totalAmount").text("please fix error");
+              return;
+          }
+      })
+      
+      //console.log(totalCost);
+      var cent = $(".profitpercent").eq(0).val();
+        if(cent != 0 && cent != "" && totalCost != ""){
+          cent = Number(cent);
+          var val = (cent/100) * totalCost;
+          $(".profitvalue").eq(0).text(val.toFixed(2));
+        }else{
+          $(".profitvalue").eq(0).text("0");
+        }
+        var profitvalue = Number($(".profitvalue").eq(0).text());
+        totalCost += profitvalue;
+        $(".totalAmount").text(totalCost.toFixed(2));
+    },
+    typingvalue: function(e){
+      var self = this;
+      var val = $$(e.target).val();
+      var costperunit = $$(e.target).attr("data-cost");
+      var unit = $$(e.target).attr("data-unit");
+      var fig = (Number(costperunit)/Number(unit)) * Number(val);
+        //console.log(fig.toFixed(2));
+        var td = $$(e.target).parents("td").eq(0).next("td").eq(0).text(fig.toFixed(2));
+        self.CalculateTotal();
+    },
+    RemoveItem: function(e){
+      var self = this;
+      var id = $$(e.target).attr("data-itemid");
+      //console.log(id);
+        var select = self.productIngs.find(function(e){ 
+              return e.id == Number(id);
+          });
+          self.ings.push(select);
+          //console.log(self.productIngs);
+          /*self.productIngs = self.productIngs.filter(function(e){ 
+              return e.id != Number(id);
+          });*/
+          $$(e.target).parents("tr").eq(0).remove();
+          self.$setState({
+                ings:self.ings,
+                productIngs:self.productIngs
+            }, function(){
+              self.CalculateTotal();
+              /*setTimeout(function(){
+                //(".calculateTotalButton").eq(0).click()
+                self.CalculateTotal();
+              },2000);*/
+            });
+    },
+    SelectItem: function(id){
+      var self = this;
+        var select = self.ings.find(function(e){ 
+              return e.id == Number(id);
+          });
+          self.productIngs.push(select);
+          //console.log(self.productIngs);
+          self.ings = self.ings.filter(function(e){ 
+              return e.id != Number(id);
+          });
+          //console.log(self.ings);
+          self.$setState({
+                ings:self.ings,
+                productIngs:self.productIngs
+            });
+    },
+    DeleteItem: function(id){
+        var self = this;
+        var checked = 0;
+        var text = "delete?"
+        var toggle = self.$app.toggle.get(".showInactive");
+        if(toggle != undefined){
+            if(toggle.checked){
+                text = "activate?";
+                checked = 1;
+            }
+        }
+        self.$app.dialog.confirm("Are you sure you want to " + text, function(){
+            db.products.update(Number(id), {status: checked}).then(function (updated) {
+              if (updated){
+                self.products = self.products.filter(function(e){ 
+                      return e.id != Number(id);
+                  });
+                  //console.log(self.ings);
+                  self.$setState({
+                      products:self.products,
+                      totalMat:self.products.length
+                  });
+              }
+            });
+        }, null);
+    },
+    openPopUp: function(id){
+        var self = this;
+        var popup = self.$app.popup.open('.newProduct', true);
+        popup.once("opened", function(){
+          if(id != null || id != undefined){
+            var item = self.products.find(function(e){ 
+                  return e.id == Number(id);
+              });
+              self.$setState({
+                      currentProduct:Number(id)
+                    });
+                    $$("input.name").val(item.name);
+                    $$("input.cost_of_product").val(item.cost);
+
+            } else{
+              self.$setState({
+                  currentProduct:null
+              });
+            }
+        })
+        
+    },
+    openPopUpSellProduct: function(id){
+        var self = this;
+        var popup = self.$app.popup.open('.sellProduct', true);
+        popup.once("opened", function(){
+          if(id != null || id != undefined){
+            var item = self.products.find(function(e){ 
+                  return e.id == Number(id);
+              });
+              self.$setState({
+                  currentProduct:Number(id)
+              });
+                  $$("input.name_sell").val(item.name);
+                  $$("input.cost_sell").val(item.cost);
+
+            } else{
+              self.$setState({
+                  currentProduct:null
+              });
+            }
+        })
+        
+    },
+    openPopUpIngredients: function(id){
+        var self = this;
+        var popup = self.$app.popup.open('.ProductIngredients', true);
+        popup.once("opened", function(){
+            self.getDataIngredients(id);
+            var savearray = [];
+            var profit = 0;
+            if(id != null || id != undefined){
+                var collection = db.product_ingredient.where('productID').equals(Number(id)).toArray(function(arr){
+                  //console.log(arr);
+                    $.each(arr, function( key, value ) {
+                        //$(".ing-" + value.ingredientID).click();
+                        //self.SelectItem(Number(value.ingredientID));
+                        var each = self.ings.find(x => x.id == Number(value.ingredientID));
+                        each.select_unit_size = value.unit_size;
+                        each.select_cost = value.cost;
+                        savearray.push(each);
+                        self.ings = self.ings.filter(function(e){ 
+                            return e.id != Number(value.ingredientID);
+                        })
+                        
+                        
+                    })
+                    //console.log(savearray);
+                    self.$setState({
+                        productIngs:savearray,
+                        ings: self.ings
+                    });
+                    //self.CalculateTotal();
+                });
+                var collection2 = db.product_otherMaterials.where('productID').equals(Number(id)).toArray(function(arr){
+                  //console.log(arr);
+                  $.each(arr, function( key, value ) {
+                    if(value.name != "Profit"){
+                            var row = '<tr class="extraCostRow"><td><div class="list no-hairlines-md"><ul><li class="item-content item-input"><div class="item-input-wrap">'; 
+                            row += '<input class="extraName" type="text" placeholder="enter name" value="' + value.name + '" required></div></li></ul></div></td><td></td><td></td>';
+                            row += '<td><div class="list no-hairlines-md"><ul><li class="item-content item-input"><div class="item-input-wrap">';
+                            row += '<input class="eachCost" type="text" value="' + value.cost + '" placeholder="enter cost" required validate pattern="[0-9]+(\.[0-9][0-9]?)?"></div></li></ul></div></td>';
+                            //row += '<td><input class="eachCost" type="text" placeholder="enter cost" required validate pattern="[0-9]+(\.[0-9][0-9]?)?"></td>';
+                            row += '<td><p class="row"><button class="col button button-fill color-red removeRow">Remove</button></p></td></tr>';
+                            var tr = $$(".customcharges").parents("tr").eq(0);
+                            $$(row).insertAfter($$(tr));
+                            $(".removeRow").on("click", function(e){
+                                $(this).parents("tr").eq(0).remove();
+                                $(".calculateTotalButton").eq(0).click();
+                            })
+                            $(".extraCostRow").find(".eachCost").on("keyup", function(e){
+                                $(".calculateTotalButton").eq(0).click();
+                            })
+                        }else{
+                            $(".profitvalue").text(value.cost);
+                            profit = value.cost;
+                        }
+                    })
+                    var finalPrice = self.products.find(x => x.id == Number(id)).cost;
+                    var cent = (100 * profit)/(finalPrice - profit);
+                    $(".profitpercent").val(cent);
+                    //self.CalculateTotal();
+                });
+                //self.CalculateTotal();
+                setTimeout(function(){
+                    $(".calculateTotalButton").eq(0).click();
+                },1000) 
+            } 
+            /*else{
+              self.$setState({
+                  currentProduct:null
+              });
+            }*/
+        })
+        
+    },
+    closePopUp: function(){
+        var self = this;
+        var popup = self.$app.popup.close('.ProductIngredients', true);
+        $(".extraCostRow").remove();
+            $(".profitpercent").val("0");
+            $(".totalAmount,.profitvalue").text("");
+            //self.CalculateTotal();
+        popup.once("closed", function(){
+            /*$$(".extraCostRow").forEach(function(curr, i){
+                $$(".extraCostRow")[i].remove()
+            })*/
+            self.$setState({
+                  productIngs:null
+              });
+            self.getData();
+        });
+    },
+    saveData: function(){
+      //var $$ = this.Dom7;
+      var self = this;
+      var elem = $$("input:required");
+      var err = self.$app.input.validateInputs(".productForm");
+      //console.log(err);
+      if(err){
+        var obj = {
+                name: $$("input.name").val(),  
+                cost: $$("input.cost_of_product").val(), 
+                status:1,
+                created_date: Date.parse(new Date($.now()))
+              };
+            if(self.currentProduct != null){
+              obj.id = self.currentProduct;
+            }
+          db.products.put(obj).then(function(id) {
+                  db.products.get(id).then(function(item) {
+                    self.$app.dialog.alert("Item saved.");
+                    $$("input.name,input.cost_of_product").val("");
+                    self.getData();
+                })
+              }).catch(function(err){
+                console.log(err);
+              })
+          }
+    },
+    saveDataSell: function(){
+      //var $$ = this.Dom7;
+      var self = this;
+      var checked = 0;
+      var toggle = self.$app.toggle.get(".paid_sell");
+      var isPaidDate = null;
+      if(toggle != undefined){
+        checked = toggle.checked == true ? 1 : 0;
+      }
+      if(checked == 1){
+         isPaidDate = Date.parse(new Date($.now()));
+      }
+      if((checked == 1) && ($$("input.amountpaid_sell").val() == "0" || $$("input.amountpaid_sell").val().trim == "")){
+          self.$app.dialog.alert("Please enter how much buyer paid or uncheck payment made toggle!");
+          return;
+      }
+      if((checked == 0) && ($$("input.amountpaid_sell").val() != "0" && $$("input.amountpaid_sell").val().trim != "")){
+          self.$app.dialog.alert("Please check payment made toggle!");
+          return;
+      }
+      var cp = $$("input.cost_sell").val();
+      var sp = $$("input.amountpaid_sell").val();
+      var fullyPaid = 0;
+      if(Number(sp) >= Number(cp)){
+        fullyPaid = 1;
+      }
+        var obj = {
+                product_name: $$("input.name_sell").val(),  
+                buyer_name: $$("input.buyer_sell").val(),
+                cost: $$("input.cost_sell").val(),
+                amountPaid: $$("input.amountpaid_sell").val(),
+                isPaid: fullyPaid,
+                date_paid: isPaidDate,
+                created_date: Date.parse(new Date($.now())),
+                status:1
+              };
+            //console.log(obj);
+            //self.$app.dialog.alert(JSON.stringify(obj));
+            /*if(self.currentProduct != null){
+              obj.id = self.currentProduct;
+            }*/
+            db.sales.add(obj).then(function(){
+                  self.$app.dialog.alert("Record saved!", function(){
+                    $$("input.buyer_sell").val("");
+                    self.$app.popup.close('.sellProduct', true);
+                  });
+                  
+              }).catch(function (error) {
+                  //console.log(error);
+                 self.$app.dialog.alert("An error occurred!");
+              })
+    },
+    getData: function(){
+      var self = this;
+      var checked = 1;
+      var toggle = self.$app.toggle.get(".showInactive");
+      if(toggle != undefined){
+        checked = toggle.checked == true ? 0 : 1;
+      }
+      
+      var collection = db.products.where('status').equals(checked).toArray(function(arr){
+        //var collection = db.ingredients.toArray(function(arr){
+        //console.log(arr);
+          self.$setState({
+                products: arr,
+                totalMat:arr.length
+              });
+      });
+    },
+    getDataIngredients: function(idOfProd){
+      var self = this;
+      var checked = 1;
+      var toggle = self.$app.toggle.get(".showInactive");
+      if(toggle != undefined){
+        checked = toggle.checked == true ? 0 : 1;
+      }
+
+      var collection = db.ingredients.where('status').equals(checked).toArray(function(arr){
+        //var collection = db.ingredients.toArray(function(arr){
+        //console.log(arr);
+          self.$setState({
+                ings: arr,
+                totalMatIngredients:arr.length,
+                productIngs:[],
+                productToEdit: self.products.find(x => x.id == Number(idOfProd)).name,
+                productToEditID: self.products.find(x => x.id == Number(idOfProd)).id
+              });
+      });
+    },
+    AddNewCost: function(e){
+      var row = '<tr class="extraCostRow"><td><div class="list no-hairlines-md"><ul><li class="item-content item-input"><div class="item-input-wrap"><input class="extraName" type="text" placeholder="enter name" required></div></li></ul></div></td><td></td><td></td>';
+      row += '<td><div class="list no-hairlines-md"><ul><li class="item-content item-input"><div class="item-input-wrap"><input class="eachCost" type="text" placeholder="enter cost" required validate pattern="[0-9]+(\.[0-9][0-9]?)?"></div></li></ul></div></td>';
+      //row += '<td><input class="eachCost" type="text" placeholder="enter cost" required validate pattern="[0-9]+(\.[0-9][0-9]?)?"></td>';
+      row += '<td><p class="row"><button class="col button button-fill color-red removeRow">Remove</button></p></td></tr>';
+      var tr = $$(e.target).parents("tr").eq(0);
+      $$(row).insertAfter($$(tr));
+      $(".removeRow").on("click", function(e){
+          $(this).parents("tr").eq(0).remove();
+          $(".calculateTotalButton").eq(0).click();
+      })
+      $(".extraCostRow").find(".eachCost").on("keyup", function(e){
+          $(".calculateTotalButton").eq(0).click();
+      })
+    },
+    SaveTotal: function(){
+      var self = this;
+      var allCost = [];
+      var allExtraCost = [];
+      var passed = true;
+      if($(".extraCostRow").length == 0 && $(".eachCostParent").length == 0){
+          self.$app.dialog.alert("Please choose raw materials to save!");
+          return false;
+      }
+      $(".eachCostParent").each(function(index,item){
+          var cost = $(item).find(".eachCost").eq(0).text();
+          var val = $(item).find(".costvalue").eq(0).val();
+          var ingID = $(item).find(".removeCost").eq(0).attr("data-itemid");
+          if((cost == "" || cost == "0") || (val == "")){
+              self.$app.dialog.alert("Please fill all fields or remove unused selected raw materials");
+              passed = false;
+              return false;
+          }else{
+            var obj = {};
+            obj.productID = self.productToEditID;
+            obj.ingredientID = Number(ingID);
+            obj.unit_size = Number(val);
+            obj.cost = Number(cost);
+            obj.status = 1;
+            obj.created_date = Date.parse(new Date($.now()));
+            allCost.push(obj);
+          }
+      })
+
+      if(passed){
+          $(".extraCostRow").each(function(index,item){
+              var extraname = $(item).find(".extraName").val().trim();
+              var extracost = $(item).find(".eachCost").val().trim();
+              if(extraname == "" || extracost == ""){
+                  self.$app.dialog.alert("Please fill all fields or remove unused for custom charges");
+                  passed = false;
+                  return false;
+              }else{
+                var obj = {};
+                obj.productID = self.productToEditID;
+                obj.name = extraname;
+                obj.cost = Number(extracost);
+                obj.status = 1;
+                obj.created_date = Date.parse(new Date($.now()));
+                allExtraCost.push(obj);
+              }
+          })
+      }
+          if(passed){
+                var obj = {};
+                obj.productID = self.productToEditID;
+                obj.name = "Profit";
+                obj.cost = Number($(".profitvalue").text());
+                obj.status = 1;
+                obj.created_date = Date.parse(new Date($.now()));
+                allExtraCost.push(obj);
+          }
+          //record in db
+          if(passed){
+                //console.log(allCost);
+                //console.log(allExtraCost);
+                var totall = Number($(".totalAmount").text());
+                //console.log(totall);
+                db.transaction('rw', db.product_ingredient, db.product_otherMaterials, db.products, () => {
+                  
+                      db.product_ingredient.where("productID").equals(self.productToEditID).delete()
+                      .then(function (deleteCount) {
+                            //console.log( "Deleted " + deleteCount + " objects");
+                          });
+
+                          db.product_otherMaterials.where("productID").equals(self.productToEditID).delete()
+                          .then(function (deleteCount) {
+                              //console.log( "Deleted " + deleteCount + " objects");
+                            });
+                            
+                              db.product_ingredient.bulkAdd(allCost).then(function(lastKey) {
+                                      //console.log("Last raindrop's id was: " + lastKey); // Will be 100000.
+                                  }).catch(Dexie.BulkError, function (e) {
+                                      passed = false;
+                                  });
+
+                                  
+                                  db.product_otherMaterials.bulkAdd(allExtraCost).then(function(lastKey) {
+                                      //console.log("Last raindrop's id was: " + lastKey); // Will be 100000.
+                                  }).catch(Dexie.BulkError, function (e) {
+                                      passed = false;
+                                  });
+                                  
+                                db.products.update(self.productToEditID, {cost: totall}).then(function (updated) {
+                                  if (updated){
+                                    //console.log ("Product price " + self.productToEditID + " was changed to " + totall);
+                                  }else{
+                                    passed = false;
+                                    //console.log ("Nothing was updated - there were no friend with primary key: 2");
+                                  }
+                                    
+                                });
+                      
+                        }).then(() => {
+                            // Transaction committed. NOT WITHIN ZONE!
+                            self.$app.dialog.alert("Saved successfully");
+                        }).catch(err => {
+
+                            // Transaction aborted. NOT WITHIN ZONE!
+                            //console.error (e);
+                            self.$app.dialog.alert("An error occured, please try again");
+                        });
+               /* if(passed){
+                  self.$app.dialog.alert("Saved successfully");
+                }*/
+          }
+                
+          
+      }
+
+  },
+  on: {
+      pageInit: function(e, page) {
+        var self = this;
+        $$(".showInactive").on("change", function(){
+            self.getData();
+        })
+        self.getData();
+
+        $$(".costvalue").on("notempty", function(){
+          //console.log($$(this).val());
+        })
+      },
+       pageReinit: function(e, page) {
+        var self = this;
+        $$(".showInactive").on("change", function(){
+            self.getData();
+        })
+        self.getData();
+      }
+  }
+
+} 
+</script>

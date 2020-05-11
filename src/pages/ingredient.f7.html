@@ -1,0 +1,351 @@
+<template>
+<div class="page" data-name="ingredient">
+  <div class="navbar">
+    <div class="navbar navbar-bg"></div>
+    <div class="navbar-inner sliding">
+      <div class="left">
+        <a href="#" class="link back">
+          <i class="icon icon-back"></i>
+          <span class="if-not-md">Back</span>
+        </a>
+      </div>
+      <div class="title">Raw Materials</div>
+    </div>
+  </div>
+
+      <!--fab-->
+    <div class="fab fab-extended fab-right-bottom">
+      <a href="#" @click="openPopUp(null)">
+        <i class="icon f7-icons">plus</i>
+        <!-- Element with FAB text  -->
+        <div class="fab-text">Raw Material</div>
+      </a>
+    </div>
+    <!--fab-->
+
+  <div class="page-content">
+    
+    <div class="item-content block-title margin-bottom-half margin-top-half">
+        <div class="row">
+            <div class="col">
+                You have {{totalMat}} {{js "this.totalMat > 1 ? 'raw materials' : 'raw material'"}}
+            </div>
+    
+                <div class="col">
+                    <span class="item-after float-right margin-left-half">
+                        <label class="toggle toggle-init color-red showInactiveIngs">
+                        <input type="checkbox">
+                        <span class="toggle-icon"></span>
+                        </label>
+                    </span>
+                    <span class="item-title float-right">Show inactive</span>
+                </div>
+            </div>
+    </div>
+    <div class="card data-table">
+      <table id="ingredientTable">
+        <thead>
+          <tr>
+            <th class="label-cell">ID</th>
+            <th class="input-cell">
+              <span class="table-head-label">Name</span>
+              <div class="input">
+                <form data-search-container=".search-content-list" data-search-item="tr" data-search-in=".searchRow" class="searchbar searchbar-inline searchbar-init">
+                    <input type="search" placeholder="Filter">
+                  </form>
+              </div>
+            </th>
+            <th class="label-cell">Unit Size</th>
+            <th class="numeric-cell">Cost</th>
+            <th class="label-cell"></th>
+          </tr>
+        </thead>
+        <tbody class="search-content-list">
+          {{#each ings}}
+            <tr>
+              <td class="label-cell">{{js "@index + 1"}}</td>
+              <td class="label-cell searchRow">{{name}}</td>
+              <td class="label-cell">{{unit_size}}{{unit}}</td>
+              <td class="numeric-cell">{{money cost_per_unit}}</td>
+              <td>
+                <p class="row">
+                    <button class="col button button-fill" @click="openPopUp({{id}})">Edit</button>
+                    <button class="col button button-fill color-red" @click="DeleteItem({{id}})">
+                        {{js "this.status == 1 ? 'delete' : 'activate'"}}
+                    </button>
+                </p>
+              </td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+      <div class="data-table-footer">
+        <div class="data-table-rows-select">
+          Per page:
+          <div class="input input-dropdown">
+            <select>
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="all">All</option>
+            </select>
+          </div>
+        </div>
+        <div class="data-table-pagination">
+          <span class="data-table-pagination-label">1-5 of 10</span>
+          <a href="#" class="link disabled">
+            <i class="icon icon-prev color-gray"></i>
+          </a>
+          <a href="#" class="link">
+            <i class="icon icon-next color-gray"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!--pop up-->
+  <div class="popup newIngredient popup-tablet-fullscreen">
+    <div class="view">
+      <div class="page">
+        <div class="navbar">
+          <div class="navbar-bg"></div>
+          <div class="navbar-inner">
+            <div class="title">Add New Raw Material</div>
+            <div class="right">
+              <!-- Link to close popup -->
+              <a class="link popup-close">Close</a>
+            </div>
+          </div>
+        </div>
+        <div class="page-content">
+            <div class="list no-hairlines-md margin-top-half margin-bottom-half ingForm">
+              <ul>
+                <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-title">Raw Material Name</div>
+                      <div class="item-input-wrap">
+                        <input type="text" class="name" placeholder="raw material name" required validate/>
+                        <span class="input-clear-button"></span>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-title">Unit size</div>
+                      <div class="item-input-wrap">
+                        <input type="text" class="unit_size" placeholder="Unit size" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                        <span class="input-clear-button"></span>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-title">Unit measurement e.g. kg, lb, ltr</div>
+                      <div class="item-input-wrap">
+                        <input type="text" class="unit" placeholder="Unit measurement" required validate/>
+                        <span class="input-clear-button"></span>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-title">Cost/Unit size</div>
+                      <div class="item-input-wrap">
+                        <input type="text" class="cost_per_unit" placeholder="Cost/Unit size" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                        <span class="input-clear-button"></span>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <a href="#" class="col button button-fill" @click='saveData'>Save Raw Material</a>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+        </div>
+      </div>
+    </div>
+  
+  </div>
+  <!--Pop -up-->
+
+</div>
+</template>
+<script>
+import Dom7 from 'dom7';
+import Dexie from 'dexie';
+
+var db = new Dexie("BizExpenseManagerDB");
+          db.version(1).stores({
+            ingredients: "++id,name,unit_size,unit,cost_per_unit,status,created_date",
+            products: "++id,name,cost,status,created_date",
+            product_ingredient: "++id,productID,ingredientID,unit_size,cost,status,created_date",
+            product_otherMaterials: "++id,productID,name,cost,status,created_date",
+            sales: "++id,product_name,buyer_name,cost,amountPaid,isPaid,date_paid,created_date,status",
+            expenses: "++id,name,amount_to_pay,amount_paid,date_paid,created_date,recurring,status",
+
+            ingredients_history: "++id,ingID,name,unit_size,unit,cost_per_unit,status,created_date",
+            products_history: "++id,prodID,name,cost,status,created_date",
+            sales_history: "++id,salesID,product_name,buyer_name,cost,amountPaid,isPaid,date_paid,created_date,status",
+            expenses_history: "++id,expID,name,amount_to_pay,amount_paid,date_paid,created_date,recurring,status"
+          })
+
+var $$ = Dom7;
+export default {
+  data: function () {
+      // Must return an object
+      return {
+        ings: null,
+        totalMat:0,
+        currentIng: null
+      }
+    },
+  methods:{
+    DeleteItem: function(id){
+        var self = this;
+        var checked = 0;
+        var text = "delete?"
+        var toggle = self.$app.toggle.get(".showInactiveIngs");
+        if(toggle != undefined){
+            if(toggle.checked){
+                text = "activate?";
+                checked = 1;
+            }
+        }
+        self.$app.dialog.confirm("Are you sure you want to " + text, function(){
+            db.ingredients.update(Number(id), {status: checked}).then(function (updated) {
+              if (updated){
+                self.ings = self.ings.filter(function(e){ 
+                      return e.id != Number(id);
+                  });
+                  //console.log(self.ings);
+                  self.$setState({
+                      ings:self.ings,
+                      totalMat:self.ings.length
+                  });
+              }
+            });
+        }, null);
+    },
+    openPopUp: function(id){
+        var self = this;
+        var popup = self.$app.popup.open('.newIngredient', true);
+        popup.once("opened", function(){
+          if(id != null || id != undefined){
+              var item = self.ings.find(function(e){ 
+                        return e.id == Number(id);
+                    });
+                    self.$setState({
+                      currentIng:Number(id)
+                    });
+                    $$("input.name").val(item.name);
+                    $$("input.unit_size").val(item.unit_size);
+                    $$("input.unit").val(item.unit);
+                    $$("input.cost_per_unit").val(item.cost_per_unit);
+             /* db.ingredients.get(Number(id)).then(function(item) {
+                   console.log(item);
+                   self.$setState({
+                      currentIng:Number(id)
+                    });
+                    $$("input.name").val(item.name);
+                    $$("input.unit_size").val(item.unit_size);
+                    $$("input.unit").val(item.unit);
+                    $$("input.cost_per_unit").val(item.cost_per_unit);
+                })*/
+            } else{
+              self.$setState({
+                  currentIng:null
+              });
+            }
+        })
+        
+    },
+    closePopUp: function(){
+        var self = this;
+        var popup = self.$app.popup.close('.newIngredient', true);
+        popup.once("closed", function(){
+
+        });
+    },
+    saveData: function(){
+      //var $$ = this.Dom7;
+      var self = this;
+      var elem = $$("input:required");
+      var err = self.$app.input.validateInputs(".ingForm");
+      if(err){
+        var obj = {
+                name: $$("input.name").val(), 
+                unit_size: $$("input.unit_size").val(), 
+                unit: $$("input.unit").val(), 
+                cost_per_unit: $$("input.cost_per_unit").val(), 
+                status:1
+              };
+            if(self.currentIng != null){
+              obj.id = self.currentIng;
+            }
+          db.ingredients.put(obj).then(function(id) {
+                  db.ingredients.get(id).then(function(item) {
+                    self.$app.dialog.alert("Item saved.");
+                    $$("input.name,input.unit_size,input.unit,input.cost_per_unit").val("");
+                    self.getData();
+                })
+              })
+          }
+    },
+    getData: function(){
+      var self = this;
+      var checked = 1;
+      var toggle = self.$app.toggle.get(".showInactiveIngs");
+      if(toggle != undefined){
+        checked = toggle.checked == true ? 0 : 1;
+      }
+      //console.log(checked);
+      var collection = db.ingredients.where('status').equals(checked).toArray(function(arr){
+        //var collection = db.ingredients.toArray(function(arr){
+        //console.log(arr);
+        //console.log("fretched - " + checked);
+          self.$setState({
+                ings: arr,
+                totalMat:arr.length
+              });
+      });
+    }
+  },
+  on: {
+      pageInit: function(e, page) {
+        var self = this;
+        //console.log("test inactive init");
+        $$(".showInactiveIngs").on("change", function(){
+          //console.log("inactive change");
+            self.getData();
+        })
+        console.log("test inactive init 2");
+        self.getData();
+      },
+      pageReinit: function(e, page) {
+        var self = this;
+        //console.log("test inactive reinit");
+        $$(".showInactiveIngs").on("change", function(){
+          //console.log("inactive change");
+            self.getData();
+        })
+        //console.log("test inactive reinit 2");
+        self.getData();
+      }
+  }
+
+} 
+</script>
