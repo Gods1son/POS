@@ -845,6 +845,9 @@ export default {
       var fullyPaid = 0;
       if(Number(sp) >= Number(cp)){
         fullyPaid = 1;
+      }else{
+        fullyPaid = 0;
+        isPaidDate = null;
       }
         var obj = {
                 product_name: $$("input.name_sell").val(),  
