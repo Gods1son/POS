@@ -450,14 +450,15 @@ export default {
                 amountPaid: $$("input.amountpaid_sell").val(),
                 isPaid: fullyPaid,
                 date_paid: isPaidDate,
-                created_date: Date.parse(new Date($.now())),
+                //created_date: Date.parse(new Date($.now())),
                 status:1
               };
-            //console.log(obj);
-            //self.$app.dialog.alert(JSON.stringify(obj));
-            /*if(self.currentProduct != null){
-              obj.id = self.currentProduct;
-            }*/
+            if(self.currentSale != null){
+              var select = self.sales.find(function(e){ 
+                    return e.id == Number(self.currentSale);
+                });
+                obj.created_date = select.created_date;
+            }
             db.sales.put(obj).then(function(){
                   self.$app.dialog.alert("Record saved!", function(){
                     $$("input.buyer_sell, input.amountpaid_sell").val("");
