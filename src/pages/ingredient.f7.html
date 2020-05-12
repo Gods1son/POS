@@ -26,9 +26,9 @@
   <div class="page-content">
     
     <div class="item-content block-title margin-bottom-half margin-top-half">
-        <div class="row">
+        <div class="row padding-vertical">
             <div class="col">
-                You have {{totalMat}} {{js "this.totalMat > 1 ? 'raw materials' : 'raw material'"}}
+                
             </div>
     
                 <div class="col">
@@ -38,8 +38,14 @@
                         <span class="toggle-icon"></span>
                         </label>
                     </span>
-                    <span class="item-title float-right">Show inactive</span>
+                    <span class="item-title float-right">Show Deleted</span>
                 </div>
+            </div>
+
+            <div class="row">
+            <div class="col">
+                You have {{totalMat}} {{js "this.totalMat > 1 ? 'raw materials' : 'raw material'"}}
+            </div>
             </div>
     </div>
     <div class="card data-table">
@@ -48,12 +54,21 @@
           <tr>
             <th class="label-cell">ID</th>
             <th class="input-cell">
-              <span class="table-head-label">Name</span>
-              <div class="input">
-                <form data-search-container=".search-content-list" data-search-item="tr" data-search-in=".searchRow" class="searchbar searchbar-inline searchbar-init">
-                    <input type="search" placeholder="Filter">
-                  </form>
-              </div>
+              <div class="table-head-label">Name of Material</div>
+              <div class="list no-hairlines-md">
+                <ul>
+                    <li class="item-content item-input no-padding">
+                        <div class="item-inner no-padding-right">
+                            <div class="item-input-wrap">
+                            <form data-search-container=".search-content-list" data-search-item="tr" data-search-in=".searchRow" class="searchbar searchbar-inline searchbar-init">   
+                                <input type="search" placeholder="Filter" class="no-padding">
+                                <!--<span class="input-clear-button"></span>-->
+                            </form>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
             </th>
             <th class="label-cell">Unit Size</th>
             <th class="numeric-cell">Cost</th>
@@ -68,11 +83,11 @@
               <td class="label-cell">{{unit_size}}{{unit}}</td>
               <td class="numeric-cell">{{money cost_per_unit}}</td>
               <td>
-                <p class="row">
-                    <button class="col button button-fill" @click="openPopUp({{id}})">Edit</button>
-                    <button class="col button button-fill color-red" @click="DeleteItem({{id}})">
+                <p class="display-inline-flex">
+                    <a class="button button-fill margin-right-half" @click="openPopUp({{id}})">Edit</a>
+                    <a class="button button-fill color-red" @click="DeleteItem({{id}})">
                         {{js "this.status == 1 ? 'delete' : 'activate'"}}
-                    </button>
+                    </a>
                 </p>
               </td>
             </tr>
@@ -115,7 +130,7 @@
             <div class="title">Add New Raw Material</div>
             <div class="right">
               <!-- Link to close popup -->
-              <a class="link popup-close">Close</a>
+              <a class="link" @click="closePopUp">Close</a>
             </div>
           </div>
         </div>
@@ -242,8 +257,8 @@ export default {
     },
     openPopUp: function(id){
         var self = this;
-        var popup = self.$app.popup.open('.newIngredient', true);
-        popup.once("opened", function(){
+        
+        //popup.once("opened", function(){
           if(id != null || id != undefined){
               var item = self.ings.find(function(e){ 
                         return e.id == Number(id);
@@ -255,27 +270,20 @@ export default {
                     $$("input.unit_size").val(item.unit_size);
                     $$("input.unit").val(item.unit);
                     $$("input.cost_per_unit").val(item.cost_per_unit);
-             /* db.ingredients.get(Number(id)).then(function(item) {
-                   console.log(item);
-                   self.$setState({
-                      currentIng:Number(id)
-                    });
-                    $$("input.name").val(item.name);
-                    $$("input.unit_size").val(item.unit_size);
-                    $$("input.unit").val(item.unit);
-                    $$("input.cost_per_unit").val(item.cost_per_unit);
-                })*/
+                    var popup = self.$app.popup.open('.newIngredient', true);
             } else{
+              var popup = self.$app.popup.open('.newIngredient', true);
               self.$setState({
                   currentIng:null
               });
             }
-        })
+        //})
         
     },
     closePopUp: function(){
         var self = this;
         var popup = self.$app.popup.close('.newIngredient', true);
+        $$("input.name,input.unit_size,input.unit,input.cost_per_unit").val("");
         popup.once("closed", function(){
 
         });

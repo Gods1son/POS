@@ -26,9 +26,9 @@
   <div class="page-content">
     
     <div class="item-content block-title margin-bottom-half margin-top-half">
-        <div class="row">
+        <div class="row padding-vertical">
             <div class="col">
-                You have {{totalMat}} {{js "this.totalMat > 1 ? 'expenses' : 'expense'"}}
+                
             </div>
     
                 <div class="col">
@@ -38,22 +38,68 @@
                         <span class="toggle-icon"></span>
                         </label>
                     </span>
-                    <span class="item-title float-right">Show inactive</span>
+                    <span class="item-title float-right">Show Deleted</span>
                 </div>
             </div>
+
+            <div class="row">
+            <div class="col">
+                You have {{totalMat}} {{js "this.totalMat > 1 ? 'expenses' : 'expense'"}}
+            </div>
+            </div>
+            <div class="row">
+            <div class="col">
+                Total amount of expenses: {{money totalToPay}}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                Total amount paid: {{money totalPaid}}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                (Expenses - Amount Paid): {{totalDifference}}
+            </div>
+        </div>
     </div>
+
+    <div class="list no-hairlines-md no-margin-bottom margin-top-half">
+                <ul>
+                    <li>
+                    <div class="item-content item-input">
+                        <div class="item-inner">
+                        <div class="item-input-wrap">
+                            <input type="text" placeholder="Filter expenses by date" readonly="readonly" id="expenses-calendar-modal"/>
+                            <span class="input-clear-button" @click="resetTableExpenses"></span>
+                        </div>
+                        </div>
+                    </div>
+                    </li>
+                </ul>
+                </div>
+
     <div class="card data-table">
       <table id="expenseTable">
         <thead>
           <tr>
             <th class="label-cell">ID</th>
             <th class="input-cell">
-              <span class="table-head-label">Name</span>
-              <div class="input">
-                <form data-search-container=".search-content-list" data-search-item="tr" data-search-in=".searchRow" class="searchbar searchbar-inline searchbar-init">
-                    <input type="search" placeholder="Filter">
-                  </form>
-              </div>
+              <div class="table-head-label">Expense Name</div>
+              <div class="list no-hairlines-md">
+                <ul>
+                    <li class="item-content item-input no-padding">
+                        <div class="item-inner no-padding-right">
+                            <div class="item-input-wrap">
+                            <form data-search-container=".search-content-list-exp" data-search-item="tr" data-search-in=".searchRowName" class="searchbar searchbar-inline searchbar-init">   
+                                <input type="search" placeholder="Filter" class="no-padding">
+                                <!--<span class="input-clear-button"></span>-->
+                            </form>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
             </th>
             <th class="numeric-cell">Amount to pay</th>
             <th class="numeric-cell">Amount paid</th>
@@ -63,11 +109,11 @@
             <th></th>
           </tr>
         </thead>
-        <tbody class="search-content-list">
+        <tbody class="search-content-list-exp">
           {{#each expenses}}
             <tr>
               <td class="label-cell">{{js "@index + 1"}}</td>
-              <td class="label-cell searchRow">{{name}}</td>
+              <td class="label-cell searchRowName">{{name}}</td>
               <td class="label-cell">{{money amount_to_pay}}</td>
               <td class="label-cell">{{money amount_paid}}</td>
               <td class="label-cell">
@@ -82,11 +128,11 @@
               <td class="label-cell"><span class={{js "this.amount_paid < this.amount_to_pay ? 'display-none' : ''"}}>{{convertDate date_paid}}</span></td>
               <td class="label-cell">{{convertDate created_date}}</td>
               <td>
-                  <p class="row">
-                      <button class="col button button-fill" @click="openPopUp({{id}})">Edit</button>
-                    <button class="col button button-fill color-red" @click="deleteExpense({{id}})">
+                  <p class="display-inline-flex">
+                      <a class="button button-fill margin-right-half" @click="openPopUp({{id}})">Edit</a>
+                      <a class="button button-fill color-red" @click="deleteExpense({{id}})">
                         {{js "this.status == 1 ? 'delete' : 'activate'"}}
-                    </button>
+                    </a>
                   </p>
               </td>
             </tr>
@@ -129,7 +175,7 @@
             <div class="title">Add New Expense</div>
             <div class="right">
               <!-- Link to close popup -->
-              <a class="link popup-close">Close</a>
+              <a class="link" @click="closePopUp">Close</a>
             </div>
           </div>
         </div>
@@ -226,31 +272,38 @@ export default {
       return {
         expenses: null,
         totalMat:0,
-        currentExpense:null
+        currentExpense:null,
+        totalToPay: 0,
+        totalPaid: 0,
+        totalDifference: 0,
       }
     },
   methods:{
     deleteExpense: function(id){
         var self = this;
         var checked = 0;
-        var text = "delete?"
+        var text = "delete"
         var toggle = self.$app.toggle.get(".showInactiveExpenses");
         if(toggle != undefined){
             if(toggle.checked){
-                text = "activate?";
+                text = "activate";
                 checked = 1;
             }
         }
-        self.$app.dialog.confirm("Are you sure you want to " + text, function(){
+        self.$app.dialog.confirm("Are you sure you want to " + text + " this expense?", function(){
             db.expenses.update(Number(id), {status: checked}).then(function (updated) {
               if (updated){
                 self.expenses = self.expenses.filter(function(e){ 
                       return e.id != Number(id);
                   });
+                  var act = checked == 0 ? "deleted!" : "activated!";
+                  self.showToast("Expense " + act, "center");
                   //console.log(self.ings);
                   self.$setState({
                       expenses:self.expenses,
                       totalMat:self.expenses.length
+                  }, function(){
+                    self.calculateTotalMoneyExpense();
                   });
               }
             });
@@ -258,8 +311,8 @@ export default {
     },
     openPopUp: function(id){
         var self = this;
-        var popup = self.$app.popup.open('.newExpense', true);
-        popup.once("opened", function(){
+        
+        //popup.once("opened", function(){
           if(id != null || id != undefined){
               var item = self.expenses.find(function(e){ 
                         return e.id == Number(id);
@@ -272,19 +325,57 @@ export default {
                     $$("input.amount_paid").val(item.amount_paid);
                     var toggle = self.$app.toggle.get(".recurring").checked;
                     if((toggle == true && item.recurring == 0) || (toggle == false && item.recurring == 1)){
-                        toggle.toggle();
+                        self.$app.toggle.get(".recurring").toggle();
                     }
-
+                    var popup = self.$app.popup.open('.newExpense', true);
             } else{
+              var popup = self.$app.popup.open('.newExpense', true);
               self.$setState({
                   currentExpense:null
               });
             }
-        })
+        //})
         
     },
+    calculateTotalMoneyExpense: function(){
+        var self = this;
+        var totalToPay = 0;
+        var totalPaid = 0;
+        //var totalMoney = 0;
+        $.each(self.expenses, function(index,item){
+            if(item.amount_to_pay != 0 && item.amount_to_pay != ""){
+                totalToPay += Number(item.amount_to_pay);
+            }
+            if(item.amount_paid != 0 && item.amount_paid != ""){
+                totalPaid += Number(item.amount_paid);
+            }
+            //totalMoney += Number(item.cost);
+        })
+        self.$setState({
+            totalToPay: totalToPay,
+            totalPaid: totalPaid,
+            totalDifference: (totalToPay - totalPaid),
+        }, function(){
+          self.calculateTotalMoneyExpense();
+        });
+    },
+    resetTableExpenses: function(){
+        var self = this;
+        console.log("empty");
+        self.getData();
+    },
+    showCalendarPopup: function(){
+        var self = this;
+        var calendarModal = self.$app.calendar.create({
+            inputEl: '#expenses-calendar-modal',
+            openIn: 'sheet',
+            header: true,
+            footer: true
+        });
+      },
     closePopUp: function(){
         var self = this;
+        $$("input.name,input.amount_to_pay,input.amount_paid").val("");
         var popup = self.$app.popup.close('.newExpense', true);
         popup.once("closed", function(){
 
@@ -337,6 +428,14 @@ export default {
               self.$app.dialog.alert("Please fill all required fields");
           }
     },
+    showToast: function(text, position){
+        var self = this;
+        self.$app.toast.create({
+                        text: text,
+                        position: position,
+                        closeTimeout: 2000,
+                        }).open();
+    },
     getData: function(){
       var self = this;
       var checked = 1;
@@ -352,6 +451,8 @@ export default {
           self.$setState({
                 expenses: arr,
                 totalMat:arr.length
+              }, function(){
+                self.calculateTotalMoneyExpense();
               });
       });
     }
@@ -364,7 +465,57 @@ export default {
           //console.log("inactive change");
             self.getData();
         })
-        //console.log("test inactive init 2");
+        var calendarModal = self.$app.calendar.create({
+            inputEl: '#expenses-calendar-modal',
+            openIn: 'customModal',
+            rangePicker: true,
+            header: true,
+            footer: true
+        });
+        calendarModal.on("closed", function(){
+            //console.log(calendarModal.getValue());
+            var days = calendarModal.getValue();
+            if(days == undefined){
+                return;
+            }
+            var from = null; var to = null;
+            if(days.length == 1){
+                from = Date.parse(days[0]);
+                days.push(days[0]);
+                var date2 = days[1];
+                date2.setDate(date2.getDate() + 1);
+                to = Date.parse(date2);
+            }
+            else if(days.length > 1){
+                //var date1 = days[0];
+                //date1.setDate(date1.getDate() + 1);
+                from = Date.parse(days[0]);
+                var date2 = days[1];
+                date2.setDate(date2.getDate() + 1);
+                to = Date.parse(date2);
+            }else{
+                self.getData();
+            }
+            if(from != null && to != null){
+                //console.log(from);
+                //console.log(to);
+                var checked = 1;
+
+                var collection = db.expenses.where('created_date').between(from, to)
+                .filter(function (sale) {
+                    return sale.status === 1;
+                }).toArray(function(arr){
+                    //var collection = db.ingredients.toArray(function(arr){
+                    //console.log(arr);
+                    self.$setState({
+                            expenses: arr,
+                            totalMat:arr.length
+                        }, function(){
+                          self.calculateTotalMoneyExpense();
+                        });
+                });
+            }
+        })        
         self.getData();
       },
       pageReinit: function(e, page) {

@@ -25,9 +25,9 @@
 
   <div class="page-content">
       <div class="item-content block-title margin-bottom-half margin-top-half">
-        <div class="row">
+        <div class="row padding-vertical">
             <div class="col">
-                You have {{totalMat}} {{js "this.totalMat > 1 ? 'products' : 'product'"}}
+                
             </div>
     
                 <div class="col">
@@ -37,8 +37,15 @@
                         <span class="toggle-icon"></span>
                         </label>
                     </span>
-                    <span class="item-title float-right">Show inactive</span>
+                    <span class="item-title float-right">Show Deleted</span>
                 </div>
+            </div>
+
+            <div class="row">
+            <div class="col">
+                You have {{totalMat}} {{js "this.totalMat > 1 ? 'products' : 'product'"}}
+            </div>
+  
             </div>
     </div>
     <div class="card data-table">
@@ -47,12 +54,21 @@
           <tr>
             <th class="label-cell">ID</th>
             <th class="input-cell">
-              <span class="table-head-label">Name</span>
-              <div class="input">
-                <form data-search-container=".search-content-list-ing" data-search-item="tr" data-search-in=".searchRowIng" class="searchbar searchbar-inline searchbar-init">
-                    <input type="search" placeholder="Filter">
-                  </form>
-              </div>
+              <div class="table-head-label">Name</div>
+              <div class="list no-hairlines-md">
+                <ul>
+                    <li class="item-content item-input no-padding">
+                        <div class="item-inner no-padding-right">
+                            <div class="item-input-wrap">
+                            <form data-search-container=".search-content-list-ing" data-search-item="tr" data-search-in=".searchRowIng" class="searchbar searchbar-inline searchbar-init">   
+                                <input type="search" placeholder="Filter" class="no-padding">
+                                <!--<span class="input-clear-button"></span>-->
+                            </form>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
             </th>
             <th class="numeric-cell">Cost</th>
             <th class="label-cell"></th>
@@ -65,17 +81,18 @@
               <td class="label-cell searchRowIng">{{name}}</td>
               <td class="numeric-cell">{{money cost}}</td>
               <td>
-                <p class="row">
-                    <button class="col button button-fill color-green" @click="openPopUpSellProduct({{id}})">Sell</button>
-                    <button class="col button button-fill" @click="openPopUp({{id}})">Edit</button>
-                    <button class="col button button-fill color-orange deleteButton" @click="openPopUpIngredients({{id}})">
+                <div class="block">
+                <p class="display-inline-flex">
+                    <a class="button button-fill color-green margin-right-half" @click="openPopUpSellProduct({{id}})">Sell</a>
+                    <a class="button button-fill margin-right-half" @click="openPopUp({{id}})">Edit</a>
+                    <a class="button button-fill color-orange margin-right-half" @click="openPopUpIngredients({{id}})">
                             Add Raw Materials
-                    </button>
-                    <button class="col button button-fill color-red deleteButton" @click="DeleteItem({{id}})">
+                    </a>
+                    <a class="button button-fill color-red deleteButton" @click="DeleteItem({{id}})">
                             {{js "this.status == 1 ? 'delete' : 'activate'"}}
-                        </button>
-                    
+                        </a>
                 </p>
+                </div>
               </td>
             </tr>
           {{/each}}
@@ -117,7 +134,7 @@
             <div class="title">Add New Product</div>
             <div class="right">
               <!-- Link to close popup -->
-              <a class="link popup-close">Close</a>
+              <a class="link" @click="closeEditProdPopUp">Close</a>
             </div>
           </div>
         </div>
@@ -172,7 +189,7 @@
             <div class="title">Sell Product</div>
             <div class="right">
               <!-- Link to close popup -->
-              <a class="link popup-close">Close</a>
+              <a class="link" @click="resetSalePopUp">Close</a>
             </div>
           </div>
         </div>
@@ -280,17 +297,35 @@
                     <table>
                       <thead>
                           <tr>
-                              <th class="label-cell">Name</th>
+                              <th>ID</th>
+                              <th class="input-cell">
+                              <div class="table-head-label">Material Name</div>
+                              <div class="list no-hairlines-md">
+                                <ul>
+                                    <li class="item-content item-input no-padding">
+                                        <div class="item-inner no-padding-right">
+                                            <div class="item-input-wrap">
+                                            <form data-search-container=".search-content-list-pick" data-search-item="tr" data-search-in=".searchRowPick" class="searchbar searchbar-inline searchbar-init">   
+                                                <input type="search" placeholder="Filter" class="no-padding">
+                                                <!--<span class="input-clear-button"></span>-->
+                                            </form>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                              </div>
+                            </th>
                               <th class="numerical-cell">Cost/Size</th>
                               <th class="label-cell">Quantity</th>
                               <th class="label-cell">Cost</th>
                               <th class="label-cell"></th>   
                           </tr>
                       </thead>
-                      <tbody>
+                      <tbody class="search-content-list-pick">
                           {{#each productIngs}}
                                 <tr class="eachCostParent par-{{id}}">
-                                  <td class="label-cell">{{name}}</td>
+                                  <td>{{js "@index + 1"}}</td>
+                                  <td class="label-cell searchRowPick">{{name}}</td>
                                   <td class="label-cell">
                                     {{money cost_per_unit}}/{{unit_size}}{{unit}}
                                     <!--<input type="text" placeholder="quantity" data-cost="{{cost_per_unit}}" data-unit="{{unit}}">-->
@@ -310,8 +345,8 @@
                                   </td>
                                   <td class="label-cell eachCost">{{js "this.select_cost != undefined ? this.select_cost : ''"}}</td>
                                   <td>
-                                      <p class="row">
-                                          <button class="col button button-fill color-red removeCost" data-itemID="{{id}}" @click="RemoveItem">Remove</button>
+                                      <p class="display-inline-flex">
+                                          <a class="button button-fill color-red removeCost" data-itemID="{{id}}" @click="RemoveItem">Remove</a>
                                       </p>
                                   </td>
                                   </tr>
@@ -320,7 +355,7 @@
                             <table>
                               <tbody>
                             <tr class="bg-color-white">
-                              <td class="label-cell"><button class="col button button-fill color-blue customcharges" @click="AddNewCost">Add Custom Charges</button></td>
+                              <td class="label-cell"><a class="button button-fill color-blue customcharges" @click="AddNewCost">Add Custom Charges</a></td>
                               <td class="label-cell"></td>
                               <td class="label-cell"></td>
                               <td class="label-cell"></td>
@@ -347,7 +382,7 @@
                               <td class="label-cell"></td>
                               <td class="label-cell"><div class="col totalAmount block-title-medium margin-left-half text-color-white"></div></td>
                               <td class="label-cell">
-                                  <button class="col button button-fill color-white text-color-green calculateTotalButton" @click="CalculateTotal">Calculate</button>
+                                  <a class="button button-fill color-white text-color-green calculateTotalButton" @click="CalculateTotal">Calculate</a>
                                 </td>   
                           </tr>
                           <tr class="bg-color-gray">
@@ -356,7 +391,7 @@
                               <td class="label-cell"></td>
                               <td class="label-cell"></td>
                               <td class="label-cell">
-                                  <button class="col button button-fill color-green saveTotalButton" @click="SaveTotal">Save</button>
+                                  <a class="button button-fill color-green saveTotalButton" @click="SaveTotal">Save</a>
                                 </td>   
                           </tr>
                               </tbody>
@@ -389,11 +424,20 @@
                             </th>-->
                             <th class="label-cell">ID</th>
                             <th class="input-cell">
-                            <span class="table-head-label">Name</span>
-                            <div class="input">
-                                <form data-search-container=".search-content-list" data-search-item="tr" data-search-in=".searchRow" class="searchbar searchbar-inline searchbar-init">
-                                    <input type="search" placeholder="Filter">
-                                </form>
+                            <div class="table-head-label">Material Name</div>
+                            <div class="list no-hairlines-md">
+                              <ul>
+                                  <li class="item-content item-input no-padding">
+                                      <div class="item-inner no-padding-right">
+                                          <div class="item-input-wrap">
+                                          <form data-search-container=".search-content-list" data-search-item="tr" data-search-in=".searchRow" class="searchbar searchbar-inline searchbar-init">   
+                                              <input type="search" placeholder="Filter" class="no-padding">
+                                              <!--<span class="input-clear-button"></span>-->
+                                          </form>
+                                          </div>
+                                      </div>
+                                  </li>
+                              </ul>
                             </div>
                             </th>
                             <th class="label-cell">Unit Size</th>
@@ -415,8 +459,8 @@
                             <td class="label-cell">{{unit_size}}{{unit}}</td>
                             <td class="numeric-cell">{{money cost_per_unit}}</td>
                             <td>
-                                <p class="row">
-                                    <button class="col button button-fill ing-{{id}}" @click="SelectItem({{id}})">Select</button>
+                                <p class="display-inline-flex">
+                                    <a class="button button-fill ing-{{id}}" @click="SelectItem({{id}})">Select</a>
                                 </p>
                             </td>
                             </tr>
@@ -605,8 +649,8 @@ export default {
     },
     openPopUp: function(id){
         var self = this;
-        var popup = self.$app.popup.open('.newProduct', true);
-        popup.once("opened", function(){
+        
+        //popup.once("opened", function(){
           if(id != null || id != undefined){
             var item = self.products.find(function(e){ 
                   return e.id == Number(id);
@@ -616,19 +660,20 @@ export default {
                     });
                     $$("input.name").val(item.name);
                     $$("input.cost_of_product").val(item.cost);
-
+                    var popup = self.$app.popup.open('.newProduct', true);
             } else{
+              var popup = self.$app.popup.open('.newProduct', true);
               self.$setState({
                   currentProduct:null
               });
             }
-        })
+        //})
         
     },
     openPopUpSellProduct: function(id){
         var self = this;
-        var popup = self.$app.popup.open('.sellProduct', true);
-        popup.once("opened", function(){
+        
+        //popup.once("opened", function(){
           if(id != null || id != undefined){
             var item = self.products.find(function(e){ 
                   return e.id == Number(id);
@@ -638,19 +683,20 @@ export default {
               });
                   $$("input.name_sell").val(item.name);
                   $$("input.cost_sell").val(item.cost);
-
+                  var popup = self.$app.popup.open('.sellProduct', true);
             } else{
+              var popup = self.$app.popup.open('.sellProduct', true);
               self.$setState({
                   currentProduct:null
               });
             }
-        })
+        //})
         
     },
     openPopUpIngredients: function(id){
         var self = this;
-        var popup = self.$app.popup.open('.ProductIngredients', true);
-        popup.once("opened", function(){
+        
+        //popup.once("opened", function(){
             self.getDataIngredients(id);
             var savearray = [];
             var profit = 0;
@@ -686,7 +732,7 @@ export default {
                             row += '<td><div class="list no-hairlines-md"><ul><li class="item-content item-input"><div class="item-input-wrap">';
                             row += '<input class="eachCost" type="text" value="' + value.cost + '" placeholder="enter cost" required validate pattern="[0-9]+(\.[0-9][0-9]?)?"></div></li></ul></div></td>';
                             //row += '<td><input class="eachCost" type="text" placeholder="enter cost" required validate pattern="[0-9]+(\.[0-9][0-9]?)?"></td>';
-                            row += '<td><p class="row"><button class="col button button-fill color-red removeRow">Remove</button></p></td></tr>';
+                            row += '<td><p class="display-inline-flex"><a class="button button-fill color-red removeRow">Remove</a></p></td></tr>';
                             var tr = $$(".customcharges").parents("tr").eq(0);
                             $$(row).insertAfter($$(tr));
                             $(".removeRow").on("click", function(e){
@@ -704,6 +750,7 @@ export default {
                     var finalPrice = self.products.find(x => x.id == Number(id)).cost;
                     var cent = (100 * profit)/(finalPrice - profit);
                     $(".profitpercent").val(cent);
+                    var popup = self.$app.popup.open('.ProductIngredients', true);
                     //self.CalculateTotal();
                 });
                 //self.CalculateTotal();
@@ -716,8 +763,13 @@ export default {
                   currentProduct:null
               });
             }*/
-        })
+        //})
         
+    },
+    closeEditProdPopUp: function(){
+      var self = this;
+      $$("input.name,input.cost_of_product").val("");
+      var popup = self.$app.popup.close('.newProduct', true);
     },
     closePopUp: function(){
         var self = this;
@@ -763,6 +815,11 @@ export default {
               })
           }
     },
+    resetSalePopUp: function(){
+      var self = this;
+      $$("input.buyer_sell, input.amountpaid_sell").val("");
+      var popup = self.$app.popup.close('.sellProduct', true);
+    },
     saveDataSell: function(){
       //var $$ = this.Dom7;
       var self = this;
@@ -806,7 +863,7 @@ export default {
             }*/
             db.sales.add(obj).then(function(){
                   self.$app.dialog.alert("Record saved!", function(){
-                    $$("input.buyer_sell").val("");
+                    $$("input.buyer_sell, input.amountpaid_sell").val("");
                     self.$app.popup.close('.sellProduct', true);
                   });
                   
@@ -856,7 +913,7 @@ export default {
       var row = '<tr class="extraCostRow"><td><div class="list no-hairlines-md"><ul><li class="item-content item-input"><div class="item-input-wrap"><input class="extraName" type="text" placeholder="enter name" required></div></li></ul></div></td><td></td><td></td>';
       row += '<td><div class="list no-hairlines-md"><ul><li class="item-content item-input"><div class="item-input-wrap"><input class="eachCost" type="text" placeholder="enter cost" required validate pattern="[0-9]+(\.[0-9][0-9]?)?"></div></li></ul></div></td>';
       //row += '<td><input class="eachCost" type="text" placeholder="enter cost" required validate pattern="[0-9]+(\.[0-9][0-9]?)?"></td>';
-      row += '<td><p class="row"><button class="col button button-fill color-red removeRow">Remove</button></p></td></tr>';
+      row += '<td><p class="display-inline-flex"><a class="button button-fill color-red removeRow">Remove</a></p></td></tr>';
       var tr = $$(e.target).parents("tr").eq(0);
       $$(row).insertAfter($$(tr));
       $(".removeRow").on("click", function(e){
