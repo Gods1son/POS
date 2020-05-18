@@ -4,10 +4,13 @@ import Framework7, { Template7 } from 'framework7/framework7.esm.bundle.js';
 
 // Import F7 Styles
 import 'framework7/css/framework7.bundle.css';
+import 'framework7-icons/css/framework7-icons.css';
 
 // Import Icons and App Custom Styles
 import '../css/icons.css';
 import '../css/app.css';
+import 'datatables.net-dt/css/jquery.dataTables.css';
+
 
 // Import Routes
 import routes from './routes.js';

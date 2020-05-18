@@ -41,36 +41,60 @@
                     <span class="item-title float-right">Show Deleted</span>
                 </div>
             </div>
-
-            <div class="row">
-            <div class="col">
-                You have {{totalMat}} {{js "this.totalMat > 1 ? 'expenses' : 'expense'"}}
-            </div>
-            </div>
-            <div class="row">
-            <div class="col">
-                Total amount of expenses: {{money totalToPay}}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                Total amount paid: {{money totalPaid}}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                (Expenses - Amount Paid): {{totalDifference}}
-            </div>
-        </div>
     </div>
 
+    <div class="list accordion-list no-margin-vertical">
+      <ul>
+        <li class="accordion-item myOrange"><a href="#" class="item-content item-link text-color-white bg-color-orange">
+            <div class="item-inner">
+              <div class="item-title">Summary of Expenses</div>
+            </div></a>
+          <div class="accordion-item-content">
+            <div class="block no-margin-vertical no-padding-vertical">
+              <div class="row no-gap">
+        
+                  <div class="col-100 medium-50 small-50 xsmall-100">
+                    <div class="card card-outline text-align-center no-margin">
+                      <div class="block-title padding-vertical-half no-margin ruleUnder">Total {{js "this.totalMat > 1 ? 'Expenses' : 'Expense'"}}</div>
+                      <div class="card-content padding-vertical-half block-title-large text-color-orange">{{totalMat}}</div>
+                    </div>
+                  </div>
+        
+                  <div class="col-100 medium-50 small-50 xsmall-100">
+                    <div class="card card-outline text-align-center no-margin">
+                      <div class="block-title padding-vertical-half no-margin ruleUnder">Total amount of expenses</div>
+                      <div class="card-content padding-vertical-half block-title-large text-color-orange">{{money totalToPay}}</div>
+                    </div>
+                  </div>
+        
+                  <div class="col-100 medium-50 small-50 xsmall-100">
+                    <div class="card card-outline text-align-center no-margin">
+                      <div class="block-title padding-vertical-half no-margin ruleUnder">Total amount paid</div>
+                      <div class="card-content padding-vertical-half block-title-large text-color-orange">{{money totalPaid}}</div>
+                    </div>
+                  </div>
+        
+                  <div class="col-100 medium-50 small-50 xsmall-100">
+                    <div class="card card-outline text-align-center no-margin">
+                      <div class="block-title padding-vertical-half no-margin ruleUnder">(Total Expenses - Total Amount Paid)</div>
+                      <div class="card-content padding-vertical-half block-title-large text-color-orange">{{money totalDifference}}</div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </li>
+        </ul>
+    </div>
+
+  <div class="block no-margin-vertical">
     <div class="list no-hairlines-md no-margin-bottom margin-top-half">
                 <ul>
                     <li>
                     <div class="item-content item-input">
                         <div class="item-inner">
                         <div class="item-input-wrap">
-                            <input type="text" placeholder="Filter expenses by date" readonly="readonly" id="expenses-calendar-modal"/>
+                            <input type="text" placeholder="Filter expenses by date" id="expenses-calendar-modal"/>
                             <span class="input-clear-button" @click="resetTableExpenses"></span>
                         </div>
                         </div>
@@ -79,37 +103,20 @@
                 </ul>
                 </div>
 
-    <div class="card data-table">
-      <table id="expenseTable">
+      <table id="expenseTable" class="compact row-border">
         <thead>
           <tr>
-            <th class="label-cell">ID</th>
-            <th class="input-cell">
-              <div class="table-head-label">Expense Name</div>
-              <div class="list no-hairlines-md">
-                <ul>
-                    <li class="item-content item-input no-padding">
-                        <div class="item-inner no-padding-right">
-                            <div class="item-input-wrap">
-                            <form data-search-container=".search-content-list-exp" data-search-item="tr" data-search-in=".searchRowName" class="searchbar searchbar-inline searchbar-init">   
-                                <input type="search" placeholder="Filter" class="no-padding">
-                                <!--<span class="input-clear-button"></span>-->
-                            </form>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-            </th>
-            <th class="numeric-cell">Amount to pay</th>
-            <th class="numeric-cell">Amount paid</th>
-            <th class="label-cell">Recurring Payment</th>
-            <th class="label-cell">Date paid</th>
-            <th class="label-cell">Created Date</th>
+            <th class="label-cell1">ID</th>
+            <th class="input-cell">Expense Name</th>
+            <th class="numeric-cell1">Amount to be paid</th>
+            <th class="label-cell1">Recurring Payment</th>
+            <th class="numeric-cell1">Amount paid</th>
+            <th class="label-cell1">Date paid</th>
+            <th class="label-cell1">Created Date</th>
             <th></th>
           </tr>
         </thead>
-        <tbody class="search-content-list-exp">
+        <!--<tbody class="search-content-list-exp">
           {{#each expenses}}
             <tr>
               <td class="label-cell">{{js "@index + 1"}}</td>
@@ -117,11 +124,8 @@
               <td class="label-cell">{{money amount_to_pay}}</td>
               <td class="label-cell">{{money amount_paid}}</td>
               <td class="label-cell">
-                    <!-- Toggle element -->
                     <label class="toggle toggle-init expense-{{id}}">
-                    <!-- Toggle input -->
                     <input type="checkbox" {{js "this.recurring == 1 ? 'checked' : ''"}} disabled>
-                    <!-- Toggle icon -->
                     <span class="toggle-icon"></span>
                     </label>
                   </td>
@@ -137,32 +141,9 @@
               </td>
             </tr>
           {{/each}}
-        </tbody>
+        </tbody>-->
       </table>
-      <div class="data-table-footer">
-        <div class="data-table-rows-select">
-          Per page:
-          <div class="input input-dropdown">
-            <select>
-              <option value="5">5</option>
-              <option value="10">10</option>
-              <option value="25">25</option>
-              <option value="all">All</option>
-            </select>
-          </div>
-        </div>
-        <div class="data-table-pagination">
-          <span class="data-table-pagination-label">1-5 of 10</span>
-          <a href="#" class="link disabled">
-            <i class="icon icon-prev color-gray"></i>
-          </a>
-          <a href="#" class="link">
-            <i class="icon icon-next color-gray"></i>
-          </a>
-        </div>
-      </div>
     </div>
-
   </div>
 
   <!--pop up-->
@@ -171,11 +152,11 @@
       <div class="page">
         <div class="navbar">
           <div class="navbar-bg"></div>
-          <div class="navbar-inner">
+          <div class="navbar-inner bg-color-blue text-color-white">
             <div class="title">Add New Expense</div>
             <div class="right">
               <!-- Link to close popup -->
-              <a class="link" @click="closePopUp">Close</a>
+              <a class="link text-color-white" @click="closePopUp"><i class="icon f7-icons">multiply</i>Close</a>
             </div>
           </div>
         </div>
@@ -196,7 +177,7 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Amount To Pay</div>
+                      <div class="item-title">Amount to be paid</div>
                       <div class="item-input-wrap">
                         <input type="text" class="amount_to_pay" placeholder="Amount to pay" value="0" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                         <span class="input-clear-button"></span>
@@ -207,12 +188,23 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Amount Paid</div>
+                      <div class="item-title">Amount paid</div>
                       <div class="item-input-wrap">
                         <input type="text" class="amount_paid" placeholder="Amount Paid" value="0" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                         <span class="input-clear-button"></span>
                       </div>
                     </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content item-input">
+                      <div class="item-inner">
+                        <div class="item-title">Date expense got paid</div>
+                      <div class="item-input-wrap">
+                          <input type="text" placeholder="Date expense got paid" id="paid-calendar-modal"/>
+                          <span class="input-clear-button"></span>
+                      </div>
+                      </div>
                   </div>
                 </li>
                 <li>
@@ -229,9 +221,20 @@
                   </div>
                 </li>
                 <li>
+                  <div class="item-content item-input">
+                      <div class="item-inner">
+                        <div class="item-title">Date of Expense</div>
+                      <div class="item-input-wrap">
+                          <input type="text" placeholder="Date of purchase" id="expense-calendar-modal"/>
+                          <span class="input-clear-button"></span>
+                      </div>
+                      </div>
+                  </div>
+                </li>
+                <li>
                   <div class="item-content">
                     <div class="item-inner">
-                      <a href="#" class="col button button-fill" @click='saveData'>Save Expense</a>
+                      <a href="#" class="col button button-fill button-raised color-green" @click='saveData'>Save Expense</a>
                     </div>
                   </div>
                 </li>
@@ -303,6 +306,10 @@ export default {
                       expenses:self.expenses,
                       totalMat:self.expenses.length
                   }, function(){
+                    var but = $("#expenseTable").find(".deleteExpense[data-id='" + id + "']");
+                      var row = $(but).parents("tr").eq(0);
+                      self.showToast("Expense " + text + "d!", "center");
+                      $("#expenseTable").DataTable().row(row).remove().draw(false);
                     self.calculateTotalMoneyExpense();
                   });
               }
@@ -311,7 +318,16 @@ export default {
     },
     openPopUp: function(id){
         var self = this;
-        
+        var calendar = self.$app.calendar.create({
+                inputEl: '#paid-calendar-modal',
+                timePicker: true,
+                dateFormat: { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }
+              });
+              var calendarPurchase = self.$app.calendar.create({
+                  inputEl: '#expense-calendar-modal',
+                  timePicker: true,
+                  dateFormat: { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }
+              });
         //popup.once("opened", function(){
           if(id != null || id != undefined){
               var item = self.expenses.find(function(e){ 
@@ -326,6 +342,16 @@ export default {
                     var toggle = self.$app.toggle.get(".recurring").checked;
                     if((toggle == true && item.recurring == 0) || (toggle == false && item.recurring == 1)){
                         self.$app.toggle.get(".recurring").toggle();
+                    }
+                    if(item.created_date != ""){
+                      var myDate = new Date(item.created_date);
+                      myDate = myDate.toLocaleString();
+                      $("#expense-calendar-modal").val(myDate);
+                    }
+                    if(item.date_paid != ""){
+                      var myDate = new Date(item.date_paid);
+                      myDate = myDate.toLocaleString();
+                      $("#paid-calendar-modal").val(myDate);
                     }
                     var popup = self.$app.popup.open('.newExpense', true);
             } else{
@@ -375,7 +401,7 @@ export default {
       },
     closePopUp: function(){
         var self = this;
-        $$("input.name,input.amount_to_pay,input.amount_paid").val("");
+        $$("input.name,input.amount_to_pay,input.amount_paid, #expense-calendar-modal, #paid-calendar-modal").val("");
         var popup = self.$app.popup.close('.newExpense', true);
         popup.once("closed", function(){
 
@@ -390,22 +416,29 @@ export default {
       var isRecur = toggle.checked == true ? 1 : 0;
       var toPay = $$("input.amount_to_pay").val();
       var paid = $$("input.amount_paid").val();
-      var paidDate = null; var today = Date.parse(new Date($.now()));
+      var paidDate = ""; var today = Date.parse(new Date($.now()));
+      if($("#expense-calendar-modal").val().trim() == ""){
+        self.showToast("Please pick date of expense", "center");
+        return;
+      }
+      if(($("#paid-calendar-modal").val().trim() == "") && ($$("input.amount_paid").val() != "0" && $$("input.amount_paid").val().trim != "")){
+          self.showToast("Please choose date expense was paid!", "center");
+          return;
+      }
       if(Number(paid) > 0 && Number(paid) >= Number(toPay)){
             paidDate = Date.parse(new Date($.now()));
       }
+      if($("#paid-calendar-modal").val().trim() != ""){
+        paidDate = Date.parse($("#paid-calendar-modal").val());
+      }
       if(err){
-            if(Number(toPay) == 0){
-                self.$app.dialog.alert("Amount to pay cannot be 0");
-                return;
-            }
         var obj = {
                 name: $$("input.name").val(), 
                 amount_to_pay: $$("input.amount_to_pay").val(), 
                 amount_paid: $$("input.amount_paid").val(), 
                 recurring: isRecur,
                 date_paid: paidDate,
-                //created_date: today, 
+                created_date: Date.parse($("#expense-calendar-modal").val()), 
                 status:1
               };
             if(self.currentExpense != null){
@@ -413,19 +446,17 @@ export default {
               var select = self.expenses.find(function(e){ 
                     return e.id == Number(self.currentExpense);
                 });
-                obj.created_date = select.created_date;
-            }else{
-                obj.created_date = today;
             }
           db.expenses.put(obj).then(function(id) {
                   db.expenses.get(id).then(function(item) {
-                    self.$app.dialog.alert("Item saved.");
-                    $$("input.name,input.amount_to_pay,input.amount_paid").val("");
+                    self.showToast("Item saved.", "center");
+                    $$("input.name,input.amount_to_pay,input.amount_paid, #expense-calendar-modal, #paid-calendar-modal").val("");
+                    self.$app.popup.close('.newExpense', true);
                     self.getData();
                 })
               })
           }else{
-              self.$app.dialog.alert("Please fill all required fields");
+              self.showToast("Please fill all required fields", "center");
           }
     },
     showToast: function(text, position){
@@ -436,6 +467,121 @@ export default {
                         closeTimeout: 2000,
                         }).open();
     },
+    setDataTable: function(){
+            var self = this;
+            if(self.expenses != null && self.expenses.length >= 0){
+                var table = $("#expenseTable").DataTable();
+                table.clear().destroy();
+                table = $('#expenseTable').DataTable( {
+                      data: self.expenses,
+                      pageLength: 10,
+                      columns: [//id,name,amount_to_pay,recurring,amount_paid,date_paid,created_date,status
+                          { "data": "id" },
+                          { "data": "name" },
+                          { "data": "amount_to_pay" },
+                          { "data": "recurring" },
+                          { "data": "amount_paid" },
+                          { "data": "date_paid" },
+                          { "data": "created_date" },
+                          { "data": "status" }
+                      ],
+                      columnDefs: [
+                        { "searchable": true, "targets": 1 },
+                        { "searchable": true, "targets": 2 },
+                        {
+                          targets: [0],
+                          render: function ( data, type, row ) {
+                          return data+row.unit;
+                            }
+                        },
+                        {
+                          targets: [2,4],
+                          searchable:true,
+                          render: function ( data, type, row ) {
+                              return data.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+                            }
+                        },
+                        {
+                          targets: [3],
+                          searchable:true,
+                          render: function ( data, type, row ) {
+                              if(data == 1){
+                                return '<span class="display-none">1</span><label class="checkbox"><input type="checkbox" checked disabled><i class="icon-checkbox"></i></label>'
+                              }else{
+                                return '<span class="display-none">0</span><label class="checkbox"><input type="checkbox" disabled><i class="icon-checkbox"></i></label>'
+                              }
+                            }
+                        },
+                        {
+                          targets: [5],
+                          searchable:true,
+                          render: function ( data, type, row ) {
+                                if(data != "" && data != undefined){
+                                  var myDate = new Date(data);
+                                  myDate = myDate.toLocaleString();
+                                  return myDate;
+                                }else{
+                                  return "";
+                                }
+                            }
+                        },
+                        {
+                          targets: [6],
+                          searchable:true,
+                          render: function ( data, type, row ) {
+                            if(data != "" && data != undefined){
+                                  var myDate = new Date(data);
+                                  myDate = myDate.toLocaleString();
+                                  return myDate;
+                                }else{
+                                  return "";
+                                }
+                            }
+                        },
+                        {
+                            targets: "_all",
+                            className: 'dt-body-center dt-head-center'
+                        },
+                        {
+                          targets: [-1],
+                          "orderable": false,
+                          render: function ( data, type, row ) {
+                            var html = '<p class="display-inline-flex margin-vertical-half">';
+                            html += '<a class="button button-fill margin-right-half openPopUp" data-id="' + row.id + '">Edit</a>';
+                            html += '<a class="button button-fill color-red deleteExpense" data-id="' + row.id + '">';
+                            html +=  row.status == 1 ? 'delete' : 'activate';
+                            html += '</a></p>';
+                            return html;
+                            }
+                          }
+                        ],
+                        "createdRow": function (row, data, index) {
+                            var info = table.page.info();
+                            $('td', row).eq(0).html(index + 1);
+                        },
+                        "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                            //debugger
+                            var oSettings = this.fnSettings();
+                            $("td:first", nRow).html(oSettings._iDisplayStart + iDisplayIndex + 1);
+                            return nRow;
+                        }
+                    });
+                }
+
+                          $('#expenseTable tbody').off("click").on('click','.button', function () {
+                              var data = $(this).attr("data-id");
+                              //console.log(data);
+                              if($(this).hasClass("openPopUp")){
+                                self.openPopUp(data);
+                              }
+                              if($(this).hasClass("deleteExpense")){
+                                self.deleteExpense(data);
+                              }
+                              //return false;
+                          });
+
+                        self.calculateTotalMoneyExpense();
+    },
     getData: function(){
       var self = this;
       var checked = 1;
@@ -444,7 +590,7 @@ export default {
         checked = toggle.checked == true ? 0 : 1;
       }
       //console.log(checked);
-      var collection = db.expenses.where('status').equals(checked).toArray(function(arr){
+      var collection = db.expenses.where('status').equals(checked).reverse().toArray(function(arr){
         //var collection = db.ingredients.toArray(function(arr){
         //console.log(arr);
         //console.log("fretched - " + checked);
@@ -452,7 +598,8 @@ export default {
                 expenses: arr,
                 totalMat:arr.length
               }, function(){
-                self.calculateTotalMoneyExpense();
+                var table = $("#expenseTable").DataTable();
+                self.setDataTable();
               });
       });
     }
@@ -461,6 +608,7 @@ export default {
       pageInit: function(e, page) {
         var self = this;
         //console.log("test inactive init");
+        $("#expenseTable").DataTable();
         $$(".showInactiveExpenses").on("change", function(){
           //console.log("inactive change");
             self.getData();
@@ -511,7 +659,7 @@ export default {
                             expenses: arr,
                             totalMat:arr.length
                         }, function(){
-                          self.calculateTotalMoneyExpense();
+                          self.setDataTable();
                         });
                 });
             }

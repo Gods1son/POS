@@ -48,80 +48,21 @@
   
             </div>
     </div>
-    <div class="card data-table">
-      <table>
+    <div class="block no-margin-vertical">
+    <table id="productTable" class="compact row-border">
         <thead>
           <tr>
-            <th class="label-cell">ID</th>
-            <th class="input-cell">
-              <div class="table-head-label">Name</div>
-              <div class="list no-hairlines-md">
-                <ul>
-                    <li class="item-content item-input no-padding">
-                        <div class="item-inner no-padding-right">
-                            <div class="item-input-wrap">
-                            <form data-search-container=".search-content-list-ing" data-search-item="tr" data-search-in=".searchRowIng" class="searchbar searchbar-inline searchbar-init">   
-                                <input type="search" placeholder="Filter" class="no-padding">
-                                <!--<span class="input-clear-button"></span>-->
-                            </form>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
-            </div>
+            <th>ID</th>
+            <th>
+              <div>Name of Product</div>
             </th>
-            <th class="numeric-cell">Cost</th>
-            <th class="label-cell"></th>
+            <th>Cost</th>
+            <th>Actions</th>
           </tr>
         </thead>
-        <tbody class="search-content-list-ing">
-          {{#each products}}
-            <tr>
-              <td class="label-cell">{{js "@index + 1"}}</td>
-              <td class="label-cell searchRowIng">{{name}}</td>
-              <td class="numeric-cell">{{money cost}}</td>
-              <td>
-                <div class="block">
-                <p class="display-inline-flex">
-                    <a class="button button-fill color-green margin-right-half" @click="openPopUpSellProduct({{id}})">Sell</a>
-                    <a class="button button-fill margin-right-half" @click="openPopUp({{id}})">Edit</a>
-                    <a class="button button-fill color-orange margin-right-half" @click="openPopUpIngredients({{id}})">
-                            Add Raw Materials
-                    </a>
-                    <a class="button button-fill color-red deleteButton" @click="DeleteItem({{id}})">
-                            {{js "this.status == 1 ? 'delete' : 'activate'"}}
-                        </a>
-                </p>
-                </div>
-              </td>
-            </tr>
-          {{/each}}
-        </tbody>
+        
       </table>
-      <div class="data-table-footer">
-        <div class="data-table-rows-select">
-          Per page:
-          <div class="input input-dropdown">
-            <select>
-              <option value="5">5</option>
-              <option value="10">10</option>
-              <option value="25">25</option>
-              <option value="all">All</option>
-            </select>
-          </div>
-        </div>
-        <div class="data-table-pagination">
-          <span class="data-table-pagination-label">1-5 of 10</span>
-          <a href="#" class="link disabled">
-            <i class="icon icon-prev color-gray"></i>
-          </a>
-          <a href="#" class="link">
-            <i class="icon icon-next color-gray"></i>
-          </a>
-        </div>
-      </div>
     </div>
-
   </div>
 
   <!--pop up add new product-->
@@ -130,11 +71,11 @@
       <div class="page">
         <div class="navbar">
           <div class="navbar-bg"></div>
-          <div class="navbar-inner">
-            <div class="title">Add New Product</div>
+          <div class="navbar-inner bg-color-blue text-color-white">
+            <div class="title">Add/Edit Product</div>
             <div class="right">
               <!-- Link to close popup -->
-              <a class="link" @click="closeEditProdPopUp">Close</a>
+              <a class="link text-color-white" @click="closeEditProdPopUp"><i class="icon f7-icons">multiply</i>Close</a>
             </div>
           </div>
         </div>
@@ -155,7 +96,7 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Cost of product</div>
+                      <div class="item-title">Selling Price</div>
                       <div class="item-input-wrap">
                         <input type="text" class="cost_of_product" placeholder="Cost of product" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                         <span class="input-clear-button"></span>
@@ -166,7 +107,7 @@
                 <li>
                   <div class="item-content">
                     <div class="item-inner">
-                      <a href="#" class="col button button-fill" @click='saveData'>Save Product</a>
+                      <a href="#" class="col button button-raised button-fill color-green" @click='saveData'>Save Product</a>
                     </div>
                   </div>
                 </li>
@@ -185,11 +126,11 @@
       <div class="page">
         <div class="navbar">
           <div class="navbar-bg"></div>
-          <div class="navbar-inner">
+          <div class="navbar-inner bg-color-blue text-color-white">
             <div class="title">Sell Product</div>
             <div class="right">
               <!-- Link to close popup -->
-              <a class="link" @click="resetSalePopUp">Close</a>
+              <a class="link text-color-white" @click="resetSalePopUp"><i class="icon f7-icons">multiply</i>Close</a>
             </div>
           </div>
         </div>
@@ -210,9 +151,9 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Cost of product</div>
+                      <div class="item-title">Selling Price</div>
                       <div class="item-input-wrap">
-                        <input type="text" class="cost_sell" placeholder="Cost of product" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                        <input type="text" class="cost_sell" placeholder="selling price" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                         <span class="input-clear-button"></span>
                       </div>
                     </div>
@@ -221,9 +162,9 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Buyer Name</div>
+                      <div class="item-title">Buyer's Name</div>
                       <div class="item-input-wrap">
-                        <input type="text" class="buyer_sell" placeholder="Buyer name"/>
+                        <input type="text" class="buyer_sell" placeholder="Buyer's name"/>
                         <span class="input-clear-button"></span>
                       </div>
                     </div>
@@ -234,29 +175,49 @@
                     <div class="item-inner">
                       <div class="item-title">Amount Paid</div>
                       <div class="item-input-wrap">
-                        <input type="text" class="amountpaid_sell" placeholder="Amount paid" value="0" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                        <input type="text" class="amountpaid_sell" placeholder="Amount customer paid" value="0" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                         <span class="input-clear-button"></span>
                       </div>
                     </div>
                   </div>
                 </li>
                 <li>
+                  <div class="item-content item-input">
+                      <div class="item-inner">
+                        <div class="item-title">Date Buyer Paid</div>
+                      <div class="item-input-wrap">
+                          <input type="text" placeholder="Date buyer paid" id="paid-calendar-modal"/>
+                          <span class="input-clear-button"></span>
+                      </div>
+                      </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content item-input">
+                      <div class="item-inner">
+                        <div class="item-title">Date of Purchase</div>
+                      <div class="item-input-wrap">
+                          <input type="text" placeholder="Date of purchase" id="purchase-calendar-modal" required validate data-error-message="Select date of purchase please!"/>
+                          <span class="input-clear-button"></span>
+                      </div>
+                      </div>
+                  </div>
+                </li>
+                <!--<li>
                   <div class="item-content">
                     <div class="item-inner-1">
                       <span class="item-title">Payment made</span>
-                      <!--<div class="item-after">-->
                         <label class="toggle toggle-init paid_sell margin-left-half">
                           <input type="checkbox">
                           <span class="toggle-icon"></span>
                         </label>
-                      <!--</div>-->
                     </div>
                   </div>
-                </li>
+                </li>-->
                 <li>
                   <div class="item-content">
                     <div class="item-inner">
-                      <a href="#" class="col button button-fill color-green" @click='saveDataSell'>Sell Product</a>
+                      <a href="#" class="col button button-fill button-raised color-green" @click='saveDataSell'>Sell Product</a>
                     </div>
                   </div>
                 </li>
@@ -275,11 +236,11 @@
       <div class="page">
         <div class="navbar">
           <div class="navbar-bg"></div>
-          <div class="navbar-inner">
-            <div class="title">Add Product Raw Materials</div>
+          <div class="navbar-inner bg-color-blue text-color-white">
+            <div class="title">Add/Edit Product Raw Materials</div>
             <div class="right">
               <!-- Link to close popup -->
-              <a class="link" @click="closePopUp">Close</a>
+              <a class="link text-color-white" @click="closePopUp"><i class="icon f7-icons">multiply</i>Close</a>
             </div>
           </div>
         </div>
@@ -288,140 +249,119 @@
                   <div class="block-title block-title-medium">{{productToEdit}}</div>
             </div>
 
+        <div class="list">
+          <div class="block-header">Select Raw Materials Below - select multiple</div>
+          <ul>
+            <li>
+              <a class="item-link item-content bg-color-orange myOrange" href="#" id="autocomplete-standalone-multiple">
+                <input type="hidden">
+                <div class="item-inner">
+                  <div class="block-title item-title no-margin text-color-white">Add Raw Materials</div>
+                  <div class="item-after"></div>
+                </div>
+              </a>
+            </li>
+          </ul>
+        </div>
+
             <div class="data-table card">
               <div class="card-header">
                     <!-- Table title -->
                     <div class="data-table-title">Selected Raw Materials</div>
                 </div>
                 <div class="card-content">
-                    <table>
+                    <table class="pickIngredient">
                       <thead>
                           <tr>
                               <th>ID</th>
-                              <th class="input-cell">
-                              <div class="table-head-label">Material Name</div>
-                              <div class="list no-hairlines-md">
-                                <ul>
-                                    <li class="item-content item-input no-padding">
-                                        <div class="item-inner no-padding-right">
-                                            <div class="item-input-wrap">
-                                            <form data-search-container=".search-content-list-pick" data-search-item="tr" data-search-in=".searchRowPick" class="searchbar searchbar-inline searchbar-init">   
-                                                <input type="search" placeholder="Filter" class="no-padding">
-                                                <!--<span class="input-clear-button"></span>-->
-                                            </form>
-                                            </div>
-                                        </div>
-                                    </li>
-                                </ul>
-                              </div>
-                            </th>
-                              <th class="numerical-cell">Cost/Size</th>
-                              <th class="label-cell">Quantity</th>
-                              <th class="label-cell">Cost</th>
-                              <th class="label-cell"></th>   
+                              <th class="label-cell">Name of Material</th>
+                              <th class="numerical-cell1">Cost/Size</th>
+                              <th class="input-cell1">Quantity</th>
+                              <th class="label-cell1">Cost</th>
+                              <th class="label-cell1"></th>   
                           </tr>
                       </thead>
                       <tbody class="search-content-list-pick">
-                          {{#each productIngs}}
+                         <!-- {{#each productIngs}}
                                 <tr class="eachCostParent par-{{id}}">
                                   <td>{{js "@index + 1"}}</td>
                                   <td class="label-cell searchRowPick">{{name}}</td>
-                                  <td class="label-cell">
+                                  <td class="label-cell1">
                                     {{money cost_per_unit}}/{{unit_size}}{{unit}}
-                                    <!--<input type="text" placeholder="quantity" data-cost="{{cost_per_unit}}" data-unit="{{unit}}">-->
                                   </td>
-                                  <td class="label-cell">
-                                    <!--<div class="list inline-labels no-hairlines-md"><ul><li>-->
-                                    <div class="item-content item-input">
-                                      <div class="item-inner">
-                                        <div class="item-input-wrap">
-                                          <input class="costvalue" type="text" placeholder="quantity" data-cost="{{cost_per_unit}}" data-unit="{{unit_size}}" 
+                                  <td class="label-cell1">
+                                    <input class="costvalue" type="text" placeholder="Enter Quantity" data-cost="{{cost_per_unit}}" data-unit="{{unit_size}}" 
                                           @keyup="typingvalue" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" 
                                           value="{{js 'this.select_unit_size != undefined ? this.select_unit_size : 0'}}">
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <!--</li></ul></div>-->
                                   </td>
-                                  <td class="label-cell eachCost">{{js "this.select_cost != undefined ? this.select_cost : ''"}}</td>
+                                  <td class="label-cell1 eachCost">{{js "this.select_cost != undefined ? this.select_cost : ''"}}</td>
                                   <td>
-                                      <p class="display-inline-flex">
+                                      <p class="display-inline-flex margin-vertical-half">
                                           <a class="button button-fill color-red removeCost" data-itemID="{{id}}" @click="RemoveItem">Remove</a>
                                       </p>
                                   </td>
                                   </tr>
-                              {{/each}}
+                              {{/each}}-->
+                              <tr class="fakeRow display-none">
+                                  <td colspan="6"></td>
+                              </tr>
+                              <tr class="bg-color-white">
+                                  <td class="label-cell1"></td>
+                                  <td class="label-cell1"><a class="button button-fill color-blue customcharges" @click="AddNewCost">Add Custom Charges</a></td>
+                                  <td class="label-cell1" colspan="4"></td>   
+                              </tr>
+                              <tr class="bg-color-white">
+                                <td></td>
+                                  <td class="label-cell"><div class="block-title no-margin-vertical no-margin-left">Add Profit in %</div></td>
+                                  <td></td>
+                                  <td class="label-cell1">
+                                    <input class="profitpercent" type="text" placeholder="profit 0 to 100" @keyup="calculateprofit" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" value="0">
+                                    <!--<div class="item-content item-input">
+                                          <div class="item-inner">
+                                            <div class="item-input-wrap">
+                                              <input class="profitpercent" type="text" placeholder="profit 0 to 100" @keyup="calculateprofit" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" value="0">
+                                            </div>
+                                          </div>
+                                        </div>-->
+                                  </td>
+                                    <td class="label-cell profitvalue"></td>
+                                    <td class="label-cell"></td>   
+                              </tr>
+                              <tr class="bg-color-gray">
+                                  <td class="label-cell"></td>
+                                  <td class="numerical-cell"></td>
+                                  <td class="label-cell"></td>
+                                  <td class=""><div class="block-title text-color-white no-margin-vertical">Amount before profit:</div></td>
+                                  <td class=""><div class="col totalAmountBeforeProfit block-title-medium margin-left-half text-color-white"></div></td>
+                                  <td class="">
+                                      <a class="button button-fill color-white text-color-green calculateTotalButton" @click="CalculateTotal">Calculate</a>
+                                    </td>   
+                              </tr>
+                              <tr class="bg-color-gray">
+                                  <td class="label-cell"></td>
+                                  <td class="numerical-cell"></td>
+                                  <td class="label-cell"></td>
+                                  <td class="label-cell1"><div class="block-title text-color-white no-margin-vertical">Amount after profit</div></td>
+                                  <td class="label-cell1"><div class="col totalAmount block-title-medium margin-left-half text-color-white"></div></td>
+                                  <td class="label-cell1">
+                                      <a class="button button-fill color-green saveTotalButton" @click="SaveTotal">Save</a>
+                                    </td>   
+                              </tr>
                             </tbody>
-                            <table>
-                              <tbody>
-                            <tr class="bg-color-white">
-                              <td class="label-cell"><a class="button button-fill color-blue customcharges" @click="AddNewCost">Add Custom Charges</a></td>
-                              <td class="label-cell"></td>
-                              <td class="label-cell"></td>
-                              <td class="label-cell"></td>
-                              <td class="label-cell"></td>   
-                          </tr>
-                          <tr class="bg-color-white">
-                              <td class="label-cell">Add Profit in %</td>
-                              <td class="label-cell"></td>
-                              <td class="label-cell">
-                                <div class="item-content item-input">
-                                      <div class="item-inner">
-                                        <div class="item-input-wrap">
-                                          <input class="profitpercent" type="text" placeholder="profit 0 to 100" @keyup="calculateprofit" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" value="0">
-                                        </div>
-                                      </div>
-                                    </div>
-                              </td>
-                              <td class="label-cell profitvalue"></td>
-                              <td class="label-cell"></td>   
-                          </tr>
-                          <tr class="bg-color-gray">
-                              <td class="label-cell"></td>
-                              <td class="numerical-cell"></td>
-                              <td class="label-cell"></td>
-                              <td class="label-cell"><div class="col totalAmount block-title-medium margin-left-half text-color-white"></div></td>
-                              <td class="label-cell">
-                                  <a class="button button-fill color-white text-color-green calculateTotalButton" @click="CalculateTotal">Calculate</a>
-                                </td>   
-                          </tr>
-                          <tr class="bg-color-gray">
-                              <td class="label-cell"></td>
-                              <td class="numerical-cell"></td>
-                              <td class="label-cell"></td>
-                              <td class="label-cell"></td>
-                              <td class="label-cell">
-                                  <a class="button button-fill color-green saveTotalButton" @click="SaveTotal">Save</a>
-                                </td>   
-                          </tr>
-                              </tbody>
-                            </table>
-
                     </table>
-                    <!--<div class="data-table-footer">
-                        <p class="row">
-                            <button class="col button button-fill color-green" @click="CalculateTotal">Calculate</button>
-                        </p>
-                        <div class="col totalAmount block-title-medium margin-left-half"></div>
-                    </div>-->
                 </div>
             </div>
-
-            <div class="card data-table data-table-init">
+            
+            <!--<div class="card data-table data-table-init">
               <div class="card-header">
-                    <!-- Table title -->
+                    
                     <div class="data-table-title">All Raw Materials</div>
                 </div>
                 <div class="card-content">
                     <table id="ingredientTable">
                         <thead>
                         <tr>
-                            <!--<th> class="checkbox-cell">-->
-                            <!--<label class="checkbox">
-                                <input type="checkbox"/>
-                                <i class="icon-checkbox"></i>
-                            </label>
-                            </th>-->
+                          
                             <th class="label-cell">ID</th>
                             <th class="input-cell">
                             <div class="table-head-label">Material Name</div>
@@ -432,7 +372,6 @@
                                           <div class="item-input-wrap">
                                           <form data-search-container=".search-content-list" data-search-item="tr" data-search-in=".searchRow" class="searchbar searchbar-inline searchbar-init">   
                                               <input type="search" placeholder="Filter" class="no-padding">
-                                              <!--<span class="input-clear-button"></span>-->
                                           </form>
                                           </div>
                                       </div>
@@ -448,12 +387,6 @@
                         <tbody class="search-content-list">
                         {{#each ings}}
                             <tr>
-                            <!--<td class="checkbox-cell">
-                            <label class="checkbox">
-                                <input type="checkbox"/>
-                                <i class="icon-checkbox"></i>
-                            </label>
-                            </td>-->
                             <td class="label-cell">{{js "@index + 1"}}</td>
                             <td class="label-cell searchRow">{{name}}</td>
                             <td class="label-cell">{{unit_size}}{{unit}}</td>
@@ -490,7 +423,7 @@
                         </div>
                     </div>
                 </div>
-                </div>
+                </div>-->
         </div>
       </div>
     </div>
@@ -567,23 +500,24 @@ export default {
         }else{
           $(".profitvalue").eq(0).text("0");
         }
+        $(".totalAmountBeforeProfit").text(totalCost.toFixed(2));
         var profitvalue = Number($(".profitvalue").eq(0).text());
         totalCost += profitvalue;
         $(".totalAmount").text(totalCost.toFixed(2));
     },
-    typingvalue: function(e){
+    typingvalue: function(but){
       var self = this;
-      var val = $$(e.target).val();
-      var costperunit = $$(e.target).attr("data-cost");
-      var unit = $$(e.target).attr("data-unit");
+      var val = $(but).val();
+      var costperunit = $(but).attr("data-cost");
+      var unit = $(but).attr("data-unit");
       var fig = (Number(costperunit)/Number(unit)) * Number(val);
         //console.log(fig.toFixed(2));
-        var td = $$(e.target).parents("td").eq(0).next("td").eq(0).text(fig.toFixed(2));
+        var td = $(but).parents("td").eq(0).next("td").eq(0).text(fig.toFixed(2));
         self.CalculateTotal();
     },
-    RemoveItem: function(e){
+    RemoveItem: function(but){
       var self = this;
-      var id = $$(e.target).attr("data-itemid");
+      var id = $(but).attr("data-itemid");
       //console.log(id);
         var select = self.productIngs.find(function(e){ 
               return e.id == Number(id);
@@ -593,11 +527,14 @@ export default {
           /*self.productIngs = self.productIngs.filter(function(e){ 
               return e.id != Number(id);
           });*/
-          $$(e.target).parents("tr").eq(0).remove();
+          $(but).parents("tr").eq(0).remove();
           self.$setState({
                 ings:self.ings,
                 productIngs:self.productIngs
             }, function(){
+              $(".eachCostParent").each(function(ind, elem){
+                  $(this).find("td").eq(0).text(ind + 1);
+              })
               self.CalculateTotal();
               /*setTimeout(function(){
                 //(".calculateTotalButton").eq(0).click()
@@ -605,34 +542,67 @@ export default {
               },2000);*/
             });
     },
-    SelectItem: function(id){
+    SelectItem: function(select){
       var self = this;
-        var select = self.ings.find(function(e){ 
+        /*var select = self.ings.find(function(e){ 
               return e.id == Number(id);
-          });
-          self.productIngs.push(select);
+          });*/
+          /*if(self.productIngs == null){
+              self.productIngs = [];
+          }
+          self.productIngs.push(select);*/
           //console.log(self.productIngs);
-          self.ings = self.ings.filter(function(e){ 
+          /*self.ings = self.ings.filter(function(e){ 
               return e.id != Number(id);
-          });
+          });*/
           //console.log(self.ings);
-          self.$setState({
-                ings:self.ings,
+            /*self.$setState({
+                //ings:self.ings,
                 productIngs:self.productIngs
-            });
+            }, function(){*/
+              var cpu = select.cost_per_unit == undefined ? 0 : select.cost_per_unit;
+              var sus = select.select_unit_size == undefined ? 0 : select.select_unit_size;
+              var lgth = $(".eachCostParent").length + 1;
+                var html = '<tr class="eachCostParent par-' + select.id + '"><td>' + lgth + '</td><td class="label-cell searchRowPick">' + select.name + '</td>';
+                html += '<td class="label-cell1">' + cpu + '/' + select.unit_size + select.unit + '</td>';
+                html += '<td class="label-cell1"><input class="costvalue" type="text" placeholder="Enter Quantity" ';
+                html += 'data-cost="' + cpu +'" data-unit="' + select.unit_size + '" @keyup="typingvalue" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" '; 
+                //var val = sus != undefined ? select.select_unit_size : 0;
+                html +=  'value="' + sus + '"></td><td class="label-cell1 eachCost">';
+                var val2 = select.select_cost != undefined ? select.select_cost : 0;
+                html += val2 + '</td><td><p class="display-inline-flex margin-vertical-half">';
+                html +=  '<a class="button button-fill color-red removeCost" data-itemID="' + select.id + '" @click="RemoveItem">Remove</a></p></td></tr>';
+                $(html).insertBefore($(".fakeRow"));
+                $(".removeCost").off("click").on("click", function(){
+                  //var id = $(this).attr("data-itemid");
+                  self.RemoveItem(this);
+                })
+                $(".costvalue").off("keyup").on("keyup", function(){
+                  //var id = $(this).attr("data-itemid");
+                  self.typingvalue(this);
+                })
+          //});
+    },
+    showToast: function(text, position){
+        var self = this;
+        self.$app.toast.create({
+                        text: text,
+                        position: position,
+                        closeTimeout: 2000,
+                        }).open();
     },
     DeleteItem: function(id){
         var self = this;
         var checked = 0;
-        var text = "delete?"
+        var text = "delete"
         var toggle = self.$app.toggle.get(".showInactive");
         if(toggle != undefined){
             if(toggle.checked){
-                text = "activate?";
+                text = "activate";
                 checked = 1;
             }
         }
-        self.$app.dialog.confirm("Are you sure you want to " + text, function(){
+        self.$app.dialog.confirm("Are you sure you want to " + text + "?", function(){
             db.products.update(Number(id), {status: checked}).then(function (updated) {
               if (updated){
                 self.products = self.products.filter(function(e){ 
@@ -642,6 +612,12 @@ export default {
                   self.$setState({
                       products:self.products,
                       totalMat:self.products.length
+                  },function(){
+                      //var table = $("#ingredientTable").DataTable();
+                      var but = $("#productTable").find(".deleteProduct[data-id='" + id + "']");
+                      var row = $(but).parents("tr").eq(0);
+                      self.showToast("Product " + text + "d!", "center");
+                      $("#productTable").DataTable().row(row).remove().draw(false);
                   });
               }
             });
@@ -681,6 +657,19 @@ export default {
               self.$setState({
                   currentProduct:Number(id)
               });
+
+              var calendar = self.$app.calendar.create({
+                  inputEl: '#paid-calendar-modal',
+                  timePicker: true,
+                  dateFormat: { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }
+              });
+
+              var calendarPurchase = self.$app.calendar.create({
+                  inputEl: '#purchase-calendar-modal',
+                  timePicker: true,
+                  dateFormat: { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }
+              });
+
                   $$("input.name_sell").val(item.name);
                   $$("input.cost_sell").val(item.cost);
                   var popup = self.$app.popup.open('.sellProduct', true);
@@ -698,6 +687,65 @@ export default {
         
         //popup.once("opened", function(){
             self.getDataIngredients(id);
+            var selectedValues = null;
+            var autocompleteStandaloneMultiple = self.$app.autocomplete.create({
+              openIn: 'popup', //open in page
+              openerEl: '#autocomplete-standalone-multiple', //link that opens autocomplete
+              multiple: true, //allow multiple values
+              navbarColorTheme: 'col bg-color-orange text-color-white',
+              source: function (query, render) {
+                var autocomplete = this;
+                var results = self.ings.filter(x => x.status == 1).map(a => a.name);
+                render(results);
+               /* if (query.length === 0) {
+                  render(results);
+                  return;
+                }*/
+                if (query.length > 0) {
+                  var newResult = [];
+                  // Find matched items
+                  for (var i = 0; i < results.length; i++) {
+                    if (results[i].toLowerCase().indexOf(query.toLowerCase()) >= 0) newResult.push(results[i]);
+                  }
+                  // Render items by passing array with result items
+                  render(newResult);
+                }
+              },
+              on: {
+                change: function (value) {
+                  // Add item text value to item-after
+                  //$$('#autocomplete-standalone-multiple').find('.item-after').text(value.join(', '));
+                  // Add item value to input value
+                  //$$('#autocomplete-standalone-multiple').find('input').val(value.join(', '));
+                 //console.log(value);
+                 selectedValues = value;
+                 /* for(var i = 0; i < value.length; i++){
+                    var select = self.ings.find(function(e){ 
+                        return e.name == value[i];
+                    });
+                    self.SelectItem(select.id);
+                  }*/
+                },
+                closed: function(){
+                  console.log(selectedValues);
+                  if(selectedValues == null || selectedValues.length == 0){
+                    return;
+                  }
+                  for(var i = 0; i < selectedValues.length; i++){
+                    var select = self.ings.find(function(e){ 
+                        return e.name == selectedValues[i];
+                    });
+                    var found = self.productIngs.filter(x => x.id == select.id).length;
+                    if(found < 1){
+                      self.productIngs.push(select);
+                      self.SelectItem(select);
+                    } 
+                  }
+                }
+              }
+        });
+
+
             var savearray = [];
             var profit = 0;
             if(id != null || id != undefined){
@@ -706,57 +754,59 @@ export default {
                     $.each(arr, function( key, value ) {
                         //$(".ing-" + value.ingredientID).click();
                         //self.SelectItem(Number(value.ingredientID));
+                        //console.log(value.ingredientID);
                         var each = self.ings.find(x => x.id == Number(value.ingredientID));
-                        each.select_unit_size = value.unit_size;
-                        each.select_cost = value.cost;
-                        savearray.push(each);
-                        self.ings = self.ings.filter(function(e){ 
-                            return e.id != Number(value.ingredientID);
-                        })
-                        
-                        
+                        if(each != undefined){
+                          each.select_unit_size = value.unit_size;
+                          each.select_cost = value.cost;
+                          savearray.push(each);
+                        }
                     })
                     //console.log(savearray);
                     self.$setState({
-                        productIngs:savearray,
-                        ings: self.ings
+                        productIngs:savearray
+                        //ings: self.ings
+                    }, function(){
+                        for(var i = 0; i < savearray.length; i++){
+                          if(savearray[i] != undefined) self.SelectItem(savearray[i]);
+                        }
+                        self.CalculateTotal();
                     });
                     //self.CalculateTotal();
-                });
+                }).then(function(){
                 var collection2 = db.product_otherMaterials.where('productID').equals(Number(id)).toArray(function(arr){
                   //console.log(arr);
                   $.each(arr, function( key, value ) {
                     if(value.name != "Profit"){
-                            var row = '<tr class="extraCostRow"><td><div class="list no-hairlines-md"><ul><li class="item-content item-input"><div class="item-input-wrap">'; 
-                            row += '<input class="extraName" type="text" placeholder="enter name" value="' + value.name + '" required></div></li></ul></div></td><td></td><td></td>';
-                            row += '<td><div class="list no-hairlines-md"><ul><li class="item-content item-input"><div class="item-input-wrap">';
-                            row += '<input class="eachCost" type="text" value="' + value.cost + '" placeholder="enter cost" required validate pattern="[0-9]+(\.[0-9][0-9]?)?"></div></li></ul></div></td>';
+                            var row = '<tr class="extraCostRow"><td></td><td class="">'; 
+                            row += '<input class="extraName margin-right" type="text" placeholder="enter name" value="' + value.name + '" required></td><td></td>';
+                            row += '<td></td><td><input class="eachCost" type="text" value="' + value.cost + '" placeholder="enter cost" required validate pattern="[0-9]+(\.[0-9][0-9]?)?"></td>';
                             //row += '<td><input class="eachCost" type="text" placeholder="enter cost" required validate pattern="[0-9]+(\.[0-9][0-9]?)?"></td>';
-                            row += '<td><p class="display-inline-flex"><a class="button button-fill color-red removeRow">Remove</a></p></td></tr>';
+                            row += '<td><p class="display-inline-flex margin-vertical-half"><a class="button button-fill color-red removeRow">Remove</a></p></td></tr>';
                             var tr = $$(".customcharges").parents("tr").eq(0);
                             $$(row).insertAfter($$(tr));
                             $(".removeRow").on("click", function(e){
                                 $(this).parents("tr").eq(0).remove();
-                                $(".calculateTotalButton").eq(0).click();
+                                self.CalculateTotal();
+                                //$(".calculateTotalButton").eq(0).click();
                             })
                             $(".extraCostRow").find(".eachCost").on("keyup", function(e){
-                                $(".calculateTotalButton").eq(0).click();
+                                self.CalculateTotal();
+                                //$(".calculateTotalButton").eq(0).click();
                             })
                         }else{
-                            $(".profitvalue").text(value.cost);
+                            $(".profitvalue").text(value.cost.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,"));
                             profit = value.cost;
                         }
                     })
                     var finalPrice = self.products.find(x => x.id == Number(id)).cost;
                     var cent = (100 * profit)/(finalPrice - profit);
-                    $(".profitpercent").val(cent);
+                    $(".profitpercent").val(cent.toFixed(2));
+                    self.CalculateTotal();
                     var popup = self.$app.popup.open('.ProductIngredients', true);
                     //self.CalculateTotal();
                 });
-                //self.CalculateTotal();
-                setTimeout(function(){
-                    $(".calculateTotalButton").eq(0).click();
-                },1000) 
+              });
             } 
             /*else{
               self.$setState({
@@ -774,14 +824,11 @@ export default {
     closePopUp: function(){
         var self = this;
         var popup = self.$app.popup.close('.ProductIngredients', true);
-        $(".extraCostRow").remove();
+        $(".extraCostRow, .eachCostParent").remove();
             $(".profitpercent").val("0");
-            $(".totalAmount,.profitvalue").text("");
+            $(".totalAmount,.profitvalue,.totalAmountBeforeProfit,.profitpercent").text("");
             //self.CalculateTotal();
         popup.once("closed", function(){
-            /*$$(".extraCostRow").forEach(function(curr, i){
-                $$(".extraCostRow")[i].remove()
-            })*/
             self.$setState({
                   productIngs:null
               });
@@ -806,7 +853,8 @@ export default {
             }
           db.products.put(obj).then(function(id) {
                   db.products.get(id).then(function(item) {
-                    self.$app.dialog.alert("Item saved.");
+                    //self.$app.dialog.alert("Item saved.");
+                    self.showToast("Item saved.", "center");
                     $$("input.name,input.cost_of_product").val("");
                     self.getData();
                 })
@@ -817,38 +865,46 @@ export default {
     },
     resetSalePopUp: function(){
       var self = this;
-      $$("input.buyer_sell, input.amountpaid_sell").val("");
+      $$("input.buyer_sell, input.amountpaid_sell, #purchase-calendar-modal, #paid-calendar-modal").val("");
       var popup = self.$app.popup.close('.sellProduct', true);
     },
     saveDataSell: function(){
       //var $$ = this.Dom7;
       var self = this;
       var checked = 0;
-      var toggle = self.$app.toggle.get(".paid_sell");
+      //var toggle = self.$app.toggle.get(".paid_sell");
       var isPaidDate = null;
-      if(toggle != undefined){
+      /*if(toggle != undefined){
         checked = toggle.checked == true ? 1 : 0;
+      }*/
+      if($("#purchase-calendar-modal").val().trim() == ""){
+        self.showToast("Please pick date of purchase", "center");
+        return;
       }
-      if(checked == 1){
-         isPaidDate = Date.parse(new Date($.now()));
-      }
-      if((checked == 1) && ($$("input.amountpaid_sell").val() == "0" || $$("input.amountpaid_sell").val().trim == "")){
-          self.$app.dialog.alert("Please enter how much buyer paid or uncheck payment made toggle!");
+      if(($("#paid-calendar-modal").val().trim() == "") && ($$("input.amountpaid_sell").val() != "0" && $$("input.amountpaid_sell").val().trim != "")){
+          self.showToast("Please choose date buyer paid!", "center");
           return;
       }
-      if((checked == 0) && ($$("input.amountpaid_sell").val() != "0" && $$("input.amountpaid_sell").val().trim != "")){
-          self.$app.dialog.alert("Please check payment made toggle!");
-          return;
+      if(($("#paid-calendar-modal").val().trim() == "") && ($$("input.amountpaid_sell").val() == "0" || $$("input.amountpaid_sell").val().trim == "")){
+          self.$app.dialog.confirm("Do you want to record the purchase without a payment made?", function(){
+              self.processPayment();
+          })
       }
+        self.processPayment();
+      
+    },
+    processPayment: function(){
+      var self = this;
       var cp = $$("input.cost_sell").val();
       var sp = $$("input.amountpaid_sell").val();
       var fullyPaid = 0;
+      var isPaidDate = null;
       if(Number(sp) >= Number(cp)){
         fullyPaid = 1;
       }else{
         fullyPaid = 0;
-        isPaidDate = null;
       }
+      isPaidDate = Date.parse($("#paid-calendar-modal").val());
         var obj = {
                 product_name: $$("input.name_sell").val(),  
                 buyer_name: $$("input.buyer_sell").val(),
@@ -856,7 +912,7 @@ export default {
                 amountPaid: $$("input.amountpaid_sell").val(),
                 isPaid: fullyPaid,
                 date_paid: isPaidDate,
-                created_date: Date.parse(new Date($.now())),
+                created_date: Date.parse($("#purchase-calendar-modal").val()),
                 status:1
               };
             //console.log(obj);
@@ -865,14 +921,13 @@ export default {
               obj.id = self.currentProduct;
             }*/
             db.sales.add(obj).then(function(){
-                  self.$app.dialog.alert("Record saved!", function(){
-                    $$("input.buyer_sell, input.amountpaid_sell").val("");
-                    self.$app.popup.close('.sellProduct', true);
-                  });
+                  self.showToast("Record saved!","center");
+                  $$("input.buyer_sell, input.amountpaid_sell, #purchase-calendar-modal, #paid-calendar-modal").val("");
+                  self.$app.popup.close('.sellProduct', true);
                   
               }).catch(function (error) {
                   //console.log(error);
-                 self.$app.dialog.alert("An error occurred!");
+                 self.showToast("An error occurred!", "center");
               })
     },
     getData: function(){
@@ -889,8 +944,84 @@ export default {
           self.$setState({
                 products: arr,
                 totalMat:arr.length
-              });
-      });
+              }, function(){
+                var table = $("#productTable").DataTable();
+                if(self.products != null && self.products.length >= 0){
+                table.clear().destroy();
+                table = $('#productTable').DataTable( {
+                      data: self.products,
+                      pageLength: 10,
+                      columns: [//id,name,unit_size,unit,cost_per_unit,status,created_date
+                          { "data": "id" },
+                          { "data": "name" },
+                          { "data": "cost" },
+                          { "data": "status" }
+                      ],
+                      columnDefs: [
+                        {
+                            targets: "_all",
+                            className: 'dt-body-center dt-head-center'
+                        },{
+                          targets: [0],
+                          "orderable": false,
+                          render: function ( data, type, row ) {
+                          return data+row.unit;
+                            }
+                          },
+                          {
+                          targets: [2],
+                          "orderable": false,
+                          render: function ( data, type, row ) {
+                              return data.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+                            }
+                          },
+                          {
+                          targets: [-1],
+                          "orderable": false,
+                          render: function ( data, type, row ) {
+                            var html = '<p class="display-inline-flex margin-vertical-half">';
+                            html += '<a class="button button-fill margin-right-half color-green sellProduct" data-id="' + row.id + '">Sell</a>';
+                            html += '<a class="button button-fill margin-right-half editProduct" data-id="' + row.id + '">Edit</a>';
+                            html += '<a class="button button-fill margin-right-half color-orange addIngredients" data-id="' + row.id + '"><i class="icon f7-icons">plus</i> Materials</a>';
+                            html += '<a class="button button-fill color-red deleteProduct" data-id="' + row.id + '">';
+                            html +=  row.status == 1 ? 'delete' : 'activate';
+                            html += '</a></p>';
+                            return html;
+                            }
+                          }
+                        ],
+                        "createdRow": function (row, data, index) {
+                            var info = table.page.info();
+                            $('td', row).eq(0).html(index + 1);
+                        },
+                        "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                            //debugger
+                            var oSettings = this.fnSettings();
+                            $("td:first", nRow).html(oSettings._iDisplayStart + iDisplayIndex + 1);
+                            return nRow;
+                        }
+                    });
+                }
+
+                          $('#productTable tbody').off("click").on('click','.button', function () {
+                              var data = $(this).attr("data-id");
+                              //console.log(data);
+                              if($(this).hasClass("sellProduct")){
+                                self.openPopUpSellProduct(data);
+                              }
+                              if($(this).hasClass("editProduct")){
+                                self.openPopUp(data);
+                              }
+                              if($(this).hasClass("addIngredients")){
+                                self.openPopUpIngredients(data);
+                              }
+                              if($(this).hasClass("deleteProduct")){
+                                self.DeleteItem(data);
+                              }
+                              //return false;
+                          });
+                });
+          });
     },
     getDataIngredients: function(idOfProd){
       var self = this;
@@ -913,10 +1044,13 @@ export default {
       });
     },
     AddNewCost: function(e){
-      var row = '<tr class="extraCostRow"><td><div class="list no-hairlines-md"><ul><li class="item-content item-input"><div class="item-input-wrap"><input class="extraName" type="text" placeholder="enter name" required></div></li></ul></div></td><td></td><td></td>';
-      row += '<td><div class="list no-hairlines-md"><ul><li class="item-content item-input"><div class="item-input-wrap"><input class="eachCost" type="text" placeholder="enter cost" required validate pattern="[0-9]+(\.[0-9][0-9]?)?"></div></li></ul></div></td>';
+      var self = this;
+      
+      var row = '<tr class="extraCostRow"><td></td><td class="">'; 
+      row += '<input class="extraName margin-right" type="text" placeholder="enter name" required></td><td></td>';
+      row += '<td></td><td><input class="eachCost" type="text" placeholder="enter cost" required validate pattern="[0-9]+(\.[0-9][0-9]?)?"></td>';
       //row += '<td><input class="eachCost" type="text" placeholder="enter cost" required validate pattern="[0-9]+(\.[0-9][0-9]?)?"></td>';
-      row += '<td><p class="display-inline-flex"><a class="button button-fill color-red removeRow">Remove</a></p></td></tr>';
+      row += '<td><p class="display-inline-flex margin-vertical-half"><a class="button button-fill color-red removeRow">Remove</a></p></td></tr>';  
       var tr = $$(e.target).parents("tr").eq(0);
       $$(row).insertAfter($$(tr));
       $(".removeRow").on("click", function(e){
@@ -924,7 +1058,8 @@ export default {
           $(".calculateTotalButton").eq(0).click();
       })
       $(".extraCostRow").find(".eachCost").on("keyup", function(e){
-          $(".calculateTotalButton").eq(0).click();
+          self.CalculateTotal();
+          //$(".calculateTotalButton").eq(0).click();
       })
     },
     SaveTotal: function(){
@@ -1046,14 +1181,11 @@ export default {
   on: {
       pageInit: function(e, page) {
         var self = this;
+        $("#productTable").DataTable();
         $$(".showInactive").on("change", function(){
             self.getData();
         })
         self.getData();
-
-        $$(".costvalue").on("notempty", function(){
-          //console.log($$(this).val());
-        })
       },
        pageReinit: function(e, page) {
         var self = this;

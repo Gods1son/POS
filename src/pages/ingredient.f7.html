@@ -48,76 +48,24 @@
             </div>
             </div>
     </div>
-    <div class="card data-table">
-      <table id="ingredientTable">
+
+    <div class="block no-margin-vertical">
+    <table id="ingredientTable" class="compact row-border" style="width:100%">
         <thead>
           <tr>
-            <th class="label-cell">ID</th>
-            <th class="input-cell">
-              <div class="table-head-label">Name of Material</div>
-              <div class="list no-hairlines-md">
-                <ul>
-                    <li class="item-content item-input no-padding">
-                        <div class="item-inner no-padding-right">
-                            <div class="item-input-wrap">
-                            <form data-search-container=".search-content-list" data-search-item="tr" data-search-in=".searchRow" class="searchbar searchbar-inline searchbar-init">   
-                                <input type="search" placeholder="Filter" class="no-padding">
-                                <!--<span class="input-clear-button"></span>-->
-                            </form>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
-            </div>
+            <th>ID</th>
+            <th>
+              <div>Name of Material</div>
             </th>
-            <th class="label-cell">Unit Size</th>
-            <th class="numeric-cell">Cost</th>
-            <th class="label-cell"></th>
+            <th>Unit Size</th>
+            <th>Cost</th>
+            <th>Unit</th>
+            <th>Actions</th>
           </tr>
         </thead>
-        <tbody class="search-content-list">
-          {{#each ings}}
-            <tr>
-              <td class="label-cell">{{js "@index + 1"}}</td>
-              <td class="label-cell searchRow">{{name}}</td>
-              <td class="label-cell">{{unit_size}}{{unit}}</td>
-              <td class="numeric-cell">{{money cost_per_unit}}</td>
-              <td>
-                <p class="display-inline-flex">
-                    <a class="button button-fill margin-right-half" @click="openPopUp({{id}})">Edit</a>
-                    <a class="button button-fill color-red" @click="DeleteItem({{id}})">
-                        {{js "this.status == 1 ? 'delete' : 'activate'"}}
-                    </a>
-                </p>
-              </td>
-            </tr>
-          {{/each}}
-        </tbody>
+        
       </table>
-      <div class="data-table-footer">
-        <div class="data-table-rows-select">
-          Per page:
-          <div class="input input-dropdown">
-            <select>
-              <option value="5">5</option>
-              <option value="10">10</option>
-              <option value="25">25</option>
-              <option value="all">All</option>
-            </select>
-          </div>
-        </div>
-        <div class="data-table-pagination">
-          <span class="data-table-pagination-label">1-5 of 10</span>
-          <a href="#" class="link disabled">
-            <i class="icon icon-prev color-gray"></i>
-          </a>
-          <a href="#" class="link">
-            <i class="icon icon-next color-gray"></i>
-          </a>
-        </div>
-      </div>
     </div>
-
   </div>
 
   <!--pop up-->
@@ -126,11 +74,11 @@
       <div class="page">
         <div class="navbar">
           <div class="navbar-bg"></div>
-          <div class="navbar-inner">
-            <div class="title">Add New Raw Material</div>
+          <div class="navbar-inner bg-color-blue text-color-white">
+            <div class="title">Add/Edit Raw Material</div>
             <div class="right">
               <!-- Link to close popup -->
-              <a class="link" @click="closePopUp">Close</a>
+              <a class="link text-color-white" @click="closePopUp"><i class="icon f7-icons">multiply</i>Close</a>
             </div>
           </div>
         </div>
@@ -184,7 +132,7 @@
                 <li>
                   <div class="item-content">
                     <div class="item-inner">
-                      <a href="#" class="col button button-fill" @click='saveData'>Save Raw Material</a>
+                      <a href="#" class="col button button-fill button-raised color-green" @click='saveData'>Save Raw Material</a>
                     </div>
                   </div>
                 </li>
@@ -202,6 +150,8 @@
 <script>
 import Dom7 from 'dom7';
 import Dexie from 'dexie';
+import origdatatable from 'datatables.net';
+import datatable from 'datatables.net-dt';
 
 var db = new Dexie("BizExpenseManagerDB");
           db.version(1).stores({
@@ -229,18 +179,80 @@ export default {
       }
     },
   methods:{
+    fakeAlert: function(){
+        var self = this;
+        self.$app.dialog.alert("hey");
+    },
+    openRow: function(id){
+      var table = $("#ingredientTable").DataTable();
+      var tr = $(".opener-" + id).parents('tr').eq(0);
+      var isOdd = $(tr).hasClass("odd") == true ? "odd" : "even";
+      if($(tr).attr("data-oldid") == undefined || $(tr).attr("data-oldid") == null){
+          $(tr).attr("data-oldid", isOdd);
+      }
+      
+        //var row = table.row( tr );
+        var next = $(tr).next("tr").hasClass("specTable");
+        if (next ) {
+            // This row is already open - close it
+            //row.child.hide();
+            $(tr).next("tr").remove();
+            $(".opener-" + id).text("plus_circle_fill");
+            tr.removeClass('shown');
+            var color = $(tr).attr("data-oldid");
+            if(tr.hasClass(color) == false){
+              var cl = color == "odd" ? "even" : "odd";
+              tr.removeClass(cl);
+            }
+            tr.addClass(color);
+        }
+        else {
+            // Open this row
+            var data = $(".hidden-" + id).clone(true, true);
+            $(data).insertAfter(tr);
+            $(data).removeClass("display-none");
+            $(data).find(".editButton").on("click", function(){
+                var l = $(".specTable.display-none").find(".editButton").length;
+                console.log(l);
+            });
+            //console.log(t);
+            //row.child( data.html() ).show();
+             $(".opener-" + id).text("minus_circle_fill");
+            tr.addClass('shown');
+            if(isOdd != "odd"){
+              tr.addClass('odd');
+              tr.removeClass('even');
+            }    
+        }
+
+      /*if($(".hidden-" + id).hasClass("display-none")){
+        $(".hidden-" + id).removeClass("display-none");
+        $(".opener-" + id).text("minus_circle_fill");
+      }else{
+        $(".hidden-" + id).addClass("display-none");
+        $(".opener-" + id).text("plus_circle_fill");
+      }*/
+    },
+    showToast: function(text, position){
+        var self = this;
+        self.$app.toast.create({
+                        text: text,
+                        position: position,
+                        closeTimeout: 2000,
+                        }).open();
+    },
     DeleteItem: function(id){
         var self = this;
         var checked = 0;
-        var text = "delete?"
+        var text = "delete"
         var toggle = self.$app.toggle.get(".showInactiveIngs");
         if(toggle != undefined){
             if(toggle.checked){
-                text = "activate?";
+                text = "activate";
                 checked = 1;
             }
         }
-        self.$app.dialog.confirm("Are you sure you want to " + text, function(){
+        self.$app.dialog.confirm("Are you sure you want to " + text + "?", function(){
             db.ingredients.update(Number(id), {status: checked}).then(function (updated) {
               if (updated){
                 self.ings = self.ings.filter(function(e){ 
@@ -250,6 +262,12 @@ export default {
                   self.$setState({
                       ings:self.ings,
                       totalMat:self.ings.length
+                  }, function(){
+                      //var table = $("#ingredientTable").DataTable();
+                      var but = $("#ingredientTable").find(".deleteButton[data-id='" + id + "']");
+                      var row = $(but).parents("tr").eq(0);
+                      self.showToast("Product " + text + "d!", "center");
+                      $("#ingredientTable").DataTable().row(row).remove().draw(false);
                   });
               }
             });
@@ -306,7 +324,8 @@ export default {
             }
           db.ingredients.put(obj).then(function(id) {
                   db.ingredients.get(id).then(function(item) {
-                    self.$app.dialog.alert("Item saved.");
+                    //self.$app.dialog.alert("Item saved.");
+                    self.showToast("Item saved.", "center");
                     $$("input.name,input.unit_size,input.unit,input.cost_per_unit").val("");
                     self.getData();
                 })
@@ -328,14 +347,91 @@ export default {
           self.$setState({
                 ings: arr,
                 totalMat:arr.length
+              }, function(){
+                var table = $("#ingredientTable").DataTable();
+                if(self.ings != null && self.ings.length >= 0){
+                table.clear().destroy();
+                table = $('#ingredientTable').DataTable( {
+                      data: self.ings,
+                      pageLength: 10,
+                      columns: [//id,name,unit_size,unit,cost_per_unit,status,created_date
+                          { "data": "id" },
+                          { "data": "name" },
+                          { "data": "unit_size" },
+                          { "data": "cost_per_unit" },
+                          { "data": "unit" },
+                          { "data": "status" }
+                      ],
+                      columnDefs: [
+                        {
+                            "targets": [ 4 ],
+                            "visible": false,
+                            "searchable": false
+                        },
+                        {
+                            targets: "_all",
+                            className: 'dt-body-center dt-head-center'
+                        },
+                        {
+                          targets: [3],
+                          "orderable": false,
+                          render: function ( data, type, row ) {
+                          return data.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+                            }
+                        },
+                        {
+                          targets: [2],
+                          "orderable": false,
+                          render: function ( data, type, row ) {
+                          return data+row.unit;
+                            }
+                          },
+                          {
+                          targets: [-1],
+                          "orderable": false,
+                          render: function ( data, type, row ) {
+                            var html = '<p class="display-inline-flex margin-vertical-half">';
+                            html += '<a class="button button-fill margin-right-half editButton" data-id="' + row.id + '">Edit</a>';
+                            html += '<a class="button button-fill color-red deleteButton" data-id="' + row.id + '">';
+                            html +=  row.status == 1 ? 'delete' : 'activate';
+                            html += '</a></p>';
+                            return html;
+                            }
+                          }
+                        ],
+                        "createdRow": function (row, data, index) {
+                            var info = table.page.info();
+                            $('td', row).eq(0).html(index + 1);
+                        },
+                        "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                            //debugger
+                            var oSettings = this.fnSettings();
+                            $("td:first", nRow).html(oSettings._iDisplayStart + iDisplayIndex + 1);
+                            return nRow;
+                        }
+                    });
+                }
+
+                          $('#ingredientTable tbody').off("click").on('click','.button', function () {
+                              var data = $(this).attr("data-id");
+                              //console.log(data);
+                              if($(this).hasClass("editButton")){
+                                self.openPopUp(data);
+                              }
+                              if($(this).hasClass("deleteButton")){
+                                self.DeleteItem(data);
+                              }
+                              //return false;
+                          });
+
+                      });
               });
-      });
-    }
-  },
+            }
+          },
   on: {
       pageInit: function(e, page) {
         var self = this;
-        //console.log("test inactive init");
+        $("#ingredientTable").DataTable();
         $$(".showInactiveIngs").on("change", function(){
           //console.log("inactive change");
             self.getData();

@@ -40,43 +40,69 @@
                     <span class="item-title float-right">Show Deleted</span>
                 </div>
         </div>
-
-        <div class="row">
-            <div class="col">
-                You have {{totalMat}} {{js "this.totalMat > 1 ? 'sales' : 'sales'"}}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                Total amount of sales: {{money totalMoney}}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                Total amount received: {{money totalPaid}}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                Sales not fully paid: {{totalUnpaid}}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">
-                (Amount received - Total sales): {{money totalDifference}}
-            </div>
-        </div>
     </div>
-    <!--<div class="row">
-            <div class="col">-->
-                
+
+    <div class="list accordion-list no-margin-vertical">
+      <ul>
+        <li class="accordion-item myOrange"><a href="#" class="item-content item-link text-color-white bg-color-orange">
+            <div class="item-inner">
+              <div class="item-title">Summary of Sales</div>
+            </div></a>
+          <div class="accordion-item-content">
+            <div class="block no-margin-vertical no-padding-vertical">
+              <div class="row no-gap">
+        
+                  <div class="col-100 medium-33 small-50 xsmall-100">
+                    <div class="card card-outline text-align-center no-margin">
+                      <div class="block-title padding-vertical-half no-margin ruleUnder">Total {{js "this.totalMat > 1 ? 'Sales' : 'Sale'"}}</div>
+                      <div class="card-content padding-vertical-half block-title-large text-color-orange">{{totalMat}}</div>
+                    </div>
+                  </div>
+        
+                  <div class="col-100 medium-33 small-50 xsmall-100">
+                    <div class="card card-outline text-align-center no-margin">
+                      <div class="block-title padding-vertical-half no-margin ruleUnder">Total amount of sales</div>
+                      <div class="card-content padding-vertical-half block-title-large text-color-orange">{{money totalMoney}}</div>
+                    </div>
+                  </div>
+        
+                  <div class="col-100 medium-33 small-50 xsmall-100">
+                    <div class="card card-outline text-align-center no-margin">
+                      <div class="block-title padding-vertical-half no-margin ruleUnder">Total amount received</div>
+                      <div class="card-content padding-vertical-half block-title-large text-color-orange">{{money totalPaid}}</div>
+                    </div>
+                  </div>
+        
+                  <div class="col-100 medium-33 small-50 xsmall-100">
+                    <div class="card card-outline text-align-center no-margin">
+                      <div class="block-title padding-vertical-half no-margin ruleUnder">Number of Sales not fully paid</div>
+                      <div class="card-content padding-vertical-half block-title-large text-color-orange">{{totalUnpaid}}</div>
+                    </div>
+                  </div>
+        
+                  <div class="col-100 medium-33 small-50 xsmall-100">
+                    <div class="card card-outline text-align-center no-margin">
+                      <div class="block-title padding-vertical-half no-margin ruleUnder">(Amount received minus Total sales)</div>
+                      <div class="card-content padding-vertical-half block-title-large text-color-orange">{{money totalDifference}}</div>
+                    </div>
+                  </div>
+        
+              </div>
+            </div>
+          </div>
+        </li>
+        </ul>
+    </div>
+    
+
+    <div class="block no-margin-vertical">  
                 <div class="list no-hairlines-md no-margin-bottom margin-top-half">
                 <ul>
                     <li>
                     <div class="item-content item-input">
                         <div class="item-inner">
                         <div class="item-input-wrap">
-                            <input type="text" placeholder="Filter sales by date" readonly="readonly" id="demo-calendar-modal"/>
+                            <input type="text" placeholder="Filter sales by date" id="demo-calendar-modal"/>
                             <span class="input-clear-button" @click="resetTable"></span>
                         </div>
                         </div>
@@ -87,54 +113,21 @@
             <!--</div>
         </div>-->
 
-    <div class="card data-table">
-      <table id="salesTable">
+      <table id="salesTable" class="compact row-border">
         <thead>
           <tr>
-            <th class="label-cell">ID</th>
-            <th class="input-cell">
-                <div class="table-head-label">Product Name</div>
-            <div class="list no-hairlines-md">
-                <ul>
-                    <li class="item-content item-input no-padding">
-                        <div class="item-inner no-padding-right">
-                            <div class="item-input-wrap">
-                            <form data-search-container=".search-content-list" data-search-item="tr" data-search-in=".searchRow" class="searchbar searchbar-inline searchbar-init">   
-                                <input type="search" placeholder="Filter" class="no-padding">
-                                <!--<span class="input-clear-button"></span>-->
-                            </form>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-            </th>
-            <th class="input-cell">
-              <span class="table-head-label">Buyer's Name</span>
-              <div class="list no-hairlines-md">
-                <ul>
-                    <li class="item-content item-input no-padding">
-                        <div class="item-inner no-padding-right">
-                            <div class="item-input-wrap">
-                            <form data-search-container=".search-content-list" data-search-item="tr" data-search-in=".searchRow" class="searchbar searchbar-inline searchbar-init">   
-                                <input type="search" placeholder="Filter" class="no-padding">
-                                <!--<span class="input-clear-button"></span>-->
-                            </form>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-            </th>
-            <th class="numerical-cell">Cost</th>
-            <th class="label-cell">Is Paid</th>
+            <th class="label-cell1">ID</th>
+            <th class="label-cell">Product Name</th>
+            <th class="input-cell1">Buyer's Name</th>
+            <th class="numerical-cell1">Cost</th>
             <th class="numerical-cell">Amount paid</th>
-            <th class="label-cell">Date Paid</th>
-            <th class="label-cell">Purchase Made</th>
-            <th class="label-cell"></th>
+            <th class="label-cell1">Fully Paid</th>
+            <th class="label-cell1">Date Fully Paid</th>
+            <th class="label-cell1">Purchase Date</th>
+            <th class="label-cell1">Actions</th>
           </tr>
         </thead>
-        <tbody class="search-content-list">
+        <!--<tbody class="search-content-list">
           {{#each sales}}
             <tr>
               <td class="label-cell">{{js "@index + 1"}}</td>
@@ -142,11 +135,8 @@
               <td class="label-cell searchRow">{{buyer_name}}</td>
               <td class="numeric-cell">{{money cost}}</td>
               <td class="label-cell">
-                    <!-- Toggle element -->
                     <label class="toggle toggle-init product-{{id}}">
-                    <!-- Toggle input -->
                     <input type="checkbox" {{js "this.amountPaid >= this.cost ? 'checked' : ''"}} {{js "this.amountPaid >= this.cost ? 'disabled' : ''"}} @change="userpaid({{id}},{{cost}})">
-                    <!-- Toggle icon -->
                     <span class="toggle-icon"></span>
                     </label>
                   </td>
@@ -163,32 +153,9 @@
               </td>
             </tr>
           {{/each}}
-        </tbody>
+        </tbody>-->
       </table>
-      <div class="data-table-footer">
-        <div class="data-table-rows-select">
-          Per page:
-          <div class="input input-dropdown">
-            <select>
-              <option value="5">5</option>
-              <option value="10">10</option>
-              <option value="25">25</option>
-              <option value="all">All</option>
-            </select>
-          </div>
-        </div>
-        <div class="data-table-pagination">
-          <span class="data-table-pagination-label">1-5 of 10</span>
-          <a href="#" class="link disabled">
-            <i class="icon icon-prev color-gray"></i>
-          </a>
-          <a href="#" class="link">
-            <i class="icon icon-next color-gray"></i>
-          </a>
-        </div>
       </div>
-    </div>
-
   </div>
 
     <!--pop up-->
@@ -197,11 +164,11 @@
       <div class="page">
         <div class="navbar">
           <div class="navbar-bg"></div>
-          <div class="navbar-inner">
+          <div class="navbar-inner bg-color-blue text-color-white">
             <div class="title">Edit Product Sale</div>
             <div class="right">
               <!-- Link to close popup -->
-              <a class="link" @click="closeUpdatePopUp">Close</a>
+              <a class="link text-color-white" @click="closeUpdatePopUp"><i class="icon f7-icons">multiply</i>Close</a>
             </div>
           </div>
         </div>
@@ -253,22 +220,31 @@
                   </div>
                 </li>
                 <li>
-                  <div class="item-content">
-                    <div class="item-inner-1">
-                      <span class="item-title">Payment made</span>
-                      <!--<div class="item-after">-->
-                        <label class="toggle toggle-init paid_sell margin-left-half">
-                          <input type="checkbox">
-                          <span class="toggle-icon"></span>
-                        </label>
-                      <!--</div>-->
-                    </div>
+                  <div class="item-content item-input">
+                      <div class="item-inner">
+                        <div class="item-title">Date Buyer Paid</div>
+                      <div class="item-input-wrap">
+                          <input type="text" placeholder="Date buyer paid" id="paid-calendar-modal"/>
+                          <span class="input-clear-button"></span>
+                      </div>
+                      </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content item-input">
+                      <div class="item-inner">
+                        <div class="item-title">Date of Purchase</div>
+                      <div class="item-input-wrap">
+                          <input type="text" placeholder="Date of purchase" id="purchase-calendar-modal" required validate data-error-message="Select date of purchase please!"/>
+                          <span class="input-clear-button"></span>
+                      </div>
+                      </div>
                   </div>
                 </li>
                 <li>
                   <div class="item-content">
                     <div class="item-inner">
-                      <a href="#" class="col button button-fill color-green" @click='updateDataSell'>Update Product Sale</a>
+                      <a href="#" class="col button button-fill button-raised color-green" @click='updateDataSell'>Update Product Sale</a>
                     </div>
                   </div>
                 </li>
@@ -393,6 +369,10 @@ export default {
                   self.$setState({
                       sales:self.sales
                   }, function(){
+                      var but = $("#salesTable").find(".deleteSale[data-id='" + id + "']");
+                      var row = $(but).parents("tr").eq(0);
+                      self.showToast("Sale " + text + "d!", "center");
+                      $("#salesTable").DataTable().row(row).remove().draw(false);
                       self.calculateTotalMoney();
                   });
                 }else{
@@ -423,22 +403,25 @@ export default {
       //var $$ = this.Dom7;
       var self = this;
       var checked = 0;
-      var toggle = self.$app.toggle.get(".paid_sell");
       var isPaidDate = null;
-      if(toggle != undefined){
-        checked = toggle.checked == true ? 1 : 0;
+      if($("#purchase-calendar-modal").val().trim() == ""){
+        self.showToast("Please pick date of purchase", "center");
+        return;
       }
-      if(checked == 1){
-         isPaidDate = Date.parse(new Date($.now()));
-      }
-      if((checked == 1) && ($$("input.amountpaid_sell").val() == "0" || $$("input.amountpaid_sell").val().trim == "")){
-          self.$app.dialog.alert("Please enter how much buyer paid or uncheck payment made toggle!");
+      if(($("#paid-calendar-modal").val().trim() == "") && ($$("input.amountpaid_sell").val() != "0" && $$("input.amountpaid_sell").val().trim != "")){
+          self.showToast("Please choose date buyer paid!", "center");
           return;
       }
-      if((checked == 0) && ($$("input.amountpaid_sell").val() != "0" && $$("input.amountpaid_sell").val().trim != "")){
-          self.$app.dialog.alert("Please check payment made toggle!");
-          return;
+      if(($("#paid-calendar-modal").val().trim() == "") && ($$("input.amountpaid_sell").val() == "0" || $$("input.amountpaid_sell").val().trim == "")){
+          self.$app.dialog.confirm("Do you want to record the purchase without a payment made?", function(){
+              self.processPaymentUpdate();
+          })
       }
+        self.processPaymentUpdate();
+      
+    },
+    processPaymentUpdate: function(){
+      var self = this;
       var cp = $$("input.cost_sell").val();
       var sp = $$("input.amountpaid_sell").val();
       var fullyPaid = 0;
@@ -446,8 +429,8 @@ export default {
         fullyPaid = 1;
       }else{
           fullyPaid = 0;
-          isPaidDate = null;
       }
+      var isPaidDate = Date.parse($("#paid-calendar-modal").val());
         var obj = {
                 id: Number(self.currentSale),
                 product_name: $$("input.name_sell").val(),  
@@ -456,24 +439,18 @@ export default {
                 amountPaid: $$("input.amountpaid_sell").val(),
                 isPaid: fullyPaid,
                 date_paid: isPaidDate,
-                //created_date: Date.parse(new Date($.now())),
+                created_date: Date.parse($("#purchase-calendar-modal").val()),
                 status:1
               };
-            if(self.currentSale != null){
-              var select = self.sales.find(function(e){ 
-                    return e.id == Number(self.currentSale);
-                });
-                obj.created_date = select.created_date;
-            }
             db.sales.put(obj).then(function(){
-                  self.$app.dialog.alert("Record saved!", function(){
-                    $$("input.buyer_sell, input.amountpaid_sell").val("");
+                    self.showToast("Record saved!", "center");
+                    $$("input.buyer_sell, input.amountpaid_sell, #purchase-calendar-modal, #paid-calendar-modal").val("");
                     self.$app.popup.close('.newSales', true);
                     self.getData();
                     self.$setState({
                             currentSale: null
                         });
-                  });
+                 // });
                   
               }).catch(function (error) {
                   //console.log(error);
@@ -485,12 +462,17 @@ export default {
             return;
         }
         var self = this;
-        var toggle = self.$app.toggle.get(".paid_sell");
-        if(toggle != undefined){
-            if(toggle.checked){
-                toggle.toggle();
-            }
-        }
+        var calendar = self.$app.calendar.create({
+                  inputEl: '#paid-calendar-modal',
+                  timePicker: true,
+                  dateFormat: { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }
+              });
+
+              var calendarPurchase = self.$app.calendar.create({
+                  inputEl: '#purchase-calendar-modal',
+                  timePicker: true,
+                  dateFormat: { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }
+              });
         //popup.once("opened", function(){
           if(id != null || id != undefined){
             var item = self.sales.find(function(e){ 
@@ -500,6 +482,16 @@ export default {
                 $$("input.buyer_sell").val(item.buyer_name);
                 $$("input.cost_sell").val(item.cost);
                 $$("input.amountpaid_sell").val(item.amountPaid);
+                if(item.created_date != ""){
+                  var myDate = new Date(item.created_date);
+                  myDate = myDate.toLocaleString();
+                  $("#purchase-calendar-modal").val(myDate);
+                }
+                if(item.date_paid != ""){
+                  var myDate = new Date(item.date_paid);
+                  myDate = myDate.toLocaleString();
+                  $("#paid-calendar-modal").val(myDate);
+                }
                 var popup = self.$app.popup.open('.newSales', true);
                 self.$setState({
                     currentSale: Number(id)
@@ -559,6 +551,133 @@ export default {
 
         });
     },
+    setDataTable: function(){
+            var self = this;
+            if(self.sales != null && self.sales.length >= 0){
+                var table = $("#salesTable").DataTable();
+                table.clear().destroy();
+                table = $('#salesTable').DataTable( {
+                      data: self.sales,
+                      pageLength: 10,
+                      columns: [//id,product_name,buyer_name,cost,isPaid,amountPaid,date_paid,created_date,status
+                          { "data": "id" },
+                          { "data": "product_name" },
+                          { "data": "buyer_name" },
+                          { "data": "cost" },
+                          { "data": "amountPaid" },
+                          { "data": "isPaid" },
+                          { "data": "date_paid" },
+                          { "data": "created_date" },
+                          { "data": "status" }
+                      ],
+                      columnDefs: [
+                        { "searchable": true, "targets": 1 },
+                        { "searchable": true, "targets": 2 },
+                        {
+                          targets: [0],
+                          render: function ( data, type, row ) {
+                          return data+row.unit;
+                            }
+                        },
+                        {
+                          targets: [3,4],
+                          searchable:true,
+                          render: function ( data, type, row ) {
+                              return data.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+                            }
+                        },
+                        {
+                          targets: [5],
+                          searchable:true,
+                          render: function ( data, type, row ) {
+                              if((Number(row.amountPaid) >= Number(row.cost)) || data == 1){
+                                return '<span class="display-none">1</span><label class="checkbox"><input type="checkbox" checked disabled><i class="icon-checkbox"></i></label>'
+                              }else{
+                                return '<span class="display-none">0</span><label class="checkbox"><input type="checkbox" disabled><i class="icon-checkbox"></i></label>'
+                              }
+                            }
+                        },
+                        {
+                          targets: [6],
+                          searchable:true,
+                          render: function ( data, type, row ) {
+                            if(Number(row.amountPaid) >= Number(row.cost)){
+                                if(data != "" && data != undefined){
+                                  var myDate = new Date(data);
+                                  myDate = myDate.toLocaleString();
+                                  return myDate;
+                                }else{
+                                  return "";
+                                }
+                              }else{
+                                return "";
+                              }
+                            }
+                        },
+                        {
+                          targets: [7],
+                          searchable:true,
+                          render: function ( data, type, row ) {
+                              if(data != "" && data != undefined){
+                                var myDate = new Date(data);
+                                myDate = myDate.toLocaleString();
+                                return myDate;
+                              }else{
+                                return "";
+                              }
+                            }
+                        },
+                        {
+                            targets: "_all",
+                            className: 'dt-body-center dt-head-center'
+                        },
+                        {
+                          targets: [3],
+                          searchable:true,
+                          render: function ( data, type, row ) {
+                          return data.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+                            }
+                        },
+                        {
+                          targets: [-1],
+                          "orderable": false,
+                          render: function ( data, type, row ) {
+                            var html = '<p class="display-inline-flex margin-vertical-half">';
+                            html += '<a class="button button-fill margin-right-half editSales" data-id="' + row.id + '">Edit</a>';
+                            html += '<a class="button button-fill color-red deleteSale" data-id="' + row.id + '">';
+                            html +=  row.status == 1 ? 'delete' : 'activate';
+                            html += '</a></p>';
+                            return html;
+                            }
+                          }
+                        ],
+                        "createdRow": function (row, data, index) {
+                            var info = table.page.info();
+                            $('td', row).eq(0).html(index + 1);
+                        },
+                        "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                            //debugger
+                            var oSettings = this.fnSettings();
+                            $("td:first", nRow).html(oSettings._iDisplayStart + iDisplayIndex + 1);
+                            return nRow;
+                        }
+                    });
+                }
+
+                          $('#salesTable tbody').off("click").on('click','.button', function () {
+                              var data = $(this).attr("data-id");
+                              //console.log(data);
+                              if($(this).hasClass("editSales")){
+                                self.openPopUpUpdateSellProduct(data);
+                              }
+                              if($(this).hasClass("deleteSale")){
+                                self.deleteSale(data);
+                              }
+                              //return false;
+                          });
+
+                        self.calculateTotalMoney();
+    },
     getData: function(){
       var self = this;
       var checked = 1;
@@ -567,21 +686,23 @@ export default {
         checked = toggle.checked == true ? 0 : 1;
       }
 
-      var collection = db.sales.where('status').equals(checked).toArray(function(arr){
+      var collection = db.sales.where('status').equals(checked).reverse().toArray(function(arr){
         //var collection = db.ingredients.toArray(function(arr){
         //console.log(arr);
           self.$setState({
                 sales: arr,
                 totalMat:arr.length
               }, function(){
-                  self.calculateTotalMoney();
+                var table = $("#salesTable").DataTable();
+                self.setDataTable();
               });
-      });
-    }
+        });
+      }
   },
   on: {
       pageInit: function(e, page) {
         var self = this;
+        $("#salesTable").DataTable();
         $$(".showInactiveSales").on("change", function(){
           //console.log("inactive change");
             self.getData();
@@ -631,7 +752,7 @@ export default {
                             sales: arr,
                             totalMat:arr.length
                         }, function(){
-                            self.calculateTotalMoney();
+                            self.setDataTable();
                         });
                 });
             }
