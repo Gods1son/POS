@@ -25,42 +25,46 @@
 
   <div class="page-content">
     
-    <div class="item-content block-title no-margin-bottom margin-top-half text-align-center">
-        <div class="row no-padding-vertical">
-                <div class="col padding-vertical-half">
-                  <span class="roundBox display-inline-flex">
-                    <span class="item-title float-right">Show Deleted</span>
+    <div class="item-content block-title margin-bottom-half margin-top-half">
+        <div class="row padding-vertical">
+            <div class="col">
+                
+            </div>
+    
+                <div class="col">
                     <span class="item-after float-right margin-left-half">
                         <label class="toggle toggle-init color-red showInactiveIngs">
                         <input type="checkbox">
                         <span class="toggle-icon"></span>
                         </label>
                     </span>
-                    </span>
+                    <span class="item-title float-right">Show Deleted</span>
                 </div>
             </div>
 
             <div class="row">
-            <div class="col padding-vertical-half">
-                <span class="roundBox">You have {{totalMat}} {{js "this.totalMat > 1 ? 'raw materials' : 'raw material'"}}</span>
+            <div class="col">
+                You have {{totalMat}} {{js "this.totalMat > 1 ? 'raw materials' : 'raw material'"}}
             </div>
             </div>
     </div>
 
-    <div class="block no-margin-vertical no-margin-horizontal padding-vertical-half roundHolder no-padding-horizontal">
-      <div id="material-list" class="customList">
-        <div class="text-align-center"><input class="search" placeholder="search">
-          <div class="margin-vertical-half padding-vertical-half">
-            <span class="sortText display-none">Sort By:</span>
-            <!--<span class="sort" data-sort="name">Name</span>
-            <span class="sort" data-sort="cost">Cost</span>-->
-          </div>
-        </div>
-        <ul class="list sortList margin-top-half">
-          
-        </ul>
-        <!--<ul class="pagination"></ul>-->
-      </div>
+    <div class="block no-margin-vertical">
+    <table id="ingredientTable" class="compact row-border" style="width:100%">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>
+              <div>Name of Material</div>
+            </th>
+            <th>Unit Size</th>
+            <th>Cost</th>
+            <th>Unit</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        
+      </table>
     </div>
   </div>
 
@@ -148,7 +152,6 @@ import Dom7 from 'dom7';
 import Dexie from 'dexie';
 import origdatatable from 'datatables.net';
 import datatable from 'datatables.net-dt';
-//import List from 'list.js';
 
 var db = new Dexie("BizExpenseManagerDB");
           db.version(1).stores({
@@ -167,7 +170,6 @@ var db = new Dexie("BizExpenseManagerDB");
 
 var $$ = Dom7;
 export default {
-  test: 5,
   data: function () {
       // Must return an object
       return {
@@ -239,7 +241,7 @@ export default {
                         closeTimeout: 2000,
                         }).open();
     },
-    DeleteItem: function(list, id){
+    DeleteItem: function(id){
         var self = this;
         var checked = 0;
         var text = "delete"
@@ -262,10 +264,10 @@ export default {
                       totalMat:self.ings.length
                   }, function(){
                       //var table = $("#ingredientTable").DataTable();
-                      //var but = $("#ingredientTable").find(".deleteButton[data-id='" + id + "']");
-                      //var row = $(but).parents("tr").eq(0);
+                      var but = $("#ingredientTable").find(".deleteButton[data-id='" + id + "']");
+                      var row = $(but).parents("tr").eq(0);
                       self.showToast("Product " + text + "d!", "center");
-                        list.remove("id", id);
+                      $("#ingredientTable").DataTable().row(row).remove().draw(false);
                   });
               }
             });
@@ -346,61 +348,82 @@ export default {
                 ings: arr,
                 totalMat:arr.length
               }, function(){
-                      $("#material-list .list").empty();
-                      //$(".sort").removeClass("asc").removeClass("desc");
-                      if(self.ings != null && self.ings.length > 0){
-                        $(".sort").remove();
-                        var sorter = '<span class="sort" data-sort="name">Name</span><span class="sort" data-sort="cost">Cost</span>';
-                        $(sorter).insertAfter($(".sortText"));
-                        $(".sortText").removeClass("display-none");
-                        for(var i = 0; i < self.ings.length; i++){
-                            var row = self.ings[i];
-                            var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
-                            html += '<div class="name cardName">' + row.name + '</div><div class="id display-none">' + row.id + '</div><div class="cost display-none">' + row.cost_per_unit + '</div>';
-                            html += '<div class=""><span class="labelName">Unit Size: </span><span class="valueName">' + row.unit_size + row.unit + '</span></div>';
-                            var stat = row.status == 1 ? "display-none" : "";
-                            html += '<div class=""><span class="labelName">Cost: </span><span class="valueName">' + row.cost_per_unit.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") + '</span></div>';
-                            html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName text-color-red">Deleted</span></div>';
-                            html += '</div><div class="card-footer padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
-                            html += '<a class="button button-raised button-small button-fill margin-right-half editButton" data-id="' + row.id + '">Edit</a>';
-                            html += '<a class="button button-raised button-small button-fill color-red deleteButton" data-id="' + row.id + '">';
-                            html +=  row.status == 1 ? 'Delete' : 'Activate'; 
-                            html += '</a></p></div></div>'
-                            html += '</li>';
-                            $("#material-list .list").append(html);
-                            //return html;
+                var table = $("#ingredientTable").DataTable();
+                if(self.ings != null && self.ings.length >= 0){
+                table.clear().destroy();
+                table = $('#ingredientTable').DataTable( {
+                      data: self.ings,
+                      pageLength: 10,
+                      columns: [//id,name,unit_size,unit,cost_per_unit,status,created_date
+                          { "data": "id" },
+                          { "data": "name" },
+                          { "data": "unit_size" },
+                          { "data": "cost_per_unit" },
+                          { "data": "unit" },
+                          { "data": "status" }
+                      ],
+                      columnDefs: [
+                        {
+                            "targets": [ 4 ],
+                            "visible": false,
+                            "searchable": false
+                        },
+                        {
+                            targets: "_all",
+                            className: 'dt-body-center dt-head-center'
+                        },
+                        {
+                          targets: [3],
+                          "orderable": false,
+                          render: function ( data, type, row ) {
+                          return data.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+                            }
+                        },
+                        {
+                          targets: [2],
+                          "orderable": false,
+                          render: function ( data, type, row ) {
+                          return data+row.unit;
+                            }
+                          },
+                          {
+                          targets: [-1],
+                          "orderable": false,
+                          render: function ( data, type, row ) {
+                            var html = '<p class="display-inline-flex margin-vertical-half">';
+                            html += '<a class="button button-fill margin-right-half editButton" data-id="' + row.id + '">Edit</a>';
+                            html += '<a class="button button-fill color-red deleteButton" data-id="' + row.id + '">';
+                            html +=  row.status == 1 ? 'delete' : 'activate';
+                            html += '</a></p>';
+                            return html;
+                            }
+                          }
+                        ],
+                        "createdRow": function (row, data, index) {
+                            var info = table.page.info();
+                            $('td', row).eq(0).html(index + 1);
+                        },
+                        "fnRowCallback": function (nRow, aData, iDisplayIndex) {
+                            //debugger
+                            var oSettings = this.fnSettings();
+                            $("td:first", nRow).html(oSettings._iDisplayStart + iDisplayIndex + 1);
+                            return nRow;
                         }
-                        var options = {
-                            valueNames: ['id','cost','name'],
-                            //page: 3,
-                            //pagination: true
-                        };
+                    });
+                }
 
-                        var materialList = new List('material-list', options);
-
-                        $(".sort").off("click").on("click", function(){
-                          $(".sort").find(".asc").remove();
-                          $(".sort").find(".desc").remove();
-                            if($(this).hasClass("asc")){
-                              $(this).append("<i class='icon f7-icons asc text-color-red'>arrowtriangle_up_fill</i>");
-                            }
-                            if($(this).hasClass("desc")){
-                              $(this).append("<i class='icon f7-icons desc text-color-red'>arrowtriangle_down_fill</i>");
-                            }
-                        })
-                        //materialList.reIndex();
-                          $('#material-list').off("click").on('click','.button', function () {
+                          $('#ingredientTable tbody').off("click").on('click','.button', function () {
                               var data = $(this).attr("data-id");
                               //console.log(data);
                               if($(this).hasClass("editButton")){
                                 self.openPopUp(data);
                               }
                               if($(this).hasClass("deleteButton")){
-                                self.DeleteItem(materialList, data);
+                                self.DeleteItem(data);
                               }
                               //return false;
                           });
-                        }
+
                       });
               });
             }

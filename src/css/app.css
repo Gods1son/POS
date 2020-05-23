@@ -5,6 +5,118 @@
 .size-29 { font-size: 29px; text-transform: none; }
 .size-50 { font-size: 50px; text-transform: none; }
 
+.page-content{
+    background-color:#dee2e6 /*#4d6b84; #d0e1ef;  #dedada;*/
+}
+
+.logoName{
+    font-size: 1.3em;
+    font-weight: 500;
+}
+
+/*.panel .page-content{
+    background-color: black;
+}*/
+
+.popup .item-title{
+    font-weight: 500;
+    letter-spacing: 0.4px;
+    color: gray;
+}
+
+.navbar-inner.sliding{
+    background-color: white;
+}
+
+.roundHolder{
+    border-top-left-radius: 40px;
+    border-top-right-radius: 40px;
+    /*background-color: white;*/
+}
+
+.roundBox{
+    background: white;
+    padding: 3px 20px;
+    color: black;
+    border-radius: 10px;
+}
+
+.sortText{
+    font-weight: 700;
+}
+
+.myCard{
+    border-radius: 10px;
+    /*border: 0.2px solid #0c031d;*/
+    box-shadow: 0px 1px 6px -2px;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-bottom: 0.8em;
+}
+.myCard .card-footer{
+    /*8background-color: #0c031d;*/
+    border-top: 0.5px solid gray;
+}
+
+.myCard .card-content{
+    /*8background-color: #0c031d;*/
+    padding-top:5px;
+    padding-bottom:5px;
+}
+
+.myCard .button{
+    font-weight: 500;
+    font-size: 1em;
+    margin-right: 5px;
+    text-transform: none;
+}
+
+.button .f7-icons, .paid{
+    vertical-align: bottom !important;
+}
+
+.cardName{
+    font-size: 1.2em;
+    font-weight: 700;
+    padding-bottom: 3px;
+}
+
+.labelName{
+    font-weight: 400;
+}
+
+.valueName{
+    font-weight: 500;
+    font-size: 1em;
+}
+
+.customList .search, .darkSearch{
+    border-radius: 15px !important;
+    padding: 3px !important;
+    font-size: 1.1em !important;
+    text-align: center !important;
+    background: black !important;
+    color: white !important;
+    font-weight: 600 !important;
+    border: none !important;
+}
+
+.customList .sort{
+    border: 1px solid;
+    border-radius: 5px;
+    padding: 5px;
+    box-shadow: 0px 1px 1px 0px;
+    margin: 5px 2px;
+    cursor: pointer;
+    color: black;
+    font-weight: 400;
+    background-color: white;
+}
+
+.sort .icon{
+    font-size: 1.2em;
+    margin-left: 2px;
+}
 
 .dataTables_length select{
     background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAATCAQAAADYWf5HAAAAkElEQVQoz7XQMQ5AQBCF4dWQSJxC5wwax1Cq1e7BAdxD5SL+Tq/QCM1oNiJidwox0355mXnG/DrEtIQ6azioNZQxI0ykPhTQIwhCR+BmBYtlK7kLJYwWCcJA9M4qdrZrd8pPjZWPtOqdRQy320YSV17OatFC4euts6z39GYMKRPCTKY9UnPQ6P+GtMRfGtPnBCiqhAeJPmkqAAAAAElFTkSuQmCC);
@@ -48,7 +160,7 @@
 }
 
 .myOrange .item-inner:before{
-    color: white !important;
+    color: #2196f3 !important;
 }
 
 .color-col .popup-close{
@@ -57,8 +169,50 @@
 
 .ruleUnder{
     color: black;
-    border-bottom: 2px ridge black;
-    font-size: 1.03em;
+    border-bottom: 1px ridge black;
+    font-weight: 400;
 }
+
+.dashText{
+    font-weight: 500 !important;
+    font-size: 1.15em !important;
+}
+
+.sortList{
+    list-style: none;
+    padding:0 !important;
+}
+
+.specWrap{
+    border-radius: 20px;
+}
+
+.specClear{
+    right:25px;
+}
+
+.specSearch{
+    width: 100%;
+    text-align: center;
+    font-size: 1.2em !important;
+    font-weight: 500;
+    left: 0;
+    bottom: 7px;
+    position: absolute;
+}
+
+.dash .card-content{
+    font-size: 1.3em;
+    text-align: center;
+    font-weight: 600;
+    color:#2196f3;
+}
+
+.dash .card{
+    width:95%;
+    margin-bottom: 0px;
+}
+
+
 
 

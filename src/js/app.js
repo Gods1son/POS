@@ -14,6 +14,8 @@ import 'datatables.net-dt/css/jquery.dataTables.css';
 
 // Import Routes
 import routes from './routes.js';
+import List from 'list.js';
+window.List = List;
 
 // Import main app component
 import App from '../app.f7.html';

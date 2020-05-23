@@ -25,137 +25,114 @@
 
   <div class="page-content">
     
-    <div class="item-content block-title margin-bottom-half margin-top-half">
-        <div class="row padding-vertical">
-            <div class="col">
-                
-            </div>
-            <div class="col">
-                    <span class="item-after float-right margin-left-half">
-                        <label class="toggle toggle-init color-red showInactiveSales">
-                        <input type="checkbox">
-                        <span class="toggle-icon"></span>
-                        </label>
-                    </span>
-                    <span class="item-title float-right">Show Deleted</span>
-                </div>
-        </div>
-    </div>
-
-    <div class="list accordion-list no-margin-vertical">
-      <ul>
-        <li class="accordion-item myOrange"><a href="#" class="item-content item-link text-color-white bg-color-orange">
-            <div class="item-inner">
-              <div class="item-title">Summary of Sales</div>
-            </div></a>
-          <div class="accordion-item-content">
-            <div class="block no-margin-vertical no-padding-vertical">
-              <div class="row no-gap">
-        
-                  <div class="col-100 medium-33 small-50 xsmall-100">
-                    <div class="card card-outline text-align-center no-margin">
-                      <div class="block-title padding-vertical-half no-margin ruleUnder">Total {{js "this.totalMat > 1 ? 'Sales' : 'Sale'"}}</div>
-                      <div class="card-content padding-vertical-half block-title-large text-color-orange">{{totalMat}}</div>
-                    </div>
-                  </div>
-        
-                  <div class="col-100 medium-33 small-50 xsmall-100">
-                    <div class="card card-outline text-align-center no-margin">
-                      <div class="block-title padding-vertical-half no-margin ruleUnder">Total amount of sales</div>
-                      <div class="card-content padding-vertical-half block-title-large text-color-orange">{{money totalMoney}}</div>
-                    </div>
-                  </div>
-        
-                  <div class="col-100 medium-33 small-50 xsmall-100">
-                    <div class="card card-outline text-align-center no-margin">
-                      <div class="block-title padding-vertical-half no-margin ruleUnder">Total amount received</div>
-                      <div class="card-content padding-vertical-half block-title-large text-color-orange">{{money totalPaid}}</div>
-                    </div>
-                  </div>
-        
-                  <div class="col-100 medium-33 small-50 xsmall-100">
-                    <div class="card card-outline text-align-center no-margin">
-                      <div class="block-title padding-vertical-half no-margin ruleUnder">Number of Sales not fully paid</div>
-                      <div class="card-content padding-vertical-half block-title-large text-color-orange">{{totalUnpaid}}</div>
-                    </div>
-                  </div>
-        
-                  <div class="col-100 medium-33 small-50 xsmall-100">
-                    <div class="card card-outline text-align-center no-margin">
-                      <div class="block-title padding-vertical-half no-margin ruleUnder">(Amount received minus Total sales)</div>
-                      <div class="card-content padding-vertical-half block-title-large text-color-orange">{{money totalDifference}}</div>
-                    </div>
-                  </div>
-        
+    <div class="item-content block-title no-margin-bottom margin-top-half text-align-center">
+      <div class="row no-padding-vertical">
+              <div class="col padding-vertical-half">
+                <span class="roundBox display-inline-flex">
+                  <span class="item-title float-right">Show Deleted</span>
+                  <span class="item-after float-right margin-left-half">
+                      <label class="toggle toggle-init color-red showInactiveSales">
+                      <input type="checkbox">
+                      <span class="toggle-icon"></span>
+                      </label>
+                  </span>
+                </span>  
               </div>
+          </div>
+
+          <!--<div class="row">
+          <div class="col padding-vertical-half">
+            <div class="text-align-center display-inline-flex">
+              <input type="text" class="darkSearch" placeholder="Filter sales by date" id="demo-calendar-modal"/>
+              <span class="input-clear-button" @click="resetTable"></span>
             </div>
           </div>
-        </li>
-        </ul>
-    </div>
-    
-
-    <div class="block no-margin-vertical">  
-                <div class="list no-hairlines-md no-margin-bottom margin-top-half">
-                <ul>
-                    <li>
-                    <div class="item-content item-input">
-                        <div class="item-inner">
-                        <div class="item-input-wrap">
-                            <input type="text" placeholder="Filter sales by date" id="demo-calendar-modal"/>
-                            <span class="input-clear-button" @click="resetTable"></span>
-                        </div>
-                        </div>
-                    </div>
-                    </li>
-                </ul>
+          </div>-->
+  </div>
+  <div class="list accordion-list no-margin-vertical">
+    <ul>
+      <li class="accordion-item myOrange">
+        <a href="#" class="item-content item-link text-color-blue">
+          <div class="item-inner">
+            <div class="item-title dashText">Dashboard</div>
+          </div></a>
+        <div class="accordion-item-content">
+          <div class="block no-margin-vertical no-padding-vertical padding-bottom-half">
+            <div class="row no-gap dash">
+      
+                <div class="col-50 medium-33 small-50 xsmall-100">
+                  <div class="card card-outline">
+                    <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">Total {{js "this.totalMat > 1 ? 'Sales' : 'Sale'"}}</div>
+                    <div class="card-content">{{totalMat}}</div>
+                  </div>
                 </div>
-            <!--</div>
-        </div>-->
+      
+                <div class="col-50 medium-33 small-50 xsmall-100">
+                  <div class="card card-outline">
+                    <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">Total amount of sales</div>
+                    <div class="card-content">{{money totalMoney}}</div>
+                  </div>
+                </div>
+      
+                <div class="col-50 medium-33 small-50 xsmall-100">
+                  <div class="card card-outline">
+                    <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">Total amount received</div>
+                    <div class="card-content">{{money totalPaid}}</div>
+                  </div>
+                </div>
+      
+                <div class="col-50 medium-33 small-50 xsmall-100">
+                  <div class="card card-outline">
+                    <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">Number of Sales not fully paid</div>
+                    <div class="card-content">{{totalUnpaid}}</div>
+                  </div>
+                </div>
+      
+                <div class="col-50 medium-33 small-50 xsmall-100">
+                  <div class="card card-outline">
+                    <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">(Amount received minus Total sales)</div>
+                    <div class="card-content">{{money totalDifference}}</div>
+                  </div>
+                </div>
+      
+            </div>
+          </div>
+        </div>
+      </li>
+      </ul>
+  </div>
+  <div class="block no-margin-vertical no-margin-horizontal padding-vertical-half roundHolder no-padding-horizontal">
+      <div id="sales-list" class="customList">
+          <div class="text-align-center"><input class="search" placeholder="search">
+            <div class="margin-vertical-half padding-vertical-half">
+              <span class="sortText display-none">Sort By:</span>
+              <!--<span class="sort" data-sort="name">Name</span>
+              <span class="sort" data-sort="cost">Cost</span>
+              <span class="sort" data-sort="isPaid">Fully Paid</span>
+              <span class="sort" data-sort="created_date">Purchase Date</span>-->
+            </div>
+          </div>
 
-      <table id="salesTable" class="compact row-border">
-        <thead>
-          <tr>
-            <th class="label-cell1">ID</th>
-            <th class="label-cell">Product Name</th>
-            <th class="input-cell1">Buyer's Name</th>
-            <th class="numerical-cell1">Cost</th>
-            <th class="numerical-cell">Amount paid</th>
-            <th class="label-cell1">Fully Paid</th>
-            <th class="label-cell1">Date Fully Paid</th>
-            <th class="label-cell1">Purchase Date</th>
-            <th class="label-cell1">Actions</th>
-          </tr>
-        </thead>
-        <!--<tbody class="search-content-list">
-          {{#each sales}}
-            <tr>
-              <td class="label-cell">{{js "@index + 1"}}</td>
-              <td class="label-cell searchRow">{{product_name}}</td>
-              <td class="label-cell searchRow">{{buyer_name}}</td>
-              <td class="numeric-cell">{{money cost}}</td>
-              <td class="label-cell">
-                    <label class="toggle toggle-init product-{{id}}">
-                    <input type="checkbox" {{js "this.amountPaid >= this.cost ? 'checked' : ''"}} {{js "this.amountPaid >= this.cost ? 'disabled' : ''"}} @change="userpaid({{id}},{{cost}})">
-                    <span class="toggle-icon"></span>
-                    </label>
-                  </td>
-              <td class="numeric-cell">{{money amountPaid}}</td>
-              <td class="label-cell"><span class={{js "this.amountPaid < this.cost ? 'display-none' : ''"}}>{{convertDate date_paid}}</span></td>
-              <td class="label-cell">{{convertDate created_date}}</td>
-              <td>
-                  <p class="display-inline-flex">
-                    <a class="button button-fill margin-right-half" @click="openPopUpUpdateSellProduct({{id}})">Edit</a>
-                    <a class="button button-fill color-red" @click="deleteSale({{id}})">
-                        {{js "this.status == 1 ? 'delete' : 'activate'"}}
-                    </a>
-                  </p>
-              </td>
-            </tr>
-          {{/each}}
-        </tbody>-->
-      </table>
+          <div class="block no-margin-vertical">  
+            <div class="no-hairlines-md no-margin-bottom margin-top-half">
+                <div class="item-content item-input1">
+                    <div class="item-inner bg-color-white specWrap">
+                    <div class="item-input-wrap">
+                        <input type="text" class="specSearch" placeholder="Filter sales by date" id="demo-calendar-modal"/>
+                        <span class="input-clear-button specClear" @click="resetTable"></span>
+                    </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+
+          <ul class="list sortList margin-top-half">
+            
+          </ul>
+          <!--<ul class="pagination"></ul>-->
+        </div>
       </div>
+    
   </div>
 
     <!--pop up-->
@@ -346,7 +323,7 @@ export default {
             });
         }
     },
-    deleteSale: function(id){
+    deleteSale: function(list, id){
         var self = this;
         var checked = 0;
         var text = "delete"
@@ -369,10 +346,10 @@ export default {
                   self.$setState({
                       sales:self.sales
                   }, function(){
-                      var but = $("#salesTable").find(".deleteSale[data-id='" + id + "']");
-                      var row = $(but).parents("tr").eq(0);
+                      //var but = $("#salesTable").find(".deleteSale[data-id='" + id + "']");
+                      //var row = $(but).parents("tr").eq(0);
                       self.showToast("Sale " + text + "d!", "center");
-                      $("#salesTable").DataTable().row(row).remove().draw(false);
+                      list.remove("id", id);
                       self.calculateTotalMoney();
                   });
                 }else{
@@ -553,130 +530,68 @@ export default {
     },
     setDataTable: function(){
             var self = this;
-            if(self.sales != null && self.sales.length >= 0){
-                var table = $("#salesTable").DataTable();
-                table.clear().destroy();
-                table = $('#salesTable').DataTable( {
-                      data: self.sales,
-                      pageLength: 10,
-                      columns: [//id,product_name,buyer_name,cost,isPaid,amountPaid,date_paid,created_date,status
-                          { "data": "id" },
-                          { "data": "product_name" },
-                          { "data": "buyer_name" },
-                          { "data": "cost" },
-                          { "data": "amountPaid" },
-                          { "data": "isPaid" },
-                          { "data": "date_paid" },
-                          { "data": "created_date" },
-                          { "data": "status" }
-                      ],
-                      columnDefs: [
-                        { "searchable": true, "targets": 1 },
-                        { "searchable": true, "targets": 2 },
-                        {
-                          targets: [0],
-                          render: function ( data, type, row ) {
-                          return data+row.unit;
-                            }
-                        },
-                        {
-                          targets: [3,4],
-                          searchable:true,
-                          render: function ( data, type, row ) {
-                              return data.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
-                            }
-                        },
-                        {
-                          targets: [5],
-                          searchable:true,
-                          render: function ( data, type, row ) {
-                              if((Number(row.amountPaid) >= Number(row.cost)) || data == 1){
-                                return '<span class="display-none">1</span><label class="checkbox"><input type="checkbox" checked disabled><i class="icon-checkbox"></i></label>'
-                              }else{
-                                return '<span class="display-none">0</span><label class="checkbox"><input type="checkbox" disabled><i class="icon-checkbox"></i></label>'
-                              }
-                            }
-                        },
-                        {
-                          targets: [6],
-                          searchable:true,
-                          render: function ( data, type, row ) {
-                            if(Number(row.amountPaid) >= Number(row.cost)){
-                                if(data != "" && data != undefined){
-                                  var myDate = new Date(data);
-                                  myDate = myDate.toLocaleString();
-                                  return myDate;
-                                }else{
-                                  return "";
-                                }
-                              }else{
-                                return "";
-                              }
-                            }
-                        },
-                        {
-                          targets: [7],
-                          searchable:true,
-                          render: function ( data, type, row ) {
-                              if(data != "" && data != undefined){
-                                var myDate = new Date(data);
-                                myDate = myDate.toLocaleString();
-                                return myDate;
-                              }else{
-                                return "";
-                              }
-                            }
-                        },
-                        {
-                            targets: "_all",
-                            className: 'dt-body-center dt-head-center'
-                        },
-                        {
-                          targets: [3],
-                          searchable:true,
-                          render: function ( data, type, row ) {
-                          return data.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
-                            }
-                        },
-                        {
-                          targets: [-1],
-                          "orderable": false,
-                          render: function ( data, type, row ) {
-                            var html = '<p class="display-inline-flex margin-vertical-half">';
-                            html += '<a class="button button-fill margin-right-half editSales" data-id="' + row.id + '">Edit</a>';
-                            html += '<a class="button button-fill color-red deleteSale" data-id="' + row.id + '">';
-                            html +=  row.status == 1 ? 'delete' : 'activate';
-                            html += '</a></p>';
-                            return html;
-                            }
-                          }
-                        ],
-                        "createdRow": function (row, data, index) {
-                            var info = table.page.info();
-                            $('td', row).eq(0).html(index + 1);
-                        },
-                        "fnRowCallback": function (nRow, aData, iDisplayIndex) {
-                            //debugger
-                            var oSettings = this.fnSettings();
-                            $("td:first", nRow).html(oSettings._iDisplayStart + iDisplayIndex + 1);
-                            return nRow;
+            $("#sales-list .list").empty();//id,product_name,buyer_name,cost,amountPaid,isPaid,date_paid,created_date,status
+                      if(self.sales != null && self.sales.length > 0){
+                        $(".sort").remove();
+                        var sorter = '<span class="sort" data-sort="name">Name</span><span class="sort" data-sort="cost">Cost</span>';
+                        sorter += '<span class="sort" data-sort="isPaid">Fully Paid</span><span class="sort" data-sort="created_date">Purchase Date</span>';
+                        $(sorter).insertAfter($(".sortText"));
+                        $(".sortText").removeClass("display-none");
+                        for(var i = 0; i < self.sales.length; i++){
+                            var row = self.sales[i];
+                            var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
+                            html += '<div class="name cardName">' + row.product_name + '</div><div class="id display-none">' + row.id + '</div><div class="cost display-none">' + row.cost + '</div>';
+                            html += '<div class=""><span class="labelName">Buyer\'s name: </span><span class="valueName">' + row.buyer_name + '</span></div><div class="isPaid display-none">' + row.isPaid + '</div>';
+                            html += '<div class=""><span class="labelName">Product Cost: </span><span class="valueName">' + row.cost.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") + '</span></div>';
+                            html += '<div class=""><span class="labelName">Amount Paid: </span><span class="valueName">' + row.amountPaid.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") + '</span></div>';
+                            var stat = row.status == 1 ? "display-none" : "";
+                            var hidden = row.isPaid == 1 ? "" : "display-none";
+                            var checkbox = row.isPaid == 1 ? '<i class="icon f7-icons text-color-green paid">checkmark_circle_fill</i>' : '<i class="icon f7-icons text-color-red paid">multiply_circle_fill</i>';
+                            html += '<div class=""><span class="labelName">Fully Paid: </span>' + checkbox + '</div>' + '<div class="display-none created_date">' + row.created_date + '</div>';
+                            html += '<div class="' + hidden + '"><span class="labelName">Date Fully Paid: </span><span class="valueName">' + new Date(row.date_paid).toLocaleString() + '</span></div>';
+                            html += '<div class=""><span class="labelName">Purchase Date: </span><span class="valueName">' + new Date(row.created_date).toLocaleString() + '</span></div>';
+                            html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName text-color-red">Deleted</span></div>';
+                            html += '</div><div class="card-footer padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
+                            html += '<a class="button button-raised button-small button-fill margin-right-half editSale" data-id="' + row.id + '">Edit</a>';
+                            html += '<a class="button button-raised button-small button-fill color-red deleteSale" data-id="' + row.id + '">';
+                            html +=  row.status == 1 ? 'Delete' : 'Activate'; 
+                            html += '</a></p></div></div>'
+                            html += '</li>';
+                            $("#sales-list .list").append(html);
+                            //return html;
                         }
-                    });
-                }
+                        var options = {
+                            valueNames: ['id','isPaid','created_date','cost','name'],
+                            //page: 3,
+                            //pagination: true
+                        };
 
-                          $('#salesTable tbody').off("click").on('click','.button', function () {
+                        var sales = new List('sales-list', options);
+
+                        $(".sort").off("click").on("click", function(){
+                          $(".sort").find(".asc").remove();
+                          $(".sort").find(".desc").remove();
+                            if($(this).hasClass("asc")){
+                              $(this).append("<i class='icon f7-icons asc text-color-red'>arrowtriangle_up_fill</i>");
+                            }
+                            if($(this).hasClass("desc")){
+                              $(this).append("<i class='icon f7-icons desc text-color-red'>arrowtriangle_down_fill</i>");
+                            }
+                        })
+                      
+                          $('#sales-list').off("click").on('click','.button', function () {
                               var data = $(this).attr("data-id");
                               //console.log(data);
-                              if($(this).hasClass("editSales")){
+                              if($(this).hasClass("editSale")){
                                 self.openPopUpUpdateSellProduct(data);
                               }
                               if($(this).hasClass("deleteSale")){
-                                self.deleteSale(data);
+                                self.deleteSale(sales, data);
                               }
                               //return false;
                           });
-
-                        self.calculateTotalMoney();
+                          self.calculateTotalMoney();
+                        }
     },
     getData: function(){
       var self = this;
@@ -693,7 +608,6 @@ export default {
                 sales: arr,
                 totalMat:arr.length
               }, function(){
-                var table = $("#salesTable").DataTable();
                 self.setDataTable();
               });
         });

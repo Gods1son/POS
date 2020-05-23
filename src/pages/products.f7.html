@@ -24,46 +24,46 @@
     <!--fab-->
 
   <div class="page-content">
-      <div class="item-content block-title margin-bottom-half margin-top-half">
-        <div class="row padding-vertical">
-            <div class="col">
-                
-            </div>
-    
-                <div class="col">
+      <div class="item-content block-title no-margin-bottom margin-top-half text-align-center">
+        <div class="row no-padding-vertical">
+                <div class="col padding-vertical-half">
+                  <span class="roundBox display-inline-flex">
+                    <span class="item-title float-right">Show Deleted</span>
                     <span class="item-after float-right margin-left-half">
                         <label class="toggle toggle-init color-red showInactive">
                         <input type="checkbox">
                         <span class="toggle-icon"></span>
                         </label>
                     </span>
-                    <span class="item-title float-right">Show Deleted</span>
+                  </span>  
                 </div>
             </div>
 
             <div class="row">
-            <div class="col">
-                You have {{totalMat}} {{js "this.totalMat > 1 ? 'products' : 'product'"}}
+            <div class="col padding-vertical-half">
+              <span class="roundBox">You have {{totalMat}} {{js "this.totalMat > 1 ? 'products' : 'product'"}}</span>
             </div>
   
             </div>
     </div>
-    <div class="block no-margin-vertical">
-    <table id="productTable" class="compact row-border">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>
-              <div>Name of Product</div>
-            </th>
-            <th>Cost</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        
-      </table>
+
+    <div class="block no-margin-vertical no-margin-horizontal padding-vertical-half roundHolder no-padding-horizontal">
+      <div id="product-list" class="customList">
+          <div class="text-align-center"><input class="search" placeholder="search">
+            <div class="margin-vertical-half padding-vertical-half">
+              <span class="sortText display-none">Sort By:</span>
+              <!--<span class="sort" data-sort="name">Name</span>
+              <span class="sort" data-sort="cost">Cost</span>-->
+            </div>
+          </div>
+          <ul class="list sortList margin-top-half">
+            
+          </ul>
+          <!--<ul class="pagination"></ul>-->
+        </div>
+      </div>
     </div>
-  </div>
+  <!--</div>-->
 
   <!--pop up add new product-->
   <div class="popup newProduct popup-tablet-fullscreen">
@@ -352,78 +352,6 @@
                 </div>
             </div>
             
-            <!--<div class="card data-table data-table-init">
-              <div class="card-header">
-                    
-                    <div class="data-table-title">All Raw Materials</div>
-                </div>
-                <div class="card-content">
-                    <table id="ingredientTable">
-                        <thead>
-                        <tr>
-                          
-                            <th class="label-cell">ID</th>
-                            <th class="input-cell">
-                            <div class="table-head-label">Material Name</div>
-                            <div class="list no-hairlines-md">
-                              <ul>
-                                  <li class="item-content item-input no-padding">
-                                      <div class="item-inner no-padding-right">
-                                          <div class="item-input-wrap">
-                                          <form data-search-container=".search-content-list" data-search-item="tr" data-search-in=".searchRow" class="searchbar searchbar-inline searchbar-init">   
-                                              <input type="search" placeholder="Filter" class="no-padding">
-                                          </form>
-                                          </div>
-                                      </div>
-                                  </li>
-                              </ul>
-                            </div>
-                            </th>
-                            <th class="label-cell">Unit Size</th>
-                            <th class="numeric-cell">Cost</th>
-                            <th class="label-cell"></th>
-                        </tr>
-                        </thead>
-                        <tbody class="search-content-list">
-                        {{#each ings}}
-                            <tr>
-                            <td class="label-cell">{{js "@index + 1"}}</td>
-                            <td class="label-cell searchRow">{{name}}</td>
-                            <td class="label-cell">{{unit_size}}{{unit}}</td>
-                            <td class="numeric-cell">{{money cost_per_unit}}</td>
-                            <td>
-                                <p class="display-inline-flex">
-                                    <a class="button button-fill ing-{{id}}" @click="SelectItem({{id}})">Select</a>
-                                </p>
-                            </td>
-                            </tr>
-                        {{/each}}
-                        </tbody>
-                    </table>
-                    <div class="data-table-footer">
-                        <div class="data-table-rows-select">
-                        Per page:
-                        <div class="input input-dropdown">
-                            <select>
-                            <option value="5">5</option>
-                            <option value="10">10</option>
-                            <option value="25">25</option>
-                            <option value="all">All</option>
-                            </select>
-                        </div>
-                        </div>
-                        <div class="data-table-pagination">
-                        <span class="data-table-pagination-label">1-5 of 10</span>
-                        <a href="#" class="link disabled">
-                            <i class="icon icon-prev color-gray"></i>
-                        </a>
-                        <a href="#" class="link">
-                            <i class="icon icon-next color-gray"></i>
-                        </a>
-                        </div>
-                    </div>
-                </div>
-                </div>-->
         </div>
       </div>
     </div>
@@ -591,7 +519,7 @@ export default {
                         closeTimeout: 2000,
                         }).open();
     },
-    DeleteItem: function(id){
+    DeleteItem: function(list, id){
         var self = this;
         var checked = 0;
         var text = "delete"
@@ -614,10 +542,10 @@ export default {
                       totalMat:self.products.length
                   },function(){
                       //var table = $("#ingredientTable").DataTable();
-                      var but = $("#productTable").find(".deleteProduct[data-id='" + id + "']");
-                      var row = $(but).parents("tr").eq(0);
+                      //var but = $("#productTable").find(".deleteProduct[data-id='" + id + "']");
+                      //var row = $(but).parents("tr").eq(0);
                       self.showToast("Product " + text + "d!", "center");
-                      $("#productTable").DataTable().row(row).remove().draw(false);
+                      list.remove("id", id);
                   });
               }
             });
@@ -945,67 +873,51 @@ export default {
                 products: arr,
                 totalMat:arr.length
               }, function(){
-                var table = $("#productTable").DataTable();
-                if(self.products != null && self.products.length >= 0){
-                table.clear().destroy();
-                table = $('#productTable').DataTable( {
-                      data: self.products,
-                      pageLength: 10,
-                      columns: [//id,name,unit_size,unit,cost_per_unit,status,created_date
-                          { "data": "id" },
-                          { "data": "name" },
-                          { "data": "cost" },
-                          { "data": "status" }
-                      ],
-                      columnDefs: [
-                        {
-                            targets: "_all",
-                            className: 'dt-body-center dt-head-center'
-                        },{
-                          targets: [0],
-                          "orderable": false,
-                          render: function ( data, type, row ) {
-                          return data+row.unit;
-                            }
-                          },
-                          {
-                          targets: [2],
-                          "orderable": false,
-                          render: function ( data, type, row ) {
-                              return data.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
-                            }
-                          },
-                          {
-                          targets: [-1],
-                          "orderable": false,
-                          render: function ( data, type, row ) {
-                            var html = '<p class="display-inline-flex margin-vertical-half">';
-                            html += '<a class="button button-fill margin-right-half color-green sellProduct" data-id="' + row.id + '">Sell</a>';
-                            html += '<a class="button button-fill margin-right-half editProduct" data-id="' + row.id + '">Edit</a>';
-                            html += '<a class="button button-fill margin-right-half color-orange addIngredients" data-id="' + row.id + '"><i class="icon f7-icons">plus</i> Materials</a>';
-                            html += '<a class="button button-fill color-red deleteProduct" data-id="' + row.id + '">';
-                            html +=  row.status == 1 ? 'delete' : 'activate';
-                            html += '</a></p>';
-                            return html;
-                            }
-                          }
-                        ],
-                        "createdRow": function (row, data, index) {
-                            var info = table.page.info();
-                            $('td', row).eq(0).html(index + 1);
-                        },
-                        "fnRowCallback": function (nRow, aData, iDisplayIndex) {
-                            //debugger
-                            var oSettings = this.fnSettings();
-                            $("td:first", nRow).html(oSettings._iDisplayStart + iDisplayIndex + 1);
-                            return nRow;
+                $("#product-list .list").empty();
+                      if(arr != null && arr.length > 0){
+                        $(".sort").remove();
+                        var sorter = '<span class="sort" data-sort="name">Name</span><span class="sort" data-sort="cost">Cost</span>';
+                        $(sorter).insertAfter($(".sortText"));
+                        $(".sortText").removeClass("display-none");
+                        for(var i = 0; i < arr.length; i++){
+                            var row = arr[i];
+                            var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
+                            html += '<div class="name cardName">' + row.name + '</div><div class="id display-none">' + row.id + '</div><div class="cost display-none">' + row.cost + '</div>';
+                            html += '<div class=""><span class="labelName">Cost: </span><span class="valueName">' + row.cost.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") + '</span></div>';
+                            var stat = row.status == 1 ? "display-none" : "";
+                            html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName text-color-red">Deleted</span></div>';
+                            html += '</div><div class="card-footer padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
+                            html += '<a class="button button-raised button-small button-fill color-green sellProduct" data-id="' + row.id + '">Sell</a>';
+                            html += '<a class="button button-raised button-small button-fill editProduct" data-id="' + row.id + '">Edit</a>';
+                            html += '<a class="button button-raised button-small button-fill color-orange addIngredients" data-id="' + row.id + '"><i class="icon f7-icons">plus</i> Materials</a>';
+                            html += '<a class="button button-raised button-small button-fill color-red deleteProduct" data-id="' + row.id + '">';
+                            html +=  row.status == 1 ? 'Delete' : 'Activate';
+                            html += '</a>';
+                            html += '</p></div></div></li>';
+                            $("#product-list .list").append(html);
+                            //return html;
                         }
-                    });
-                }
+                        var options = {
+                            valueNames: ['id','cost','name'],
+                            //page: 3,
+                            //pagination: true
+                        };
 
-                          $('#productTable tbody').off("click").on('click','.button', function () {
+                        var productList = new List('product-list', options);
+
+                        $(".sort").off("click").on("click", function(){
+                          $(".sort").find(".asc").remove();
+                          $(".sort").find(".desc").remove();
+                            if($(this).hasClass("asc")){
+                              $(this).append("<i class='icon f7-icons asc text-color-red'>arrowtriangle_up_fill</i>");
+                            }
+                            if($(this).hasClass("desc")){
+                              $(this).append("<i class='icon f7-icons desc text-color-red'>arrowtriangle_down_fill</i>");
+                            }
+                        })
+                      
+                          $('#product-list').off("click").on('click','.button', function () {
                               var data = $(this).attr("data-id");
-                              //console.log(data);
                               if($(this).hasClass("sellProduct")){
                                 self.openPopUpSellProduct(data);
                               }
@@ -1016,10 +928,11 @@ export default {
                                 self.openPopUpIngredients(data);
                               }
                               if($(this).hasClass("deleteProduct")){
-                                self.DeleteItem(data);
+                                self.DeleteItem(productList,data);
                               }
                               //return false;
                           });
+                        }
                 });
           });
     },
