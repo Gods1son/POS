@@ -144,10 +144,8 @@
 </div>
 </template>
 <script>
-import Dom7 from 'dom7';
+
 import Dexie from 'dexie';
-import origdatatable from 'datatables.net';
-import datatable from 'datatables.net-dt';
 //import List from 'list.js';
 
 var db = new Dexie("BizExpenseManagerDB");
@@ -165,7 +163,7 @@ var db = new Dexie("BizExpenseManagerDB");
             expenses_history: "++id,expID,name,amount_to_pay,amount_paid,date_paid,created_date,recurring,status"
           })
 
-var $$ = Dom7;
+
 export default {
   test: 5,
   data: function () {
@@ -180,56 +178,6 @@ export default {
     fakeAlert: function(){
         var self = this;
         self.$app.dialog.alert("hey");
-    },
-    openRow: function(id){
-      var table = $("#ingredientTable").DataTable();
-      var tr = $(".opener-" + id).parents('tr').eq(0);
-      var isOdd = $(tr).hasClass("odd") == true ? "odd" : "even";
-      if($(tr).attr("data-oldid") == undefined || $(tr).attr("data-oldid") == null){
-          $(tr).attr("data-oldid", isOdd);
-      }
-      
-        //var row = table.row( tr );
-        var next = $(tr).next("tr").hasClass("specTable");
-        if (next ) {
-            // This row is already open - close it
-            //row.child.hide();
-            $(tr).next("tr").remove();
-            $(".opener-" + id).text("plus_circle_fill");
-            tr.removeClass('shown');
-            var color = $(tr).attr("data-oldid");
-            if(tr.hasClass(color) == false){
-              var cl = color == "odd" ? "even" : "odd";
-              tr.removeClass(cl);
-            }
-            tr.addClass(color);
-        }
-        else {
-            // Open this row
-            var data = $(".hidden-" + id).clone(true, true);
-            $(data).insertAfter(tr);
-            $(data).removeClass("display-none");
-            $(data).find(".editButton").on("click", function(){
-                var l = $(".specTable.display-none").find(".editButton").length;
-                console.log(l);
-            });
-            //console.log(t);
-            //row.child( data.html() ).show();
-             $(".opener-" + id).text("minus_circle_fill");
-            tr.addClass('shown');
-            if(isOdd != "odd"){
-              tr.addClass('odd');
-              tr.removeClass('even');
-            }    
-        }
-
-      /*if($(".hidden-" + id).hasClass("display-none")){
-        $(".hidden-" + id).removeClass("display-none");
-        $(".opener-" + id).text("minus_circle_fill");
-      }else{
-        $(".hidden-" + id).addClass("display-none");
-        $(".opener-" + id).text("plus_circle_fill");
-      }*/
     },
     showToast: function(text, position){
         var self = this;
@@ -261,9 +209,7 @@ export default {
                       ings:self.ings,
                       totalMat:self.ings.length
                   }, function(){
-                      //var table = $("#ingredientTable").DataTable();
-                      //var but = $("#ingredientTable").find(".deleteButton[data-id='" + id + "']");
-                      //var row = $(but).parents("tr").eq(0);
+                      
                       self.showToast("Material " + text + "d!", "center");
                         list.remove("id", id);
                   });
@@ -423,7 +369,6 @@ export default {
   on: {
       pageInit: function(e, page) {
         var self = this;
-        $("#ingredientTable").DataTable();
         $$(".showInactiveIngs").on("change", function(){
           //console.log("inactive change");
             self.getData();

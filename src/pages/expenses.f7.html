@@ -73,13 +73,6 @@
                     </div>
                   </div>
         
-                  <!--<div class="col-50 medium-33 small-50 xsmall-100">
-                    <div class="card card-outline">
-                      <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">Number of Sales not fully paid</div>
-                      <div class="card-content">{{totalUnpaid}}</div>
-                    </div>
-                  </div>-->
-        
                   <div class="col-100">
                     <div class="card card-outline">
                       <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">(Total Amount Paid minus Total Expenses)</div>
@@ -96,13 +89,10 @@
 
     <div class="block no-margin-vertical no-margin-horizontal padding-vertical-half roundHolder no-padding-horizontal">
       <div id="expenses-list" class="customList">
-          <div class="text-align-center"><input class="search" placeholder="search">
+          <div class="text-align-center customListSub"><input class="search" placeholder="search">
             <div class="margin-vertical-half padding-vertical-half sortTextPar">
               <span class="sortText display-none">Sort By:</span>
-              <!--<span class="sort" data-sort="name">Name</span>
-              <span class="sort" data-sort="cost">Cost</span>
-              <span class="sort" data-sort="isPaid">Fully Paid</span>
-              <span class="sort" data-sort="created_date">Purchase Date</span>-->
+              
             </div>
           </div>
 
@@ -232,7 +222,7 @@
 </div>
 </template>
 <script>
-import Dom7 from 'dom7';
+//import Dom7 from 'dom7';
 import Dexie from 'dexie';
 import * as moment from 'moment';
 var db = new Dexie("BizExpenseManagerDB");
@@ -250,7 +240,7 @@ var db = new Dexie("BizExpenseManagerDB");
             expenses_history: "++id,expID,name,amount_to_pay,amount_paid,date_paid,created_date,recurring,status"
           })
 
-var $$ = Dom7;
+//var $$ = Dom7;
 export default {
   data: function () {
       // Must return an object
@@ -288,11 +278,8 @@ export default {
                       expenses:self.expenses,
                       totalMat:self.expenses.length
                   }, function(){
-                      //var but = $("#expenseTable").find(".deleteExpense[data-id='" + id + "']");
-                      //var row = $(but).parents("tr").eq(0);
                       self.showToast("Expense " + text + "d!", "center");
                       list.remove("id", id);
-                      //$("#expenseTable").DataTable().row(row).remove().draw(false);
                     self.calculateTotalMoneyExpense();
                   });
               }
@@ -354,6 +341,7 @@ export default {
                     }
                     var popup = self.$app.popup.open('.newExpense', true);
             } else{
+              $("#expense-calendar-modal").val(moment().format('LLL'));
               var popup = self.$app.popup.open('.newExpense', true);
               self.$setState({
                   currentExpense:null
@@ -482,7 +470,7 @@ export default {
       var self = this;
             $("#expenses-list .list").empty();
                       if(self.expenses != null && self.expenses.length > 0){
-                        $(".customList").removeClass("display-none");
+                        $(".customListSub").removeClass("display-none");
                         $(".sort").remove();//id,name,amount_to_pay,amount_paid,date_paid,created_date,recurring,status
                         var sorter = '<span class="sort" data-sort="name">Name</span><span class="sort" data-sort="cost">Expense Cost</span>';
                         sorter += '<span class="sort" data-sort="paidAll">Fully Paid</span><span class="sort" data-sort="created_date">Created Date</span>';
@@ -544,7 +532,9 @@ export default {
                           });
                           self.calculateTotalMoneyExpense();
                         }else{
-                          $(".customList").addClass("display-none");
+                          var html = "<li><div class='card myCard'><div class='card-content text-align-center'>No result found</div></div></li>";
+                          $("#expenses-list .list").append(html);
+                          $(".customListSub").addClass("display-none");
                         }
     },
     getData: function(){
@@ -563,7 +553,6 @@ export default {
                 expenses: arr,
                 totalMat:arr.length
               }, function(){
-                var table = $("#expenseTable").DataTable();
                 self.setDataTable();
               });
       });
@@ -573,7 +562,6 @@ export default {
       pageInit: function(e, page) {
         var self = this;
         //console.log("test inactive init");
-        $("#expenseTable").DataTable();
         $$(".showInactiveExpenses").on("change", function(){
           //console.log("inactive change");
             self.getData();
@@ -593,19 +581,19 @@ export default {
             }
             var from = null; var to = null;
             if(days.length == 1){
-                from = Date.parse(days[0]);
+                from = moment(moment(days[0]).format('LLL')).format("X");
                 days.push(days[0]);
                 var date2 = days[1];
                 date2.setDate(date2.getDate() + 1);
-                to = Date.parse(date2);
+                to = moment(moment(date2).format('LLL')).format("X");
             }
             else if(days.length > 1){
                 //var date1 = days[0];
                 //date1.setDate(date1.getDate() + 1);
-                from = Date.parse(days[0]);
+                from = moment(moment(days[0]).format('LLL')).format("X");
                 var date2 = days[1];
                 date2.setDate(date2.getDate() + 1);
-                to = Date.parse(date2);
+                to = moment(moment(date2).format('LLL')).format("X");
             }else{
                 self.getData();
             }

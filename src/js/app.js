@@ -9,7 +9,7 @@ import 'framework7-icons/css/framework7-icons.css';
 // Import Icons and App Custom Styles
 import '../css/icons.css';
 import '../css/app.css';
-import 'datatables.net-dt/css/jquery.dataTables.css';
+//import 'datatables.net-dt/css/jquery.dataTables.css';
 
 
 // Import Routes
@@ -20,8 +20,10 @@ window.List = List;
 // Import main app component
 import App from '../app.f7.html';
 //import App from '../index.html';
-
+//import Dexie from 'dexie';
+//window.Dexie = Dexie;
 import Dom7 from 'dom7';
+window.$$ = Dom7;
 import * as moment from 'moment';
 import jQuery from 'jquery';
 window.jQuery = jQuery;

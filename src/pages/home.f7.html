@@ -15,8 +15,8 @@
 
       <!--<div class="block block-strong margin-bottom-half no-margin-top">
         <p>Here is your blank Framework7 app. Let's see what we have here.</p>
-      </div>
-      <div class="block-title">Navigation</div>-->
+      </div>-->
+      <div class="block-title text-align-right display-none compName padding-vertical-half no-margin-vertical"></div>
       <div class="list no-margin-top margin-bottom-half">
         <ul>
           <li>
@@ -44,6 +44,13 @@
             <a href="/expenses/" class="item-content item-link">
               <div class="item-inner">
                 <div class="item-title">Expenses</div>
+              </div>
+            </a>
+          </li>
+          <li>
+            <a href="/settings/" class="item-content item-link">
+              <div class="item-inner">
+                <div class="item-title"><i class="icon f7-icons text-color-blue margin-right-half">gear_alt</i>Settings</div>
               </div>
             </a>
           </li>
@@ -75,6 +82,14 @@ export default {
         self.$app.dialog.alert(text);
         //alert(text);
       },
+      showToast: function(text, position, time = 2000){
+        var self = this;
+        self.$app.toast.create({
+                        text: text,
+                        position: position,
+                        closeTimeout: time,
+                        }).open();
+        },
       startDB: function(){
          //this.$app.methods.storage2();
          console.log('db init');
@@ -99,10 +114,24 @@ export default {
     },
     on: {
       pageMounted: function(e, page) {
-        //console.log('pageMounted', page);
-        //this.openAlert("home");
-        console.log('testing init');
-        this.startDB();
+        var self = this;
+        /*var comName = localStorage.getItem("companyName");
+        var curr = localStorage.getItem("currency");
+        if(curr == undefined){
+          self.showToast("Please visit settings page to choose your currency and save company info!", "top", 3500);
+        }*/
+      },
+      pageInit: function(e, page) {
+        var self = this;
+        var comName = localStorage.getItem("companyName");
+        var curr = localStorage.getItem("currency");
+        if(comName != undefined){
+          $(".compName").text(comName);
+          $(".compName").removeClass("display-none");
+        }
+        if(curr == undefined){
+          self.showToast("Please visit Settings page to choose your currency and save company info!", "top", 3500);
+        }
       }
     }
 }

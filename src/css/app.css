@@ -68,7 +68,7 @@
     padding-bottom:5px;
 }
 
-.myCard .button{
+.myCard .button, #savecompanyinfo{
     font-weight: 500;
     font-size: 1em;
     margin-right: 5px;
@@ -77,6 +77,18 @@
 
 .button .f7-icons, .paid{
     vertical-align: bottom !important;
+}
+
+.settingsInput, .item-input-wrap input[type="text"]:not(.specSearch){
+    border: 0.5px solid !important;
+    padding: 2px 5px !important;
+    border-radius: 5px !important;
+    margin-top: 2px !important;
+}
+
+.compName{
+    font-size: 1.2em;
+    color:black;
 }
 
 .cardName{
@@ -122,13 +134,6 @@
     margin-left: 2px;
 }
 
-.dataTables_length select{
-    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABMAAAATCAQAAADYWf5HAAAAkElEQVQoz7XQMQ5AQBCF4dWQSJxC5wwax1Cq1e7BAdxD5SL+Tq/QCM1oNiJidwox0355mXnG/DrEtIQ6azioNZQxI0ykPhTQIwhCR+BmBYtlK7kLJYwWCcJA9M4qdrZrd8pPjZWPtOqdRQy320YSV17OatFC4euts6z39GYMKRPCTKY9UnPQ6P+GtMRfGtPnBCiqhAeJPmkqAAAAAElFTkSuQmCC);
-    background-repeat: no-repeat;
-    background-position: center right;
-    padding-right: 15px;
-}
-
 .buttonSpan{
     font-weight: 400;
     font-size: 1.35em;
@@ -139,16 +144,13 @@
     text-align: center;
 }
 
-.data-table thead, .data-table tbody td{
-    text-align: center;
-}
 
 .costvalue, .profitpercent{
     border:1px solid black !important;
     border-radius: 5px !important;
     padding: 3px !important;
     text-align: center;
-    width:70% !important;
+    width:60% !important;
     margin: auto !important;
 }
 
@@ -169,7 +171,11 @@
 }
 
 .myOrange .item-inner:before{
-    color: #2196f3 !important;
+    color: white !important;
+}
+
+.myOrange .text-color-blue .item-inner:before{
+    color: blue !important;
 }
 
 .color-col .popup-close{

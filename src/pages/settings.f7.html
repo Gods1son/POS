@@ -15,19 +15,48 @@
           </div>
 
             <div class="page-content">
-                <div class="list no-hairlines-md">
-                    <div class="block-title text-color-black no-margin-bottom margin-left-half padding-bottom-half">Choose currency</div>
+                <div class="list no-hairlines-md margin-top-half">
+                    <div class="block-title text-color-black no-margin-bottom margin-left-half padding-bottom-half margin-top-half">Company Name and Address</div>
+                    <ul>
+                    <li class="item-content item-input">
+                        <div class="item-inner">
+                          <div class="item-title item-label">Company Name</div>
+                          <div class="item-input-wrap">
+                            <input id="companyname" type="text" class="settingsInput" placeholder="Company Name">
+                          </div>
+                        </div>
+                      </li>
+                      <li class="item-content item-input">
+                        <div class="item-inner">
+                          <div class="item-title item-label">Company Address</div>
+                          <div class="item-input-wrap">
+                            <textarea class="settingsInput" id="companyaddress" placeholder="Company Address"></textarea>
+                            <!--<input id="companyaddress" type="text" placeholder="Company Address">-->
+                          </div>
+                        </div>
+                      </li>
+                      <li class="item-content item-input">
+                        <div class="item-inner">
+                          <div class="item-input-wrap">
+                            <a id="savecompanyinfo" class="button button-fill button-raised bg-color-green" @click="savecompanyinfo">Save Info</a>
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+
+                    <div class="block-title text-color-black no-margin-bottom margin-left-half padding-bottom-half margin-top-half">Choose currency</div>
                     <ul>
                       <li class="item-content item-input">
                         <div class="item-inner">
                           <div class="item-title item-label">Currency</div>
                           <div class="item-input-wrap">
-                            <input id="autocomplete-dropdown-all" type="text" placeholder="Currency">
+                            <input id="autocomplete-dropdown-all" class="settingsInput" type="text" placeholder="Currency">
                           </div>
                         </div>
                       </li>
                     </ul>
-                  </div>
+
+                </div>
             </div>
   
     </div> 
@@ -51,11 +80,40 @@
         helloWorld() {
           this.$f7.dialog.alert('Hello World!');
         },
-        
+        showToast: function(text, position){
+        var self = this;
+        self.$app.toast.create({
+                        text: text,
+                        position: position,
+                        closeTimeout: 2000,
+                        }).open();
+        },
+        savecompanyinfo: function(){
+            var self = this;
+            var comName = $("#companyname").val().trim();
+            if(comName != ""){
+                localStorage.setItem("companyName", comName);
+            }
+            var comAdd = $("#companyaddress").val().trim();
+            if(comAdd != ""){
+                localStorage.setItem("companyAddress", comAdd);
+            }
+            if(comName != "" || comAdd != ""){
+                self.showToast("Information Saved!", "center");
+            }
+        }
       },
       on: {
       pageInit: function(e, page) {
             var self = this;
+            var comName = localStorage.getItem("companyName");
+            if(comName != undefined){
+                $("#companyname").val(comName);
+            }
+            var comAdd = localStorage.getItem("companyAddress");
+            if(comAdd != undefined){
+                $("#companyaddress").val(comAdd);
+            }
             var savedCurr = localStorage.getItem("currency");
             if(savedCurr != undefined){
                 $('#autocomplete-dropdown-all').val(savedCurr);

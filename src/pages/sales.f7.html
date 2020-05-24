@@ -39,14 +39,7 @@
               </div>
           </div>
 
-          <!--<div class="row">
-          <div class="col padding-vertical-half">
-            <div class="text-align-center display-inline-flex">
-              <input type="text" class="darkSearch" placeholder="Filter sales by date" id="demo-calendar-modal"/>
-              <span class="input-clear-button" @click="resetTable"></span>
-            </div>
-          </div>
-          </div>-->
+          
   </div>
   <div class="list accordion-list no-margin-vertical">
     <ul>
@@ -102,13 +95,10 @@
   </div>
   <div class="block no-margin-vertical no-margin-horizontal padding-vertical-half roundHolder no-padding-horizontal">
       <div id="sales-list" class="customList">
-          <div class="text-align-center"><input class="search" placeholder="search">
+          <div class="text-align-center customListSub"><input class="search" placeholder="search">
             <div class="margin-vertical-half padding-vertical-half sortTextPar">
               <span class="sortText display-none">Sort By:</span>
-              <!--<span class="sort" data-sort="name">Name</span>
-              <span class="sort" data-sort="cost">Cost</span>
-              <span class="sort" data-sort="isPaid">Fully Paid</span>
-              <span class="sort" data-sort="created_date">Purchase Date</span>-->
+              
             </div>
           </div>
 
@@ -236,7 +226,7 @@
 </div>
 </template>
 <script>
-import Dom7 from 'dom7';
+//import Dom7 from 'dom7';
 import Dexie from 'dexie';
 import * as moment from 'moment';
 var db = new Dexie("BizExpenseManagerDB");
@@ -254,7 +244,7 @@ var db = new Dexie("BizExpenseManagerDB");
             expenses_history: "++id,expID,name,amount_to_pay,amount_paid,date_paid,created_date,recurring,status"
           })
 
-var $$ = Dom7;
+//var $$ = Dom7;
 export default {
   data: function () {
       // Must return an object
@@ -321,6 +311,47 @@ export default {
                 self.$app.toggle.get(".product-" + id).toggle();
             });
         }
+    },
+    moneyFormat: function(val){
+      var sym = localStorage.getItem("currency", val);
+      sym = sym == undefined ? "" : sym;
+      if(val < 0){
+        var rev = 0 - val;
+        var val2 = val + rev + rev;
+        val = val2;
+        sym = "-" + sym;
+      }
+      var ret = sym + val.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+      return ret;
+    },
+    formatPDF: function(sales){//product_name,buyer_name,cost,amountPaid,isPaid,date_paid,created_date
+      var self = this;
+      var Companyname = localStorage.getItem("companyName") != undefined ? localStorage.getItem("companyName") : "Name of Coy";
+      var Comaddress = localStorage.getItem("companyAddress") != undefined ? localStorage.getItem("companyAddress") : "Address of Coy";
+      var buyer = sales.buyer_name;
+      var productName = sales.product_name;
+      //var curr = localStorage.getItem("currency") != undefined ? localStorage.getItem("currency") : "";
+      var quant = 1;
+      var cost = self.moneyFormat(sales.cost);
+      var totalPrice = self.moneyFormat(sales.cost);
+      var totalPaid = self.moneyFormat(sales.amountPaid);
+      var outstanding = self.moneyFormat((Number(sales.amountPaid) - Number(sales.cost)));
+      var purchaseDate = moment.unix(sales.created_date).format("LLL");
+      var today = moment().format("LLL");
+       var html = '<html><div style="text-align:right; border-bottom:1px solid black;">';
+        html += '<h2 style="margin-bottom:5px; margin-top:5px;">' + Companyname + '</h2><span>' + Comaddress + '</span></div>';
+        html += '<div style="text-align:left; border-bottom:1px solid black;"><h4 style="margin-bottom:5px; margin-top:5px;">Invoice To:</h4>';
+        html += '<h3 style="margin-bottom:5px; margin-top:5px;">' + buyer + '</h3></div>';
+        html += '<table><thead><tr><th style="width: 70vw;text-align: left;">Product Name</th>';
+        html += '<th style="width: 10vw;text-align: center;">Quantity</th><th style="width: 20vw;text-align: center;">Price</th>';
+        html += '</tr></thead><tbody><tr><td>' + productName + '</td><td style="text-align:center">' + quant + '</td>';
+        html += '<td style="text-align: center;">' + cost + '</td></tr></tbody></table>';
+        html += '<div style="text-align:right; border-top:1px solid black;"><div><span>Total Price: </span><span style="font-size:1.2em;">' + totalPrice + '</span></div>';
+        html += '<div><span>Amount Paid: </span><span style="font-size:1.2em;">' + totalPaid + '</span></div>';
+        html += '<div><span>Outstanding: </span><span style="font-size:1.2em;">' + outstanding + '</span></div>';
+        html += '<div><span">Purchase Date: </span><span style="font-size:1.2em;">' + purchaseDate + '</span></div></div>';
+        html += '<div style="text-align:left;"><h3 style="margin-bottom:5px; margin-top:5px;">Thank you!</h3><h5 style="margin-bottom:5px; margin-top:5px;">' + today + '</h5></div><hr></html>';
+        return html;
     },
     deleteSale: function(list, id){
         var self = this;
@@ -436,6 +467,31 @@ export default {
                  self.$app.dialog.alert("An error occurred!");
               })
     },
+    invoice: function(id){
+      var self = this;
+      var item = self.sales.find(function(e){ 
+                  return e.id == Number(id);
+              });
+      var html = self.formatPDF(item);
+      var options = {
+                documentSize: 'A4',
+                type: 'share'
+              }
+      try{
+      if(pdf != undefined){
+        pdf.fromData( html, options)
+          .then((stats)=> self.showToast(stats, "center"))   // ok..., ok if it was able to handle the file to the OS.  
+          .catch((err)=> self.showToast(err, "center"))
+      }else{
+        var w = window.open();
+        $(w.document.body).html(html);
+      }
+    }catch(err){
+        var w = window.open();
+        $(w.document.body).html(html);
+    }
+      //console.log(html);
+    },
     openPopUpUpdateSellProduct: function(id){
         /*if(id == null){
             return;
@@ -497,8 +553,8 @@ export default {
                 $$("input.buyer_sell").val("");
                 $$("input.cost_sell").val("");
                 $$("input.amountpaid_sell").val("");
-                $("#purchase-calendar-modal").val("");
-                $("#paid-calendar-modal").val("");
+                $("#paid-calendar-modal").val(moment().format('LLL'));
+                $("#purchase-calendar-modal").val(moment().format('LLL'));
                 var popup = self.$app.popup.open('.newSales', true);
                 self.$setState({
                     currentSale: null
@@ -558,7 +614,7 @@ export default {
             var self = this;
             $("#sales-list .list").empty();//id,product_name,buyer_name,cost,amountPaid,isPaid,date_paid,created_date,status
                       if(self.sales != null && self.sales.length > 0){
-                        $(".customList").removeClass("display-none");
+                        $(".customListSub").removeClass("display-none");
                         $(".sort").remove();
                         var sorter = '<span class="sort" data-sort="name">Name</span><span class="sort" data-sort="cost">Cost</span>';
                         sorter += '<span class="sort" data-sort="isPaid">Fully Paid</span><span class="sort" data-sort="created_date">Purchase Date</span>';
@@ -579,6 +635,7 @@ export default {
                             html += '<div class=""><span class="labelName">Purchase Date: </span><span class="valueName">' + moment.unix(row.created_date).format("LLL") + '</span></div>';
                             html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName text-color-red">Deleted</span></div>';
                             html += '</div><div class="card-footer padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
+                            html += '<a class="button button-raised button-small button-fill margin-right-half invoice color-green" data-id="' + row.id + '">Invoice</a>';
                             html += '<a class="button button-raised button-small button-fill margin-right-half editSale" data-id="' + row.id + '">Edit</a>';
                             html += '<a class="button button-raised button-small button-fill color-red deleteSale" data-id="' + row.id + '">';
                             html +=  row.status == 1 ? 'Delete' : 'Activate'; 
@@ -612,6 +669,9 @@ export default {
                               if($(this).hasClass("editSale")){
                                 self.openPopUpUpdateSellProduct(data);
                               }
+                              if($(this).hasClass("invoice")){
+                                self.invoice(data);
+                              }
                               if($(this).hasClass("deleteSale")){
                                 self.deleteSale(sales, data);
                               }
@@ -619,7 +679,9 @@ export default {
                           });
                           self.calculateTotalMoney();
                         }else{
-                          $(".customList").addClass("display-none");
+                          var html = "<li><div class='card myCard'><div class='card-content text-align-center'>No result found</div></div></li>";
+                          $("#sales-list .list").append(html);
+                          $(".customListSub").addClass("display-none");
                         }
     },
     formatMoney:function(val){             
@@ -657,7 +719,6 @@ export default {
   on: {
       pageInit: function(e, page) {
         var self = this;
-        $("#salesTable").DataTable();
         $$(".showInactiveSales").on("change", function(){
           //console.log("inactive change");
             self.getData();
@@ -678,18 +739,22 @@ export default {
             var from = null; var to = null;
             if(days.length == 1){
                 from = Date.parse(days[0]);
+                //console.log(moment(days[0]).format('LLL'));
+                from = moment(moment(days[0]).format('LLL')).format("X");
                 days.push(days[0]);
                 var date2 = days[1];
                 date2.setDate(date2.getDate() + 1);
                 to = Date.parse(date2);
+                //console.log(moment(date2).format('LLL'));
+                to = moment(moment(date2).format('LLL')).format("X");
             }
             else if(days.length > 1){
                 //var date1 = days[0];
                 //date1.setDate(date1.getDate() + 1);
-                from = Date.parse(days[0]);
+                from = moment(moment(days[0]).format('LLL')).format("X");
                 var date2 = days[1];
                 date2.setDate(date2.getDate() + 1);
-                to = Date.parse(date2);
+                to = moment(moment(date2).format('LLL')).format("X");
             }else{
                 self.getData();
             }

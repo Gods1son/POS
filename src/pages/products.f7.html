@@ -203,17 +203,6 @@
                       </div>
                   </div>
                 </li>
-                <!--<li>
-                  <div class="item-content">
-                    <div class="item-inner-1">
-                      <span class="item-title">Payment made</span>
-                        <label class="toggle toggle-init paid_sell margin-left-half">
-                          <input type="checkbox">
-                          <span class="toggle-icon"></span>
-                        </label>
-                    </div>
-                  </div>
-                </li>-->
                 <li>
                   <div class="item-content">
                     <div class="item-inner">
@@ -246,10 +235,10 @@
         </div>
         <div class="page-content">
             <div class="block margin-top-half margin-bottom-half">
-                  <div class="block-title block-title-medium">{{productToEdit}}</div>
+                  <div class="block-title block-title-medium no-margin-bottom">{{productToEdit}}</div>
             </div>
 
-        <div class="list margin-bottom-half">
+        <div class="list margin-bottom-half no-margin-top">
           <div class="block-header text-color-black">Select Raw Materials Below - select multiple</div>
           <ul>
             <li>
@@ -311,68 +300,6 @@
           <span class="labelName">Cost after profit: </span>
           <div class="display-inline-flex"><div class="totalAmount">0</div></div>
         </div>
-            <!--<div class="data-table card">
-              <div class="card-header">
-                    
-                    <div class="data-table-title">Selected Raw Materials</div>
-                </div>
-                <div class="card-content">
-                    <table class="pickIngredient">
-                      <thead>
-                          <tr>
-                              <th>ID</th>
-                              <th class="label-cell">Name of Material</th>
-                              <th class="numerical-cell1">Cost/Size</th>
-                              <th class="input-cell1">Quantity</th>
-                              <th class="label-cell1">Cost</th>
-                              <th class="label-cell1"></th>   
-                          </tr>
-                      </thead>
-                      <tbody class="search-content-list-pick">
-                         
-                              <tr class="fakeRow display-none">
-                                  <td colspan="6"></td>
-                              </tr>
-                              <tr class="bg-color-white">
-                                  <td class="label-cell1"></td>
-                                  <td class="label-cell1"><a class="button button-fill color-blue customcharges" @click="AddNewCost">Add Custom Charges</a></td>
-                                  <td class="label-cell1" colspan="4"></td>   
-                              </tr>
-                              <tr class="bg-color-white">
-                                <td></td>
-                                  <td class="label-cell"><div class="block-title no-margin-vertical no-margin-left">Add Profit in %</div></td>
-                                  <td></td>
-                                  <td class="label-cell1">
-                                    <input class="profitpercent" type="text" placeholder="profit 0 to 100" @keyup="calculateprofit" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" value="0">
-                                    
-                                  </td>
-                                    <td class="label-cell profitvalue"></td>
-                                    <td class="label-cell"></td>   
-                              </tr>
-                              <tr class="bg-color-gray">
-                                  <td class="label-cell"></td>
-                                  <td class="numerical-cell"></td>
-                                  <td class="label-cell"></td>
-                                  <td class=""><div class="block-title text-color-white no-margin-vertical">Amount before profit:</div></td>
-                                  <td class=""><div class="col totalAmountBeforeProfit block-title-medium margin-left-half text-color-white"></div></td>
-                                  <td class="">
-                                      <a class="button button-fill color-white text-color-green calculateTotalButton" @click="CalculateTotal">Calculate</a>
-                                    </td>   
-                              </tr>
-                              <tr class="bg-color-gray">
-                                  <td class="label-cell"></td>
-                                  <td class="numerical-cell"></td>
-                                  <td class="label-cell"></td>
-                                  <td class="label-cell1"><div class="block-title text-color-white no-margin-vertical">Amount after profit</div></td>
-                                  <td class="label-cell1"><div class="col totalAmount block-title-medium margin-left-half text-color-white"></div></td>
-                                  <td class="label-cell1">
-                                      <a class="button button-fill color-green saveTotalButton" @click="SaveTotal">Save</a>
-                                    </td>   
-                              </tr>
-                            </tbody>
-                    </table>
-                </div>
-            </div>-->
             
         </div>
       </div>
@@ -384,7 +311,7 @@
 </div>
 </template>
 <script>
-import Dom7 from 'dom7';
+//import Dom7 from 'dom7';
 import Dexie from 'dexie';
 import * as moment from 'moment';
 var db = new Dexie("BizExpenseManagerDB");
@@ -402,7 +329,7 @@ var db = new Dexie("BizExpenseManagerDB");
             expenses_history: "++id,expID,name,amount_to_pay,amount_paid,date_paid,created_date,recurring,status"
           })
 
-var $$ = Dom7;
+//var $$ = Dom7;
 export default {
   data: function () {
       // Must return an object
@@ -473,11 +400,7 @@ export default {
         var select = self.productIngs.find(function(e){ 
               return e.id == Number(id);
           });
-          //self.ings.push(select);
-          //console.log(self.productIngs);
-          /*self.productIngs = self.productIngs.filter(function(e){ 
-              return e.id != Number(id);
-          });*/
+ 
           $(but).parents("li").eq(0).remove();
           self.$setState({
                 ings:self.ings,
@@ -485,10 +408,6 @@ export default {
             }, function(){
               
               self.CalculateTotal();
-              /*setTimeout(function(){
-                //(".calculateTotalButton").eq(0).click()
-                self.CalculateTotal();
-              },2000);*/
             });
     },
     SelectItem: function(select){
@@ -519,28 +438,6 @@ export default {
                   //var id = $(this).attr("data-itemid");
                   self.typingvalue(this);
                 })
-              /*var cpu = select.cost_per_unit == undefined ? 0 : select.cost_per_unit;
-              var sus = select.select_unit_size == undefined ? 0 : select.select_unit_size;
-              var lgth = $(".eachCostParent").length + 1;
-                var html = '<tr class="eachCostParent par-' + select.id + '"><td>' + lgth + '</td><td class="label-cell searchRowPick">' + select.name + '</td>';
-                html += '<td class="label-cell1">' + cpu + '/' + select.unit_size + select.unit + '</td>';
-                html += '<td class="label-cell1"><input class="costvalue" type="text" placeholder="Enter Quantity" ';
-                html += 'data-cost="' + cpu +'" data-unit="' + select.unit_size + '" @keyup="typingvalue" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" '; 
-                
-                html +=  'value="' + sus + '"></td><td class="label-cell1 eachCost">';
-                var val2 = select.select_cost != undefined ? select.select_cost : 0;
-                html += val2 + '</td><td><p class="display-inline-flex margin-vertical-half">';
-                html +=  '<a class="button button-fill color-red removeCost" data-itemID="' + select.id + '" @click="RemoveItem">Remove</a></p></td></tr>';
-                $(html).insertBefore($(".fakeRow"));
-                $(".removeCost").off("click").on("click", function(){
-                  //var id = $(this).attr("data-itemid");
-                  self.RemoveItem(this);
-                })
-                $(".costvalue").off("keyup").on("keyup", function(){
-                  //var id = $(this).attr("data-itemid");
-                  self.typingvalue(this);
-                })*/
-          //});
     },
     showToast: function(text, position){
         var self = this;
@@ -572,9 +469,6 @@ export default {
                       products:self.products,
                       totalMat:self.products.length
                   },function(){
-                      //var table = $("#ingredientTable").DataTable();
-                      //var but = $("#productTable").find(".deleteProduct[data-id='" + id + "']");
-                      //var row = $(but).parents("tr").eq(0);
                       self.showToast("Product " + text + "d!", "center");
                       list.remove("id", id);
                   });
@@ -646,8 +540,12 @@ export default {
 
                   $$("input.name_sell").val(item.name);
                   $$("input.cost_sell").val(item.cost);
+                  $("#paid-calendar-modal").val(moment().format('LLL'));
+                  $("#purchase-calendar-modal").val(moment().format('LLL'));
                   var popup = self.$app.popup.open('.sellProduct', true);
             } else{
+              $("#paid-calendar-modal").val(moment().format('LLL'));
+              $("#purchase-calendar-modal").val(moment().format('LLL'));
               var popup = self.$app.popup.open('.sellProduct', true);
               self.$setState({
                   currentProduct:null
@@ -1163,7 +1061,6 @@ export default {
   on: {
       pageInit: function(e, page) {
         var self = this;
-        $("#productTable").DataTable();
         $$(".showInactive").on("change", function(){
             self.getData();
         })
