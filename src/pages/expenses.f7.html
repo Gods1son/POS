@@ -58,18 +58,18 @@
                       <div class="card-content">{{totalMat}}</div>
                     </div>
                   </div>
-        
+                  
                   <div class="col-50 medium-33 small-50 xsmall-100">
                     <div class="card card-outline">
-                      <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">Total amount of expenses</div>
-                      <div class="card-content">{{money totalToPay}}</div>
+                      <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">Total Amount Paid</div>
+                      <div class="card-content">{{money totalPaid}}</div>
                     </div>
                   </div>
-        
-                  <div class="col-50 medium-33 small-50 xsmall-100">
+
+                  <div class="col-100">
                     <div class="card card-outline">
-                      <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">Total amount paid</div>
-                      <div class="card-content">{{money totalPaid}}</div>
+                      <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">Total Amount of Expenses</div>
+                      <div class="card-content">{{money totalToPay}}</div>
                     </div>
                   </div>
         
@@ -80,9 +80,9 @@
                     </div>
                   </div>-->
         
-                  <div class="col-50 medium-33 small-50 xsmall-100">
+                  <div class="col-100">
                     <div class="card card-outline">
-                      <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">(Total Amount Paid - Total Expenses)</div>
+                      <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">(Total Amount Paid minus Total Expenses)</div>
                       <div class="card-content">{{money totalDifference}}</div>
                     </div>
                   </div>
@@ -97,7 +97,7 @@
     <div class="block no-margin-vertical no-margin-horizontal padding-vertical-half roundHolder no-padding-horizontal">
       <div id="expenses-list" class="customList">
           <div class="text-align-center"><input class="search" placeholder="search">
-            <div class="margin-vertical-half padding-vertical-half">
+            <div class="margin-vertical-half padding-vertical-half sortTextPar">
               <span class="sortText display-none">Sort By:</span>
               <!--<span class="sort" data-sort="name">Name</span>
               <span class="sort" data-sort="cost">Cost</span>
@@ -159,7 +159,7 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Amount to be paid</div>
+                      <div class="item-title">Amount to be Paid</div>
                       <div class="item-input-wrap">
                         <input type="text" class="amount_to_pay" placeholder="Amount to pay" value="0" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                         <span class="input-clear-button"></span>
@@ -170,7 +170,7 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Amount paid</div>
+                      <div class="item-title">Amount Paid</div>
                       <div class="item-input-wrap">
                         <input type="text" class="amount_paid" placeholder="Amount Paid" value="0" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                         <span class="input-clear-button"></span>
@@ -234,7 +234,7 @@
 <script>
 import Dom7 from 'dom7';
 import Dexie from 'dexie';
-
+import * as moment from 'moment';
 var db = new Dexie("BizExpenseManagerDB");
           db.version(1).stores({
             ingredients: "++id,name,unit_size,unit,cost_per_unit,status,created_date",
@@ -304,12 +304,26 @@ export default {
         var calendar = self.$app.calendar.create({
                 inputEl: '#paid-calendar-modal',
                 timePicker: true,
-                dateFormat: { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }
+                formatValue: function(values){
+                    //console.log(values[0]);
+                    var t = moment(values[0]).format('LLL');
+                    //console.log(moment(values[0]).format("X"));
+                    //console.log(t);
+                    return t;
+                  }
+                //dateFormat: { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }
               });
               var calendarPurchase = self.$app.calendar.create({
                   inputEl: '#expense-calendar-modal',
                   timePicker: true,
-                  dateFormat: { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }
+                  formatValue: function(values){
+                    //console.log(values[0]);
+                    var t = moment(values[0]).format('LLL');
+                    //console.log(moment(values[0]).format("X"));
+                    //console.log(t);
+                    return t;
+                  }
+                  //dateFormat: { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }
               });
         //popup.once("opened", function(){
           if(id != null || id != undefined){
@@ -328,12 +342,14 @@ export default {
                     }
                     if(item.created_date != ""){
                       var myDate = new Date(item.created_date);
-                      myDate = myDate.toLocaleString();
+                      //myDate = myDate.toLocaleString();
+                      myDate = moment.unix(item.created_date).format("LLL");
                       $("#expense-calendar-modal").val(myDate);
                     }
                     if(item.date_paid != ""){
                       var myDate = new Date(item.date_paid);
-                      myDate = myDate.toLocaleString();
+                     // myDate = myDate.toLocaleString();
+                      myDate = moment.unix(item.date_paid).format("LLL");
                       $("#paid-calendar-modal").val(myDate);
                     }
                     var popup = self.$app.popup.open('.newExpense', true);
@@ -409,10 +425,10 @@ export default {
           return;
       }
       if(Number(paid) > 0 && Number(paid) >= Number(toPay)){
-            paidDate = Date.parse(new Date($.now()));
+            paidDate = moment().format("X");
       }
       if($("#paid-calendar-modal").val().trim() != ""){
-        paidDate = Date.parse($("#paid-calendar-modal").val());
+        paidDate = moment($("#paid-calendar-modal").val()).format("X");
       }
       if(err){
         var obj = {
@@ -421,7 +437,7 @@ export default {
                 amount_paid: $$("input.amount_paid").val(), 
                 recurring: isRecur,
                 date_paid: paidDate,
-                created_date: Date.parse($("#expense-calendar-modal").val()), 
+                created_date: moment($("#expense-calendar-modal").val()).format("X"),
                 status:1
               };
             if(self.currentExpense != null){
@@ -450,10 +466,23 @@ export default {
                         closeTimeout: 2000,
                         }).open();
     },
+    formatMoney:function(val){             
+      var sym = localStorage.getItem("currency", val);
+      sym = sym == undefined ? "" : sym;
+      if(val < 0){
+        var rev = 0 - val;
+        var val2 = val + rev + rev;
+        val = val2;
+        sym = "-" + sym;
+      }
+      var ret = sym + val.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+      return ret;
+    },
     setDataTable: function(){
       var self = this;
             $("#expenses-list .list").empty();
                       if(self.expenses != null && self.expenses.length > 0){
+                        $(".customList").removeClass("display-none");
                         $(".sort").remove();//id,name,amount_to_pay,amount_paid,date_paid,created_date,recurring,status
                         var sorter = '<span class="sort" data-sort="name">Name</span><span class="sort" data-sort="cost">Expense Cost</span>';
                         sorter += '<span class="sort" data-sort="paidAll">Fully Paid</span><span class="sort" data-sort="created_date">Created Date</span>';
@@ -463,16 +492,16 @@ export default {
                             var row = self.expenses[i];
                             var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
                             html += '<div class="name cardName">' + row.name + '</div><div class="id display-none">' + row.id + '</div><div class="cost display-none">' + row.amount_to_pay + '</div>';
-                            html += '<div class=""><span class="labelName">Amount to be paid: </span><span class="valueName">' + row.amount_to_pay.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") + '</span></div>';
-                            html += '<div class=""><span class="labelName">Amount Paid: </span><span class="valueName">' + row.amount_paid.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") + '</span></div>';
+                            html += '<div class=""><span class="labelName">Amount to be paid: </span><span class="valueName">' + self.formatMoney(row.amount_to_pay) + '</span></div>';
+                            html += '<div class=""><span class="labelName">Amount Paid: </span><span class="valueName">' + self.formatMoney(row.amount_paid) + '</span></div>';
                             var stat = row.status == 1 ? "display-none" : "";
                             var hidden = row.amount_paid >= row.amount_to_pay ? "" : "display-none";
                             var paidAll = row.amount_paid >= row.amount_to_pay ? 1 : 0;
                             var checkbox = row.recurring == 1 ? '' : 'display-none';
                             html += '<div class="paidAll display-none">' + paidAll + '</div>'
-                            html += '<div class="' + checkbox + '"><span class="labelName">Recurring Payment: </span><label class="checkbox"><input type="checkbox" checked><i class="icon-checkbox"></i></label></div>' + '<div class="display-none created_date">' + row.created_date + '</div>';
-                            html += '<div class="' + hidden + '"><span class="labelName">Date Fully Paid: </span><span class="valueName">' + new Date(row.date_paid).toLocaleString() + '</span></div>';
-                            html += '<div class=""><span class="labelName">Created Date: </span><span class="valueName">' + new Date(row.created_date).toLocaleString() + '</span></div>';
+                            html += '<div class="' + checkbox + '"><span class="labelName">Recurring Payment: </span><label class="checkbox"><input type="checkbox" checked disabled><i class="icon-checkbox"></i></label></div>' + '<div class="display-none created_date">' + row.created_date + '</div>';
+                            html += '<div class="' + hidden + '"><span class="labelName">Date Fully Paid: </span><span class="valueName">' + moment.unix(row.date_paid).format("LLL") + '</span></div>';
+                            html += '<div class=""><span class="labelName">Created Date: </span><span class="valueName">' + moment.unix(row.created_date).format("LLL") + '</span></div>';
                             html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName text-color-red">Deleted</span></div>';
                             html += '</div><div class="card-footer padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
                             html += '<a class="button button-raised button-small button-fill margin-right-half editExpense" data-id="' + row.id + '">Edit</a>';
@@ -514,6 +543,8 @@ export default {
                               //return false;
                           });
                           self.calculateTotalMoneyExpense();
+                        }else{
+                          $(".customList").addClass("display-none");
                         }
     },
     getData: function(){

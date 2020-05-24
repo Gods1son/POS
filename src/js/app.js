@@ -22,13 +22,22 @@ import App from '../app.f7.html';
 //import App from '../index.html';
 
 import Dom7 from 'dom7';
-
+import * as moment from 'moment';
 import jQuery from 'jquery';
 window.jQuery = jQuery;
 window.$ = jQuery;
 
 Template7.registerHelper("money", function(val){
-    return val.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+    var sym = localStorage.getItem("currency", val);
+    sym = sym == undefined ? "" : sym;
+    if(val < 0){
+      var rev = 0 - val;
+      var val2 = val + rev + rev;
+      val = val2;
+      sym = "-" + sym;
+    }
+    var ret = sym + val.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+    return ret;
 })
 
 Template7.registerHelper("convertDate", function(val){

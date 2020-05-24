@@ -41,6 +41,10 @@
     border-radius: 10px;
 }
 
+.sortTextPar{
+    white-space: nowrap;
+}
+
 .sortText{
     font-weight: 700;
 }
@@ -148,6 +152,11 @@
     margin: auto !important;
 }
 
+.costvalue{
+    margin-left: 2px !important;
+    margin-right: 2px !important;
+}
+
 .extraCostRow .extraName, .extraCostRow .eachCost{
     border:1px solid black !important;
     border-radius: 5px !important;
@@ -155,7 +164,7 @@
     width:100%;
 }
 
-.extraCostRow .eachCost{
+.extraCostRow .eachCost, .extraName{
     text-align: center;
 }
 

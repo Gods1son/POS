@@ -1,0 +1,89 @@
+
+<template>
+    <div class="page">
+        <div class="navbar">
+            <div class="navbar navbar-bg"></div>
+            <div class="navbar-inner sliding">
+              <div class="left">
+                <a href="#" class="link back">
+                  <i class="icon icon-back"></i>
+                  <span class="if-not-md">Back</span>
+                </a>
+              </div>
+              <div class="title">Settings</div>
+            </div>
+          </div>
+
+            <div class="page-content">
+                <div class="list no-hairlines-md">
+                    <div class="block-title text-color-black no-margin-bottom margin-left-half padding-bottom-half">Choose currency</div>
+                    <ul>
+                      <li class="item-content item-input">
+                        <div class="item-inner">
+                          <div class="item-title item-label">Currency</div>
+                          <div class="item-input-wrap">
+                            <input id="autocomplete-dropdown-all" type="text" placeholder="Currency">
+                          </div>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+            </div>
+  
+    </div> 
+  </template>
+  <script>
+      import currencies from '../js/currencies.js';
+    export default {
+      data() {
+        return {
+          user: {
+            firstName: 'John',
+            lastName: 'Doe',
+          },
+          // Login screen demo data
+          username: '',
+          password: '',
+  
+        };
+      },
+      methods: {
+        helloWorld() {
+          this.$f7.dialog.alert('Hello World!');
+        },
+        
+      },
+      on: {
+      pageInit: function(e, page) {
+            var self = this;
+            var savedCurr = localStorage.getItem("currency");
+            if(savedCurr != undefined){
+                $('#autocomplete-dropdown-all').val(savedCurr);
+            }
+            var cur = Object.keys(currencies);
+            var autocompleteDropdownAll = self.$app.autocomplete.create({
+                inputEl: '#autocomplete-dropdown-all',
+                openIn: 'dropdown',
+                source: function (query, render) {
+                    var results = [];
+                    // Find matched items
+                    for (var i = 0; i < cur.length; i++) {
+                    if (cur[i].toLowerCase().indexOf(query.toLowerCase()) >= 0) results.push(cur[i]);
+                    }
+                    // Render items by passing array with result items
+                    render(results);
+                    },
+                on:{
+                    change: function (value) {
+                        var cnt = value[0];
+                        var val = currencies[cnt];
+                        $('#autocomplete-dropdown-all').val(val);
+                        localStorage.setItem("currency", val);
+                    }     
+                }
+                });
+            }  
+        }
+    }
+  </script>
+  

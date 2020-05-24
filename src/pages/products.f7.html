@@ -50,7 +50,7 @@
     <div class="block no-margin-vertical no-margin-horizontal padding-vertical-half roundHolder no-padding-horizontal">
       <div id="product-list" class="customList">
           <div class="text-align-center"><input class="search" placeholder="search">
-            <div class="margin-vertical-half padding-vertical-half">
+            <div class="margin-vertical-half padding-vertical-half sortTextPar">
               <span class="sortText display-none">Sort By:</span>
               <!--<span class="sort" data-sort="name">Name</span>
               <span class="sort" data-sort="cost">Cost</span>-->
@@ -142,7 +142,7 @@
                     <div class="item-inner">
                       <div class="item-title">Product Name</div>
                       <div class="item-input-wrap">
-                        <input type="text" class="name_sell" placeholder="Product name" disabled="true"/>
+                        <input type="text" class="name_sell" placeholder="Product name"/>
                         <span class="input-clear-button"></span>
                       </div>
                     </div>
@@ -249,8 +249,8 @@
                   <div class="block-title block-title-medium">{{productToEdit}}</div>
             </div>
 
-        <div class="list">
-          <div class="block-header">Select Raw Materials Below - select multiple</div>
+        <div class="list margin-bottom-half">
+          <div class="block-header text-color-black">Select Raw Materials Below - select multiple</div>
           <ul>
             <li>
               <a class="item-link item-content bg-color-orange myOrange" href="#" id="autocomplete-standalone-multiple">
@@ -264,9 +264,56 @@
           </ul>
         </div>
 
-            <div class="data-table card">
+        <div id="prodIng-list" class="customList">
+          <ul class="list sortList margin-top-half margin-bottom-half">
+            
+          </ul>
+          <!--<ul class="pagination"></ul>-->
+        </div>
+
+        <div class="margin-horizontal">
+          <a class="button button-raised button-fill color-blue customcharges" @click="AddNewCost">Add Custom Charges</a>
+        </div>
+
+        <div id="prodOtherIng-list" class="customList">
+          <ul class="list sortList margin-top-half margin-bottom-half">
+            
+          </ul>
+          <!--<ul class="pagination"></ul>-->
+        </div>
+
+        <ul class="list sortList margin-top-half margin-bottom-half">
+          <div class="card myCard">
+            <div class="card-content padding-horizontal-half">
+              <div><span class="labelName">Add Profit in %:</span>
+                <div class="display-inline-flex">
+                  <input class="profitpercent" type="text" placeholder="profit 0 to 100" @keyup="calculateprofit" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" value="0">
+                </div></div>
+                <div><span class="labelName">Profit in Money:</span>
+                  <div class="display-inline-flex">
+                    <div class="profitvalue valueName"></div>
+                  </div></div>
+            </div>
+          </div>
+      </ul>
+      <div class="row padding-horizontal-half"><div class="col-50">
+        <a class="button button-fill button-raised color-white text-color-green calculateTotalButton" @click="CalculateTotal">Calculate</a>
+      </div>
+      <div class="col-50">
+            <a class="button button-fill button-raised color-green saveTotalButton" @click="SaveTotal">Save</a>
+      </div>
+    </div>
+        <div class="margin-top-half block-title-medium margin-horizontal-half">
+          <span class="labelName">Cost before profit: </span>
+          <div class="display-inline-flex"><div class="totalAmountBeforeProfit">0</div></div>
+        </div>
+        <div class="margin-top-half block-title-medium margin-horizontal-half">
+          <span class="labelName">Cost after profit: </span>
+          <div class="display-inline-flex"><div class="totalAmount">0</div></div>
+        </div>
+            <!--<div class="data-table card">
               <div class="card-header">
-                    <!-- Table title -->
+                    
                     <div class="data-table-title">Selected Raw Materials</div>
                 </div>
                 <div class="card-content">
@@ -282,26 +329,7 @@
                           </tr>
                       </thead>
                       <tbody class="search-content-list-pick">
-                         <!-- {{#each productIngs}}
-                                <tr class="eachCostParent par-{{id}}">
-                                  <td>{{js "@index + 1"}}</td>
-                                  <td class="label-cell searchRowPick">{{name}}</td>
-                                  <td class="label-cell1">
-                                    {{money cost_per_unit}}/{{unit_size}}{{unit}}
-                                  </td>
-                                  <td class="label-cell1">
-                                    <input class="costvalue" type="text" placeholder="Enter Quantity" data-cost="{{cost_per_unit}}" data-unit="{{unit_size}}" 
-                                          @keyup="typingvalue" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" 
-                                          value="{{js 'this.select_unit_size != undefined ? this.select_unit_size : 0'}}">
-                                  </td>
-                                  <td class="label-cell1 eachCost">{{js "this.select_cost != undefined ? this.select_cost : ''"}}</td>
-                                  <td>
-                                      <p class="display-inline-flex margin-vertical-half">
-                                          <a class="button button-fill color-red removeCost" data-itemID="{{id}}" @click="RemoveItem">Remove</a>
-                                      </p>
-                                  </td>
-                                  </tr>
-                              {{/each}}-->
+                         
                               <tr class="fakeRow display-none">
                                   <td colspan="6"></td>
                               </tr>
@@ -316,13 +344,7 @@
                                   <td></td>
                                   <td class="label-cell1">
                                     <input class="profitpercent" type="text" placeholder="profit 0 to 100" @keyup="calculateprofit" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" value="0">
-                                    <!--<div class="item-content item-input">
-                                          <div class="item-inner">
-                                            <div class="item-input-wrap">
-                                              <input class="profitpercent" type="text" placeholder="profit 0 to 100" @keyup="calculateprofit" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" value="0">
-                                            </div>
-                                          </div>
-                                        </div>-->
+                                    
                                   </td>
                                     <td class="label-cell profitvalue"></td>
                                     <td class="label-cell"></td>   
@@ -350,7 +372,7 @@
                             </tbody>
                     </table>
                 </div>
-            </div>
+            </div>-->
             
         </div>
       </div>
@@ -364,7 +386,7 @@
 <script>
 import Dom7 from 'dom7';
 import Dexie from 'dexie';
-
+import * as moment from 'moment';
 var db = new Dexie("BizExpenseManagerDB");
           db.version(1).stores({
             ingredients: "++id,name,unit_size,unit,cost_per_unit,status,created_date",
@@ -390,6 +412,7 @@ export default {
         currentProduct: null,
         totalMatIngredients:0,
         ings:null,
+        allIngs:null,
         productToEdit: null,
         productToEditID: null,
         productIngs:[]
@@ -440,29 +463,27 @@ export default {
       var unit = $(but).attr("data-unit");
       var fig = (Number(costperunit)/Number(unit)) * Number(val);
         //console.log(fig.toFixed(2));
-        var td = $(but).parents("td").eq(0).next("td").eq(0).text(fig.toFixed(2));
+        var td = $(but).parents("li").eq(0).find(".eachCost").eq(0).text(fig.toFixed(2));
         self.CalculateTotal();
     },
     RemoveItem: function(but){
       var self = this;
-      var id = $(but).attr("data-itemid");
+      var id = $(but).attr("data-id");
       //console.log(id);
         var select = self.productIngs.find(function(e){ 
               return e.id == Number(id);
           });
-          self.ings.push(select);
+          //self.ings.push(select);
           //console.log(self.productIngs);
           /*self.productIngs = self.productIngs.filter(function(e){ 
               return e.id != Number(id);
           });*/
-          $(but).parents("tr").eq(0).remove();
+          $(but).parents("li").eq(0).remove();
           self.$setState({
                 ings:self.ings,
                 productIngs:self.productIngs
             }, function(){
-              $(".eachCostParent").each(function(ind, elem){
-                  $(this).find("td").eq(0).text(ind + 1);
-              })
+              
               self.CalculateTotal();
               /*setTimeout(function(){
                 //(".calculateTotalButton").eq(0).click()
@@ -472,30 +493,40 @@ export default {
     },
     SelectItem: function(select){
       var self = this;
-        /*var select = self.ings.find(function(e){ 
-              return e.id == Number(id);
-          });*/
-          /*if(self.productIngs == null){
-              self.productIngs = [];
-          }
-          self.productIngs.push(select);*/
-          //console.log(self.productIngs);
-          /*self.ings = self.ings.filter(function(e){ 
-              return e.id != Number(id);
-          });*/
-          //console.log(self.ings);
-            /*self.$setState({
-                //ings:self.ings,
-                productIngs:self.productIngs
-            }, function(){*/
-              var cpu = select.cost_per_unit == undefined ? 0 : select.cost_per_unit;
+        var cpu = select.cost_per_unit == undefined ? 0 : select.cost_per_unit;
+        var sus = select.select_unit_size == undefined ? 0 : select.select_unit_size; 
+        var html = '<li class="eachCostParent"><div class="card myCard"><div class="card-content padding-horizontal-half">';
+        html += '<div class="name cardName">' + select.name + '</div>';
+        html += '<div class=""><span class="labelName">Unit Cost: </span><span class="valueName">' + self.formatMoney(cpu) + " for " + select.unit_size + select.unit + '</span></div>';
+        html += '<div><span class="labelName">Quantity To Use: </span><div class="display-inline-flex"><input class="margin-horizontal-half costvalue" type="text" placeholder="Enter Quantity" ';
+        html += 'data-cost="' + cpu +'" data-unit="' + select.unit_size + '" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" '; 
+                //var val = sus != undefined ? select.select_unit_size : 0;
+        html +=  'value="' + sus + '"><span>' + select.unit + '</span></div></div>';
+        var val2 = select.select_cost != undefined ? select.select_cost : 0;
+        var stat = select.status == 1 ? "display-none" : "";
+        html += '<div class=""><span class="labelName">Cost of Material: </span><span class="valueName eachCost">' + val2 + '</span></div>';
+        html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName text-color-red">Deleted</span></div>';
+        html += '</div><div class="card-footer padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
+          html += '<a class="button button-raised button-small button-fill color-red removeCost" data-id="' + select.id + '">Delete</a>';
+        html += '</p></div></div>'
+        html += '</li>';
+        $("#prodIng-list .sortList").append(html);
+        $(".removeCost").off("click").on("click", function(){
+                  //var id = $(this).attr("data-itemid");
+                  self.RemoveItem(this);
+                })
+                $(".costvalue").off("keyup").on("keyup", function(){
+                  //var id = $(this).attr("data-itemid");
+                  self.typingvalue(this);
+                })
+              /*var cpu = select.cost_per_unit == undefined ? 0 : select.cost_per_unit;
               var sus = select.select_unit_size == undefined ? 0 : select.select_unit_size;
               var lgth = $(".eachCostParent").length + 1;
                 var html = '<tr class="eachCostParent par-' + select.id + '"><td>' + lgth + '</td><td class="label-cell searchRowPick">' + select.name + '</td>';
                 html += '<td class="label-cell1">' + cpu + '/' + select.unit_size + select.unit + '</td>';
                 html += '<td class="label-cell1"><input class="costvalue" type="text" placeholder="Enter Quantity" ';
                 html += 'data-cost="' + cpu +'" data-unit="' + select.unit_size + '" @keyup="typingvalue" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" '; 
-                //var val = sus != undefined ? select.select_unit_size : 0;
+                
                 html +=  'value="' + sus + '"></td><td class="label-cell1 eachCost">';
                 var val2 = select.select_cost != undefined ? select.select_cost : 0;
                 html += val2 + '</td><td><p class="display-inline-flex margin-vertical-half">';
@@ -508,7 +539,7 @@ export default {
                 $(".costvalue").off("keyup").on("keyup", function(){
                   //var id = $(this).attr("data-itemid");
                   self.typingvalue(this);
-                })
+                })*/
           //});
     },
     showToast: function(text, position){
@@ -589,13 +620,28 @@ export default {
               var calendar = self.$app.calendar.create({
                   inputEl: '#paid-calendar-modal',
                   timePicker: true,
-                  dateFormat: { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }
+                  formatValue: function(values){
+                    //console.log(values[0]);
+                    var t = moment(values[0]).format('LLL');
+                    //console.log(moment(values[0]).format("X"));
+                    //console.log(t);
+                    return t;
+                  }
+                  //dateFormat: { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }
               });
 
               var calendarPurchase = self.$app.calendar.create({
                   inputEl: '#purchase-calendar-modal',
                   timePicker: true,
-                  dateFormat: { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }
+                  formatValue: function(values){
+                    //console.log(values[0]);
+                    var t = moment(values[0]).format('LLL');
+                    //console.log(moment(values[0]).format("X"));
+                    //console.log(t);
+                    return t;
+                  }
+                  //dateFormat: 'YYYY-MM-DD HH:MM'
+                  //dateFormat: { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric' }
               });
 
                   $$("input.name_sell").val(item.name);
@@ -667,7 +713,7 @@ export default {
                     if(found < 1){
                       self.productIngs.push(select);
                       self.SelectItem(select);
-                    } 
+                    }
                   }
                 }
               }
@@ -683,7 +729,7 @@ export default {
                         //$(".ing-" + value.ingredientID).click();
                         //self.SelectItem(Number(value.ingredientID));
                         //console.log(value.ingredientID);
-                        var each = self.ings.find(x => x.id == Number(value.ingredientID));
+                        var each = self.activeArr.find(x => x.id == Number(value.ingredientID));
                         if(each != undefined){
                           each.select_unit_size = value.unit_size;
                           each.select_cost = value.cost;
@@ -706,24 +752,27 @@ export default {
                   //console.log(arr);
                   $.each(arr, function( key, value ) {
                     if(value.name != "Profit"){
-                            var row = '<tr class="extraCostRow"><td></td><td class="">'; 
-                            row += '<input class="extraName margin-right" type="text" placeholder="enter name" value="' + value.name + '" required></td><td></td>';
-                            row += '<td></td><td><input class="eachCost" type="text" value="' + value.cost + '" placeholder="enter cost" required validate pattern="[0-9]+(\.[0-9][0-9]?)?"></td>';
-                            //row += '<td><input class="eachCost" type="text" placeholder="enter cost" required validate pattern="[0-9]+(\.[0-9][0-9]?)?"></td>';
-                            row += '<td><p class="display-inline-flex margin-vertical-half"><a class="button button-fill color-red removeRow">Remove</a></p></td></tr>';
-                            var tr = $$(".customcharges").parents("tr").eq(0);
-                            $$(row).insertAfter($$(tr));
-                            $(".removeRow").on("click", function(e){
-                                $(this).parents("tr").eq(0).remove();
-                                self.CalculateTotal();
-                                //$(".calculateTotalButton").eq(0).click();
-                            })
-                            $(".extraCostRow").find(".eachCost").on("keyup", function(e){
-                                self.CalculateTotal();
-                                //$(".calculateTotalButton").eq(0).click();
-                            })
-                        }else{
-                            $(".profitvalue").text(value.cost.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,"));
+                      var html = '<li class="extraCostRow"><div class="card myCard"><div class="card-content padding-horizontal-half">';
+                        html += '<div><span class="labelName">Enter Name: </span><div class="display-inline-flex"><input class="extraName" type="text" placeholder="Enter Name" value="';
+                        html +=  value.name + '"></div></div>';
+                        html += '<div class="margin-top-half"><span class="labelName">Enter Cost: </span><div class="display-inline-flex"><input class="eachCost" type="text" placeholder="Enter Cost" value="';
+                        html += value.cost + '"></div></div>';
+                        html += '</div><div class="card-footer padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
+                          html += '<a class="button button-raised button-small button-fill color-red removeRow">Delete</a>';
+                        html += '</p></div></div>'
+                        html += '</li>';
+                        $("#prodOtherIng-list .sortList").append(html);
+                      
+                      $(".removeRow").on("click", function(e){
+                          $(this).parents("li").eq(0).remove();
+                          self.CalculateTotal();
+                      })
+                      $(".extraCostRow").find(".eachCost").on("keyup", function(e){
+                          self.CalculateTotal();
+                          //$(".calculateTotalButton").eq(0).click();
+                      })
+                    }else{
+                            $(".profitvalue").text(value.cost);
                             profit = value.cost;
                         }
                     })
@@ -832,15 +881,15 @@ export default {
       }else{
         fullyPaid = 0;
       }
-      isPaidDate = Date.parse($("#paid-calendar-modal").val());
+      isPaidDate = moment($("#paid-calendar-modal").val()).format("X");//  Date.parse($("#paid-calendar-modal").val());
         var obj = {
                 product_name: $$("input.name_sell").val(),  
                 buyer_name: $$("input.buyer_sell").val(),
                 cost: $$("input.cost_sell").val(),
-                amountPaid: $$("input.amountpaid_sell").val(),
+                amountPaid:  $$("input.amountpaid_sell").val(),
                 isPaid: fullyPaid,
                 date_paid: isPaidDate,
-                created_date: Date.parse($("#purchase-calendar-modal").val()),
+                created_date: moment($("#purchase-calendar-modal").val()).format("X"), //Date.parse($("#purchase-calendar-modal").val()),
                 status:1
               };
             //console.log(obj);
@@ -857,6 +906,18 @@ export default {
                   //console.log(error);
                  self.showToast("An error occurred!", "center");
               })
+    },
+    formatMoney:function(val){             
+      var sym = localStorage.getItem("currency", val);
+      sym = sym == undefined ? "" : sym;
+      if(val < 0){
+        var rev = 0 - val;
+        var val2 = val + rev + rev;
+        val = val2;
+        sym = "-" + sym;
+      }
+      var ret = sym + val.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+      return ret;
     },
     getData: function(){
       var self = this;
@@ -875,6 +936,7 @@ export default {
               }, function(){
                 $("#product-list .list").empty();
                       if(arr != null && arr.length > 0){
+                        $(".customList").removeClass("display-none");
                         $(".sort").remove();
                         var sorter = '<span class="sort" data-sort="name">Name</span><span class="sort" data-sort="cost">Cost</span>';
                         $(sorter).insertAfter($(".sortText"));
@@ -883,7 +945,7 @@ export default {
                             var row = arr[i];
                             var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
                             html += '<div class="name cardName">' + row.name + '</div><div class="id display-none">' + row.id + '</div><div class="cost display-none">' + row.cost + '</div>';
-                            html += '<div class=""><span class="labelName">Cost: </span><span class="valueName">' + row.cost.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") + '</span></div>';
+                            html += '<div class=""><span class="labelName">Cost: </span><span class="valueName">' + self.formatMoney(row.cost) + '</span></div>';
                             var stat = row.status == 1 ? "display-none" : "";
                             html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName text-color-red">Deleted</span></div>';
                             html += '</div><div class="card-footer padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
@@ -932,6 +994,8 @@ export default {
                               }
                               //return false;
                           });
+                        }else{
+                          $(".customList").addClass("display-none");
                         }
                 });
           });
@@ -944,12 +1008,14 @@ export default {
         checked = toggle.checked == true ? 0 : 1;
       }
 
-      var collection = db.ingredients.where('status').equals(checked).toArray(function(arr){
+      var collection = db.ingredients.toArray(function(arr){
+        var activeArr = arr.filter(x => x.status == 1);
         //var collection = db.ingredients.toArray(function(arr){
         //console.log(arr);
           self.$setState({
-                ings: arr,
-                totalMatIngredients:arr.length,
+                activeArr: arr,
+                ings: activeArr,
+                totalMatIngredients:activeArr.length,
                 productIngs:[],
                 productToEdit: self.products.find(x => x.id == Number(idOfProd)).name,
                 productToEditID: self.products.find(x => x.id == Number(idOfProd)).id
@@ -958,17 +1024,20 @@ export default {
     },
     AddNewCost: function(e){
       var self = this;
+      var html = '<li class="extraCostRow"><div class="card myCard"><div class="card-content padding-horizontal-half">';
+        html += '<div><span class="labelName">Enter Name: </span><div class="display-inline-flex"><input class="extraName" type="text" placeholder="Enter Name" ';
+        html += '></div></div>';
+        html += '<div class="margin-top-half"><span class="labelName">Enter Cost: </span><div class="display-inline-flex"><input class="eachCost" type="text" placeholder="Enter Cost" ';
+        html += '></div></div>';
+        html += '</div><div class="card-footer padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
+          html += '<a class="button button-raised button-small button-fill color-red removeRow">Delete</a>';
+        html += '</p></div></div>'
+        html += '</li>';
+        $("#prodOtherIng-list .sortList").append(html);
       
-      var row = '<tr class="extraCostRow"><td></td><td class="">'; 
-      row += '<input class="extraName margin-right" type="text" placeholder="enter name" required></td><td></td>';
-      row += '<td></td><td><input class="eachCost" type="text" placeholder="enter cost" required validate pattern="[0-9]+(\.[0-9][0-9]?)?"></td>';
-      //row += '<td><input class="eachCost" type="text" placeholder="enter cost" required validate pattern="[0-9]+(\.[0-9][0-9]?)?"></td>';
-      row += '<td><p class="display-inline-flex margin-vertical-half"><a class="button button-fill color-red removeRow">Remove</a></p></td></tr>';  
-      var tr = $$(e.target).parents("tr").eq(0);
-      $$(row).insertAfter($$(tr));
       $(".removeRow").on("click", function(e){
-          $(this).parents("tr").eq(0).remove();
-          $(".calculateTotalButton").eq(0).click();
+          $(this).parents("li").eq(0).remove();
+          self.CalculateTotal();
       })
       $(".extraCostRow").find(".eachCost").on("keyup", function(e){
           self.CalculateTotal();
@@ -987,7 +1056,7 @@ export default {
       $(".eachCostParent").each(function(index,item){
           var cost = $(item).find(".eachCost").eq(0).text();
           var val = $(item).find(".costvalue").eq(0).val();
-          var ingID = $(item).find(".removeCost").eq(0).attr("data-itemid");
+          var ingID = $(item).find(".removeCost").eq(0).attr("data-id");
           if((cost == "" || cost == "0") || (val == "")){
               self.$app.dialog.alert("Please fill all fields or remove unused selected raw materials");
               passed = false;
@@ -1049,16 +1118,16 @@ export default {
                           .then(function (deleteCount) {
                               //console.log( "Deleted " + deleteCount + " objects");
                             });
-                            
+                              //console.log(allCost);
                               db.product_ingredient.bulkAdd(allCost).then(function(lastKey) {
-                                      //console.log("Last raindrop's id was: " + lastKey); // Will be 100000.
+                                      //console.log("Last allcost's id was: " + lastKey); // Will be 100000.
                                   }).catch(Dexie.BulkError, function (e) {
                                       passed = false;
                                   });
 
-                                  
+                                  //console.log(allExtraCost);
                                   db.product_otherMaterials.bulkAdd(allExtraCost).then(function(lastKey) {
-                                      //console.log("Last raindrop's id was: " + lastKey); // Will be 100000.
+                                     // console.log("Last extracost's id was: " + lastKey); // Will be 100000.
                                   }).catch(Dexie.BulkError, function (e) {
                                       passed = false;
                                   });

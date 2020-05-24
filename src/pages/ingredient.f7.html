@@ -50,7 +50,7 @@
     <div class="block no-margin-vertical no-margin-horizontal padding-vertical-half roundHolder no-padding-horizontal">
       <div id="material-list" class="customList">
         <div class="text-align-center"><input class="search" placeholder="search">
-          <div class="margin-vertical-half padding-vertical-half">
+          <div class="margin-vertical-half padding-vertical-half sortTextPar">
             <span class="sortText display-none">Sort By:</span>
             <!--<span class="sort" data-sort="name">Name</span>
             <span class="sort" data-sort="cost">Cost</span>-->
@@ -264,7 +264,7 @@ export default {
                       //var table = $("#ingredientTable").DataTable();
                       //var but = $("#ingredientTable").find(".deleteButton[data-id='" + id + "']");
                       //var row = $(but).parents("tr").eq(0);
-                      self.showToast("Product " + text + "d!", "center");
+                      self.showToast("Material " + text + "d!", "center");
                         list.remove("id", id);
                   });
               }
@@ -330,6 +330,18 @@ export default {
               })
           }
     },
+    formatMoney:function(val){             
+      var sym = localStorage.getItem("currency", val);
+      sym = sym == undefined ? "" : sym;
+      if(val < 0){
+        var rev = 0 - val;
+        var val2 = val + rev + rev;
+        val = val2;
+        sym = "-" + sym;
+      }
+      var ret = sym + val.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+      return ret;
+    },
     getData: function(){
       var self = this;
       var checked = 1;
@@ -349,6 +361,7 @@ export default {
                       $("#material-list .list").empty();
                       //$(".sort").removeClass("asc").removeClass("desc");
                       if(self.ings != null && self.ings.length > 0){
+                        $(".customList").removeClass("display-none");
                         $(".sort").remove();
                         var sorter = '<span class="sort" data-sort="name">Name</span><span class="sort" data-sort="cost">Cost</span>';
                         $(sorter).insertAfter($(".sortText"));
@@ -357,9 +370,9 @@ export default {
                             var row = self.ings[i];
                             var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
                             html += '<div class="name cardName">' + row.name + '</div><div class="id display-none">' + row.id + '</div><div class="cost display-none">' + row.cost_per_unit + '</div>';
-                            html += '<div class=""><span class="labelName">Unit Size: </span><span class="valueName">' + row.unit_size + row.unit + '</span></div>';
+                            html += '<div class=""><span class="labelName">Cost/Unit Size: </span><span class="valueName">' + self.formatMoney(row.cost_per_unit) + " for " + row.unit_size + row.unit + '</span></div>';
                             var stat = row.status == 1 ? "display-none" : "";
-                            html += '<div class=""><span class="labelName">Cost: </span><span class="valueName">' + row.cost_per_unit.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") + '</span></div>';
+                            //html += '<div class=""><span class="labelName">Cost: </span><span class="valueName">' + self.formatMoney(row.cost_per_unit) + '</span></div>';
                             html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName text-color-red">Deleted</span></div>';
                             html += '</div><div class="card-footer padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
                             html += '<a class="button button-raised button-small button-fill margin-right-half editButton" data-id="' + row.id + '">Edit</a>';
@@ -400,6 +413,8 @@ export default {
                               }
                               //return false;
                           });
+                        }else{
+                          $(".customList").addClass("display-none");
                         }
                       });
               });

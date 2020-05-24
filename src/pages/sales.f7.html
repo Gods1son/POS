@@ -14,13 +14,12 @@
   </div>
 
       <!--fab-->
-    <!--<div class="fab fab-extended fab-right-bottom">
-      <a href="#" @click="openPopUp(null)">
+    <div class="fab fab-extended fab-right-bottom">
+      <a href="#" @click="openPopUpUpdateSellProduct(null)">
         <i class="icon f7-icons">plus</i>
-        
-        <div class="fab-text">Raw Material</div>
+        <div class="fab-text">Sale</div>
       </a>
-    </div>-->
+    </div>
     <!--fab-->
 
   <div class="page-content">
@@ -69,28 +68,28 @@
       
                 <div class="col-50 medium-33 small-50 xsmall-100">
                   <div class="card card-outline">
-                    <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">Total amount of sales</div>
+                    <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">Total Amount of Sales</div>
                     <div class="card-content">{{money totalMoney}}</div>
                   </div>
                 </div>
       
                 <div class="col-50 medium-33 small-50 xsmall-100">
                   <div class="card card-outline">
-                    <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">Total amount received</div>
+                    <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">Total Amount Received</div>
                     <div class="card-content">{{money totalPaid}}</div>
                   </div>
                 </div>
       
                 <div class="col-50 medium-33 small-50 xsmall-100">
                   <div class="card card-outline">
-                    <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">Number of Sales not fully paid</div>
+                    <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">Sales Not Fully Paid</div>
                     <div class="card-content">{{totalUnpaid}}</div>
                   </div>
                 </div>
       
-                <div class="col-50 medium-33 small-50 xsmall-100">
+                <div class="col-100">
                   <div class="card card-outline">
-                    <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">(Amount received minus Total sales)</div>
+                    <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">(Amount Received minus Total sales)</div>
                     <div class="card-content">{{money totalDifference}}</div>
                   </div>
                 </div>
@@ -104,7 +103,7 @@
   <div class="block no-margin-vertical no-margin-horizontal padding-vertical-half roundHolder no-padding-horizontal">
       <div id="sales-list" class="customList">
           <div class="text-align-center"><input class="search" placeholder="search">
-            <div class="margin-vertical-half padding-vertical-half">
+            <div class="margin-vertical-half padding-vertical-half sortTextPar">
               <span class="sortText display-none">Sort By:</span>
               <!--<span class="sort" data-sort="name">Name</span>
               <span class="sort" data-sort="cost">Cost</span>
@@ -157,7 +156,7 @@
                     <div class="item-inner">
                       <div class="item-title">Product Name</div>
                       <div class="item-input-wrap">
-                        <input type="text" class="name_sell" placeholder="Product name" disabled="true"/>
+                        <input type="text" class="name_sell" placeholder="Product name"/>
                         <span class="input-clear-button"></span>
                       </div>
                     </div>
@@ -166,7 +165,7 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Cost of product</div>
+                      <div class="item-title">Cost of Product</div>
                       <div class="item-input-wrap">
                         <input type="text" class="cost_sell" placeholder="Cost of product" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                         <span class="input-clear-button"></span>
@@ -177,7 +176,7 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Buyer Name</div>
+                      <div class="item-title">Buyer's Name</div>
                       <div class="item-input-wrap">
                         <input type="text" class="buyer_sell" placeholder="Buyer name"/>
                         <span class="input-clear-button"></span>
@@ -221,7 +220,7 @@
                 <li>
                   <div class="item-content">
                     <div class="item-inner">
-                      <a href="#" class="col button button-fill button-raised color-green" @click='updateDataSell'>Update Product Sale</a>
+                      <a href="#" class="col button button-fill button-raised color-green" @click='updateDataSell'>Save Product Sale</a>
                     </div>
                   </div>
                 </li>
@@ -239,7 +238,7 @@
 <script>
 import Dom7 from 'dom7';
 import Dexie from 'dexie';
-
+import * as moment from 'moment';
 var db = new Dexie("BizExpenseManagerDB");
           db.version(1).stores({
             ingredients: "++id,name,unit_size,unit,cost_per_unit,status,created_date",
@@ -374,9 +373,9 @@ export default {
     },
     updateDataSell: function(){
         var self = this;
-        if(self.currentSale == null){
+        /*if(self.currentSale == null){
             return;
-        }
+        }*/
       //var $$ = this.Dom7;
       var self = this;
       var checked = 0;
@@ -407,18 +406,21 @@ export default {
       }else{
           fullyPaid = 0;
       }
-      var isPaidDate = Date.parse($("#paid-calendar-modal").val());
+      var isPaidDate = moment($("#paid-calendar-modal").val()).format("X");
         var obj = {
-                id: Number(self.currentSale),
+                //id: Number(self.currentSale),
                 product_name: $$("input.name_sell").val(),  
                 buyer_name: $$("input.buyer_sell").val(),
                 cost: $$("input.cost_sell").val(),
                 amountPaid: $$("input.amountpaid_sell").val(),
                 isPaid: fullyPaid,
                 date_paid: isPaidDate,
-                created_date: Date.parse($("#purchase-calendar-modal").val()),
+                created_date: moment($("#purchase-calendar-modal").val()).format("X"),
                 status:1
               };
+              if(self.currentSale != null){
+                obj.id = Number(self.currentSale);
+              }
             db.sales.put(obj).then(function(){
                     self.showToast("Record saved!", "center");
                     $$("input.buyer_sell, input.amountpaid_sell, #purchase-calendar-modal, #paid-calendar-modal").val("");
@@ -435,20 +437,34 @@ export default {
               })
     },
     openPopUpUpdateSellProduct: function(id){
-        if(id == null){
+        /*if(id == null){
             return;
-        }
+        }*/
         var self = this;
         var calendar = self.$app.calendar.create({
                   inputEl: '#paid-calendar-modal',
                   timePicker: true,
-                  dateFormat: { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }
+                  formatValue: function(values){
+                    //console.log(values[0]);
+                    var t = moment(values[0]).format('LLL');
+                    //console.log(moment(values[0]).format("X"));
+                    //console.log(t);
+                    return t;
+                  }
+                  //dateFormat: { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }
               });
 
               var calendarPurchase = self.$app.calendar.create({
                   inputEl: '#purchase-calendar-modal',
                   timePicker: true,
-                  dateFormat: { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }
+                  formatValue: function(values){
+                    //console.log(values[0]);
+                    var t = moment(values[0]).format('LLL');
+                    //console.log(moment(values[0]).format("X"));
+                    //console.log(t);
+                    return t;
+                  }
+                  //dateFormat: { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }
               });
         //popup.once("opened", function(){
           if(id != null || id != undefined){
@@ -461,12 +477,15 @@ export default {
                 $$("input.amountpaid_sell").val(item.amountPaid);
                 if(item.created_date != ""){
                   var myDate = new Date(item.created_date);
-                  myDate = myDate.toLocaleString();
+                  //myDate = myDate.toLocaleString();
+                  //myDate = moment(item.created_date);
+                  myDate = moment.unix(item.created_date).format("LLL");
                   $("#purchase-calendar-modal").val(myDate);
                 }
                 if(item.date_paid != ""){
                   var myDate = new Date(item.date_paid);
-                  myDate = myDate.toLocaleString();
+                  //myDate = myDate.toLocaleString();
+                  myDate = moment.unix(item.date_paid).format("LLL");
                   $("#paid-calendar-modal").val(myDate);
                 }
                 var popup = self.$app.popup.open('.newSales', true);
@@ -474,6 +493,13 @@ export default {
                     currentSale: Number(id)
                 });
             }else{
+                $$("input.name_sell").val("");
+                $$("input.buyer_sell").val("");
+                $$("input.cost_sell").val("");
+                $$("input.amountpaid_sell").val("");
+                $("#purchase-calendar-modal").val("");
+                $("#paid-calendar-modal").val("");
+                var popup = self.$app.popup.open('.newSales', true);
                 self.$setState({
                     currentSale: null
                 });
@@ -532,6 +558,7 @@ export default {
             var self = this;
             $("#sales-list .list").empty();//id,product_name,buyer_name,cost,amountPaid,isPaid,date_paid,created_date,status
                       if(self.sales != null && self.sales.length > 0){
+                        $(".customList").removeClass("display-none");
                         $(".sort").remove();
                         var sorter = '<span class="sort" data-sort="name">Name</span><span class="sort" data-sort="cost">Cost</span>';
                         sorter += '<span class="sort" data-sort="isPaid">Fully Paid</span><span class="sort" data-sort="created_date">Purchase Date</span>';
@@ -542,14 +569,14 @@ export default {
                             var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
                             html += '<div class="name cardName">' + row.product_name + '</div><div class="id display-none">' + row.id + '</div><div class="cost display-none">' + row.cost + '</div>';
                             html += '<div class=""><span class="labelName">Buyer\'s name: </span><span class="valueName">' + row.buyer_name + '</span></div><div class="isPaid display-none">' + row.isPaid + '</div>';
-                            html += '<div class=""><span class="labelName">Product Cost: </span><span class="valueName">' + row.cost.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") + '</span></div>';
-                            html += '<div class=""><span class="labelName">Amount Paid: </span><span class="valueName">' + row.amountPaid.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") + '</span></div>';
+                            html += '<div class=""><span class="labelName">Product Cost: </span><span class="valueName">' + self.formatMoney(row.cost) + '</span></div>';
+                            html += '<div class=""><span class="labelName">Amount Paid: </span><span class="valueName">' + self.formatMoney(row.amountPaid) + '</span></div>';
                             var stat = row.status == 1 ? "display-none" : "";
                             var hidden = row.isPaid == 1 ? "" : "display-none";
                             var checkbox = row.isPaid == 1 ? '<i class="icon f7-icons text-color-green paid">checkmark_circle_fill</i>' : '<i class="icon f7-icons text-color-red paid">multiply_circle_fill</i>';
                             html += '<div class=""><span class="labelName">Fully Paid: </span>' + checkbox + '</div>' + '<div class="display-none created_date">' + row.created_date + '</div>';
-                            html += '<div class="' + hidden + '"><span class="labelName">Date Fully Paid: </span><span class="valueName">' + new Date(row.date_paid).toLocaleString() + '</span></div>';
-                            html += '<div class=""><span class="labelName">Purchase Date: </span><span class="valueName">' + new Date(row.created_date).toLocaleString() + '</span></div>';
+                            html += '<div class="' + hidden + '"><span class="labelName">Date Fully Paid: </span><span class="valueName">' + moment.unix(row.date_paid).format("LLL") + '</span></div>';
+                            html += '<div class=""><span class="labelName">Purchase Date: </span><span class="valueName">' + moment.unix(row.created_date).format("LLL") + '</span></div>';
                             html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName text-color-red">Deleted</span></div>';
                             html += '</div><div class="card-footer padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
                             html += '<a class="button button-raised button-small button-fill margin-right-half editSale" data-id="' + row.id + '">Edit</a>';
@@ -591,7 +618,21 @@ export default {
                               //return false;
                           });
                           self.calculateTotalMoney();
+                        }else{
+                          $(".customList").addClass("display-none");
                         }
+    },
+    formatMoney:function(val){             
+      var sym = localStorage.getItem("currency", val);
+      sym = sym == undefined ? "" : sym;
+      if(val < 0){
+        var rev = 0 - val;
+        var val2 = val + rev + rev;
+        val = val2;
+        sym = "-" + sym;
+      }
+      var ret = sym + val.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+      return ret;
     },
     getData: function(){
       var self = this;
