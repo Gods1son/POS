@@ -155,9 +155,31 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Cost of Product</div>
+                      <div class="item-title">Selling Price</div>
                       <div class="item-input-wrap">
-                        <input type="text" class="cost_sell" placeholder="Cost of product" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                        <input type="text" class="cost_sell" @keyup="calculateQuantity" placeholder="Cost of product" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                        <span class="input-clear-button"></span>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-title">Quantity</div>
+                      <div class="item-input-wrap">
+                        <input type="text" class="quantity_sell" @keyup="calculateQuantity" placeholder="Quantity" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                        <span class="input-clear-button"></span>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-title">Total Price</div>
+                      <div class="item-input-wrap">
+                        <input type="text" class="total_sell" placeholder="Total Price" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                         <span class="input-clear-button"></span>
                       </div>
                     </div>
@@ -230,12 +252,12 @@
 import Dexie from 'dexie';
 import * as moment from 'moment';
 var db = new Dexie("BizExpenseManagerDB");
-          db.version(1).stores({
+          db.version(2).stores({
             ingredients: "++id,name,unit_size,unit,cost_per_unit,status,created_date",
             products: "++id,name,cost,status,created_date",
             product_ingredient: "++id,productID,ingredientID,unit_size,cost,status,created_date",
             product_otherMaterials: "++id,productID,name,cost,status,created_date",
-            sales: "++id,product_name,buyer_name,cost,amountPaid,isPaid,date_paid,created_date,status",
+            sales: "++id,product_name,buyer_name,cost,quantity,total_price,amountPaid,isPaid,date_paid,created_date,status",
             expenses: "++id,name,amount_to_pay,amount_paid,date_paid,created_date,recurring,status",
 
             ingredients_history: "++id,ingID,name,unit_size,unit,cost_per_unit,status,created_date",
@@ -312,6 +334,14 @@ export default {
             });
         }
     },
+    calculateQuantity: function(){
+        var cost = Number($(".cost_sell").val());
+        var quant = Number($(".quantity_sell").val());
+        if(!isNaN(cost) && !isNaN(quant)){
+            var total = cost * quant;
+            $(".total_sell").val(total);
+        }
+    },
     moneyFormat: function(val){
       var sym = localStorage.getItem("currency", val);
       sym = sym == undefined ? "" : sym;
@@ -326,30 +356,33 @@ export default {
     },
     formatPDF: function(sales){//product_name,buyer_name,cost,amountPaid,isPaid,date_paid,created_date
       var self = this;
-      var Companyname = localStorage.getItem("companyName") != undefined ? localStorage.getItem("companyName") : "Name of Coy";
-      var Comaddress = localStorage.getItem("companyAddress") != undefined ? localStorage.getItem("companyAddress") : "Address of Coy";
+      var Companyname = localStorage.getItem("companyName") != undefined ? localStorage.getItem("companyName") : "";
+      var Comaddress = localStorage.getItem("companyAddress") != undefined ? localStorage.getItem("companyAddress").split("\n").join("<br>") : "";
       var buyer = sales.buyer_name;
       var productName = sales.product_name;
-      //var curr = localStorage.getItem("currency") != undefined ? localStorage.getItem("currency") : "";
-      var quant = 1;
+      var curr = localStorage.getItem("currency") != undefined ? localStorage.getItem("currency") : "";
+      var quant = sales.quantity == null ? 1 : sales.quantity;
       var cost = self.moneyFormat(sales.cost);
-      var totalPrice = self.moneyFormat(sales.cost);
+      var tPrice = sales.total_price == null ? sales.cost : sales.total_price;
+      var totalPrice = self.moneyFormat(tPrice);
       var totalPaid = self.moneyFormat(sales.amountPaid);
-      var outstanding = self.moneyFormat((Number(sales.amountPaid) - Number(sales.cost)));
+      var outstanding = self.moneyFormat((Number(tPrice) - Number(sales.amountPaid)));
       var purchaseDate = moment.unix(sales.created_date).format("LLL");
+      var paymentDate =  sales.date_paid == "" ? "" : moment.unix(sales.date_paid).format("LLL");
       var today = moment().format("LLL");
        var html = '<html><div style="text-align:right; border-bottom:1px solid black;">';
-        html += '<h2 style="margin-bottom:5px; margin-top:5px;">' + Companyname + '</h2><span>' + Comaddress + '</span></div>';
-        html += '<div style="text-align:left; border-bottom:1px solid black;"><h4 style="margin-bottom:5px; margin-top:5px;">Invoice To:</h4>';
+        html += '<h2 style="margin-bottom:5px; margin-top:5px;">' + Companyname + '</h2><div>' + Comaddress + '</div></div>';
+        html += '<div style="text-align:left; border-bottom:1px solid black;"><h4 style="margin-bottom:5px; margin-top:5px;">Invoice No: 00' + sales.id.toString() + '</h4><h4 style="margin-bottom:5px; margin-top:5px;">Invoice To:</h4>';
         html += '<h3 style="margin-bottom:5px; margin-top:5px;">' + buyer + '</h3></div>';
         html += '<table><thead><tr><th style="width: 70vw;text-align: left;">Product Name</th>';
-        html += '<th style="width: 10vw;text-align: center;">Quantity</th><th style="width: 20vw;text-align: center;">Price</th>';
+        html += '<th style="width: 10vw;text-align: center;">Quantity</th><th style="width: 20vw;text-align: right;">Price</th>';
         html += '</tr></thead><tbody><tr><td>' + productName + '</td><td style="text-align:center">' + quant + '</td>';
-        html += '<td style="text-align: center;">' + cost + '</td></tr></tbody></table>';
+        html += '<td style="text-align: right;">' + cost + '</td></tr></tbody></table>';
         html += '<div style="text-align:right; border-top:1px solid black;"><div><span>Total Price: </span><span style="font-size:1.2em;">' + totalPrice + '</span></div>';
         html += '<div><span>Amount Paid: </span><span style="font-size:1.2em;">' + totalPaid + '</span></div>';
         html += '<div><span>Outstanding: </span><span style="font-size:1.2em;">' + outstanding + '</span></div>';
-        html += '<div><span">Purchase Date: </span><span style="font-size:1.2em;">' + purchaseDate + '</span></div></div>';
+        html += '<div><span">Purchase Date: </span><span style="font-size:1.2em;">' + purchaseDate + '</span></div>';
+        html += '<div><span">Payment Date: </span><span style="font-size:1.2em;">' + paymentDate + '</span></div></div>';
         html += '<div style="text-align:left;"><h3 style="margin-bottom:5px; margin-top:5px;">Thank you!</h3><h5 style="margin-bottom:5px; margin-top:5px;">' + today + '</h5></div><hr></html>';
         return html;
     },
@@ -399,7 +432,7 @@ export default {
     },
     closeUpdatePopUp: function(){
         var self = this;
-        $$("input.buyer_sell, input.amountpaid_sell").val("");
+        $$("input.buyer_sell, input.amountpaid_sell, .quantity_sell, .total_sell").val("");
         var popup = self.$app.popup.close('.newSales', true);
     },
     updateDataSell: function(){
@@ -429,7 +462,7 @@ export default {
     },
     processPaymentUpdate: function(){
       var self = this;
-      var cp = $$("input.cost_sell").val();
+      var cp = $$("input.total_sell").val();
       var sp = $$("input.amountpaid_sell").val();
       var fullyPaid = 0;
       if(Number(sp) >= Number(cp)){
@@ -443,6 +476,8 @@ export default {
                 product_name: $$("input.name_sell").val(),  
                 buyer_name: $$("input.buyer_sell").val(),
                 cost: $$("input.cost_sell").val(),
+                quantity: $$("input.quantity_sell").val(),
+                total_price: $$("input.total_sell").val(),
                 amountPaid: $$("input.amountpaid_sell").val(),
                 isPaid: fullyPaid,
                 date_paid: isPaidDate,
@@ -454,7 +489,7 @@ export default {
               }
             db.sales.put(obj).then(function(){
                     self.showToast("Record saved!", "center");
-                    $$("input.buyer_sell, input.amountpaid_sell, #purchase-calendar-modal, #paid-calendar-modal").val("");
+                    $$("input.buyer_sell, input.amountpaid_sell, #purchase-calendar-modal, #paid-calendar-modal, .quantity_sell, .total_sell").val("");
                     self.$app.popup.close('.newSales', true);
                     self.getData();
                     self.$setState({
@@ -475,7 +510,8 @@ export default {
       var html = self.formatPDF(item);
       var options = {
                 documentSize: 'A4',
-                type: 'share'
+                type: 'share',
+                fileName: item.buyer_name + "- 00" + item.id + '.pdf'
               }
       try{
       if(pdf != undefined){
@@ -530,6 +566,10 @@ export default {
                 $$("input.name_sell").val(item.product_name);
                 $$("input.buyer_sell").val(item.buyer_name);
                 $$("input.cost_sell").val(item.cost);
+                var quantity = item.quantity == null ? 1 : item.quantity;
+                  var total = item.total_price == null ? item.cost : item.total_price;
+                  $(".quantity_sell").val(quantity);
+                  $(".total_sell").val(total);
                 $$("input.amountpaid_sell").val(item.amountPaid);
                 if(item.created_date != ""){
                   var myDate = new Date(item.created_date);
@@ -552,6 +592,7 @@ export default {
                 $$("input.name_sell").val("");
                 $$("input.buyer_sell").val("");
                 $$("input.cost_sell").val("");
+                $(".quantity_sell").val("1");
                 $$("input.amountpaid_sell").val("");
                 $("#paid-calendar-modal").val(moment().format('LLL'));
                 $("#purchase-calendar-modal").val(moment().format('LLL'));
@@ -622,10 +663,16 @@ export default {
                         $(".sortText").removeClass("display-none");
                         for(var i = 0; i < self.sales.length; i++){
                             var row = self.sales[i];
+                            var quantity = row.quantity == null ? 1 : row.quantity;
+                            var total = row.total_price == null ? row.cost : row.total_price;
                             var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
                             html += '<div class="name cardName">' + row.product_name + '</div><div class="id display-none">' + row.id + '</div><div class="cost display-none">' + row.cost + '</div>';
-                            html += '<div class=""><span class="labelName">Buyer\'s name: </span><span class="valueName">' + row.buyer_name + '</span></div><div class="isPaid display-none">' + row.isPaid + '</div>';
+                            html += '<div class=""><span class="labelName">Buyer\'s name: </span><span class="valueName buyer">' + row.buyer_name + '</span></div><div class="isPaid display-none">' + row.isPaid + '</div>';
                             html += '<div class=""><span class="labelName">Product Cost: </span><span class="valueName">' + self.formatMoney(row.cost) + '</span></div>';
+
+                            html += '<div class=""><span class="labelName">Quantity: </span><span class="valueName">' + quantity + '</span></div>';
+                            html += '<div class=""><span class="labelName">Total Cost: </span><span class="valueName">' + self.formatMoney(total) + '</span></div>';
+
                             html += '<div class=""><span class="labelName">Amount Paid: </span><span class="valueName">' + self.formatMoney(row.amountPaid) + '</span></div>';
                             var stat = row.status == 1 ? "display-none" : "";
                             var hidden = row.isPaid == 1 ? "" : "display-none";
@@ -645,7 +692,7 @@ export default {
                             //return html;
                         }
                         var options = {
-                            valueNames: ['id','isPaid','created_date','cost','name'],
+                            valueNames: ['id','isPaid','buyer','created_date','cost','name'],
                             //page: 3,
                             //pagination: true
                         };

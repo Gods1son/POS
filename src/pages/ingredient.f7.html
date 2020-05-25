@@ -149,12 +149,12 @@ import Dexie from 'dexie';
 //import List from 'list.js';
 
 var db = new Dexie("BizExpenseManagerDB");
-          db.version(1).stores({
+          db.version(2).stores({
             ingredients: "++id,name,unit_size,unit,cost_per_unit,status,created_date",
             products: "++id,name,cost,status,created_date",
             product_ingredient: "++id,productID,ingredientID,unit_size,cost,status,created_date",
             product_otherMaterials: "++id,productID,name,cost,status,created_date",
-            sales: "++id,product_name,buyer_name,cost,amountPaid,isPaid,date_paid,created_date,status",
+            sales: "++id,product_name,buyer_name,cost,quantity,total_price,amountPaid,isPaid,date_paid,created_date,status",
             expenses: "++id,name,amount_to_pay,amount_paid,date_paid,created_date,recurring,status",
 
             ingredients_history: "++id,ingID,name,unit_size,unit,cost_per_unit,status,created_date",
