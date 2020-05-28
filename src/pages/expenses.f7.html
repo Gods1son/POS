@@ -226,12 +226,12 @@
 import Dexie from 'dexie';
 import * as moment from 'moment';
 var db = new Dexie("BizExpenseManagerDB");
-          db.version(2).stores({
+          db.version(3).stores({
             ingredients: "++id,name,unit_size,unit,cost_per_unit,status,created_date",
             products: "++id,name,cost,status,created_date",
             product_ingredient: "++id,productID,ingredientID,unit_size,cost,status,created_date",
             product_otherMaterials: "++id,productID,name,cost,status,created_date",
-            sales: "++id,product_name,buyer_name,cost,quantity,total_price,amountPaid,isPaid,date_paid,created_date,status",
+            sales: "++id,parentID,product_name,isParent,buyer_name,cost,quantity,tax,total_price,afterTax,amountPaid,isPaid,date_paid,created_date,status",
             expenses: "++id,name,amount_to_pay,amount_paid,date_paid,created_date,recurring,status",
 
             ingredients_history: "++id,ingID,name,unit_size,unit,cost_per_unit,status,created_date",
@@ -288,30 +288,7 @@ export default {
     },
     openPopUp: function(id){
         var self = this;
-        var calendar = self.$app.calendar.create({
-                inputEl: '#paid-calendar-modal',
-                timePicker: true,
-                formatValue: function(values){
-                    //console.log(values[0]);
-                    var t = moment(values[0]).format('LLL');
-                    //console.log(moment(values[0]).format("X"));
-                    //console.log(t);
-                    return t;
-                  }
-                //dateFormat: { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }
-              });
-              var calendarPurchase = self.$app.calendar.create({
-                  inputEl: '#expense-calendar-modal',
-                  timePicker: true,
-                  formatValue: function(values){
-                    //console.log(values[0]);
-                    var t = moment(values[0]).format('LLL');
-                    //console.log(moment(values[0]).format("X"));
-                    //console.log(t);
-                    return t;
-                  }
-                  //dateFormat: { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }
-              });
+        
         //popup.once("opened", function(){
           if(id != null || id != undefined){
               var item = self.expenses.find(function(e){ 
@@ -561,6 +538,30 @@ export default {
   on: {
       pageInit: function(e, page) {
         var self = this;
+        var calendar = self.$app.calendar.create({
+                inputEl: '#paid-calendar-modal',
+                timePicker: true,
+                formatValue: function(values){
+                    //console.log(values[0]);
+                    var t = moment(values[0]).format('LLL');
+                    //console.log(moment(values[0]).format("X"));
+                    //console.log(t);
+                    return t;
+                  }
+                //dateFormat: { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }
+              });
+              var calendarPurchase = self.$app.calendar.create({
+                  inputEl: '#expense-calendar-modal',
+                  timePicker: true,
+                  formatValue: function(values){
+                    //console.log(values[0]);
+                    var t = moment(values[0]).format('LLL');
+                    //console.log(moment(values[0]).format("X"));
+                    //console.log(t);
+                    return t;
+                  }
+                  //dateFormat: { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }
+              });
         //console.log("test inactive init");
         $$(".showInactiveExpenses").on("change", function(){
           //console.log("inactive change");

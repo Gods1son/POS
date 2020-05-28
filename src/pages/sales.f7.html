@@ -13,12 +13,26 @@
     </div>
   </div>
 
+
       <!--fab-->
+      <div class="fab-backdrop"></div>
     <div class="fab fab-extended fab-right-bottom">
-      <a href="#" @click="openPopUpUpdateSellProduct(null)">
+      <a href="#">
         <i class="icon f7-icons">plus</i>
+        <i class="icon f7-icons">multiply</i>
         <div class="fab-text">Sale</div>
       </a>
+        
+        <div class="fab-buttons fab-buttons-top">
+          <a href="#" class="fab-label-button" @click="openPopUpUpdateSellProduct(null)">
+            <span><i class="icon f7-icons">plus</i></span>
+            <span class="fab-label">Single Product</span>
+          </a>
+          <a href="#" class="fab-label-button" @click="openPopUpMultiple">
+            <span><i class="icon f7-icons">plus</i></span>
+            <span class="fab-label">Multiple Products</span>
+          </a>
+        </div>
     </div>
     <!--fab-->
 
@@ -131,7 +145,7 @@
         <div class="navbar">
           <div class="navbar-bg"></div>
           <div class="navbar-inner bg-color-blue text-color-white">
-            <div class="title">Edit Product Sale</div>
+            <div class="title">Add/Edit Product Sale</div>
             <div class="right">
               <!-- Link to close popup -->
               <a class="link text-color-white" @click="closeUpdatePopUp"><i class="icon f7-icons">multiply</i>Close</a>
@@ -146,34 +160,42 @@
                     <div class="item-inner">
                       <div class="item-title">Product Name</div>
                       <div class="item-input-wrap">
-                        <input type="text" class="name_sell" placeholder="Product name"/>
+                        <input type="text" class="name_sell" placeholder="Product name" required/>
                         <span class="input-clear-button"></span>
                       </div>
                     </div>
                   </div>
                 </li>
+
                 <li>
-                  <div class="item-content item-input">
-                    <div class="item-inner">
-                      <div class="item-title">Selling Price</div>
-                      <div class="item-input-wrap">
-                        <input type="text" class="cost_sell" @keyup="calculateQuantity" placeholder="Cost of product" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
-                        <span class="input-clear-button"></span>
+                  <div class="row">
+                      <div class="col-50">
+                        <div class="item-content item-input">
+                          <div class="item-inner">
+                            <div class="item-title">Selling Price</div>
+                            <div class="item-input-wrap">
+                              <input type="text" class="cost_sell" @keyup="calculateQuantity" placeholder="selling price" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                              <span class="input-clear-button"></span>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                </li>
-                <li>
-                  <div class="item-content item-input">
-                    <div class="item-inner">
-                      <div class="item-title">Quantity</div>
-                      <div class="item-input-wrap">
-                        <input type="text" class="quantity_sell" @keyup="calculateQuantity" placeholder="Quantity" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
-                        <span class="input-clear-button"></span>
+
+                      <div class="col-50">
+                        <div class="item-content item-input">
+                          <div class="item-inner">
+                            <div class="item-title">Quantity</div>
+                            <div class="item-input-wrap">
+                              <input type="text" class="quantity_sell" @keyup="calculateQuantity" placeholder="Quantity" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                              <span class="input-clear-button"></span>
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                    </div>
                   </div>
+                  
                 </li>
+
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
@@ -186,11 +208,39 @@
                   </div>
                 </li>
                 <li>
+                  <div class="row">
+                      <div class="col-50">
+                        <div class="item-content item-input">
+                          <div class="item-inner">
+                            <div class="item-title">Taxes in %</div>
+                            <div class="item-input-wrap">
+                              <input type="text" class="taxes" @keyup="calculateQuantity" placeholder="Taxes in %" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                              <span class="input-clear-button"></span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-50">
+                        <div class="item-content item-input">
+                          <div class="item-inner">
+                            <div class="item-title">After Tax Price</div>
+                            <div class="item-input-wrap">
+                              <input type="text" class="afterTax" placeholder="After Tax Price" disabled/>
+                              <span class="input-clear-button"></span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                  </div>
+                  
+                </li>
+                <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
                       <div class="item-title">Buyer's Name</div>
                       <div class="item-input-wrap">
-                        <input type="text" class="buyer_sell" placeholder="Buyer name"/>
+                        <input type="text" class="buyer_sell" placeholder="Buyer name" required/>
                         <span class="input-clear-button"></span>
                       </div>
                     </div>
@@ -245,6 +295,105 @@
   </div>
   <!--Pop -up-->
 
+  <!--pop up for for multiple items-->
+  <div class="popup multipleSales popup-tablet-fullscreen">
+    <div class="view">
+      <div class="page">
+        <div class="navbar">
+          <div class="navbar-bg"></div>
+          <div class="navbar-inner bg-color-blue text-color-white">
+            <div class="title">Multiple Product Sales</div>
+            <div class="right">
+              <!-- Link to close popup -->
+              <a class="link text-color-white" @click="closePopUpMultiple"><i class="icon f7-icons">multiply</i>Close</a>
+            </div>
+          </div>
+        </div>
+        <div class="page-content">
+            
+        <div class="list margin-bottom-half no-margin-top">
+          <div class="block-header text-color-black no-margin-bottom margin-top">Select Products Below - select multiple</div>
+          <ul>
+            <li>
+              <a class="item-link item-content bg-color-orange myOrange" href="#" id="autocomplete-standalone-multiple">
+                <input type="hidden">
+                <div class="item-inner">
+                  <div class="block-title item-title no-margin text-color-white">Add Products</div>
+                  <div class="item-after"></div>
+                </div>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div id="products-list" class="customList">
+          <ul class="list sortList margin-top-half margin-bottom-half">
+            
+          </ul>
+          <!--<ul class="pagination"></ul>-->
+        </div>
+
+        <div class="margin-horizontal">
+          <a class="button button-raised button-fill color-blue customcharges" @click="AddNewProduct(null)">Add Custom Products</a>
+        </div>
+
+        <div id="productsOther-list" class="customList">
+          <ul class="list sortList margin-top-half margin-bottom-half">
+            
+          </ul>
+          <!--<ul class="pagination"></ul>-->
+        </div>
+
+        <ul class="list sortList margin-top-half margin-bottom-half">
+          <div class="card myCard">
+            <div class="card-content padding-horizontal-half">
+              <div><span class="labelName">Taxes in %:</span>
+                <div class="display-inline-flex">
+                  <input class="taxpercent" type="text" placeholder="profit 0 to 100" @keyup="CalculateTotalProduct" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" value="0">
+                </div></div>
+            </div>
+          </div>
+      </ul>
+      <div class="row padding-horizontal-half"><div class="col-100">
+        <a class="button button-fill button-raised color-white text-color-green calculateTotalButton" @click="CalculateTotalProduct">Calculate</a>
+      </div>
+    </div>
+        <div class="margin-top-half block-title-medium margin-horizontal-half">
+          <span class="labelName">Cost before Tax: </span>
+          <div class="display-inline-flex"><div class="totalAmountBeforeProfitProduct">0</div></div>
+        </div>
+        <div class="margin-top-half block-title-medium margin-horizontal-half">
+          <span class="labelName">Cost after Tax: </span>
+          <div class="display-inline-flex"><div class="totalAmountProduct">0</div></div>
+        </div>
+         
+        <ul class="list margin-top-half margin-bottom-half grouped"><li>
+        <div class="card myCard">
+          <div class="card-content padding-horizontal-half" style="font-size: 1.15em;">
+            <div><span class="labelName">Grouped Name: </span><div class="display-inline-flex">
+              <input class="groupProductNameMultiple" type="text" placeholder="Give Group Name" value=""></div></div>
+            <div><span class="labelName">Buyer's Name: </span><div class="display-inline-flex">
+              <input class="buyersNameMultiple" type="text" placeholder="Buyer's Name" value=""></div></div>
+            <div><span class="labelName">Amount Paid: </span><div class="display-inline-flex">
+                <input class="amountPaidMultiple" type="text" placeholder="Amount Paid" value="0"></div></div>
+            <div><span class="labelName">Date of Payment: </span><div class="display-inline-flex">
+                  <input id="datePaidMultiple" type="text" placeholder="Date of Payment" value="0"></div></div>
+            <div><span class="labelName">Date of Purchase: </span><div class="display-inline-flex">
+                    <input id="datePurchaseMultiple" type="text" placeholder="Date of Purchase" value="0"></div></div>
+          </div>
+        </div>
+        </li></ul>
+                <div class="row padding-horizontal-half"><div class="col-100">
+                  <a class="button button-fill button-raised color-green text-color-white" @click="saveMultipleProduct">Save All</a>
+                </div>
+              </div>
+        </div>
+      </div>
+    </div>
+  
+  </div>
+  <!--Pop -up for multiple items-->
+
 </div>
 </template>
 <script>
@@ -252,12 +401,12 @@
 import Dexie from 'dexie';
 import * as moment from 'moment';
 var db = new Dexie("BizExpenseManagerDB");
-          db.version(2).stores({
+          db.version(3).stores({
             ingredients: "++id,name,unit_size,unit,cost_per_unit,status,created_date",
             products: "++id,name,cost,status,created_date",
             product_ingredient: "++id,productID,ingredientID,unit_size,cost,status,created_date",
             product_otherMaterials: "++id,productID,name,cost,status,created_date",
-            sales: "++id,product_name,buyer_name,cost,quantity,total_price,amountPaid,isPaid,date_paid,created_date,status",
+            sales: "++id,parentID,product_name,isParent,buyer_name,cost,quantity,tax,total_price,afterTax,amountPaid,isPaid,date_paid,created_date,status",
             expenses: "++id,name,amount_to_pay,amount_paid,date_paid,created_date,recurring,status",
 
             ingredients_history: "++id,ingID,name,unit_size,unit,cost_per_unit,status,created_date",
@@ -277,7 +426,10 @@ export default {
         totalPaid: 0,
         totalUnpaid: 0,
         totalDifference: 0,
-        currentSale:null
+        currentSale:null,
+        products:null,
+        currentMultipleSale: null,
+        selectedProducts:[]
       }
     },
   methods:{
@@ -334,12 +486,219 @@ export default {
             });
         }
     },
+    CalculateTotalProduct: function(){
+      var totalCost = 0;
+      $(".eachProduct").each(function(i, curr){
+        var price = Number($(curr).find(".productCost").eq(0).val().trim());
+        var quant = Number($(curr).find(".productQuantity").eq(0).val().trim());
+
+        //$(curr).find(".totalproductprice")
+        if(!isNaN(price) && !isNaN(quant)){
+            var total = price * quant;
+            totalCost += total;
+            $(curr).find(".totalproductprice").eq(0).val(total.toFixed(2));
+        }
+      })
+      
+      //console.log(totalCost);
+      var tax = Number($(".multipleSales").find(".taxpercent").eq(0).val());
+      if(!isNaN(tax) || tax == 0){
+        $(".totalAmountBeforeProfitProduct").text(totalCost.toFixed(2));
+          var taxAmt = ((tax/100) * totalCost);
+          var afterTax = totalCost + taxAmt;
+          $(".totalAmountProduct").text(afterTax.toFixed(2));
+      }else{
+        $(".totalAmountBeforeProfitProduct").text(totalCost.toFixed(2));
+      }
+    },
+    calculateprofit: function(){
+
+    },
+    saveMultipleProduct: function(){
+        var self = this;
+        var error = false;
+        var bigData = [];
+        
+      //validation
+      var grpName = $(".groupProductNameMultiple").val().trim();
+        var buyername = $(".buyersNameMultiple").val().trim();
+        var amountPaid = Number($(".amountPaidMultiple").val().trim());
+        var taxes = Number($(".taxpercent").val().trim());
+        if(isNaN(taxes)){
+          error = true;
+          $(".taxpercent").parents("ul").eq(0).addClass("bg-color-red");
+        }else{
+          $(".taxpercent").parents("ul").eq(0).removeClass("bg-color-red");
+        }
+
+        if(grpName == "" || buyername == "" || isNaN(amountPaid)){
+            $(".buyersNameMultiple").parents("li").eq(0).addClass("bg-color-red");
+            error = true;
+        }else{
+          $(".buyersNameMultiple").parents("li").eq(0).removeClass("bg-color-red");
+        }
+
+        var beforeTaxes = Number($(".totalAmountBeforeProfitProduct").text());
+          var afterTaxes = Number($(".totalAmountProduct").text());
+          var fullyPaid = 0;
+      var isPaidDate = null;
+      if(amountPaid >= afterTaxes){
+        fullyPaid = 1;
+      }else{
+        fullyPaid = 0;
+      }
+      isPaidDate = moment($("#datePaidMultiple").val()).format("X");//  Date.parse($("#paid-calendar-modal").val());
+
+        $(".eachProduct").each(function(i, curr){
+        var productName = $(curr).find(".productName").eq(0).val().trim();
+        var price = Number($(curr).find(".productCost").eq(0).val().trim());
+        var quant = Number($(curr).find(".productQuantity").eq(0).val().trim());
+        var totalPric = Number($(curr).find(".totalproductprice").eq(0).val().trim());
+
+        if(isNaN(price) || isNaN(quant) || productName == ""){
+            $(curr).addClass("bg-color-red");
+            error = true;
+        }else{
+          $(curr).removeClass("bg-color-red");
+          // saving logic
+          var isParent = $(curr).hasClass("eachSaleParent") == true ? 1 : 0;
+          var tax = (taxes/100) * totalPric;
+          var costPlusTax = totalPric + tax;
+          var obj = {
+                product_name: productName,  
+                buyer_name: buyername,
+                cost: price,
+                tax: taxes,
+                parentID: 0,
+                isParent: isParent,
+                afterTax: costPlusTax,
+                quantity: quant,
+                total_price: totalPric,
+                amountPaid:  0,
+                isPaid: fullyPaid,
+                date_paid: isPaidDate,
+                created_date: moment($("#datePurchaseMultiple").val()).format("X"), //Date.parse($("#purchase-calendar-modal").val()),
+                status:1
+              };
+            bigData.push(obj)
+        }
+      })
+
+        // validation final
+        if(error){
+          self.showToast("Error is found in the forms!", "center");
+          console.log("error");
+        }else{
+          // save into db
+          //console.log("clean");
+      
+        var objMaster = {
+                product_name: grpName,  
+                buyer_name: buyername,
+                cost: beforeTaxes,
+                tax: taxes,
+                parentID: 0,
+                isParent:1,
+                afterTax: afterTaxes,
+                quantity: 1,
+                total_price: beforeTaxes,
+                amountPaid:  amountPaid,
+                isPaid: fullyPaid,
+                date_paid: isPaidDate,
+                created_date: moment($("#datePurchaseMultiple").val()).format("X"), //Date.parse($("#purchase-calendar-modal").val()),
+                status:1
+              };
+              if(self.currentMultipleSale != null){
+                objMaster.id = Number(self.currentMultipleSale);
+              }
+
+              db.transaction('rw', db.sales, () => {
+                
+                  db.sales.put(objMaster).then(function(id){
+                      bigData.forEach((element, index) => {
+                      bigData[index].parentID = id;
+                  });
+
+                  if(self.currentMultipleSale != null){
+                      //objMaster.id = Number(self.currentMultipleSale);
+                      db.sales.where("parentID").equals(Number(self.currentMultipleSale)).delete()
+                          .then(function (deleteCount) {
+                              //console.log( "Deleted " + deleteCount + " objects");
+                              db.sales.bulkAdd(bigData).then(function(lastKey) {
+                                //console.log("Last allcost's id was: " + lastKey); // Will be 100000.
+                                })
+                          });
+                  
+                  }else{
+                      db.sales.bulkAdd(bigData).then(function(lastKey) {
+                          //console.log("Last allcost's id was: " + lastKey); // Will be 100000.
+                    })
+                  }
+                    
+                  
+                    
+                })
+
+              }).then(() => {
+                  // Transaction committed. NOT WITHIN ZONE!
+                  self.showToast("Saved successfully", "center");
+              }).catch(err => {
+                  // Transaction aborted. NOT WITHIN ZONE!
+                  //console.error (e);
+                    self.showToast(err, "center");
+                 });
+
+              //saving clean data
+        }
+    },
+    AddNewProduct: function(select){
+      var self = this;
+      var name = select == null ? "" : select.product_name;
+      var cost = select == null ? "" : select.cost;
+      var quantity = select == null ? 1 : select.quantity;
+      var totalPrice = select == null ? "" : select.total_price;
+        //var cost = select.cost == undefined ? 0 : select.cost; 
+        var html = '<li class="eachSaleParentOther eachProduct"><div class="card myCard"><div class="card-content padding-horizontal-half">';
+          html += '<div><span class="labelName">Product Name: </span><div class="display-inline-flex"><input class="productName" type="text" placeholder="Product Name" value="';
+          html +=  name + '"></div></div>';
+          html += '<div class="row"><div class="col-50"><div class="item-content item-input no-padding-left"><div class="item-inner no-padding-right"><div class="labelName">Product Cost</div>';
+          html += '<div class="item-input-wrap"><input class="productCost" type="text" placeholder="Product Cost" value="' + cost + '">';
+          html +=  '<span class="input-clear-button"></span></div></div></div></div>';
+          html += '<div class="col-50"><div class="item-content item-input no-padding-left"><div class="item-inner no-padding-right"><div class="labelName">Quantity</div>';
+          html += '<div class="item-input-wrap"><input class="productQuantity" type="text" placeholder="Product Quantity" value="' + quantity + '">';
+          html +=  '<span class="input-clear-button"></span></div></div></div></div></div>';
+          html += '<div><span class="labelName">Total Price: </span><div class="display-inline-flex"><input class="totalproductprice" type="text" disabled placeholder="Total Price" value="';
+          html += totalPrice + '"></div></div>';
+        html += '</div><div class="card-footer padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
+          html += '<a class="button button-raised button-small button-fill color-red removeProduct">Delete</a>';
+        html += '</p></div></div>'
+        html += '</li>';
+        $("#productsOther-list .sortList").append(html);
+        $(".eachSaleParentOther .removeProduct").off("click").on("click", function(){
+                  //var id = $(this).attr("data-itemid");
+                  $(this).parents(".eachSaleParentOther").eq(0).remove();
+                })
+            $(".eachSaleParentOther input").off("keyup").on("keyup", function(){
+                self.CalculateTotalProduct();
+            })
+    },
+    SaveTotalProduct: function(){
+    
+    },
     calculateQuantity: function(){
-        var cost = Number($(".cost_sell").val());
-        var quant = Number($(".quantity_sell").val());
+      var cost = Number($(".cost_sell").val().trim());
+        var quant = Number($(".quantity_sell").val().trim());
         if(!isNaN(cost) && !isNaN(quant)){
             var total = cost * quant;
             $(".total_sell").val(total);
+            var taxes = Number($(".taxes").val().trim());
+            if(taxes != "" || taxes == 0){
+              if(!isNaN(taxes)){
+                var taxAmt = (taxes/100) * total;
+                var aftCost = total + taxAmt;
+                $(".afterTax").val(aftCost.toFixed(2));
+              }
+            }
         }
     },
     moneyFormat: function(val){
@@ -448,21 +807,36 @@ export default {
         self.showToast("Please pick date of purchase", "center");
         return;
       }
-      if(($("#paid-calendar-modal").val().trim() == "") && ($$("input.amountpaid_sell").val() != "0" && $$("input.amountpaid_sell").val().trim != "")){
+      if($(".name_sell").val().trim() == ""){
+        self.showToast("Please enter product name", "center");
+        return;
+      }
+      if($(".buyer_sell").val().trim() == ""){
+        self.showToast("Please enter buyer's name", "center");
+        return;
+      }
+      if($(".cost_sell").val().trim() == ""){
+        self.showToast("Please enter selling price", "center");
+        return;
+      }
+      if(($("#paid-calendar-modal").val().trim() == "") && ($$("input.amountpaid_sell").val() != "0" && $$("input.amountpaid_sell").val().trim() != "")){
           self.showToast("Please choose date buyer paid!", "center");
           return;
       }
-      if(($("#paid-calendar-modal").val().trim() == "") && ($$("input.amountpaid_sell").val() == "0" || $$("input.amountpaid_sell").val().trim == "")){
+      if(($$("input.amountpaid_sell").val() == "0" || $$("input.amountpaid_sell").val().trim() == "")){
           self.$app.dialog.confirm("Do you want to record the purchase without a payment made?", function(){
-              self.processPaymentUpdate();
+            $$("input.amountpaid_sell").val(0);
+            self.processPaymentUpdate();
           })
-      }
+      }else{
         self.processPaymentUpdate();
+      }
+        //self.processPaymentUpdate();
       
     },
     processPaymentUpdate: function(){
       var self = this;
-      var cp = $$("input.total_sell").val();
+      var cp = $$("input.afterTax").val();
       var sp = $$("input.amountpaid_sell").val();
       var fullyPaid = 0;
       if(Number(sp) >= Number(cp)){
@@ -476,6 +850,9 @@ export default {
                 product_name: $$("input.name_sell").val(),  
                 buyer_name: $$("input.buyer_sell").val(),
                 cost: $$("input.cost_sell").val(),
+                tax: $$("input.taxes").val(),
+                parentID: 0,
+                afterTax: $$("input.afterTax").val(),
                 quantity: $$("input.quantity_sell").val(),
                 total_price: $$("input.total_sell").val(),
                 amountPaid: $$("input.amountpaid_sell").val(),
@@ -533,31 +910,7 @@ export default {
             return;
         }*/
         var self = this;
-        var calendar = self.$app.calendar.create({
-                  inputEl: '#paid-calendar-modal',
-                  timePicker: true,
-                  formatValue: function(values){
-                    //console.log(values[0]);
-                    var t = moment(values[0]).format('LLL');
-                    //console.log(moment(values[0]).format("X"));
-                    //console.log(t);
-                    return t;
-                  }
-                  //dateFormat: { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }
-              });
-
-              var calendarPurchase = self.$app.calendar.create({
-                  inputEl: '#purchase-calendar-modal',
-                  timePicker: true,
-                  formatValue: function(values){
-                    //console.log(values[0]);
-                    var t = moment(values[0]).format('LLL');
-                    //console.log(moment(values[0]).format("X"));
-                    //console.log(t);
-                    return t;
-                  }
-                  //dateFormat: { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }
-              });
+        
         //popup.once("opened", function(){
           if(id != null || id != undefined){
             var item = self.sales.find(function(e){ 
@@ -568,7 +921,14 @@ export default {
                 $$("input.cost_sell").val(item.cost);
                 var quantity = item.quantity == null ? 1 : item.quantity;
                   var total = item.total_price == null ? item.cost : item.total_price;
+                  var taxes = item.tax;
+                  var taxesAmt = taxes == undefined ? 0 : taxes;
+                  taxesAmt = Number(taxesAmt);
+                  total = Number(total);
+                  var afterTax = item.afterTax == undefined ? total : item.afterTax;
                   $(".quantity_sell").val(quantity);
+                  $(".taxes").val(taxesAmt);
+                  $(".afterTax").val(afterTax);
                   $(".total_sell").val(total);
                 $$("input.amountpaid_sell").val(item.amountPaid);
                 if(item.created_date != ""){
@@ -592,7 +952,11 @@ export default {
                 $$("input.name_sell").val("");
                 $$("input.buyer_sell").val("");
                 $$("input.cost_sell").val("");
+                var taxes = localStorage.getItem("taxes");
+                var taxesAmt = taxes == undefined ? 0 : taxes;
                 $(".quantity_sell").val("1");
+                $(".taxes").val(taxesAmt);
+                $(".afterTax").val("0");
                 $$("input.amountpaid_sell").val("");
                 $("#paid-calendar-modal").val(moment().format('LLL'));
                 $("#purchase-calendar-modal").val(moment().format('LLL'));
@@ -651,6 +1015,198 @@ export default {
 
         });
     },
+    getProducts: function(){
+        var self = this;
+        var checked = 1;
+        var collection = db.products.where('status').equals(checked).toArray(function(arr){
+        //var collection = db.ingredients.toArray(function(arr){
+        //console.log(arr);
+          self.$setState({
+                products: arr
+              })
+        })
+    },
+    editMultiplePopUp: function(id){
+        var self = this;
+        self.openPopUpMultiple();
+        console.log("multiple");
+        var collection2 = db.sales.where('id').equals(Number(id)).toArray(function(arr){
+            var taxesAmt = arr[0].tax;
+            $(".groupProductNameMultiple").val(arr[0].product_name);
+            $(".buyersNameMultiple").val(arr[0].buyer_name);
+            $(".amountPaidMultiple ").val(arr[0].amountPaid);
+            $(".taxpercent").val(taxesAmt);
+            $("#datePaidMultiple").val(moment.unix(arr[0].date_paid).format("LLL"));
+            $("#datePurchaseMultiple").val(moment.unix(arr[0].created_date).format("LLL"));
+        })
+        var collection = db.sales.where('parentID').equals(Number(id)).toArray(function(arr){
+            self.$setState({
+            currentMultipleSale: Number(id),
+            selectedProducts: arr
+          }, function(){
+              for(var i = 0; i < arr.length; i++){
+                if(arr[i].isParent == 1){
+                  self.SelectItemMultipleProducts(arr[i]);
+                }
+                if(arr[i].isParent == 0){
+                  self.AddNewProduct(arr[i]);
+                }
+              }
+              self.CalculateTotalProduct();
+          })
+        })
+    },
+    openPopUpMultiple:function(){
+      var self = this;
+      self.$setState({
+        currentMultipleSale: null
+      })
+      self.getProducts();
+      var selectedValues = null;
+            var autocompleteStandaloneMultiple = self.$app.autocomplete.create({
+              openIn: 'popup', //open in page
+              openerEl: '#autocomplete-standalone-multiple', //link that opens autocomplete
+              multiple: true, //allow multiple values
+              navbarColorTheme: 'col bg-color-orange text-color-white',
+              preloader: true, //enable preloader
+              valueProperty: 'id', //object's "value" property name
+              textProperty: 'name', //object's "text" property name
+              popupCloseLinkText: 'Done',
+              source: function (query, render) {
+                var autocomplete = this;
+                autocomplete.preloaderShow();
+                var results = self.products.filter(x => x.status == 1); //.map(a => a.name);
+                autocomplete.preloaderHide();
+                render(results);
+                /*if (query.length === 0) {
+                  autocomplete.preloaderHide();
+                  render(results);
+                  return;
+                }*/
+                
+                if (query.length > 0) {
+                  var newResult = [];
+                  // Find matched items
+                  for (var i = 0; i < results.length; i++) {
+                    if (results[i].name.toLowerCase().indexOf(query.toLowerCase()) >= 0) newResult.push(results[i]);
+                  }
+                  // Render items by passing array with result items
+                  autocomplete.preloaderHide();
+                  render(newResult);
+                }
+              },
+              on: {
+                change: function (value) {
+                  
+                 var itemText = [], inputValue = [];
+                 selectedValues = value;
+                },
+                closed: function(){
+                  //console.log(selectedValues);
+                  if(selectedValues == null || selectedValues.length == 0){
+                    return;
+                  }
+                  for(var i = 0; i < selectedValues.length; i++){
+                    /*var select = self.products.find(function(e){ 
+                        return e.name == selectedValues[i].name;
+                    });*/
+                    var found = self.selectedProducts.filter(x => x.id == selectedValues[i].id).length;
+                    if(found < 1){
+                      self.selectedProducts.push(selectedValues[i]);
+                      self.SelectItemMultipleProducts(selectedValues[i]);
+                    }
+                  }
+                  var deleted = self.selectedProducts.filter(function(x) {  // return elements in previousArray matching...
+                      return !selectedValues.includes(x);  // "this element doesn't exist in currentArray"
+                  })
+                  for(var i = 0; i < deleted.length; i++){
+                    $(".eachSaleParent .removeProduct[data-id='" + deleted[i].id + "']").click()
+                  }
+
+                  selectedValues = null;
+                  //autocomplete.destroy();
+                  self.CalculateTotalProduct();
+                }
+              }
+        });
+        
+        var taxes = localStorage.getItem("taxes");
+        var taxesAmt = taxes == undefined ? 0 : taxes;
+        $(".taxpercent").val(taxesAmt);
+        $("#datePaidMultiple").val(moment().format('LLL'));
+        $("#datePurchaseMultiple").val(moment().format('LLL'));
+        //self.CalculateTotalProduct();
+        var popup = self.$app.popup.open('.multipleSales', true);
+    },
+    SelectItemMultipleProducts: function(select){//name,cost,status,created_date
+      var self = this;
+      var name = select.product_name == null ? "" : select.product_name;
+      if(name == ""){
+        name = select.name == null ? "" : select.name;
+      }
+      var cost = select.cost == null ? "" : select.cost;
+      var quantity = select.quantity == null ? 1 : select.quantity;
+      var totalPrice = select.total_price == null ? "" : select.total_price; 
+        var html = '<li class="eachSaleParent eachProduct"><div class="card myCard"><div class="card-content padding-horizontal-half">';
+          html += '<div><span class="labelName">Product Name: </span><div class="display-inline-flex"><input class="productName" type="text" placeholder="Product Name" value="';
+          html +=  name + '"></div></div>';
+          html += '<div class="row"><div class="col-50"><div class="item-content item-input no-padding-left"><div class="item-inner no-padding-right"><div class="labelName">Product Cost</div>';
+          html += '<div class="item-input-wrap"><input class="productCost" type="text" placeholder="Product Cost" value="' + cost + '">';
+          html +=  '<span class="input-clear-button"></span></div></div></div></div>';
+          html += '<div class="col-50"><div class="item-content item-input no-padding-left"><div class="item-inner no-padding-right"><div class="labelName">Quantity</div>';
+          html += '<div class="item-input-wrap"><input class="productQuantity" type="text" placeholder="Product Quantity" value="' + quantity + '">';
+          html +=  '<span class="input-clear-button"></span></div></div></div></div></div>';
+          html += '<div><span class="labelName">Total Price: </span><div class="display-inline-flex"><input class="totalproductprice" type="text" disabled placeholder="Total Price" value="';
+          html +=  totalPrice + '"></div></div>';
+        html += '</div><div class="card-footer padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
+          html += '<a class="button button-raised button-small button-fill color-red removeProduct" data-id="' + select.id + '">Delete</a>';
+        html += '</p></div></div>'
+        html += '</li>';
+        $("#products-list .sortList").append(html);
+        $(".eachSaleParent .removeProduct").off("click").on("click", function(){
+                  var id = $(this).attr("data-id");
+                  self.RemoveItemProduct(id);
+                  $(this).parents(".eachSaleParent").eq(0).remove();
+                })
+                $(".eachSaleParent input").off("keyup").on("keyup", function(){
+                self.CalculateTotalProduct();
+            })
+                
+    },
+    RemoveItemProduct: function(id){
+      var self = this;
+      //var id = $(but).attr("data-id");
+      //console.log(id);
+        var select = self.selectedProducts.filter(function(e){ 
+              return e.id != Number(id);
+          });
+ 
+          //$(but).parents("li").eq(0).remove();
+          self.$setState({
+                ings:self.ings,
+                selectedProducts:select
+            }, function(){
+              
+              //self.CalculateTotal();
+            });
+    },
+    closePopUpMultiple:function(){
+      var self = this;
+        var popup = self.$app.popup.close('.multipleSales', true);
+        popup.once("closed", function(){
+          $(".multipleSales .sortList li").remove();
+          $(".buyersNameMultiple").parents("li").eq(0).removeClass("bg-color-red");
+          $(".totalAmountBeforeProfitProduct, .totalAmountProduct").text("0");
+          $(".amountPaidMultiple, .buyersNameMultiple, .groupProductNameMultiple").val("");
+          $("#datePaidMultiple").val(moment().format('LLL'));
+          $("#datePurchaseMultiple").val(moment().format('LLL'));
+          self.$app.autocomplete.destroy("#autocomplete-standalone-multiple");
+            self.$setState({
+                selectedProducts:[]
+              });
+            self.getData();
+        });
+    },
     setDataTable: function(){
             var self = this;
             $("#sales-list .list").empty();//id,product_name,buyer_name,cost,amountPaid,isPaid,date_paid,created_date,status
@@ -663,8 +1219,11 @@ export default {
                         $(".sortText").removeClass("display-none");
                         for(var i = 0; i < self.sales.length; i++){
                             var row = self.sales[i];
+                            var isParent = row.isParent == null ? 0 : 1;
                             var quantity = row.quantity == null ? 1 : row.quantity;
+                            var taxes = row.tax == null ? 0 : row.tax;
                             var total = row.total_price == null ? row.cost : row.total_price;
+                            var afterTax = row.afterTax == null ? total : row.afterTax;
                             var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
                             html += '<div class="name cardName">' + row.product_name + '</div><div class="id display-none">' + row.id + '</div><div class="cost display-none">' + row.cost + '</div>';
                             html += '<div class=""><span class="labelName">Buyer\'s name: </span><span class="valueName buyer">' + row.buyer_name + '</span></div><div class="isPaid display-none">' + row.isPaid + '</div>';
@@ -672,7 +1231,10 @@ export default {
 
                             html += '<div class=""><span class="labelName">Quantity: </span><span class="valueName">' + quantity + '</span></div>';
                             html += '<div class=""><span class="labelName">Total Cost: </span><span class="valueName">' + self.formatMoney(total) + '</span></div>';
-
+                            if(taxes > 0){
+                              html += '<div class=""><span class="labelName">Tax: </span><span class="valueName">' + taxes + '%</span></div>';
+                              html += '<div class=""><span class="labelName">After Tax Cost: </span><span class="valueName">' + self.formatMoney(afterTax) + '</span></div>';
+                            }
                             html += '<div class=""><span class="labelName">Amount Paid: </span><span class="valueName">' + self.formatMoney(row.amountPaid) + '</span></div>';
                             var stat = row.status == 1 ? "display-none" : "";
                             var hidden = row.isPaid == 1 ? "" : "display-none";
@@ -683,7 +1245,7 @@ export default {
                             html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName text-color-red">Deleted</span></div>';
                             html += '</div><div class="card-footer padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
                             html += '<a class="button button-raised button-small button-fill margin-right-half invoice color-green" data-id="' + row.id + '">Invoice</a>';
-                            html += '<a class="button button-raised button-small button-fill margin-right-half editSale" data-id="' + row.id + '">Edit</a>';
+                            html += '<a class="button button-raised button-small button-fill margin-right-half editSale" data-id="' + row.id + '" data-isparent="' + isParent + '">Edit</a>';
                             html += '<a class="button button-raised button-small button-fill color-red deleteSale" data-id="' + row.id + '">';
                             html +=  row.status == 1 ? 'Delete' : 'Activate'; 
                             html += '</a></p></div></div>'
@@ -714,7 +1276,13 @@ export default {
                               var data = $(this).attr("data-id");
                               //console.log(data);
                               if($(this).hasClass("editSale")){
-                                self.openPopUpUpdateSellProduct(data);
+                                var isAParent = $(this).attr("data-isparent");
+                                if(isAParent == "0"){
+                                  self.openPopUpUpdateSellProduct(data);
+                                }
+                                if(isAParent == "1"){
+                                  self.editMultiplePopUp(data);
+                                }
                               }
                               if($(this).hasClass("invoice")){
                                 self.invoice(data);
@@ -751,7 +1319,10 @@ export default {
         checked = toggle.checked == true ? 0 : 1;
       }
 
-      var collection = db.sales.where('status').equals(checked).reverse().toArray(function(arr){
+      var collection = db.sales.where('status').equals(checked)
+      .filter(function (sale) {
+              return (sale.parentID == null || sale.parentID < 1);
+          }).reverse().toArray(function(arr){
         //var collection = db.ingredients.toArray(function(arr){
         //console.log(arr);
           self.$setState({
@@ -766,10 +1337,62 @@ export default {
   on: {
       pageInit: function(e, page) {
         var self = this;
+        var calendar1 = self.$app.calendar.create({
+                  inputEl: '#datePaidMultiple',
+                  timePicker: true,
+                  formatValue: function(values){
+                    //console.log(values[0]);
+                    var t = moment(values[0]).format('LLL');
+                    //console.log(moment(values[0]).format("X"));
+                    //console.log(t);
+                    return t;
+                  }
+                  //dateFormat: { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }
+              });
+
+              var calendar2 = self.$app.calendar.create({
+                  inputEl: '#datePurchaseMultiple',
+                  timePicker: true,
+                  formatValue: function(values){
+                    //console.log(values[0]);
+                    var t = moment(values[0]).format('LLL');
+                    //console.log(moment(values[0]).format("X"));
+                    //console.log(t);
+                    return t;
+                  }
+                  //dateFormat: { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }
+              });
+
+        var calendar = self.$app.calendar.create({
+                  inputEl: '#paid-calendar-modal',
+                  timePicker: true,
+                  formatValue: function(values){
+                    //console.log(values[0]);
+                    var t = moment(values[0]).format('LLL');
+                    //console.log(moment(values[0]).format("X"));
+                    //console.log(t);
+                    return t;
+                  }
+                  //dateFormat: { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }
+              });
+
+              var calendarPurchase = self.$app.calendar.create({
+                  inputEl: '#purchase-calendar-modal',
+                  timePicker: true,
+                  formatValue: function(values){
+                    //console.log(values[0]);
+                    var t = moment(values[0]).format('LLL');
+                    //console.log(moment(values[0]).format("X"));
+                    //console.log(t);
+                    return t;
+                  }
+                  //dateFormat: { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }
+              });
         $$(".showInactiveSales").on("change", function(){
           //console.log("inactive change");
             self.getData();
         })
+        
         var calendarModal = self.$app.calendar.create({
             inputEl: '#demo-calendar-modal',
             openIn: 'customModal',
@@ -809,10 +1432,14 @@ export default {
                 //console.log(from);
                 //console.log(to);
                 var checked = 1;
+                var toggle = self.$app.toggle.get(".showInactiveSales");
+                if(toggle != undefined){
+                  checked = toggle.checked == true ? 0 : 1;
+                }
                 var collection = db.sales.where('created_date').between(from, to)
                 .filter(function (sale) {
-                    return sale.status === 1;
-                }).toArray(function(arr){
+                    return ((sale.status === checked) && (sale.parentID < 1));
+                }).reverse().toArray(function(arr){
                     //var collection = db.ingredients.toArray(function(arr){
                     //console.log(arr);
                     self.$setState({

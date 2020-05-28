@@ -5,8 +5,23 @@
 .size-29 { font-size: 29px; text-transform: none; }
 .size-50 { font-size: 50px; text-transform: none; }
 
+@media only screen and (min-device-width : 1030px)   
+/* and (max-device-width : 1024px)  */
+{ /* STYLES GO HERE */
+    #app{
+        width: 70%;
+        border-left: 5px ridge;
+        margin: auto;
+        border-right: 5px ridge;
+    }
+
+    body{
+        background-color:#dee2e6;
+    }
+}  
+
 .page-content{
-    background-color:#dee2e6 /*#4d6b84; #d0e1ef;  #dedada;*/
+    background-color:#dee2e6; /*#4d6b84; #d0e1ef;  #dedada;*/
 }
 
 .logoName{
@@ -79,7 +94,7 @@
     vertical-align: bottom !important;
 }
 
-.settingsInput, .item-input-wrap input[type="text"]:not(.specSearch){
+.settingsInput, .myCard input[type="text"], .item-input-wrap input[type="text"]:not(.specSearch){
     border: 0.5px solid !important;
     padding: 2px 5px !important;
     border-radius: 5px !important;
@@ -159,6 +174,11 @@
     margin-right: 2px !important;
 }
 
+.total_sell, .totalproductprice{
+    background-color: #f5f5f5 !important;
+    font-weight: 600;
+}
+
 .extraCostRow .extraName, .extraCostRow .eachCost{
     border:1px solid black !important;
     border-radius: 5px !important;
@@ -193,7 +213,7 @@
     font-size: 1.15em !important;
 }
 
-.sortList{
+.sortList, .grouped{
     list-style: none;
     padding:0 !important;
 }

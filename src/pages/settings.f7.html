@@ -16,7 +16,7 @@
 
             <div class="page-content">
                 <div class="list no-hairlines-md margin-top-half">
-                    <div class="block-title text-color-black no-margin-bottom margin-left-half no-padding-bottom margin-top-half">Company Name and Address</div>
+                    <div class="block-title text-color-black no-margin-bottom margin-left-half no-padding-bottom margin-top-half">Company Info and Taxes</div>
                     <div class="block-header no-margin-vertical margin-horizontal-half no-padding-horizontal">The information is used for invoicing!</div>
                     <ul>
                     <li class="item-content item-input">
@@ -33,6 +33,14 @@
                           <div class="item-input-wrap">
                             <textarea class="settingsInput" id="companyaddress" placeholder="Company Address"></textarea>
                             <!--<input id="companyaddress" type="text" placeholder="Company Address">-->
+                          </div>
+                        </div>
+                      </li>
+                      <li class="item-content item-input">
+                        <div class="item-inner">
+                          <div class="item-title item-label">Taxes in percentage (do not include %)</div>
+                          <div class="item-input-wrap">
+                            <input id="taxes" type="text" class="settingsInput" placeholder="Enter % taxes">
                           </div>
                         </div>
                       </li>
@@ -99,6 +107,16 @@
             if(comAdd != ""){
                 localStorage.setItem("companyAddress", comAdd);
             }
+            var taxes = $("#taxes").val().trim();
+            if(taxes != ""){
+                var tax = Number(taxes);
+                if(isNaN(tax)){
+                    self.showToast("Please enter tax in number or decimal only!", "center");
+                    return;
+                }else{
+                    localStorage.setItem("taxes", tax);
+                }
+            }
             if(comName != "" || comAdd != ""){
                 self.showToast("Information Saved!", "center");
             }
@@ -110,6 +128,10 @@
             var comName = localStorage.getItem("companyName");
             if(comName != undefined){
                 $("#companyname").val(comName);
+            }
+            var taxes = localStorage.getItem("taxes");
+            if(taxes != undefined){
+                $("#taxes").val(taxes);
             }
             var comAdd = localStorage.getItem("companyAddress");
             if(comAdd != undefined){
