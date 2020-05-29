@@ -56,7 +56,7 @@
               <span class="sort" data-sort="cost">Cost</span>-->
             </div>
           </div>
-          <ul class="list sortList margin-top-half">
+          <ul class="list sortList margin-vertical-half">
             
           </ul>
           <!--<ul class="pagination"></ul>-->
@@ -364,6 +364,106 @@
   </div>
   <!--Pop -up for add ingredients-->
 
+  
+  <!--pop up for for multiple items-->
+  <div class="popup multipleSales popup-tablet-fullscreen">
+    <div class="view">
+      <div class="page">
+        <div class="navbar">
+          <div class="navbar-bg"></div>
+          <div class="navbar-inner bg-color-blue text-color-white">
+            <div class="title">Multiple Product Sales</div>
+            <div class="right">
+              <!-- Link to close popup -->
+              <a class="link text-color-white" @click="closePopUpMultiple"><i class="icon f7-icons">multiply</i>Close</a>
+            </div>
+          </div>
+        </div>
+        <div class="page-content">
+            
+        <div class="list margin-bottom-half no-margin-top">
+          <div class="block-header text-color-black no-margin-bottom margin-top">Select Products Below - select multiple</div>
+          <ul>
+            <li>
+              <a class="item-link item-content bg-color-orange myOrange" href="#" id="autocomplete-standalone-multiple2">
+                <input type="hidden">
+                <div class="item-inner">
+                  <div class="block-title item-title no-margin text-color-white">Add Products</div>
+                  <div class="item-after"></div>
+                </div>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div id="products-list" class="customList">
+          <ul class="list sortList margin-top-half margin-bottom-half">
+            
+          </ul>
+          <!--<ul class="pagination"></ul>-->
+        </div>
+
+        <div class="margin-horizontal">
+          <a class="button button-raised button-fill color-blue customcharges" @click="AddNewProduct(null)">Add Custom Products</a>
+        </div>
+
+        <div id="productsOther-list" class="customList">
+          <ul class="list sortList margin-top-half margin-bottom-half">
+            
+          </ul>
+          <!--<ul class="pagination"></ul>-->
+        </div>
+
+        <ul class="list sortList margin-top-half margin-bottom-half">
+          <div class="card myCard">
+            <div class="card-content padding-horizontal-half">
+              <div><span class="labelName">Taxes in %:</span>
+                <div class="display-inline-flex">
+                  <input class="taxpercent" type="text" placeholder="profit 0 to 100" @keyup="CalculateTotalProduct" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" value="0">
+                </div></div>
+            </div>
+          </div>
+      </ul>
+      <div class="row padding-horizontal-half"><div class="col-100">
+        <a class="button button-fill button-raised color-white text-color-green calculateTotalButton" @click="CalculateTotalProduct">Calculate</a>
+      </div>
+    </div>
+        <div class="margin-top-half block-title-medium margin-horizontal-half">
+          <span class="labelName">Cost before Tax: </span>
+          <div class="display-inline-flex"><div class="totalAmountBeforeProfitProduct">0</div></div>
+        </div>
+        <div class="margin-top-half block-title-medium margin-horizontal-half">
+          <span class="labelName">Cost after Tax: </span>
+          <div class="display-inline-flex"><div class="totalAmountProduct">0</div></div>
+        </div>
+         
+        <ul class="list margin-top-half margin-bottom-half grouped"><li>
+        <div class="card myCard">
+          <div class="card-content padding-horizontal-half" style="font-size: 1.15em;">
+            <div><span class="labelName">Grouped Name: </span><div class="display-inline-flex">
+              <input class="groupProductNameMultiple" type="text" placeholder="Give Group Name" value=""></div></div>
+            <div><span class="labelName">Buyer's Name: </span><div class="display-inline-flex">
+              <input class="buyersNameMultiple" type="text" placeholder="Buyer's Name" value=""></div></div>
+            <div><span class="labelName">Amount Paid: </span><div class="display-inline-flex">
+                <input class="amountPaidMultiple" type="text" placeholder="Amount Paid" value="0"></div></div>
+            <div><span class="labelName">Date of Payment: </span><div class="display-inline-flex">
+                  <input id="datePaidMultiple" type="text" placeholder="Date of Payment" value="0"></div></div>
+            <div><span class="labelName">Date of Purchase: </span><div class="display-inline-flex">
+                    <input id="datePurchaseMultiple" type="text" placeholder="Date of Purchase" value="0"></div></div>
+          </div>
+        </div>
+        </li></ul>
+                <div class="row padding-horizontal-half"><div class="col-100">
+                  <a class="button button-fill button-raised color-green text-color-white" @click="saveMultipleProduct">Save All</a>
+                </div>
+              </div>
+        </div>
+      </div>
+    </div>
+  
+  </div>
+  <!--Pop -up for multiple items-->
+
 </div>
 </template>
 <script>
@@ -398,7 +498,9 @@ export default {
         allIngs:null,
         productToEdit: null,
         productToEditID: null,
-        productIngs:[]
+        productIngs:[],
+        currentMultipleSale: null,
+        selectedProducts:[]
       }
     },
   methods:{
@@ -620,6 +722,123 @@ export default {
         //})
         
     },
+    SelectItemMultipleProducts: function(select){//name,cost,status,created_date
+      var self = this;
+      var name = select.product_name == null ? "" : select.product_name;
+      if(name == ""){
+        name = select.name == null ? "" : select.name;
+      }
+      var cost = select.cost == null ? "" : select.cost;
+      var quantity = select.quantity == null ? 1 : select.quantity;
+      var totalPrice = select.total_price == null ? "" : select.total_price; 
+        var html = '<li class="eachSaleParent eachProduct"><div class="card myCard"><div class="card-content padding-horizontal-half">';
+          html += '<div><span class="labelName">Product Name: </span><div class="display-inline-flex"><input class="productName" type="text" placeholder="Product Name" value="';
+          html +=  name + '"></div></div>';
+          html += '<div class="row"><div class="col-50"><div class="item-content item-input no-padding-left"><div class="item-inner no-padding-right"><div class="labelName">Product Cost</div>';
+          html += '<div class="item-input-wrap"><input class="productCost" type="text" placeholder="Product Cost" value="' + cost + '">';
+          html +=  '<span class="input-clear-button"></span></div></div></div></div>';
+          html += '<div class="col-50"><div class="item-content item-input no-padding-left"><div class="item-inner no-padding-right"><div class="labelName">Quantity</div>';
+          html += '<div class="item-input-wrap"><input class="productQuantity" type="text" placeholder="Product Quantity" value="' + quantity + '">';
+          html +=  '<span class="input-clear-button"></span></div></div></div></div></div>';
+          html += '<div><span class="labelName">Total Price: </span><div class="display-inline-flex"><input class="totalproductprice" type="text" disabled placeholder="Total Price" value="';
+          html +=  totalPrice + '"></div></div>';
+        html += '</div><div class="card-footer padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
+          html += '<a class="button button-raised button-small button-fill color-red removeProduct" data-id="' + select.id + '">Delete</a>';
+        html += '</p></div></div>'
+        html += '</li>';
+        $("#products-list .sortList").append(html);
+        $(".eachSaleParent .removeProduct").off("click").on("click", function(){
+                  var id = $(this).attr("data-id");
+                  self.RemoveItemProduct(id);
+                  $(this).parents(".eachSaleParent").eq(0).remove();
+                })
+                $(".eachSaleParent input").off("keyup").on("keyup", function(){
+                self.CalculateTotalProduct();
+            })
+                
+    },
+    openPopUpMultiple:function(){
+      var self = this;
+      self.$setState({
+        currentMultipleSale: null
+      })
+      //self.getProducts();
+      var selectedValues = null;
+            var autocompleteStandaloneMultiple = self.$app.autocomplete.create({
+              openIn: 'popup', //open in page
+              openerEl: '#autocomplete-standalone-multiple2', //link that opens autocomplete
+              multiple: true, //allow multiple values
+              navbarColorTheme: 'col bg-color-orange text-color-white',
+              preloader: true, //enable preloader
+              valueProperty: 'id', //object's "value" property name
+              textProperty: 'name', //object's "text" property name
+              popupCloseLinkText: 'Done',
+              source: function (query, render) {
+                var autocomplete = this;
+                autocomplete.preloaderShow();
+                var results = self.products.filter(x => x.status == 1); //.map(a => a.name);
+                autocomplete.preloaderHide();
+                render(results);
+                /*if (query.length === 0) {
+                  autocomplete.preloaderHide();
+                  render(results);
+                  return;
+                }*/
+                
+                if (query.length > 0) {
+                  var newResult = [];
+                  // Find matched items
+                  for (var i = 0; i < results.length; i++) {
+                    if (results[i].name.toLowerCase().indexOf(query.toLowerCase()) >= 0) newResult.push(results[i]);
+                  }
+                  // Render items by passing array with result items
+                  autocomplete.preloaderHide();
+                  render(newResult);
+                }
+              },
+              on: {
+                change: function (value) {
+                  
+                 var itemText = [], inputValue = [];
+                 selectedValues = value;
+                },
+                closed: function(){
+                  //console.log(selectedValues);
+                  if(selectedValues == null || selectedValues.length == 0){
+                    return;
+                  }
+                  for(var i = 0; i < selectedValues.length; i++){
+                    /*var select = self.products.find(function(e){ 
+                        return e.name == selectedValues[i].name;
+                    });*/
+                    var found = self.selectedProducts.filter(x => x.id == selectedValues[i].id).length;
+                    if(found < 1){
+                      self.selectedProducts.push(selectedValues[i]);
+                      self.SelectItemMultipleProducts(selectedValues[i]);
+                    }
+                  }
+                  var deleted = self.selectedProducts.filter(function(x) {  // return elements in previousArray matching...
+                      return !selectedValues.includes(x);  // "this element doesn't exist in currentArray"
+                  })
+                  for(var i = 0; i < deleted.length; i++){
+                    $(".eachSaleParent .removeProduct[data-id='" + deleted[i].id + "']").click()
+                  }
+
+                  selectedValues = null;
+                  //autocomplete.destroy();
+                  self.CalculateTotalProduct();
+                }
+              }
+        });
+        
+        var taxes = localStorage.getItem("taxes");
+        var taxesAmt = taxes == undefined ? 0 : taxes;
+        $(".taxpercent").val(taxesAmt);
+        $("#datePaidMultiple").val(moment().format('LLL'));
+        $("#datePurchaseMultiple").val(moment().format('LLL'));
+        //self.CalculateTotalProduct();
+        var popup = self.$app.popup.open('.multipleSales', true);
+    },
     openPopUpIngredients: function(id){
         var self = this;
         
@@ -758,6 +977,216 @@ export default {
             }*/
         //})
         
+    },
+    saveMultipleProduct: function(){
+        var self = this;
+        var error = false;
+        var bigData = [];
+        
+      //validation
+      var grpName = $(".groupProductNameMultiple").val().trim();
+        var buyername = $(".buyersNameMultiple").val().trim();
+        var amountPaid = Number($(".amountPaidMultiple").val().trim());
+        var taxes = Number($(".taxpercent").val().trim());
+        if(isNaN(taxes)){
+          error = true;
+          $(".taxpercent").parents("ul").eq(0).addClass("bg-color-red");
+        }else{
+          $(".taxpercent").parents("ul").eq(0).removeClass("bg-color-red");
+        }
+
+        if(grpName == "" || buyername == "" || isNaN(amountPaid)){
+            $(".buyersNameMultiple").parents("li").eq(0).addClass("bg-color-red");
+            error = true;
+        }else{
+          $(".buyersNameMultiple").parents("li").eq(0).removeClass("bg-color-red");
+        }
+
+        var beforeTaxes = Number($(".totalAmountBeforeProfitProduct").text());
+          var afterTaxes = Number($(".totalAmountProduct").text());
+          var fullyPaid = 0;
+      var isPaidDate = null;
+      if(amountPaid >= afterTaxes){
+        fullyPaid = 1;
+      }else{
+        fullyPaid = 0;
+      }
+      isPaidDate = moment($("#datePaidMultiple").val()).format("X");//  Date.parse($("#paid-calendar-modal").val());
+
+        $(".eachProduct").each(function(i, curr){
+        var productName = $(curr).find(".productName").eq(0).val().trim();
+        var price = Number($(curr).find(".productCost").eq(0).val().trim());
+        var quant = Number($(curr).find(".productQuantity").eq(0).val().trim());
+        var totalPric = Number($(curr).find(".totalproductprice").eq(0).val().trim());
+
+        if(isNaN(price) || isNaN(quant) || productName == ""){
+            $(curr).addClass("bg-color-red");
+            error = true;
+        }else{
+          $(curr).removeClass("bg-color-red");
+          // saving logic
+          var isParent = $(curr).hasClass("eachSaleParent") == true ? 1 : 0;
+          var tax = (taxes/100) * totalPric;
+          var costPlusTax = totalPric + tax;
+          var obj = {
+                product_name: productName,  
+                buyer_name: buyername,
+                cost: price,
+                tax: taxes,
+                parentID: 0,
+                isParent: isParent,
+                afterTax: costPlusTax,
+                quantity: quant,
+                total_price: totalPric,
+                amountPaid:  0,
+                isPaid: fullyPaid,
+                date_paid: isPaidDate,
+                created_date: moment($("#datePurchaseMultiple").val()).format("X"), //Date.parse($("#purchase-calendar-modal").val()),
+                status:1
+              };
+            bigData.push(obj)
+        }
+      })
+
+        // validation final
+        if(error){
+          self.showToast("Error is found in the forms!", "center");
+          console.log("error");
+        }else{
+          // save into db
+          //console.log("clean");
+      
+        var objMaster = {
+                product_name: grpName,  
+                buyer_name: buyername,
+                cost: beforeTaxes,
+                tax: taxes,
+                parentID: 0,
+                isParent:1,
+                afterTax: afterTaxes,
+                quantity: 1,
+                total_price: beforeTaxes,
+                amountPaid:  amountPaid,
+                isPaid: fullyPaid,
+                date_paid: isPaidDate,
+                created_date: moment($("#datePurchaseMultiple").val()).format("X"), //Date.parse($("#purchase-calendar-modal").val()),
+                status:1
+              };
+              if(self.currentMultipleSale != null){
+                objMaster.id = Number(self.currentMultipleSale);
+              }
+
+              db.transaction('rw', db.sales, () => {
+                
+                  db.sales.put(objMaster).then(function(id){
+                      bigData.forEach((element, index) => {
+                      bigData[index].parentID = id;
+                  });
+
+                  if(self.currentMultipleSale != null){
+                      //objMaster.id = Number(self.currentMultipleSale);
+                      db.sales.where("parentID").equals(Number(self.currentMultipleSale)).delete()
+                          .then(function (deleteCount) {
+                              //console.log( "Deleted " + deleteCount + " objects");
+                              db.sales.bulkAdd(bigData).then(function(lastKey) {
+                                //console.log("Last allcost's id was: " + lastKey); // Will be 100000.
+                                })
+                          });
+                  
+                  }else{
+                      db.sales.bulkAdd(bigData).then(function(lastKey) {
+                          //console.log("Last allcost's id was: " + lastKey); // Will be 100000.
+                    })
+                  }
+                    
+                  
+                    
+                })
+
+              }).then(() => {
+                  // Transaction committed. NOT WITHIN ZONE!
+                  self.showToast("Saved successfully", "center");
+              }).catch(err => {
+                  // Transaction aborted. NOT WITHIN ZONE!
+                  //console.error (e);
+                    self.showToast(err, "center");
+                 });
+
+              //saving clean data
+        }
+    },
+    AddNewProduct: function(select){
+      var self = this;
+      var name = select == null ? "" : select.product_name;
+      var cost = select == null ? "" : select.cost;
+      var quantity = select == null ? 1 : select.quantity;
+      var totalPrice = select == null ? "" : select.total_price;
+        //var cost = select.cost == undefined ? 0 : select.cost; 
+        var html = '<li class="eachSaleParentOther eachProduct"><div class="card myCard"><div class="card-content padding-horizontal-half">';
+          html += '<div><span class="labelName">Product Name: </span><div class="display-inline-flex"><input class="productName" type="text" placeholder="Product Name" value="';
+          html +=  name + '"></div></div>';
+          html += '<div class="row"><div class="col-50"><div class="item-content item-input no-padding-left"><div class="item-inner no-padding-right"><div class="labelName">Product Cost</div>';
+          html += '<div class="item-input-wrap"><input class="productCost" type="text" placeholder="Product Cost" value="' + cost + '">';
+          html +=  '<span class="input-clear-button"></span></div></div></div></div>';
+          html += '<div class="col-50"><div class="item-content item-input no-padding-left"><div class="item-inner no-padding-right"><div class="labelName">Quantity</div>';
+          html += '<div class="item-input-wrap"><input class="productQuantity" type="text" placeholder="Product Quantity" value="' + quantity + '">';
+          html +=  '<span class="input-clear-button"></span></div></div></div></div></div>';
+          html += '<div><span class="labelName">Total Price: </span><div class="display-inline-flex"><input class="totalproductprice" type="text" disabled placeholder="Total Price" value="';
+          html += totalPrice + '"></div></div>';
+        html += '</div><div class="card-footer padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
+          html += '<a class="button button-raised button-small button-fill color-red removeProduct">Delete</a>';
+        html += '</p></div></div>'
+        html += '</li>';
+        $("#productsOther-list .sortList").append(html);
+        $(".eachSaleParentOther .removeProduct").off("click").on("click", function(){
+                  //var id = $(this).attr("data-itemid");
+                  $(this).parents(".eachSaleParentOther").eq(0).remove();
+                })
+            $(".eachSaleParentOther input").off("keyup").on("keyup", function(){
+                self.CalculateTotalProduct();
+            })
+    },
+    CalculateTotalProduct: function(){
+      var totalCost = 0;
+      $(".eachProduct").each(function(i, curr){
+        var price = Number($(curr).find(".productCost").eq(0).val().trim());
+        var quant = Number($(curr).find(".productQuantity").eq(0).val().trim());
+
+        //$(curr).find(".totalproductprice")
+        if(!isNaN(price) && !isNaN(quant)){
+            var total = price * quant;
+            totalCost += total;
+            $(curr).find(".totalproductprice").eq(0).val(total.toFixed(2));
+        }
+      })
+      
+      //console.log(totalCost);
+      var tax = Number($(".multipleSales").find(".taxpercent").eq(0).val());
+      if(!isNaN(tax) || tax == 0){
+        $(".totalAmountBeforeProfitProduct").text(totalCost.toFixed(2));
+          var taxAmt = ((tax/100) * totalCost);
+          var afterTax = totalCost + taxAmt;
+          $(".totalAmountProduct").text(afterTax.toFixed(2));
+      }else{
+        $(".totalAmountBeforeProfitProduct").text(totalCost.toFixed(2));
+      }
+    },
+    closePopUpMultiple:function(){
+      var self = this;
+        var popup = self.$app.popup.close('.multipleSales', true);
+        popup.once("closed", function(){
+          $(".multipleSales .sortList li").remove();
+          $(".buyersNameMultiple").parents("li").eq(0).removeClass("bg-color-red");
+          $(".totalAmountBeforeProfitProduct, .totalAmountProduct").text("0");
+          $(".amountPaidMultiple, .buyersNameMultiple, .groupProductNameMultiple").val("");
+          $("#datePaidMultiple").val(moment().format('LLL'));
+          $("#datePurchaseMultiple").val(moment().format('LLL'));
+          self.$app.autocomplete.destroy("#autocomplete-standalone-multiple2");
+            self.$setState({
+                selectedProducts:[]
+              });
+            self.getData();
+        });
     },
     closeEditProdPopUp: function(){
       var self = this;
@@ -917,12 +1346,22 @@ export default {
                 totalMat:arr.length
               }, function(){
                 $("#product-list .list").empty();
+                $("#product-list .pagination").remove();
+                $(".sellMultiple").remove();
                       if(arr != null && arr.length > 0){
                         $(".customList").removeClass("display-none");
+                        var pagination = "<ul class='pagination padding-left-half margin-vertical-half'><ul>";
+                        $(pagination).insertAfter($("#product-list .list"));
                         $(".sort").remove();
                         var sorter = '<span class="sort" data-sort="name">Name</span><span class="sort" data-sort="cost">Cost</span>';
                         $(sorter).insertAfter($(".sortText"));
                         $(".sortText").removeClass("display-none");
+                        var mult = "<div class='margin-horizontal-half'><a class='button button-raised button-fill color-blue sellMultiple'>Sell Multiple Products</div>";
+                        $(mult).insertBefore($("#product-list .list"));
+                        $(".sellMultiple").off("click").on("click", function(){
+                          self.openPopUpMultiple();
+                        })
+
                         for(var i = 0; i < arr.length; i++){
                             var row = arr[i];
                             var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
@@ -943,8 +1382,8 @@ export default {
                         }
                         var options = {
                             valueNames: ['id','cost','name'],
-                            //page: 3,
-                            //pagination: true
+                            page: 5,
+                            pagination: [{outerWindow:2}]
                         };
 
                         var productList = new List('product-list', options);

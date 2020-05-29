@@ -54,16 +54,10 @@
               </div>
             </a>
           </li>
+    
           <!--<li>
-            <a href="/form/" class="item-content item-link">
               <div class="item-inner">
-                <div class="item-title">Form</div>
-              </div>
-            </a>
-          </li>
-          <li>
-              <div class="item-inner">
-                <button class="col button button-fill" @click="storage()">Button</button>
+                <button class="col button button-fill" @click="test()">Button</button>
               </div>
           </li>-->
         </ul>
@@ -75,12 +69,16 @@
 </template>
 <script>
 import Dexie from 'dexie';
+import {fakeAlert} from '../js/myscript.js';
 export default {
   methods: {
       openAlert: function (text) {
         var self = this;
         self.$app.dialog.alert(text);
         //alert(text);
+      },
+      test: function(){
+        fakeAlert();
       },
       showToast: function(text, position, time = 2000){
         var self = this;
@@ -89,6 +87,27 @@ export default {
                         position: position,
                         closeTimeout: time,
                         }).open();
+        },
+        startPouch: function(){
+          var self = this;
+          var pouch = null;
+          try{
+            if(pdf != undefined){
+                pouch = new PouchDB('testingDB.db', { adapter: 'cordova-sqlite' });
+              }else{
+                pouch = new PouchDB('testingDB.db');
+              }
+          }catch(err){
+            pouch = new PouchDB('testingDB.db');
+          }
+          
+            
+            pouch.info().then(function (info) {
+             // console.log(info);
+             self.$app.dialog.alert(pouch.adapter + ":" + 'SQLite plugin is installed?: ' + (!!window.sqlitePlugin));
+            })  
+            
+            //console.log(pouch.adapter); 
         },
       startDB: function(){
          //this.$app.methods.storage2();
@@ -123,6 +142,7 @@ export default {
       },
       pageInit: function(e, page) {
         var self = this;
+        self.startPouch();
         var comName = localStorage.getItem("companyName");
         var curr = localStorage.getItem("currency");
         if(comName != undefined){

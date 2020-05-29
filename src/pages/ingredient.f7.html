@@ -56,7 +56,7 @@
             <span class="sort" data-sort="cost">Cost</span>-->
           </div>
         </div>
-        <ul class="list sortList margin-top-half">
+        <ul class="list sortList margin-vertical-half">
           
         </ul>
         <!--<ul class="pagination"></ul>-->
@@ -305,9 +305,12 @@ export default {
                 totalMat:arr.length
               }, function(){
                       $("#material-list .list").empty();
+                      $("#material-list .pagination").remove();
                       //$(".sort").removeClass("asc").removeClass("desc");
                       if(self.ings != null && self.ings.length > 0){
                         $(".customList").removeClass("display-none");
+                        var pagination = "<ul class='pagination padding-left-half margin-vertical-half'><ul>";
+                        $(pagination).insertAfter($("#material-list .list"));
                         $(".sort").remove();
                         var sorter = '<span class="sort" data-sort="name">Name</span><span class="sort" data-sort="cost">Cost</span>';
                         $(sorter).insertAfter($(".sortText"));
@@ -331,8 +334,8 @@ export default {
                         }
                         var options = {
                             valueNames: ['id','cost','name'],
-                            //page: 3,
-                            //pagination: true
+                            page: 5,
+                            pagination: [{outerWindow:2}]
                         };
 
                         var materialList = new List('material-list', options);

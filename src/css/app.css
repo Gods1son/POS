@@ -90,6 +90,13 @@
     text-transform: none;
 }
 
+.sellMultiple{
+    font-weight: 500;
+    font-size: 1.2em;
+    margin-right: 5px;
+    text-transform: none;
+}
+
 .button .f7-icons, .paid{
     vertical-align: bottom !important;
 }
@@ -246,6 +253,32 @@
 .dash .card{
     width:95%;
     margin-bottom: 0px;
+}
+
+.pagination li{
+    display: inline-block;
+    padding: 2px 13px;
+    border: 1px solid;
+    font-size: 1.5em;
+    background-color: white;
+}
+
+.pagination li.active{
+    font-weight: 900;
+}
+
+.pagination li:first-of-type {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+  }
+
+  .pagination li:last-of-type {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+  }
+
+.pagination .page{
+    position: relative;
 }
 
 

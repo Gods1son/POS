@@ -109,7 +109,7 @@
             </div>
           </div>
 
-          <ul class="list sortList margin-top-half">
+          <ul class="list sortList margin-vertical-half">
             
           </ul>
           <!--<ul class="pagination"></ul>-->
@@ -446,8 +446,11 @@ export default {
     setDataTable: function(){
       var self = this;
             $("#expenses-list .list").empty();
+            $("#expenses-list .pagination").remove();         
                       if(self.expenses != null && self.expenses.length > 0){
                         $(".customListSub").removeClass("display-none");
+                        var pagination = "<ul class='pagination padding-left-half margin-vertical-half'><ul>";
+                        $(pagination).insertAfter($("#expenses-list .list"));
                         $(".sort").remove();//id,name,amount_to_pay,amount_paid,date_paid,created_date,recurring,status
                         var sorter = '<span class="sort" data-sort="name">Name</span><span class="sort" data-sort="cost">Expense Cost</span>';
                         sorter += '<span class="sort" data-sort="paidAll">Fully Paid</span><span class="sort" data-sort="created_date">Created Date</span>';
@@ -479,8 +482,8 @@ export default {
                         }
                         var options = {
                             valueNames: ['id','cost','paidAll','name','created_date'],
-                            //page: 3,
-                            //pagination: true
+                            page: 5,
+                            pagination: [{outerWindow:2}]
                         };
 
                         var expense = new List('expenses-list', options);

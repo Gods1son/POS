@@ -129,7 +129,7 @@
             </div>
           </div>
 
-          <ul class="list sortList margin-top-half">
+          <ul class="list sortList margin-vertical-half">
             
           </ul>
           <!--<ul class="pagination"></ul>-->
@@ -428,6 +428,7 @@ export default {
         totalDifference: 0,
         currentSale:null,
         products:null,
+        sellToAnotherUser:null,
         currentMultipleSale: null,
         selectedProducts:[]
       }
@@ -608,7 +609,7 @@ export default {
                 created_date: moment($("#datePurchaseMultiple").val()).format("X"), //Date.parse($("#purchase-calendar-modal").val()),
                 status:1
               };
-              if(self.currentMultipleSale != null){
+              if(self.currentMultipleSale != null && self.sellToAnotherUser == null){
                 objMaster.id = Number(self.currentMultipleSale);
               }
 
@@ -713,7 +714,7 @@ export default {
       var ret = sym + val.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
       return ret;
     },
-    formatPDF: function(sales){//product_name,buyer_name,cost,amountPaid,isPaid,date_paid,created_date
+    formatPDF: function(sales, children){//product_name,buyer_name,cost,amountPaid,isPaid,date_paid,created_date
       var self = this;
       var Companyname = localStorage.getItem("companyName") != undefined ? localStorage.getItem("companyName") : "";
       var Comaddress = localStorage.getItem("companyAddress") != undefined ? localStorage.getItem("companyAddress").split("\n").join("<br>") : "";
@@ -725,23 +726,42 @@ export default {
       var tPrice = sales.total_price == null ? sales.cost : sales.total_price;
       var totalPrice = self.moneyFormat(tPrice);
       var totalPaid = self.moneyFormat(sales.amountPaid);
-      var outstanding = self.moneyFormat((Number(tPrice) - Number(sales.amountPaid)));
+      var afterTax = sales.afterTax == null ? totalPrice : sales.afterTax;
+      var outstanding = (Number(afterTax) - Number(sales.amountPaid));
+      var tax = sales.tax == null ? 0 : sales.tax;
       var purchaseDate = moment.unix(sales.created_date).format("LLL");
       var paymentDate =  sales.date_paid == "" ? "" : moment.unix(sales.date_paid).format("LLL");
       var today = moment().format("LLL");
        var html = '<html><div style="text-align:right; border-bottom:1px solid black;">';
         html += '<h2 style="margin-bottom:5px; margin-top:5px;">' + Companyname + '</h2><div>' + Comaddress + '</div></div>';
-        html += '<div style="text-align:left; border-bottom:1px solid black;"><h4 style="margin-bottom:5px; margin-top:5px;">Invoice No: 00' + sales.id.toString() + '</h4><h4 style="margin-bottom:5px; margin-top:5px;">Invoice To:</h4>';
+        html += '<div style="text-align:left; border-bottom:1px solid black;"><h4 style="margin-bottom:5px; margin-top:5px;">Invoice No: INV00' + sales.id.toString() + '</h4><h4 style="margin-bottom:5px; margin-top:5px;">Invoice To:</h4>';
         html += '<h3 style="margin-bottom:5px; margin-top:5px;">' + buyer + '</h3></div>';
-        html += '<table><thead><tr><th style="width: 70vw;text-align: left;">Product Name</th>';
-        html += '<th style="width: 10vw;text-align: center;">Quantity</th><th style="width: 20vw;text-align: right;">Price</th>';
-        html += '</tr></thead><tbody><tr><td>' + productName + '</td><td style="text-align:center">' + quant + '</td>';
-        html += '<td style="text-align: right;">' + cost + '</td></tr></tbody></table>';
-        html += '<div style="text-align:right; border-top:1px solid black;"><div><span>Total Price: </span><span style="font-size:1.2em;">' + totalPrice + '</span></div>';
-        html += '<div><span>Amount Paid: </span><span style="font-size:1.2em;">' + totalPaid + '</span></div>';
-        html += '<div><span>Outstanding: </span><span style="font-size:1.2em;">' + outstanding + '</span></div>';
-        html += '<div><span">Purchase Date: </span><span style="font-size:1.2em;">' + purchaseDate + '</span></div>';
-        html += '<div><span">Payment Date: </span><span style="font-size:1.2em;">' + paymentDate + '</span></div></div>';
+        html += '<table style="border:1px solid"><thead style="background: black;color: white;"><tr><th style="width: 50vw;text-align: left;">Product Name</th>';
+        html += '<th style="width: 10vw;text-align: center;">Quantity</th><th style="width: 20vw;text-align: right;">Unit Price</th><th style="width: 20vw;text-align: right;">Total Price</th>';
+        html += '</tr></thead><tbody>';
+          if(children.length > 0){
+              for(var i = 0; i < children.length; i++){
+                var each = children[i];
+                html += '<tr><td>' + each.product_name + '</td><td style="text-align:center">' + each.quantity + '</td>';
+                html += '<td style="text-align: right;">' + self.moneyFormat(each.cost) + '</td>';
+                html += '<td style="text-align: right;">' + self.moneyFormat(each.total_price) + '</td></tr>';
+              }
+          }else{
+              html += '<tr><td>' + productName + '</td><td style="text-align:center">' + quant + '</td>';
+              html += '<td style="text-align: right;">' + cost + '</td>';
+              html += '<td style="text-align: right;">' + totalPrice + '</td></tr>';
+          }
+        
+        
+        html += '</tbody></table>';
+        html += '<div style="text-align:right; border:1px solid black;padding-right:10px;">';
+        html += '<div><span style="font-weight:600">Price Before Tax: </span><span style="font-size:1.2em;">' + totalPrice + '</span></div>';
+        html += '<div><span style="font-weight:600">Tax: </span><span style="font-size:1.2em;">' + tax + '%</span></div>';
+        html += '<div><span style="font-weight:600">Price After Tax: </span><span style="font-size:1.2em;">' + self.moneyFormat(afterTax) + '</span></div>';
+        html += '<div><span style="font-weight:600">Amount Paid: </span><span style="font-size:1.2em;">' + totalPaid + '</span></div>';
+        html += '<div><span style="font-weight:600">Outstanding: </span><span style="font-size:1.2em;">' + self.moneyFormat(outstanding) + '</span></div>';
+        html += '<div><span style="font-weight:600"">Purchase Date: </span><br><span style="font-size:1.2em;">' + purchaseDate + '</span></div>';
+        html += '<div><span style="font-weight:600"">Payment Date: </span><br><span style="font-size:1.2em;">' + paymentDate + '</span></div></div>';
         html += '<div style="text-align:left;"><h3 style="margin-bottom:5px; margin-top:5px;">Thank you!</h3><h5 style="margin-bottom:5px; margin-top:5px;">' + today + '</h5></div><hr></html>';
         return html;
     },
@@ -879,30 +899,47 @@ export default {
                  self.$app.dialog.alert("An error occurred!");
               })
     },
+    showPDF: function(html, item){
+      var options = {
+                documentSize: 'A4',
+                type: 'share',
+                fileName: item.buyer_name + "- INV00" + item.id + '.pdf'
+              }
+      try{
+          if(pdf != undefined){
+            pdf.fromData( html, options)
+              .then((stats)=> self.showToast(stats, "center"))   // ok..., ok if it was able to handle the file to the OS.  
+              .catch((err)=> self.showToast(err, "center"))
+          }else{
+            var w = window.open();
+            $(w.document.body).html(html);
+          }
+        }catch(err){
+            var w = window.open();
+            $(w.document.body).html(html);
+        }
+    },
     invoice: function(id){
       var self = this;
       var item = self.sales.find(function(e){ 
                   return e.id == Number(id);
               });
-      var html = self.formatPDF(item);
-      var options = {
-                documentSize: 'A4',
-                type: 'share',
-                fileName: item.buyer_name + "- 00" + item.id + '.pdf'
+              var children = [];
+              console.log(item);
+              if(item.isParent == 1){
+                var collection = db.sales.where('parentID').equals(item.id).toArray(function(arr){
+                  //console.log(arr);
+                    children = arr;
+                    var html = self.formatPDF(item, arr);
+                    self.showPDF(html, item);
+                })
+              }else{
+                //console.log(children);
+                var html = self.formatPDF(item, children);
+                self.showPDF(html, item);
               }
-      try{
-      if(pdf != undefined){
-        pdf.fromData( html, options)
-          .then((stats)=> self.showToast(stats, "center"))   // ok..., ok if it was able to handle the file to the OS.  
-          .catch((err)=> self.showToast(err, "center"))
-      }else{
-        var w = window.open();
-        $(w.document.body).html(html);
-      }
-    }catch(err){
-        var w = window.open();
-        $(w.document.body).html(html);
-    }
+              
+      
       //console.log(html);
     },
     openPopUpUpdateSellProduct: function(id){
@@ -1029,15 +1066,22 @@ export default {
     editMultiplePopUp: function(id){
         var self = this;
         self.openPopUpMultiple();
-        console.log("multiple");
+        //console.log("multiple");
         var collection2 = db.sales.where('id').equals(Number(id)).toArray(function(arr){
             var taxesAmt = arr[0].tax;
             $(".groupProductNameMultiple").val(arr[0].product_name);
-            $(".buyersNameMultiple").val(arr[0].buyer_name);
-            $(".amountPaidMultiple ").val(arr[0].amountPaid);
+            if(self.sellToAnotherUser == null){
+              $(".buyersNameMultiple").val(arr[0].buyer_name);
+              $(".amountPaidMultiple ").val(arr[0].amountPaid);
+              $("#datePaidMultiple").val(moment.unix(arr[0].date_paid).format("LLL"));
+              $("#datePurchaseMultiple").val(moment.unix(arr[0].created_date).format("LLL"));
+            }else{
+              $(".buyersNameMultiple").val("");
+              $(".amountPaidMultiple ").val(0);
+              $("#datePaidMultiple").val(moment().format("LLL"));
+              $("#datePurchaseMultiple").val(moment().format("LLL"));
+            }
             $(".taxpercent").val(taxesAmt);
-            $("#datePaidMultiple").val(moment.unix(arr[0].date_paid).format("LLL"));
-            $("#datePurchaseMultiple").val(moment.unix(arr[0].created_date).format("LLL"));
         })
         var collection = db.sales.where('parentID').equals(Number(id)).toArray(function(arr){
             self.$setState({
@@ -1202,7 +1246,8 @@ export default {
           $("#datePurchaseMultiple").val(moment().format('LLL'));
           self.$app.autocomplete.destroy("#autocomplete-standalone-multiple");
             self.$setState({
-                selectedProducts:[]
+                selectedProducts:[],
+                sellToAnotherUser:null
               });
             self.getData();
         });
@@ -1210,8 +1255,11 @@ export default {
     setDataTable: function(){
             var self = this;
             $("#sales-list .list").empty();//id,product_name,buyer_name,cost,amountPaid,isPaid,date_paid,created_date,status
-                      if(self.sales != null && self.sales.length > 0){
+            $("#sales-list .pagination").remove();         
+            if(self.sales != null && self.sales.length > 0){
                         $(".customListSub").removeClass("display-none");
+                        var pagination = "<ul class='pagination padding-left-half margin-vertical-half'><ul>";
+                        $(pagination).insertAfter($("#sales-list .list"));
                         $(".sort").remove();
                         var sorter = '<span class="sort" data-sort="name">Name</span><span class="sort" data-sort="cost">Cost</span>';
                         sorter += '<span class="sort" data-sort="isPaid">Fully Paid</span><span class="sort" data-sort="created_date">Purchase Date</span>';
@@ -1220,6 +1268,10 @@ export default {
                         for(var i = 0; i < self.sales.length; i++){
                             var row = self.sales[i];
                             var isParent = row.isParent == null ? 0 : 1;
+                            var sellToOther = "";
+                            if(isParent == 1){
+                              sellToOther = '<a class="button button-raised button-small color-orange button-fill margin-right-half sellToOthers" data-id="' + row.id + '" data-isparent="' + isParent + '">Sell To Others</a>';
+                            }
                             var quantity = row.quantity == null ? 1 : row.quantity;
                             var taxes = row.tax == null ? 0 : row.tax;
                             var total = row.total_price == null ? row.cost : row.total_price;
@@ -1245,6 +1297,7 @@ export default {
                             html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName text-color-red">Deleted</span></div>';
                             html += '</div><div class="card-footer padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
                             html += '<a class="button button-raised button-small button-fill margin-right-half invoice color-green" data-id="' + row.id + '">Invoice</a>';
+                            html += sellToOther;
                             html += '<a class="button button-raised button-small button-fill margin-right-half editSale" data-id="' + row.id + '" data-isparent="' + isParent + '">Edit</a>';
                             html += '<a class="button button-raised button-small button-fill color-red deleteSale" data-id="' + row.id + '">';
                             html +=  row.status == 1 ? 'Delete' : 'Activate'; 
@@ -1255,8 +1308,8 @@ export default {
                         }
                         var options = {
                             valueNames: ['id','isPaid','buyer','created_date','cost','name'],
-                            //page: 3,
-                            //pagination: true
+                            page: 5,
+                            pagination: [{outerWindow:2}]
                         };
 
                         var sales = new List('sales-list', options);
@@ -1289,6 +1342,13 @@ export default {
                               }
                               if($(this).hasClass("deleteSale")){
                                 self.deleteSale(sales, data);
+                              }
+                              if($(this).hasClass("sellToOthers")){
+                                self.$setState({
+                                  sellToAnotherUser: 1
+                                }, function(){
+                                  self.editMultiplePopUp(data);
+                                });
                               }
                               //return false;
                           });
