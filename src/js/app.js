@@ -18,8 +18,11 @@ import routes from './routes.js';
 import List from 'list.js';
 import PouchDB from 'pouchdb';
 import cordovaSqlitePlugin from 'pouchdb-adapter-cordova-sqlite';
-window.PouchDB = PouchDB;
+import pouchFind from 'pouchdb-find';
+
 PouchDB.plugin(cordovaSqlitePlugin);
+PouchDB.plugin(pouchFind);
+window.PouchDB = PouchDB;
 window.List = List;
 
 // Import main app component

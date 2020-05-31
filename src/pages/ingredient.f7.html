@@ -144,25 +144,8 @@
 </div>
 </template>
 <script>
-
-import Dexie from 'dexie';
-//import List from 'list.js';
-
-var db = new Dexie("BizExpenseManagerDB");
-          db.version(3).stores({
-            ingredients: "++id,name,unit_size,unit,cost_per_unit,status,created_date",
-            products: "++id,name,cost,status,created_date",
-            product_ingredient: "++id,productID,ingredientID,unit_size,cost,status,created_date",
-            product_otherMaterials: "++id,productID,name,cost,status,created_date",
-            sales: "++id,parentID,product_name,isParent,buyer_name,cost,quantity,tax,total_price,afterTax,amountPaid,isPaid,date_paid,created_date,status",
-            expenses: "++id,name,amount_to_pay,amount_paid,date_paid,created_date,recurring,status",
-
-            ingredients_history: "++id,ingID,name,unit_size,unit,cost_per_unit,status,created_date",
-            products_history: "++id,prodID,name,cost,status,created_date",
-            sales_history: "++id,salesID,product_name,buyer_name,cost,amountPaid,isPaid,date_paid,created_date,status",
-            expenses_history: "++id,expID,name,amount_to_pay,amount_paid,date_paid,created_date,recurring,status"
-          })
-
+import * as moment from 'moment';
+var db = null, dbSettings = null;
 
 export default {
   test: 5,
@@ -171,7 +154,9 @@ export default {
       return {
         ings: null,
         totalMat:0,
-        currentIng: null
+        currentIng: null,
+        settings: null,
+        settingsID: 'settings'
       }
     },
   methods:{
@@ -187,6 +172,39 @@ export default {
                         closeTimeout: 2000,
                         }).open();
     },
+    startPouch: function(){
+          var self = this;
+          //db = null;
+          try{//id,name,unit_size,unit,cost_per_unit,status,created_date
+            if(pdf != undefined){
+                db = new PouchDB('ingredients.db', { adapter: 'cordova-sqlite' });
+                dbSettings = new PouchDB('settings.db', { adapter: 'cordova-sqlite' });
+                db.createIndex({
+                  index: {
+                    fields: ['name', 'status']
+                  }
+                }).then(function (result) {
+                  self.getData();
+                })
+              }
+          }catch(err){
+            db = new PouchDB('ingredients.db');
+            dbSettings = new PouchDB('settings.db');
+            db.createIndex({
+                  index: {
+                    fields: ['name', 'status']
+                  }
+                }).then(function (result) {
+                  self.getData();
+                })
+          }
+          var id = self.settingsID;
+            dbSettings.get(id).then(function(doc) {
+                  self.$setState({
+                      settings: doc
+                    })
+              })
+        },
     DeleteItem: function(list, id){
         var self = this;
         var checked = 0;
@@ -199,23 +217,35 @@ export default {
             }
         }
         self.$app.dialog.confirm("Are you sure you want to " + text + "?", function(){
-            db.ingredients.update(Number(id), {status: checked}).then(function (updated) {
-              if (updated){
-                self.ings = self.ings.filter(function(e){ 
-                      return e.id != Number(id);
+                  /*var item = self.ings.find(function(e){ 
+                      return e._id = id;
+                  });
+                  item.status = checked;*/
+                  //console.log(item);
+                  db.get(id).then(function(doc) {
+                   // console.log(doc);
+                    doc.status = checked
+                    return db.put(doc);
+                  }).then(function(){
+                    self.ings = self.ings.filter(function(e){ 
+                      return e._id != id;
                   });
                   //console.log(self.ings);
                   self.$setState({
                       ings:self.ings,
                       totalMat:self.ings.length
                   }, function(){
-                      
                       self.showToast("Material " + text + "d!", "center");
-                        list.remove("id", id);
+                      list.remove("id", id);
+                      if(self.ings.length == 0){
+                        $(".customList").addClass("display-none");
+                        $("#material-list .pagination").remove();
+                      }
                   });
-              }
-            });
-        }, null);
+                })
+                
+            }, null);
+        //}, null);
     },
     openPopUp: function(id){
         var self = this;
@@ -223,10 +253,10 @@ export default {
         //popup.once("opened", function(){
           if(id != null || id != undefined){
               var item = self.ings.find(function(e){ 
-                        return e.id == Number(id);
+                        return e._id == id;
                     });
                     self.$setState({
-                      currentIng:Number(id)
+                      currentIng: item
                     });
                     $$("input.name").val(item.name);
                     $$("input.unit_size").val(item.unit_size);
@@ -261,23 +291,26 @@ export default {
                 unit_size: $$("input.unit_size").val(), 
                 unit: $$("input.unit").val(), 
                 cost_per_unit: $$("input.cost_per_unit").val(), 
-                status:1
+                status:1,
+                created_date: moment().format("X")
               };
             if(self.currentIng != null){
-              obj.id = self.currentIng;
+              obj._id = self.currentIng._id;
+              obj._rev = self.currentIng._rev;
+            }else{
+              obj._id = moment().format("X");
             }
-          db.ingredients.put(obj).then(function(id) {
-                  db.ingredients.get(id).then(function(item) {
+            db.put(obj).then(function(res) {
                     //self.$app.dialog.alert("Item saved.");
                     self.showToast("Item saved.", "center");
                     $$("input.name,input.unit_size,input.unit,input.cost_per_unit").val("");
                     self.getData();
-                })
               })
           }
     },
-    formatMoney:function(val){             
-      var sym = localStorage.getItem("currency", val);
+    formatMoney:function(val){   
+      var self = this;          
+      var sym = self.settings == null ? "" : self.settings.currency;
       sym = sym == undefined ? "" : sym;
       if(val < 0){
         var rev = 0 - val;
@@ -295,8 +328,15 @@ export default {
       if(toggle != undefined){
         checked = toggle.checked == true ? 0 : 1;
       }
-      //console.log(checked);
-      var collection = db.ingredients.where('status').equals(checked).toArray(function(arr){
+      
+        db.find({
+          selector: {
+            status: {$eq: checked}
+          }
+        }).then(function(ar){
+          var arr = ar.docs;
+            //console.log(arr);
+        //})
         //var collection = db.ingredients.toArray(function(arr){
         //console.log(arr);
         //console.log("fretched - " + checked);
@@ -318,14 +358,14 @@ export default {
                         for(var i = 0; i < self.ings.length; i++){
                             var row = self.ings[i];
                             var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
-                            html += '<div class="name cardName">' + row.name + '</div><div class="id display-none">' + row.id + '</div><div class="cost display-none">' + row.cost_per_unit + '</div>';
+                            html += '<div class="name cardName">' + row.name + '</div><div class="id display-none">' + row._id + '</div><div class="cost display-none">' + row.cost_per_unit + '</div>';
                             html += '<div class=""><span class="labelName">Cost/Unit Size: </span><span class="valueName">' + self.formatMoney(row.cost_per_unit) + " for " + row.unit_size + row.unit + '</span></div>';
                             var stat = row.status == 1 ? "display-none" : "";
                             //html += '<div class=""><span class="labelName">Cost: </span><span class="valueName">' + self.formatMoney(row.cost_per_unit) + '</span></div>';
                             html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName text-color-red">Deleted</span></div>';
                             html += '</div><div class="card-footer padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
-                            html += '<a class="button button-raised button-small button-fill margin-right-half editButton" data-id="' + row.id + '">Edit</a>';
-                            html += '<a class="button button-raised button-small button-fill color-red deleteButton" data-id="' + row.id + '">';
+                            html += '<a class="button button-raised button-small button-fill margin-right-half editButton" data-id="' + row._id + '">Edit</a>';
+                            html += '<a class="button button-raised button-small button-fill color-red deleteButton" data-id="' + row._id + '">';
                             html +=  row.status == 1 ? 'Delete' : 'Activate'; 
                             html += '</a></p></div></div>'
                             html += '</li>';
@@ -376,8 +416,8 @@ export default {
           //console.log("inactive change");
             self.getData();
         })
-        console.log("test inactive init 2");
-        self.getData();
+        //console.log("test inactive init 2");
+        self.startPouch();
       },
       pageReinit: function(e, page) {
         var self = this;

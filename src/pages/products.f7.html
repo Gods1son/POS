@@ -468,9 +468,9 @@
 </template>
 <script>
 //import Dom7 from 'dom7';
-import Dexie from 'dexie';
+//import Dexie from 'dexie';
 import * as moment from 'moment';
-var db = new Dexie("BizExpenseManagerDB");
+/*var db = new Dexie("BizExpenseManagerDB");
           db.version(3).stores({
             ingredients: "++id,name,unit_size,unit,cost_per_unit,status,created_date",
             products: "++id,name,cost,status,created_date",
@@ -483,8 +483,8 @@ var db = new Dexie("BizExpenseManagerDB");
             products_history: "++id,prodID,name,cost,status,created_date",
             sales_history: "++id,salesID,product_name,buyer_name,cost,amountPaid,isPaid,date_paid,created_date,status",
             expenses_history: "++id,expID,name,amount_to_pay,amount_paid,date_paid,created_date,recurring,status"
-          })
-
+          })*/
+var dbProducts = null, dbProdIngs = null, dbProdOthers = null, dbSales = null, dbIngs = null, dbSettings = null;
 //var $$ = Dom7;
 export default {
   data: function () {
@@ -500,7 +500,9 @@ export default {
         productToEditID: null,
         productIngs:[],
         currentMultipleSale: null,
-        selectedProducts:[]
+        selectedProducts:[],
+        settings: null,
+        settingsID: 'settings'
       }
     },
   methods:{
@@ -576,7 +578,7 @@ export default {
       var id = $(but).attr("data-id");
       //console.log(id);
         var select = self.productIngs.find(function(e){ 
-              return e.id == Number(id);
+              return e._id == id;
           });
  
           $(but).parents("li").eq(0).remove();
@@ -604,7 +606,7 @@ export default {
         html += '<div class=""><span class="labelName">Cost of Material: </span><span class="valueName eachCost">' + val2 + '</span></div>';
         html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName text-color-red">Deleted</span></div>';
         html += '</div><div class="card-footer padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
-          html += '<a class="button button-raised button-small button-fill color-red removeCost" data-id="' + select.id + '">Delete</a>';
+          html += '<a class="button button-raised button-small button-fill color-red removeCost" data-id="' + select._id + '">Delete</a>';
         html += '</p></div></div>'
         html += '</li>';
         $("#prodIng-list .sortList").append(html);
@@ -637,22 +639,28 @@ export default {
             }
         }
         self.$app.dialog.confirm("Are you sure you want to " + text + "?", function(){
-            db.products.update(Number(id), {status: checked}).then(function (updated) {
-              if (updated){
-                self.products = self.products.filter(function(e){ 
-                      return e.id != Number(id);
+                  dbProducts.get(id).then(function(doc) {
+                   // console.log(doc);
+                    doc.status = checked
+                    return dbProducts.put(doc);
+                  }).then(function(){
+
+                  self.products = self.products.filter(function(e){ 
+                      return e._id != id;
                   });
-                  //console.log(self.ings);
                   self.$setState({
                       products:self.products,
                       totalMat:self.products.length
                   },function(){
                       self.showToast("Product " + text + "d!", "center");
                       list.remove("id", id);
+                      if(self.products.length == 0){
+                        $(".customList").addClass("display-none");
+                        $("#product-list .pagination").remove();
+                      }
                   });
-              }
-            });
-        }, null);
+              })
+          }, null);
     },
     openPopUp: function(id){
         var self = this;
@@ -660,10 +668,10 @@ export default {
         //popup.once("opened", function(){
           if(id != null || id != undefined){
             var item = self.products.find(function(e){ 
-                  return e.id == Number(id);
+                  return e._id == id;
               });
               self.$setState({
-                      currentProduct:Number(id)
+                      currentProduct:item
                     });
                     $$("input.name").val(item.name);
                     $$("input.cost_of_product").val(item.cost);
@@ -683,32 +691,31 @@ export default {
         //popup.once("opened", function(){
           if(id != null || id != undefined){
             var item = self.products.find(function(e){ 
-                  return e.id == Number(id);
+                  return e._id == id;
               });
               self.$setState({
-                  currentProduct:Number(id)
+                  currentProduct: item
               });
 
-              
-
-                  $$("input.name_sell").val(item.name);
-                  $$("input.cost_sell").val(item.cost);
-                  var quantity = item.quantity == null ? 1 : item.quantity;
-                  var total = item.total_price == null ? item.cost : item.total_price;
-                  var taxes = localStorage.getItem("taxes");
-                  var taxesAmt = taxes == undefined ? 0 : taxes;
-                  taxesAmt = Number(taxesAmt);
-                  total = Number(total);
-                  var afterTax = (((taxesAmt/100) * total) + total);
-                  $(".quantity_sell").val(quantity);
-                  $(".taxes").val(taxesAmt);
-                  $(".afterTax").val(afterTax.toFixed(2));
-                  $(".total_sell").val(total);
-                  $("#paid-calendar-modal").val(moment().format('LLL'));
-                  $("#purchase-calendar-modal").val(moment().format('LLL'));
-                  var popup = self.$app.popup.open('.sellProduct', true);
+                $$("input.name_sell").val(item.name);
+                $$("input.cost_sell").val(item.cost);
+                var quantity = item.quantity == null ? 1 : item.quantity;
+                var total = item.total_price == null ? item.cost : item.total_price;
+                //var taxes = localStorage.getItem("taxes");
+                var taxes = self.settings == null ? 0 : self.settings.taxes;
+                var taxesAmt = taxes == undefined ? 0 : taxes;
+                taxesAmt = Number(taxesAmt);
+                total = Number(total);
+                var afterTax = (((taxesAmt/100) * total) + total);
+                $(".quantity_sell").val(quantity);
+                $(".taxes").val(taxesAmt);
+                $(".afterTax").val(afterTax.toFixed(2));
+                $(".total_sell").val(total);
+                $("#paid-calendar-modal").val(moment().format('LLL'));
+                $("#purchase-calendar-modal").val(moment().format('LLL'));
+                var popup = self.$app.popup.open('.sellProduct', true);
             } else{
-              var taxes = localStorage.getItem("taxes");
+              var taxes = self.settings == null ? 0 : self.settings.taxes;
               var taxesAmt = taxes == undefined ? 0 : taxes;
               $(".quantity_sell").val("1");
               $(".taxes").val(taxesAmt);
@@ -743,7 +750,7 @@ export default {
           html += '<div><span class="labelName">Total Price: </span><div class="display-inline-flex"><input class="totalproductprice" type="text" disabled placeholder="Total Price" value="';
           html +=  totalPrice + '"></div></div>';
         html += '</div><div class="card-footer padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
-          html += '<a class="button button-raised button-small button-fill color-red removeProduct" data-id="' + select.id + '">Delete</a>';
+          html += '<a class="button button-raised button-small button-fill color-red removeProduct" data-id="' + select._id + '">Delete</a>';
         html += '</p></div></div>'
         html += '</li>';
         $("#products-list .sortList").append(html);
@@ -770,7 +777,7 @@ export default {
               multiple: true, //allow multiple values
               navbarColorTheme: 'col bg-color-orange text-color-white',
               preloader: true, //enable preloader
-              valueProperty: 'id', //object's "value" property name
+              valueProperty: '_id', //object's "value" property name
               textProperty: 'name', //object's "text" property name
               popupCloseLinkText: 'Done',
               source: function (query, render) {
@@ -811,7 +818,7 @@ export default {
                     /*var select = self.products.find(function(e){ 
                         return e.name == selectedValues[i].name;
                     });*/
-                    var found = self.selectedProducts.filter(x => x.id == selectedValues[i].id).length;
+                    var found = self.selectedProducts.filter(x => x._id == selectedValues[i]._id).length;
                     if(found < 1){
                       self.selectedProducts.push(selectedValues[i]);
                       self.SelectItemMultipleProducts(selectedValues[i]);
@@ -821,7 +828,7 @@ export default {
                       return !selectedValues.includes(x);  // "this element doesn't exist in currentArray"
                   })
                   for(var i = 0; i < deleted.length; i++){
-                    $(".eachSaleParent .removeProduct[data-id='" + deleted[i].id + "']").click()
+                    $(".eachSaleParent .removeProduct[data-id='" + deleted[i]._id + "']").click()
                   }
 
                   selectedValues = null;
@@ -831,7 +838,7 @@ export default {
               }
         });
         
-        var taxes = localStorage.getItem("taxes");
+        var taxes = self.settings == null ? 0 : self.settings.taxes;
         var taxesAmt = taxes == undefined ? 0 : taxes;
         $(".taxpercent").val(taxesAmt);
         $("#datePaidMultiple").val(moment().format('LLL'));
@@ -844,6 +851,7 @@ export default {
         
         //popup.once("opened", function(){
             self.getDataIngredients(id);
+            //console.log(self.ings);
             var selectedValues = null;
             var autocompleteStandaloneMultiple = self.$app.autocomplete.create({
               openIn: 'popup', //open in page
@@ -851,7 +859,7 @@ export default {
               multiple: true, //allow multiple values
               navbarColorTheme: 'col bg-color-orange text-color-white',
               preloader: true, //enable preloader
-              valueProperty: 'id', //object's "value" property name
+              valueProperty: '_id', //object's "value" property name
               textProperty: 'name', //object's "text" property name
               popupCloseLinkText: 'Done',
               source: function (query, render) {
@@ -890,7 +898,7 @@ export default {
                     /*var select = self.ings.find(function(e){ 
                         return e.name == selectedValues[i];
                     });*/
-                    var found = self.productIngs.filter(x => x.id == selectedValues[i].id).length;
+                    var found = self.productIngs.filter(x => x._id == selectedValues[i]._id).length;
                     if(found < 1){
                       self.productIngs.push(selectedValues[i]);
                       self.SelectItem(selectedValues[i]);
@@ -900,7 +908,7 @@ export default {
                       return !selectedValues.includes(x);  // "this element doesn't exist in currentArray"
                   })
                   for(var i = 0; i < deleted.length; i++){
-                    $(".eachCostParent .removeCost[data-id='" + deleted[i].id + "']").click()
+                    $(".eachCostParent .removeCost[data-id='" + deleted[i]._id + "']").click()
                   }
                 }
               }
@@ -908,13 +916,19 @@ export default {
             var savearray = [];
             var profit = 0;
             if(id != null || id != undefined){
-                var collection = db.product_ingredient.where('productID').equals(Number(id)).toArray(function(arr){
+                //var collection = db.product_ingredient.where('productID').equals(Number(id)).toArray(function(arr){
                   //console.log(arr);
+                  dbProdIngs.find({
+                      selector: {
+                        productID: {$eq: id}
+                      }
+                    }).then(function(ar){
+                      var arr = ar.docs;
                     $.each(arr, function( key, value ) {
                         //$(".ing-" + value.ingredientID).click();
                         //self.SelectItem(Number(value.ingredientID));
                         //console.log(value.ingredientID);
-                        var each = self.activeArr.find(x => x.id == Number(value.ingredientID));
+                        var each = self.activeArr.find(x => x._id == value.ingredientID);
                         if(each != undefined){
                           each.select_unit_size = value.unit_size;
                           each.select_cost = value.cost;
@@ -933,8 +947,14 @@ export default {
                     });
                     //self.CalculateTotal();
                 }).then(function(){
-                var collection2 = db.product_otherMaterials.where('productID').equals(Number(id)).toArray(function(arr){
+                //var collection2 = db.product_otherMaterials.where('productID').equals(Number(id)).toArray(function(arr){
                   //console.log(arr);
+                  dbProdOthers.find({
+                      selector: {
+                        productID: {$eq: id}
+                      }
+                    }).then(function(ar){
+                    var arr = ar.docs;
                   $.each(arr, function( key, value ) {
                     if(value.name != "Profit"){
                       var html = '<li class="extraCostRow"><div class="card myCard"><div class="card-content padding-horizontal-half">';
@@ -961,7 +981,7 @@ export default {
                             profit = value.cost;
                         }
                     })
-                    var finalPrice = self.products.find(x => x.id == Number(id)).cost;
+                    var finalPrice = self.products.find(x => x._id == id).cost;
                     var cent = (100 * profit)/(finalPrice - profit);
                     $(".profitpercent").val(cent.toFixed(2));
                     self.CalculateTotal();
@@ -1073,47 +1093,57 @@ export default {
                 status:1
               };
               if(self.currentMultipleSale != null){
-                objMaster.id = Number(self.currentMultipleSale);
+                objMaster._id = self.currentMultipleSale;
+              }else{
+                objMaster._id = moment().format("X");
               }
 
-              db.transaction('rw', db.sales, () => {
+              //db.transaction('rw', db.sales, () => {
                 
-                  db.sales.put(objMaster).then(function(id){
+                  dbSales.put(objMaster).then(function(res){
                       bigData.forEach((element, index) => {
-                      bigData[index].parentID = id;
-                  });
+                      bigData[index].parentID = res.id;
+                      bigData[index]._id = index + moment().format("X");
+                    });
 
                   if(self.currentMultipleSale != null){
-                      //objMaster.id = Number(self.currentMultipleSale);
-                      db.sales.where("parentID").equals(Number(self.currentMultipleSale)).delete()
+                    dbSales.find({
+                        selector: {
+                          parentID: {$eq: self.currentMultipleSale._id}
+                        }
+                      }).then(function(ar){
+                        var arr = ar.docs;
+                              arr.forEach((element, index) => {
+                              arr[index]._deleted = true;
+                          });
+                          dbSales.bulkDocs(arr).then(function(){
+                            dbSales.bulkDocs(bigData);
+                          })
+                      })
+                      /*db.sales.where("parentID").equals(Number(self.currentMultipleSale)).delete()
                           .then(function (deleteCount) {
                               //console.log( "Deleted " + deleteCount + " objects");
                               db.sales.bulkAdd(bigData).then(function(lastKey) {
                                 //console.log("Last allcost's id was: " + lastKey); // Will be 100000.
                                 })
-                          });
+                          });*/
                   
                   }else{
-                      db.sales.bulkAdd(bigData).then(function(lastKey) {
+                      dbSales.bulkDocs(bigData).then(function(lastKey) {
                           //console.log("Last allcost's id was: " + lastKey); // Will be 100000.
                     })
                   }
-                    
+                  self.showToast("Saved successfully", "center");
                   
                     
-                })
-
-              }).then(() => {
-                  // Transaction committed. NOT WITHIN ZONE!
-                  self.showToast("Saved successfully", "center");
-              }).catch(err => {
+                }).catch(err => {
                   // Transaction aborted. NOT WITHIN ZONE!
                   //console.error (e);
                     self.showToast(err, "center");
                  });
 
               //saving clean data
-        }
+          }
     },
     AddNewProduct: function(select){
       var self = this;
@@ -1219,20 +1249,19 @@ export default {
                 name: $$("input.name").val(),  
                 cost: $$("input.cost_of_product").val(), 
                 status:1,
-                created_date: Date.parse(new Date($.now()))
+                created_date: moment().format("X")
               };
             if(self.currentProduct != null){
-              obj.id = self.currentProduct;
+              obj._id = self.currentProduct._id;
+              obj._rev = self.currentProduct._rev;
+            }else{
+              obj._id = moment().format("X");
             }
-          db.products.put(obj).then(function(id) {
-                  db.products.get(id).then(function(item) {
-                    //self.$app.dialog.alert("Item saved.");
-                    self.showToast("Item saved.", "center");
-                    $$("input.name,input.cost_of_product").val("");
-                    self.getData();
-                })
-              }).catch(function(err){
-                console.log(err);
+          dbProducts.put(obj).then(function(id) {
+                  //self.$app.dialog.alert("Item saved.");
+                  self.showToast("Item saved.", "center");
+                  $$("input.name,input.cost_of_product").val("");
+                  self.getData();
               })
           }
     },
@@ -1305,10 +1334,11 @@ export default {
                 isPaid: fullyPaid,
                 date_paid: isPaidDate,
                 created_date: moment($("#purchase-calendar-modal").val()).format("X"), //Date.parse($("#purchase-calendar-modal").val()),
-                status:1
+                status:1,
+                _id: moment().format("X")
               };
  
-            db.sales.add(obj).then(function(){
+            dbSales.put(obj).then(function(){
                   self.showToast("Record saved!","center");
                   $$("input.buyer_sell, input.amountpaid_sell, #purchase-calendar-modal, #paid-calendar-modal, .quantity_sell, .total_sell").val("");
                   self.$app.popup.close('.sellProduct', true);
@@ -1318,8 +1348,9 @@ export default {
                  self.showToast("An error occurred!", "center");
               })
     },
-    formatMoney:function(val){             
-      var sym = localStorage.getItem("currency", val);
+    formatMoney:function(val){  
+      var self = this;           
+      var sym = self.settings == null ? "" : self.settings.currency;
       sym = sym == undefined ? "" : sym;
       if(val < 0){
         var rev = 0 - val;
@@ -1338,9 +1369,12 @@ export default {
         checked = toggle.checked == true ? 0 : 1;
       }
       
-      var collection = db.products.where('status').equals(checked).toArray(function(arr){
-        //var collection = db.ingredients.toArray(function(arr){
-        //console.log(arr);
+      dbProducts.find({
+          selector: {
+            status: {$eq: checked}
+          }
+        }).then(function(ar){
+          var arr = ar.docs;
           self.$setState({
                 products: arr,
                 totalMat:arr.length
@@ -1365,15 +1399,15 @@ export default {
                         for(var i = 0; i < arr.length; i++){
                             var row = arr[i];
                             var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
-                            html += '<div class="name cardName">' + row.name + '</div><div class="id display-none">' + row.id + '</div><div class="cost display-none">' + row.cost + '</div>';
+                            html += '<div class="name cardName">' + row.name + '</div><div class="id display-none">' + row._id + '</div><div class="cost display-none">' + row.cost + '</div>';
                             html += '<div class=""><span class="labelName">Cost: </span><span class="valueName">' + self.formatMoney(row.cost) + '</span></div>';
                             var stat = row.status == 1 ? "display-none" : "";
                             html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName text-color-red">Deleted</span></div>';
                             html += '</div><div class="card-footer padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
-                            html += '<a class="button button-raised button-small button-fill color-green sellProduct" data-id="' + row.id + '">Sell</a>';
-                            html += '<a class="button button-raised button-small button-fill editProduct" data-id="' + row.id + '">Edit</a>';
-                            html += '<a class="button button-raised button-small button-fill color-orange addIngredients" data-id="' + row.id + '"><i class="icon f7-icons">plus</i> Materials</a>';
-                            html += '<a class="button button-raised button-small button-fill color-red deleteProduct" data-id="' + row.id + '">';
+                            html += '<a class="button button-raised button-small button-fill color-green sellProduct" data-id="' + row._id + '">Sell</a>';
+                            html += '<a class="button button-raised button-small button-fill editProduct" data-id="' + row._id + '">Edit</a>';
+                            html += '<a class="button button-raised button-small button-fill color-orange addIngredients" data-id="' + row._id + '"><i class="icon f7-icons">plus</i> Materials</a>';
+                            html += '<a class="button button-raised button-small button-fill color-red deleteProduct" data-id="' + row._id + '">';
                             html +=  row.status == 1 ? 'Delete' : 'Activate';
                             html += '</a>';
                             html += '</p></div></div></li>';
@@ -1429,17 +1463,22 @@ export default {
         checked = toggle.checked == true ? 0 : 1;
       }
 
-      var collection = db.ingredients.toArray(function(arr){
-        var activeArr = arr.filter(x => x.status == 1);
+      dbIngs.allDocs({
+          include_docs: true
+        }).then(function(ar){
+          //console.log(ar);
+          var arr = ar.rows;
+          var arr2 = arr.filter(x => (x.doc.status == 1 || x.doc.status == 0)).map(x => x.doc);
+          var activeArr = arr.filter(x => x.doc.status == 1).map(x => x.doc);
         //var collection = db.ingredients.toArray(function(arr){
-        //console.log(arr);
+        //console.log(arr2);
           self.$setState({
-                activeArr: arr,
-                ings: activeArr,
+                activeArr: activeArr,
+                ings: arr2,
                 totalMatIngredients:activeArr.length,
                 productIngs:[],
-                productToEdit: self.products.find(x => x.id == Number(idOfProd)).name,
-                productToEditID: self.products.find(x => x.id == Number(idOfProd)).id
+                productToEdit: self.products.find(x => x._id == idOfProd).name,
+                productToEditID: self.products.find(x => x._id == idOfProd)._id
               });
       });
     },
@@ -1465,6 +1504,91 @@ export default {
           //$(".calculateTotalButton").eq(0).click();
       })
     },
+    startPouch: function(){
+          var self = this;
+          /*products: "++id,name,cost,status,created_date",
+            product_ingredient: "++id,productID,ingredientID,unit_size,cost,status,created_date",
+            product_otherMaterials: "++id,productID,name,cost,status,created_date",*/
+            //sales: "++id,parentID,product_name,isParent,buyer_name,cost,quantity,tax,total_price,afterTax,amountPaid,isPaid,date_paid,created_date,status",
+          try{//id,name,unit_size,unit,cost_per_unit,status,created_date
+            if(pdf != undefined){
+                dbProducts = new PouchDB('products.db', { adapter: 'cordova-sqlite' });
+                dbProdIngs = new PouchDB('product_ingredients.db', { adapter: 'cordova-sqlite' });
+                dbProdOthers = new PouchDB('product_otherMaterials.db', { adapter: 'cordova-sqlite' });
+                dbSales = new PouchDB('sales.db', { adapter: 'cordova-sqlite' });
+                dbIngs = new PouchDB('ingredients.db', { adapter: 'cordova-sqlite' });
+                dbSettings = new PouchDB('settings.db', { adapter: 'cordova-sqlite' });
+                dbIngs.createIndex({
+                  index: {
+                    fields: ['name', 'status']
+                  }
+                })
+                dbProdIngs.createIndex({
+                  index: {
+                    fields: ['productID', 'ingredientID', 'status']
+                  }
+                })
+                dbProdOthers.createIndex({
+                  index: {
+                    fields: ['productID', 'name', 'status']
+                  }
+                })
+                dbSales.createIndex({
+                  index: {
+                    fields: ['parentID', 'product_name', 'isParent', 'buyer_name', 'created_date', 'status']
+                  }
+                })
+                dbProducts.createIndex({
+                  index: {
+                    fields: ['name', 'status']
+                  }
+                }).then(function (result) {
+                  self.getData();
+                })
+              }
+          }catch(err){
+                dbProducts = new PouchDB('products.db');
+                dbProdIngs = new PouchDB('product_ingredients.db');
+                dbProdOthers = new PouchDB('product_otherMaterials.db');
+                dbSales = new PouchDB('sales.db');
+                dbIngs = new PouchDB('ingredients.db');
+                dbSettings = new PouchDB('settings.db');
+                dbIngs.createIndex({
+                  index: {
+                    fields: ['name', 'status']
+                  }
+                })
+                dbProdIngs.createIndex({
+                  index: {
+                    fields: ['productID', 'ingredientID', 'status']
+                  }
+                })
+                dbProdOthers.createIndex({
+                  index: {
+                    fields: ['productID', 'name', 'status']
+                  }
+                })
+                dbSales.createIndex({
+                  index: {
+                    fields: ['parentID', 'product_name', 'isParent', 'buyer_name', 'created_date', 'status']
+                  }
+                })
+                dbProducts.createIndex({
+                  index: {
+                    fields: ['name', 'status']
+                  }
+                }).then(function (result) {
+                  self.getData();
+                })
+          }
+          var id = self.settingsID;
+            dbSettings.get(id).then(function(doc) {
+              //console.log(doc);
+                  self.$setState({
+                      settings: doc
+                    })
+              })
+        },
     SaveTotal: function(){
       var self = this;
       var allCost = [];
@@ -1485,11 +1609,12 @@ export default {
           }else{
             var obj = {};
             obj.productID = self.productToEditID;
-            obj.ingredientID = Number(ingID);
+            obj.ingredientID = ingID;
             obj.unit_size = Number(val);
             obj.cost = Number(cost);
             obj.status = 1;
-            obj.created_date = Date.parse(new Date($.now()));
+            obj.created_date = moment().format("X");
+            obj._id = index + moment().format("X");
             allCost.push(obj);
           }
       })
@@ -1508,7 +1633,8 @@ export default {
                 obj.name = extraname;
                 obj.cost = Number(extracost);
                 obj.status = 1;
-                obj.created_date = Date.parse(new Date($.now()));
+                obj.created_date = moment().format("X");
+                obj._id = index + moment().format("X");
                 allExtraCost.push(obj);
               }
           })
@@ -1519,7 +1645,7 @@ export default {
                 obj.name = "Profit";
                 obj.cost = Number($(".profitvalue").text());
                 obj.status = 1;
-                obj.created_date = Date.parse(new Date($.now()));
+                obj.created_date = moment().format("X");
                 allExtraCost.push(obj);
           }
           //record in db
@@ -1528,14 +1654,47 @@ export default {
                 //console.log(allExtraCost);
                 var totall = Number($(".totalAmount").text());
                 //console.log(totall);
-                db.transaction('rw', db.product_ingredient, db.product_otherMaterials, db.products, () => {
+                //db.transaction('rw', db.product_ingredient, db.product_otherMaterials, db.products, () => {
                   
-                      db.product_ingredient.where("productID").equals(self.productToEditID).delete()
+                      /*db.product_ingredient.where("productID").equals(self.productToEditID).delete()
                       .then(function (deleteCount) {
                             //console.log( "Deleted " + deleteCount + " objects");
-                          });
+                          });*/
+                          dbProdIngs.find({
+                            selector: {
+                              parentID: {$eq: self.productToEditID}
+                            }
+                          }).then(function(ar){
+                            var arr = ar.docs;
+                                  arr.forEach((element, index) => {
+                                  arr[index]._deleted = true;
+                              });
+                              dbProdIngs.bulkDocs(arr).then(function(){
+                                dbProdIngs.bulkDocs(allCost);
+                              })
+                          
 
-                          db.product_otherMaterials.where("productID").equals(self.productToEditID).delete()
+                          dbProdOthers.find({
+                            selector: {
+                              parentID: {$eq: self.productToEditID}
+                            }
+                          }).then(function(ar1){
+                            var arr2 = ar1.docs;
+                                  arr2.forEach((element, index) => {
+                                  arr2[index]._deleted = true;
+                              });
+                              dbProdOthers.bulkDocs(arr2).then(function(){
+                                dbProdOthers.bulkDocs(allExtraCost);
+                              })
+                          })
+
+                          dbProducts.get(self.productToEditID).then(function(doc) {
+                          // console.log(doc);
+                            doc.cost = totall
+                            return dbProducts.put(doc);
+                          })
+
+                          /*db.product_otherMaterials.where("productID").equals(self.productToEditID).delete()
                           .then(function (deleteCount) {
                               //console.log( "Deleted " + deleteCount + " objects");
                             });
@@ -1551,9 +1710,9 @@ export default {
                                      // console.log("Last extracost's id was: " + lastKey); // Will be 100000.
                                   }).catch(Dexie.BulkError, function (e) {
                                       passed = false;
-                                  });
+                                  });*/
                                   
-                                db.products.update(self.productToEditID, {cost: totall}).then(function (updated) {
+                                /*db.products.update(self.productToEditID, {cost: totall}).then(function (updated) {
                                   if (updated){
                                     //console.log ("Product price " + self.productToEditID + " was changed to " + totall);
                                   }else{
@@ -1561,16 +1720,16 @@ export default {
                                     //console.log ("Nothing was updated - there were no friend with primary key: 2");
                                   }
                                     
-                                });
+                                });*/
                       
-                        }).then(() => {
+                        //}).then(() => {
                             // Transaction committed. NOT WITHIN ZONE!
-                            self.$app.dialog.alert("Saved successfully");
+                            self.showToast("Saved successfully", "center");
                         }).catch(err => {
 
                             // Transaction aborted. NOT WITHIN ZONE!
                             //console.error (e);
-                            self.$app.dialog.alert("An error occured, please try again");
+                            self.showToast("An error occured, please try again");
                         });
                /* if(passed){
                   self.$app.dialog.alert("Saved successfully");
@@ -1584,6 +1743,31 @@ export default {
   on: {
       pageInit: function(e, page) {
         var self = this;
+        var calendar1 = self.$app.calendar.create({
+                  inputEl: '#datePaidMultiple',
+                  timePicker: true,
+                  formatValue: function(values){
+                    //console.log(values[0]);
+                    var t = moment(values[0]).format('LLL');
+                    //console.log(moment(values[0]).format("X"));
+                    //console.log(t);
+                    return t;
+                  }
+                  //dateFormat: { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }
+              });
+
+              var calendar2 = self.$app.calendar.create({
+                  inputEl: '#datePurchaseMultiple',
+                  timePicker: true,
+                  formatValue: function(values){
+                    //console.log(values[0]);
+                    var t = moment(values[0]).format('LLL');
+                    //console.log(moment(values[0]).format("X"));
+                    //console.log(t);
+                    return t;
+                  }
+                  //dateFormat: { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }
+              });
         var calendar = self.$app.calendar.create({
                   inputEl: '#paid-calendar-modal',
                   timePicker: true,
@@ -1613,14 +1797,7 @@ export default {
         $$(".showInactive").on("change", function(){
             self.getData();
         })
-        self.getData();
-      },
-       pageReinit: function(e, page) {
-        var self = this;
-        $$(".showInactive").on("change", function(){
-            self.getData();
-        })
-        self.getData();
+        self.startPouch();
       }
   }
 

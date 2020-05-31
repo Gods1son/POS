@@ -38,6 +38,14 @@
                       </li>
                       <li class="item-content item-input">
                         <div class="item-inner">
+                          <div class="item-title item-label">Currency</div>
+                          <div class="item-input-wrap">
+                            <input id="autocomplete-dropdown-all" class="settingsInput" type="text" placeholder="Currency">
+                          </div>
+                        </div>
+                      </li>
+                      <li class="item-content item-input">
+                        <div class="item-inner">
                           <div class="item-title item-label">Taxes in percentage (do not include %)</div>
                           <div class="item-input-wrap">
                             <input id="taxes" type="text" class="settingsInput" placeholder="Enter % taxes">
@@ -53,7 +61,7 @@
                       </li>
                     </ul>
 
-                    <div class="block-title text-color-black no-margin-bottom margin-left-half padding-bottom-half margin-top-half">Choose currency</div>
+                    <!--<div class="block-title text-color-black no-margin-bottom margin-left-half padding-bottom-half margin-top-half">Choose currency</div>
                     <ul>
                       <li class="item-content item-input">
                         <div class="item-inner">
@@ -63,7 +71,7 @@
                           </div>
                         </div>
                       </li>
-                    </ul>
+                    </ul>-->
 
                 </div>
             </div>
@@ -72,6 +80,7 @@
   </template>
   <script>
       import currencies from '../js/currencies.js';
+      var dbSettings = null;
     export default {
       data() {
         return {
@@ -82,12 +91,56 @@
           // Login screen demo data
           username: '',
           password: '',
+          country:'',
+          settingsID: 'settings',
+          settings: null
   
         };
       },
       methods: {
         helloWorld() {
           this.$f7.dialog.alert('Hello World!');
+        },
+        getData: function(){
+          var self = this;
+          var id = self.settingsID;
+          dbSettings.get(id).then(function(doc) {
+                   //console.log(doc);
+                   var comName = doc.companyName;
+                  if(comName != ""){
+                      $("#companyname").val(comName);
+                  }
+                  var taxes = doc.taxes;
+                  if(taxes != ""){
+                      $("#taxes").val(taxes);
+                  }
+                  var comAdd = doc.companyAddress;
+                  if(comAdd != ""){
+                      $("#companyaddress").val(comAdd);
+                  }
+                  var savedCurr = doc.currency;
+                  if(savedCurr != ""){
+                      $('#autocomplete-dropdown-all').val(savedCurr);
+                  }
+                  self.$setState({
+                      settings: doc
+                    })
+            }).catch(function(err){
+              //console.log(err);
+            })
+        },
+        startPouch: function(){
+          var self = this;
+          //db = null;
+          try{//id,name,unit_size,unit,cost_per_unit,status,created_date
+            if(pdf != undefined){
+              dbSettings = new PouchDB('settings.db', { adapter: 'cordova-sqlite' });
+                self.getData();
+              }
+          }catch(err){
+            dbSettings = new PouchDB('settings.db');
+              self.getData();
+            }
         },
         showToast: function(text, position){
         var self = this;
@@ -100,47 +153,52 @@
         savecompanyinfo: function(){
             var self = this;
             var comName = $("#companyname").val().trim();
-            if(comName != ""){
-                localStorage.setItem("companyName", comName);
-            }
             var comAdd = $("#companyaddress").val().trim();
-            if(comAdd != ""){
-                localStorage.setItem("companyAddress", comAdd);
-            }
             var taxes = $("#taxes").val().trim();
+            var currency = $('#autocomplete-dropdown-all').val();
             if(taxes != ""){
                 var tax = Number(taxes);
                 if(isNaN(tax)){
                     self.showToast("Please enter tax in number or decimal only!", "center");
                     return;
-                }else{
-                    localStorage.setItem("taxes", tax);
                 }
             }
-            if(comName != "" || comAdd != ""){
-                self.showToast("Information Saved!", "center");
+            var obj = {};
+            obj.companyName = comName;
+            obj.companyAddress = comAdd;
+            obj.taxes = taxes;
+            obj.currency = currency;
+            obj.country = self.country;
+            if(self.settings == null){
+              obj._id = self.settingsID;
+              dbSettings.put(obj).then(function(){
+              self.showToast("Information Saved!", "center");
+              }).catch(function(err){
+                console.log(err);
+                self.showToast("An error occured, please try again!", "center");
+              })
+            }else{
+              obj._id = self.settingsID;
+              dbSettings.get(self.settingsID).then(function(doc) {
+                   // console.log(doc);
+                    obj._rev = doc._rev;
+                    return dbSettings.put(obj);
+                  }).then(function(){
+                    localStorage.setItem("currency", currency);
+                    self.showToast("Information Saved!", "center");
+                }).catch(function(err){
+                  console.log(err);
+                  self.showToast("An error occured, please try again!", "center");
+                })
             }
+            
         }
       },
       on: {
       pageInit: function(e, page) {
             var self = this;
-            var comName = localStorage.getItem("companyName");
-            if(comName != undefined){
-                $("#companyname").val(comName);
-            }
-            var taxes = localStorage.getItem("taxes");
-            if(taxes != undefined){
-                $("#taxes").val(taxes);
-            }
-            var comAdd = localStorage.getItem("companyAddress");
-            if(comAdd != undefined){
-                $("#companyaddress").val(comAdd);
-            }
-            var savedCurr = localStorage.getItem("currency");
-            if(savedCurr != undefined){
-                $('#autocomplete-dropdown-all').val(savedCurr);
-            }
+            self.startPouch();
+            
             var cur = Object.keys(currencies);
             var autocompleteDropdownAll = self.$app.autocomplete.create({
                 inputEl: '#autocomplete-dropdown-all',
@@ -159,7 +217,10 @@
                         var cnt = value[0];
                         var val = currencies[cnt];
                         $('#autocomplete-dropdown-all').val(val);
-                        localStorage.setItem("currency", val);
+                        self.$setState({
+                            country: cnt
+                        })
+                        //localStorage.setItem("currency", val);
                     }     
                 }
                 });

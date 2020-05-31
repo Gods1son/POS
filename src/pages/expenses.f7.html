@@ -223,9 +223,9 @@
 </template>
 <script>
 //import Dom7 from 'dom7';
-import Dexie from 'dexie';
+//import Dexie from 'dexie';
 import * as moment from 'moment';
-var db = new Dexie("BizExpenseManagerDB");
+/*var db = new Dexie("BizExpenseManagerDB");
           db.version(3).stores({
             ingredients: "++id,name,unit_size,unit,cost_per_unit,status,created_date",
             products: "++id,name,cost,status,created_date",
@@ -238,8 +238,8 @@ var db = new Dexie("BizExpenseManagerDB");
             products_history: "++id,prodID,name,cost,status,created_date",
             sales_history: "++id,salesID,product_name,buyer_name,cost,amountPaid,isPaid,date_paid,created_date,status",
             expenses_history: "++id,expID,name,amount_to_pay,amount_paid,date_paid,created_date,recurring,status"
-          })
-
+          })*/
+var dbExpenses = null, dbSettings = null;
 //var $$ = Dom7;
 export default {
   data: function () {
@@ -251,6 +251,8 @@ export default {
         totalToPay: 0,
         totalPaid: 0,
         totalDifference: 0,
+        settings: null,
+        settingsID: 'settings'
       }
     },
   methods:{
@@ -266,10 +268,13 @@ export default {
             }
         }
         self.$app.dialog.confirm("Are you sure you want to " + text + " this expense?", function(){
-            db.expenses.update(Number(id), {status: checked}).then(function (updated) {
-              if (updated){
+                dbExpenses.get(id).then(function(doc) {
+                        // console.log(doc);
+                          doc.status = checked
+                          return dbExpenses.put(doc);
+                        }).then(function(){
                 self.expenses = self.expenses.filter(function(e){ 
-                      return e.id != Number(id);
+                      return e._id != id;
                   });
                   var act = checked == 0 ? "deleted!" : "activated!";
                   self.showToast("Expense " + act, "center");
@@ -280,9 +285,15 @@ export default {
                   }, function(){
                       self.showToast("Expense " + text + "d!", "center");
                       list.remove("id", id);
+                      /*if(self.expenses.length == 0){
+
+                          $(".customListSub").addClass("display-none");
+                          $("#expenses-list .pagination").remove();
+                      }*/
+                      self.setDataTable();
                     self.calculateTotalMoneyExpense();
                   });
-              }
+             // }
             });
         }, null);
     },
@@ -292,10 +303,10 @@ export default {
         //popup.once("opened", function(){
           if(id != null || id != undefined){
               var item = self.expenses.find(function(e){ 
-                        return e.id == Number(id);
+                        return e._id == id;
                     });
                     self.$setState({
-                      currentExpense:Number(id)
+                      currentExpense:item
                     });
                     $$("input.name").val(item.name);
                     $$("input.amount_to_pay").val(item.amount_to_pay);
@@ -406,18 +417,18 @@ export default {
                 status:1
               };
             if(self.currentExpense != null){
-              obj.id = self.currentExpense;
-              var select = self.expenses.find(function(e){ 
-                    return e.id == Number(self.currentExpense);
-                });
+              obj._id = self.currentExpense._id;
+              obj._rev = self.currentExpense._rev;
+            }else{
+              obj._id = moment().format("X");
             }
-          db.expenses.put(obj).then(function(id) {
-                  db.expenses.get(id).then(function(item) {
+              dbExpenses.put(obj).then(function(res) {
+                  //db.expenses.get(id).then(function(item) {
                     self.showToast("Item saved.", "center");
                     $$("input.name,input.amount_to_pay,input.amount_paid, #expense-calendar-modal, #paid-calendar-modal").val("");
                     self.$app.popup.close('.newExpense', true);
                     self.getData();
-                })
+                //})
               })
           }else{
               self.showToast("Please fill all required fields", "center");
@@ -432,7 +443,8 @@ export default {
                         }).open();
     },
     formatMoney:function(val){             
-      var sym = localStorage.getItem("currency", val);
+      var self = this;          
+      var sym = self.settings == null ? "" : self.settings.currency;
       sym = sym == undefined ? "" : sym;
       if(val < 0){
         var rev = 0 - val;
@@ -459,7 +471,7 @@ export default {
                         for(var i = 0; i < self.expenses.length; i++){
                             var row = self.expenses[i];
                             var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
-                            html += '<div class="name cardName">' + row.name + '</div><div class="id display-none">' + row.id + '</div><div class="cost display-none">' + row.amount_to_pay + '</div>';
+                            html += '<div class="name cardName">' + row.name + '</div><div class="id display-none">' + row._id + '</div><div class="cost display-none">' + row.amount_to_pay + '</div>';
                             html += '<div class=""><span class="labelName">Amount to be paid: </span><span class="valueName">' + self.formatMoney(row.amount_to_pay) + '</span></div>';
                             html += '<div class=""><span class="labelName">Amount Paid: </span><span class="valueName">' + self.formatMoney(row.amount_paid) + '</span></div>';
                             var stat = row.status == 1 ? "display-none" : "";
@@ -472,8 +484,8 @@ export default {
                             html += '<div class=""><span class="labelName">Created Date: </span><span class="valueName">' + moment.unix(row.created_date).format("LLL") + '</span></div>';
                             html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName text-color-red">Deleted</span></div>';
                             html += '</div><div class="card-footer padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
-                            html += '<a class="button button-raised button-small button-fill margin-right-half editExpense" data-id="' + row.id + '">Edit</a>';
-                            html += '<a class="button button-raised button-small button-fill color-red deleteExpense" data-id="' + row.id + '">';
+                            html += '<a class="button button-raised button-small button-fill margin-right-half editExpense" data-id="' + row._id + '">Edit</a>';
+                            html += '<a class="button button-raised button-small button-fill color-red deleteExpense" data-id="' + row._id + '">';
                             html +=  row.status == 1 ? 'Delete' : 'Activate'; 
                             html += '</a></p></div></div>'
                             html += '</li>';
@@ -517,6 +529,39 @@ export default {
                           $(".customListSub").addClass("display-none");
                         }
     },
+    startPouch: function(){
+          var self = this;
+          //db = null;
+          try{//name,amount_to_pay,amount_paid,date_paid,created_date,recurring,status
+            if(pdf != undefined){
+                dbExpenses = new PouchDB('expenses.db', { adapter: 'cordova-sqlite' });
+                dbSettings = new PouchDB('settings.db', { adapter: 'cordova-sqlite' });
+                dbExpenses.createIndex({
+                  index: {
+                    fields: ['created_date', 'name', 'status']
+                  }
+                }).then(function (result) {
+                  self.getData();
+                })
+              }
+          }catch(err){
+            dbExpenses = new PouchDB('expenses.db');
+            dbSettings = new PouchDB('settings.db');
+            dbExpenses.createIndex({
+                  index: {
+                    fields: ['created_date', 'name', 'status']
+                  }
+                }).then(function (result) {
+                  self.getData();
+                })
+          }
+          var id = self.settingsID;
+            dbSettings.get(id).then(function(doc) {
+                  self.$setState({
+                      settings: doc
+                    })
+              })
+      },
     getData: function(){
       var self = this;
       var checked = 1;
@@ -525,10 +570,17 @@ export default {
         checked = toggle.checked == true ? 0 : 1;
       }
       //console.log(checked);
-      var collection = db.expenses.where('status').equals(checked).reverse().toArray(function(arr){
-        //var collection = db.ingredients.toArray(function(arr){
-        //console.log(arr);
-        //console.log("fretched - " + checked);
+      dbExpenses.find({
+          selector: {
+            $and: [
+                  { status: {$eq: checked} },
+                  {created_date: {$gt: true}}
+                ]
+          },
+          sort: [{'_id': 'desc'}]
+        }).then(function(ar){
+          //console.log(ar);
+          var arr = ar.docs;
           self.$setState({
                 expenses: arr,
                 totalMat:arr.length
@@ -606,10 +658,19 @@ export default {
                 //console.log(to);
                 var checked = 1;
 
-                var collection = db.expenses.where('created_date').between(from, to)
-                .filter(function (sale) {
-                    return sale.status === 1;
-                }).toArray(function(arr){
+                dbExpenses.find({
+                    selector: {
+                      $and: [
+                         {status: {$eq: checked}},
+                         {created_date: { $gt: from }},
+                         {created_date: { $lt: to }}
+                      ]
+                    },
+                    sort: [{'_id': 'desc'}]
+                  }).then(function(ar){
+                    //var collection = db.ingredients.toArray(function(arr){
+                    //console.log(arr);
+                    var arr = ar.docs;
                     //var collection = db.ingredients.toArray(function(arr){
                     //console.log(arr);
                     self.$setState({
@@ -621,17 +682,7 @@ export default {
                 });
             }
         })        
-        self.getData();
-      },
-      pageReinit: function(e, page) {
-        var self = this;
-        //console.log("test inactive reinit");
-        $$(".showInactiveExpenses").on("change", function(){
-          //console.log("inactive change");
-            self.getData();
-        })
-        //console.log("test inactive reinit 2");
-        self.getData();
+        self.startPouch();
       }
   }
 
