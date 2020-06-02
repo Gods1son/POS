@@ -1110,6 +1110,7 @@ export default {
                 created_date: moment($("#datePurchaseMultiple").val()).format("X"), //Date.parse($("#purchase-calendar-modal").val()),
                 status:1
               };
+              var deleted = "";
               if(self.currentMultipleSale != null){
                 objMaster._id = self.currentMultipleSale;
               }else{
@@ -1117,17 +1118,18 @@ export default {
               }
 
               //db.transaction('rw', db.sales, () => {
-                
+                  
                   dbSales.put(objMaster).then(function(res){
                       bigData.forEach((element, index) => {
                       bigData[index].parentID = res.id;
                       bigData[index]._id = index + moment().format("X");
+                      deleted = res.id; 
                     });
 
                   if(self.currentMultipleSale != null){
                     dbSales.find({
                         selector: {
-                          parentID: {$eq: self.currentMultipleSale._id}
+                          parentID: {$eq: deleted}
                         }
                       }).then(function(ar){
                         var arr = ar.docs;

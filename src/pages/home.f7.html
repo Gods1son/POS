@@ -16,7 +16,7 @@
       <!--<div class="block block-strong margin-bottom-half no-margin-top">
         <p>Here is your blank Framework7 app. Let's see what we have here.</p>
       </div>-->
-      <div class="block-title text-align-center display-none compName padding-vertical-half no-margin-vertical"></div>
+      <div class="block-title text-align-right display-none compName padding-vertical-half no-margin-vertical"></div>
       <div class="list no-margin-top margin-bottom-half">
         <ul>
           <li>
@@ -129,9 +129,11 @@ export default {
                   $(".compName").text(comName);
                   $(".compName").removeClass("display-none");
                 }
-                if(curr == undefined){
+                if(curr == undefined || curr == ""){
                   self.showToast("Please visit Settings page to choose your currency and save company info!", "top", 3500);
                 }
+            }).catch(function(){
+              self.showToast("Please visit Settings page to choose your currency and save company info!", "top", 3500);
             })
 
           dbSettings.get('logoImage', {attachments: true}).then(function (blobOrBuffer) {
@@ -150,6 +152,29 @@ export default {
                     console.log(err);
                   });
         },
+      reloadPage: function(){
+        var self = this;
+        dbSettings.get('logoImage', {attachments: true}).then(function (blobOrBuffer) {
+            //console.log(blobOrBuffer);
+                    // handle result
+                    self.$setState({
+                      logo: blobOrBuffer
+                    })
+                    var attachments = blobOrBuffer._attachments.logoImage.data;
+                              var type = blobOrBuffer._attachments.logoImage.content_type;
+                              //console.log(blobOrBuffer._attachments.logoID);
+                              var imgPresent = $(".compName").find("img").length;
+                    if(imgPresent == 0){
+                      var img = "<img src='" + "data:"+ type + ";base64," + attachments + "' style='max-width:50px;margin-right:5px;'/>";
+                      $(".compName").prepend(img);
+                    }else{
+                      var src = "data:"+ type + ";base64," + attachments;
+                      $(".compName").find("img").attr("src", src);
+                    }
+                  }).catch(function (err) {
+                    console.log(err);
+                  });
+      },
       startDB: function(){
          //this.$app.methods.storage2();
          console.log('db init');
@@ -186,6 +211,12 @@ export default {
         self.startPouch();
         //self.startPouch();
         
+      },
+      pageAfterIn: function (event, page) {
+          // do something after page gets into the view
+          var self = this;
+          //console.log("re-enter");
+          self.reloadPage();
       }
     }
 }

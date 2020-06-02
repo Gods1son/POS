@@ -623,18 +623,19 @@ export default {
               
 
               //db.transaction('rw', db.sales, () => {
-                
+                var deleted = "";
                 dbSales.put(objMaster).then(function(res){
                     //console.log(res);
                       bigData.forEach((element, index) => {
                       bigData[index].parentID = res.id;
                       bigData[index]._id = index + moment().format("X");
+                      deleted = res.id; 
                     });
 
                   if(self.currentMultipleSale != null){
                     dbSales.find({
                         selector: {
-                          parentID: {$eq: self.currentMultipleSale._id}
+                          parentID: {$eq: deleted}
                         }
                       }).then(function(ar){
                         var arr = ar.docs;
@@ -755,7 +756,7 @@ export default {
         if(self.logo != null){
           var attachments = self.logo._attachments.logoImage.data;
           var type = self.logo._attachments.logoImage.content_type;
-          logo = "<div style='text-align: left;width:50%;float: left;'><img src='" + "data:"+ type + ";base64," + attachments + "' style='max-width:50px'/></div>";
+          logo = "<div style='text-align: left;width:50%;float: left;'><img src='" + "data:"+ type + ";base64," + attachments + "' style='max-width:100px'/></div>";
         }
       var html = '<html><div>' + logo + '<div style="text-align:right; width:50%; float:right;">';
         html += '<h2 style="margin-bottom:5px; margin-top:5px;">' + Companyname + '</h2><div>' + Comaddress + '</div></div></div>';
@@ -794,7 +795,7 @@ export default {
         if(self.signature != null){
           var attachments = self.signature._attachments.signatureImage.data;
           var type = self.signature._attachments.signatureImage.content_type;
-          signature = "<img src='" + "data:"+ type + ";base64," + attachments + "' style='max-width:50px'/>";
+          signature = "<img src='" + "data:"+ type + ";base64," + attachments + "' style='max-width:100px'/>";
         }
         
         html += '<div style="text-align:left;clear:both;border-top: 1px solid darkgray;border-bottom: 1px solid darkgray;">' + tagline  + signature + '<h5 style="margin-bottom:5px; margin-top:5px;">' + today + '</h5></div>';
