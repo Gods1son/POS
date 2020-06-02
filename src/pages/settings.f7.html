@@ -38,9 +38,28 @@
                       </li>
                       <li class="item-content item-input">
                         <div class="item-inner">
-                          <div class="item-title item-label">Currency</div>
+                          <div class="item-title item-label">Company Tagline (shown in invoice)</div>
                           <div class="item-input-wrap">
-                            <input id="autocomplete-dropdown-all" class="settingsInput" type="text" placeholder="Currency">
+                            <textarea class="settingsInput" id="companytagline" placeholder="Company Tagline"></textarea>
+                            <!--<input id="companyaddress" type="text" placeholder="Company Address">-->
+                          </div>
+                        </div>
+                      </li>
+                      <li class="item-content item-input">
+                        <div class="item-inner">
+                          <div class="item-title item-label">Company Logo</div>
+                          <div class="item-input-wrap display-inline-flex">
+                            <div><input id="logo" type="file" class="settingsInput"></div>
+                            <div class="margin-left-half"><img id="logoShow" style="max-width: 100px;"/></div>
+                          </div>
+                        </div>
+                      </li>
+                      <li class="item-content item-input">
+                        <div class="item-inner">
+                          <div class="item-title item-label">Company Signature (for invoice)</div>
+                          <div class="item-input-wrap display-inline-flex">
+                            <div><input id="signature" type="file" class="settingsInput"></div>
+                            <div class="margin-left-half"><img id="signatureShow" style="max-width: 100px;"/></div>
                           </div>
                         </div>
                       </li>
@@ -49,6 +68,14 @@
                           <div class="item-title item-label">Taxes in percentage (do not include %)</div>
                           <div class="item-input-wrap">
                             <input id="taxes" type="text" class="settingsInput" placeholder="Enter % taxes">
+                          </div>
+                        </div>
+                      </li>
+                      <li class="item-content item-input">
+                        <div class="item-inner">
+                          <div class="item-title item-label">Currency</div>
+                          <div class="item-input-wrap">
+                            <input id="autocomplete-dropdown-all" class="settingsInput" type="text" placeholder="Currency">
                           </div>
                         </div>
                       </li>
@@ -93,13 +120,55 @@
           password: '',
           country:'',
           settingsID: 'settings',
-          settings: null
+          settings: null,
+          signature: null,
+          logo: null,
+          signatureUpload: null,
+          logoUpload: null
   
         };
       },
       methods: {
         helloWorld() {
           this.$f7.dialog.alert('Hello World!');
+        },
+        getBase64: function(input, id) {
+          var self = this;
+          
+              if (!window.File || !window.FileReader || !window.FileList || !window.Blob) {
+                  self.showToast('The File APIs are not fully supported in this browser.', "center");
+                  return;
+              } 
+              if (input.files && input.files[0]) {
+                  var type =input.files[0].type;
+                  var reader = new FileReader();
+                  reader.readAsDataURL(input.files[0]);
+                  reader.onload = function (e) {
+                      $('#' + id + "Show").attr('src', e.target.result);
+                      //console.log(e.target.result);
+                      var obj = [];
+                      obj.push(e.target.result);
+                      obj.push(type);
+                      //console.log(obj);
+                      if(id == "logo"){
+                        self.$setState({
+                          logoUpload: obj
+                        })
+                      }
+                      if(id == "signature"){
+                        self.$setState({
+                          signatureUpload: obj
+                        })
+                      }
+                  }   
+                  reader.onerror = function (error) {
+                    console.log('Error: ', error);
+                    //reject("");
+                  };
+              }else{
+                return "";
+              }
+            
         },
         getData: function(){
           var self = this;
@@ -118,10 +187,49 @@
                   if(comAdd != ""){
                       $("#companyaddress").val(comAdd);
                   }
+                  var tagline = doc.tagline;
+                  if(tagline != ""){
+                      $("#companytagline").val(tagline);
+                  }
+                  /*var logo = doc.logo;
+                  if(logo != "" && logo != null){
+                      $("#logoShow").attr("src", logo);
+                  }
+                  var signature = doc.signature;
+                  if(signature != "" && signature != null){
+                    $("#signature").attr("src", signature);
+                  }*/
                   var savedCurr = doc.currency;
                   if(savedCurr != ""){
                       $('#autocomplete-dropdown-all').val(savedCurr);
                   }
+
+                  dbSettings.get('logoImage', {attachments: true}).then(function (blobOrBuffer) {
+                    // handle result
+                    self.$setState({
+                      logo: blobOrBuffer
+                    })
+                    var attachments = blobOrBuffer._attachments.logoImage.data;
+                    var type = blobOrBuffer._attachments.logoImage.content_type;
+                    //console.log(blobOrBuffer._attachments.logoID);
+                    $("#logoShow").attr("src", "data:"+ type + ";base64," + attachments);
+                    //console.log(JSON.stringify(blobOrBuffer));
+                  }).catch(function (err) {
+                    console.log(err);
+                  });
+
+                  dbSettings.get('signatureImage', {attachments: true}).then(function(blobOrBuffer) {
+                    self.$setState({
+                      signature: blobOrBuffer
+                    })
+                    var attachments = blobOrBuffer._attachments.signatureImage.data;
+                    var type = blobOrBuffer._attachments.signatureImage.content_type;
+                    //console.log(blobOrBuffer._attachments.logoID);
+                    $("#signatureShow").attr("src", "data:"+ type + ";base64," + attachments);
+                  }).catch(function (err) {
+                    console.log(err);
+                  });
+
                   self.$setState({
                       settings: doc
                     })
@@ -156,6 +264,7 @@
             var comAdd = $("#companyaddress").val().trim();
             var taxes = $("#taxes").val().trim();
             var currency = $('#autocomplete-dropdown-all').val();
+            var tagline = $("#companytagline").val();
             if(taxes != ""){
                 var tax = Number(taxes);
                 if(isNaN(tax)){
@@ -163,16 +272,24 @@
                     return;
                 }
             }
+            
+            var saved = false;
             var obj = {};
             obj.companyName = comName;
             obj.companyAddress = comAdd;
             obj.taxes = taxes;
             obj.currency = currency;
             obj.country = self.country;
+            obj.tagline = tagline;
+            //obj.logo = logo;
+            //obj.signature = sig;
+
             if(self.settings == null){
               obj._id = self.settingsID;
               dbSettings.put(obj).then(function(){
-              self.showToast("Information Saved!", "center");
+                saved = true;
+                self.uploadImages();
+                self.showToast("Information Saved!", "center");
               }).catch(function(err){
                 console.log(err);
                 self.showToast("An error occured, please try again!", "center");
@@ -184,6 +301,8 @@
                     obj._rev = doc._rev;
                     return dbSettings.put(obj);
                   }).then(function(){
+                    saved = true;
+                    self.uploadImages();
                     localStorage.setItem("currency", currency);
                     self.showToast("Information Saved!", "center");
                 }).catch(function(err){
@@ -191,14 +310,66 @@
                   self.showToast("An error occured, please try again!", "center");
                 })
             }
-            
-        }
+        },
+        uploadImages: function(){
+              var self = this;
+                if(document.getElementById("logo").files && document.getElementById("logo").files[0]){
+                  var rev = self.logo == null ? null : self.logo._rev;
+                  var myDoc = {
+                      _id: "logoImage",
+                      _attachments: {
+                        "logoImage": {
+                          content_type: document.getElementById("logo").files[0].type,
+                          data: document.getElementById("logo").files[0]
+                        }
+                      }
+                    }
+                    if(self.logo != null){
+                      myDoc._rev = self.logo._rev;
+                    }
+                      dbSettings.put(myDoc).then(function (result) {
+                              // handle result
+                              self.showToast("Logo saved!", "center");
+                              //console.log(result);
+                      }).catch(function (err) {
+                        console.log(err);
+                      });
+                  }
+              
+                  if(document.getElementById("signature").files && document.getElementById("signature").files[0]){
+                  var rev = self.signature == null ? null : self.signature._rev;
+                  var myDoc = {
+                      _id: "signatureImage",
+                      _attachments: {
+                        "signatureImage": {
+                          content_type: document.getElementById("signature").files[0].type,
+                          data: document.getElementById("signature").files[0]
+                        }
+                      }
+                    }
+                    if(self.signature != null){
+                      myDoc._rev = self.signature._rev;
+                    }
+                      dbSettings.put(myDoc).then(function (result) {
+                              // handle result
+                              self.showToast("Signature saved!", "center");
+                              //console.log(result);
+                      }).catch(function (err) {
+                        console.log(err);
+                      });
+                  }
+          }
       },
       on: {
       pageInit: function(e, page) {
             var self = this;
             self.startPouch();
-            
+            $("#logo").change(function(){
+                self.getBase64(this, "logo");
+            });
+            $("#signature").change(function(){
+              self.getBase64(this, "signature");
+            });
             var cur = Object.keys(currencies);
             var autocompleteDropdownAll = self.$app.autocomplete.create({
                 inputEl: '#autocomplete-dropdown-all',

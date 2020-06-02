@@ -220,7 +220,7 @@
                     <div class="item-inner">
                       <div class="item-title">Buyer's Name</div>
                       <div class="item-input-wrap">
-                        <input type="text" class="buyer_sell" placeholder="Buyer's name" required/>
+                        <input type="text" class="buyer_sell" id="buyer_sell" placeholder="Buyer's name" required/>
                         <span class="input-clear-button"></span>
                       </div>
                     </div>
@@ -443,7 +443,7 @@
             <div><span class="labelName">Grouped Name: </span><div class="display-inline-flex">
               <input class="groupProductNameMultiple" type="text" placeholder="Give Group Name" value=""></div></div>
             <div><span class="labelName">Buyer's Name: </span><div class="display-inline-flex">
-              <input class="buyersNameMultiple" type="text" placeholder="Buyer's Name" value=""></div></div>
+              <input class="buyersNameMultiple" id="buyersNameMultiple" type="text" placeholder="Buyer's Name" value=""></div></div>
             <div><span class="labelName">Amount Paid: </span><div class="display-inline-flex">
                 <input class="amountPaidMultiple" type="text" placeholder="Amount Paid" value="0"></div></div>
             <div><span class="labelName">Date of Payment: </span><div class="display-inline-flex">
@@ -484,7 +484,7 @@ import * as moment from 'moment';
             sales_history: "++id,salesID,product_name,buyer_name,cost,amountPaid,isPaid,date_paid,created_date,status",
             expenses_history: "++id,expID,name,amount_to_pay,amount_paid,date_paid,created_date,recurring,status"
           })*/
-var dbProducts = null, dbProdIngs = null, dbProdOthers = null, dbSales = null, dbIngs = null, dbSettings = null;
+var dbProducts = null, dbProdIngs = null, dbProdOthers = null, dbSales = null, dbIngs = null, dbSettings = null, dbClients = null;
 //var $$ = Dom7;
 export default {
   data: function () {
@@ -502,7 +502,8 @@ export default {
         currentMultipleSale: null,
         selectedProducts:[],
         settings: null,
-        settingsID: 'settings'
+        settingsID: 'settings',
+        clients:null
       }
     },
   methods:{
@@ -764,6 +765,23 @@ export default {
             })
                 
     },
+    getClients: function(){
+        var self = this;
+        var checked = 1;
+        //var collection = db.products.where('status').equals(checked).toArray(function(arr){
+        //var collection = db.ingredients.toArray(function(arr){
+        //console.log(arr);
+        dbClients.find({
+          selector: {
+            status: {$eq: checked}
+          }
+        }).then(function(ar){
+          var arr = ar.docs;
+          self.$setState({
+                clients: arr
+              })
+        })
+    },
     openPopUpMultiple:function(){
       var self = this;
       self.$setState({
@@ -956,7 +974,7 @@ export default {
                     }).then(function(ar){
                     var arr = ar.docs;
                   $.each(arr, function( key, value ) {
-                    if(value.name != "Profit"){
+                    if(value.name != "***Profit***"){
                       var html = '<li class="extraCostRow"><div class="card myCard"><div class="card-content padding-horizontal-half">';
                         html += '<div><span class="labelName">Enter Name: </span><div class="display-inline-flex"><input class="extraName" type="text" placeholder="Enter Name" value="';
                         html +=  value.name + '"></div></div>';
@@ -1518,6 +1536,12 @@ export default {
                 dbSales = new PouchDB('sales.db', { adapter: 'cordova-sqlite' });
                 dbIngs = new PouchDB('ingredients.db', { adapter: 'cordova-sqlite' });
                 dbSettings = new PouchDB('settings.db', { adapter: 'cordova-sqlite' });
+                dbClients = new PouchDB('clients.db', { adapter: 'cordova-sqlite' });
+                dbClients.createIndex({
+                  index: {
+                    fields: ['name', 'created_date']
+                  }
+                })
                 dbIngs.createIndex({
                   index: {
                     fields: ['name', 'status']
@@ -1544,6 +1568,7 @@ export default {
                   }
                 }).then(function (result) {
                   self.getData();
+                  self.getClients();
                 })
               }
           }catch(err){
@@ -1553,6 +1578,12 @@ export default {
                 dbSales = new PouchDB('sales.db');
                 dbIngs = new PouchDB('ingredients.db');
                 dbSettings = new PouchDB('settings.db');
+                dbClients = new PouchDB('clients.db');
+                dbClients.createIndex({
+                  index: {
+                    fields: ['name', 'created_date']
+                  }
+                })
                 dbIngs.createIndex({
                   index: {
                     fields: ['name', 'status']
@@ -1579,6 +1610,7 @@ export default {
                   }
                 }).then(function (result) {
                   self.getData();
+                  self.getClients();
                 })
           }
           var id = self.settingsID;
@@ -1642,7 +1674,7 @@ export default {
           if(passed){
                 var obj = {};
                 obj.productID = self.productToEditID;
-                obj.name = "Profit";
+                obj.name = "***Profit***";
                 obj.cost = Number($(".profitvalue").text());
                 obj.status = 1;
                 obj.created_date = moment().format("X");
@@ -1743,6 +1775,55 @@ export default {
   on: {
       pageInit: function(e, page) {
         var self = this;
+        var autocompleteDropdownBuyer = self.$app.autocomplete.create({
+          inputEl: '#buyer_sell',//buyersNameMultiple
+          openIn: 'dropdown',
+          valueProperty: '_id', //object's "value" property name
+          textProperty: 'name', //object's "text" property name
+          source: function (query, render) {
+            var results = self.clients.filter(x => x.status == 1);
+            var newResult = [];
+            // Find matched items
+            for (var i = 0; i < self.clients.length; i++) {
+              if (results[i].name.toLowerCase().indexOf(query.toLowerCase()) >= 0) newResult.push(results[i]);
+            }
+            // Render items by passing array with result items
+            render(newResult);
+          },
+          on: {
+                change: function (value) {
+                  if(value.length > 0){
+                  value = value[0];
+                  
+                  $("#buyer_sell").val(value.name);
+                  }
+                }
+              }
+        });
+        var autocompleteDropdownMultipleBuyer = self.$app.autocomplete.create({
+          inputEl: '#buyersNameMultiple',//buyersNameMultiple
+          openIn: 'dropdown',
+          valueProperty: '_id', //object's "value" property name
+          textProperty: 'name', //object's "text" property name
+          source: function (query, render) {
+            var results = self.clients.filter(x => x.status == 1);
+            var newResult = [];
+            // Find matched items
+            for (var i = 0; i < self.clients.length; i++) {
+              if (results[i].name.toLowerCase().indexOf(query.toLowerCase()) >= 0) newResult.push(results[i]);
+            }
+            // Render items by passing array with result items
+            render(newResult);
+          },
+          on: {
+                change: function (value) {
+                  if(value.length > 0){
+                  value = value[0];
+                  $("#buyersNameMultiple").val(value.name);
+                  }
+                }
+              }
+        });
         var calendar1 = self.$app.calendar.create({
                   inputEl: '#datePaidMultiple',
                   timePicker: true,

@@ -16,7 +16,7 @@
       <!--<div class="block block-strong margin-bottom-half no-margin-top">
         <p>Here is your blank Framework7 app. Let's see what we have here.</p>
       </div>-->
-      <div class="block-title text-align-right display-none compName padding-vertical-half no-margin-vertical"></div>
+      <div class="block-title text-align-center display-none compName padding-vertical-half no-margin-vertical"></div>
       <div class="list no-margin-top margin-bottom-half">
         <ul>
           <li>
@@ -48,6 +48,13 @@
             </a>
           </li>
           <li>
+            <a href="/clients/" class="item-content item-link">
+              <div class="item-inner">
+                <div class="item-title">Clients</div>
+              </div>
+            </a>
+          </li>
+          <li>
             <a href="/settings/" class="item-content item-link">
               <div class="item-inner">
                 <div class="item-title"><i class="icon f7-icons text-color-blue margin-right-half">gear_alt</i>Settings</div>
@@ -68,9 +75,20 @@
   </div>
 </template>
 <script>
-import Dexie from 'dexie';
+//import Dexie from 'dexie';
 import {fakeAlert} from '../js/myscript.js';
+var dbSettings = null;
 export default {
+  data() {
+        return {
+          settingsID: 'settings',
+          settings: null,
+          signature: null,
+          logo: null,
+          settingsID: 'settings'
+  
+        };
+      },
   methods: {
       openAlert: function (text) {
         var self = this;
@@ -90,40 +108,47 @@ export default {
         },
         startPouch: function(){
           var self = this;
-          var pouch = null;
-          try{
+          //db = null;
+          try{//id,name,unit_size,unit,cost_per_unit,status,created_date
             if(pdf != undefined){
-                pouch = new PouchDB('testingDB.db', { adapter: 'cordova-sqlite' });
-                pouch.createIndex({
-                  index: {
-                    fields: ['foo']
-                  }
-                }).then(function (result) {
-                  console.log(result);
-                }).catch(function (err) {
-                  console.log(err);
-                });
+              dbSettings = new PouchDB('settings.db', { adapter: 'cordova-sqlite' });
+                self.getData();
               }
           }catch(err){
-            pouch = new PouchDB('testingDB.db');
-            pouch.createIndex({
-                  index: {
-                    fields: ['foo']
-                  }
-                }).then(function (result) {
-                  console.log(result);
-                }).catch(function (err) {
-                  console.log(err);
-                });
-          }
-          
-            
-            pouch.info().then(function (info) {
-             // console.log(info);
-             //self.$app.dialog.alert(pouch.adapter + ":" + 'SQLite plugin is installed?: ' + (!!window.sqlitePlugin));
-            })  
-            
-            //console.log(pouch.adapter); 
+            dbSettings = new PouchDB('settings.db');
+              self.getData();
+            }
+        },
+        getData: function(){
+          var self = this;
+          var id = self.settingsID;
+          dbSettings.get(id).then(function(doc) {
+                var comName = doc.companyName;
+                var curr = doc.currency;
+                if(comName != "" & comName != null){
+                  $(".compName").text(comName);
+                  $(".compName").removeClass("display-none");
+                }
+                if(curr == undefined){
+                  self.showToast("Please visit Settings page to choose your currency and save company info!", "top", 3500);
+                }
+            })
+
+          dbSettings.get('logoImage', {attachments: true}).then(function (blobOrBuffer) {
+            //console.log(blobOrBuffer);
+                    // handle result
+                    self.$setState({
+                      logo: blobOrBuffer
+                    })
+                    var attachments = blobOrBuffer._attachments.logoImage.data;
+                    var type = blobOrBuffer._attachments.logoImage.content_type;
+                    //console.log(blobOrBuffer._attachments.logoID);
+                    var img = "<img src='" + "data:"+ type + ";base64," + attachments + "' style='max-width:50px;margin-right:5px;'/>";
+                    $(".compName").prepend(img);
+                    //console.log(JSON.stringify(blobOrBuffer));
+                  }).catch(function (err) {
+                    console.log(err);
+                  });
         },
       startDB: function(){
          //this.$app.methods.storage2();
@@ -158,16 +183,9 @@ export default {
       },
       pageInit: function(e, page) {
         var self = this;
+        self.startPouch();
         //self.startPouch();
-        var comName = localStorage.getItem("companyName");
-        var curr = localStorage.getItem("currency");
-        if(comName != undefined){
-          $(".compName").text(comName);
-          $(".compName").removeClass("display-none");
-        }
-        if(curr == undefined){
-          self.showToast("Please visit Settings page to choose your currency and save company info!", "top", 3500);
-        }
+        
       }
     }
 }

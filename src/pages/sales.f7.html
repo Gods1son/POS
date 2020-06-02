@@ -240,7 +240,7 @@
                     <div class="item-inner">
                       <div class="item-title">Buyer's Name</div>
                       <div class="item-input-wrap">
-                        <input type="text" class="buyer_sell" placeholder="Buyer name" required/>
+                        <input type="text" id="buyer_sell" class="buyer_sell" placeholder="Buyer name" required/>
                         <span class="input-clear-button"></span>
                       </div>
                     </div>
@@ -373,7 +373,7 @@
             <div><span class="labelName">Grouped Name: </span><div class="display-inline-flex">
               <input class="groupProductNameMultiple" type="text" placeholder="Give Group Name" value=""></div></div>
             <div><span class="labelName">Buyer's Name: </span><div class="display-inline-flex">
-              <input class="buyersNameMultiple" type="text" placeholder="Buyer's Name" value=""></div></div>
+              <input class="buyersNameMultiple" id="buyersNameMultiple" type="text" placeholder="Buyer's Name" value=""></div></div>
             <div><span class="labelName">Amount Paid: </span><div class="display-inline-flex">
                 <input class="amountPaidMultiple" type="text" placeholder="Amount Paid" value="0"></div></div>
             <div><span class="labelName">Date of Payment: </span><div class="display-inline-flex">
@@ -414,7 +414,7 @@ import * as moment from 'moment';
             sales_history: "++id,salesID,product_name,buyer_name,cost,amountPaid,isPaid,date_paid,created_date,status",
             expenses_history: "++id,expID,name,amount_to_pay,amount_paid,date_paid,created_date,recurring,status"
           })*/
-  var dbProducts = null, dbProdIngs = null, dbProdOthers = null, dbSales = null, dbIngs = null, dbSettings = null;
+  var dbProducts = null, dbProdIngs = null, dbProdOthers = null, dbSales = null, dbIngs = null, dbSettings = null, dbClients = null;
 //var $$ = Dom7;
 export default {
   data: function () {
@@ -432,7 +432,10 @@ export default {
         currentMultipleSale: null,
         selectedProducts:[],
         settings: null,
-        settingsID: 'settings'
+        settingsID: 'settings',
+        clients:null,
+        signature: null,
+        logo: null
       }
     },
   methods:{
@@ -748,9 +751,16 @@ export default {
       var purchaseDate = moment.unix(sales.created_date).format("LLL");
       var paymentDate =  sales.date_paid == "" ? "" : moment.unix(sales.date_paid).format("LLL");
       var today = moment().format("LLL");
-       var html = '<html><div style="text-align:right; border-bottom:1px solid darkgray;">';
-        html += '<h2 style="margin-bottom:5px; margin-top:5px;">' + Companyname + '</h2><div>' + Comaddress + '</div></div>';
-        html += '<div style="text-align:left;"><h4 style="margin-bottom:5px; margin-top:5px;">Invoice No:' + sales._id + '</h4><h4 style="margin-bottom:5px; margin-top:5px;">Invoice To: ';
+      var logo = "";
+        if(self.logo != null){
+          var attachments = self.logo._attachments.logoImage.data;
+          var type = self.logo._attachments.logoImage.content_type;
+          logo = "<div style='text-align: left;width:50%;float: left;'><img src='" + "data:"+ type + ";base64," + attachments + "' style='max-width:50px'/></div>";
+        }
+      var html = '<html><div>' + logo + '<div style="text-align:right; width:50%; float:right;">';
+        html += '<h2 style="margin-bottom:5px; margin-top:5px;">' + Companyname + '</h2><div>' + Comaddress + '</div></div></div>';
+
+        html += '<div style="text-align:left;clear:both;"><h4 style="margin-bottom:5px; margin-top:5px;">Invoice No:' + sales._id + '</h4><h4 style="margin-bottom:5px; margin-top:5px;">Invoice To: ';
         html += buyer + '</h4>';
         html += '<table style="border:1px solid darkgray"><thead style="background: gray;color: white;"><tr><th style="width: 50vw;text-align: left;">Product Name</th>';
         html += '<th style="width: 10vw;text-align: center;">Quantity</th><th style="width: 20vw;text-align: right;">Unit Price</th><th style="width: 20vw;text-align: right;">Total Price</th>';
@@ -779,7 +789,15 @@ export default {
         html += '<tr><td><span style="font-weight:600"">Purchase Date: </span></td><td><span style="font-size:1.2em;">' + purchaseDate + '</span></td></tr>';
         html += '<tr><td><span style="font-weight:600"">Payment Date: </span></td><td><span style="font-size:1.2em;">' + paymentDate + '</span></td></tr>';
         html += '</tbody></table>';
-        html += '<div style="text-align:left;clear:both;border-top: 1px solid darkgray;border-bottom: 1px solid darkgray;"><h3 style="margin-bottom:5px; margin-top:5px;">Thank you!</h3><h5 style="margin-bottom:5px; margin-top:5px;">' + today + '</h5></div>';
+        var tagline = self.settings == null ? "<h3 style='margin-bottom:5px; margin-top:5px;'>Thank you!</h3>" : "<h4 style='margin-bottom:5px; margin-top:5px;'>" + self.settings.tagline.split("\n").join("<br>") + "</h4>";
+        var signature = "";
+        if(self.signature != null){
+          var attachments = self.signature._attachments.signatureImage.data;
+          var type = self.signature._attachments.signatureImage.content_type;
+          signature = "<img src='" + "data:"+ type + ";base64," + attachments + "' style='max-width:50px'/>";
+        }
+        
+        html += '<div style="text-align:left;clear:both;border-top: 1px solid darkgray;border-bottom: 1px solid darkgray;">' + tagline  + signature + '<h5 style="margin-bottom:5px; margin-top:5px;">' + today + '</h5></div>';
         html += '</div></html>';
         return html;
     },
@@ -1053,7 +1071,7 @@ export default {
             if(item.amountPaid != 0 && item.amountPaid != ""){
                 totalPaid += Number(item.amountPaid);
             }
-            if(item.amountPaid < item.afterTax){
+            if(Number(item.amountPaid) < Number(item.afterTax)){
                 totalUnpaid += 1;
             }
             var totalP = item.afterTax == null ? item.total_price : item.afterTax;
@@ -1095,6 +1113,23 @@ export default {
         popup.once("closed", function(){
 
         });
+    },
+    getClients: function(){
+        var self = this;
+        var checked = 1;
+        //var collection = db.products.where('status').equals(checked).toArray(function(arr){
+        //var collection = db.ingredients.toArray(function(arr){
+        //console.log(arr);
+        dbClients.find({
+          selector: {
+            status: {$eq: checked}
+          }
+        }).then(function(ar){
+          var arr = ar.docs;
+          self.$setState({
+                clients: arr
+              })
+        })
     },
     getProducts: function(){
         var self = this;
@@ -1452,6 +1487,12 @@ export default {
                 dbSales = new PouchDB('sales.db', { adapter: 'cordova-sqlite' });
                 dbIngs = new PouchDB('ingredients.db', { adapter: 'cordova-sqlite' });
                 dbSettings = new PouchDB('settings.db', { adapter: 'cordova-sqlite' });
+                dbClients = new PouchDB('clients.db', { adapter: 'cordova-sqlite' });
+                dbClients.createIndex({
+                  index: {
+                    fields: ['name', 'created_date']
+                  }
+                })
                 dbIngs.createIndex({
                   index: {
                     fields: ['name', 'status']
@@ -1480,6 +1521,7 @@ export default {
                 }).then(function (result) {
                   self.getData();
                   self.getProducts();
+                  self.getClients();
                 })
               }
           }catch(err){
@@ -1489,6 +1531,12 @@ export default {
                 dbSales = new PouchDB('sales.db');
                 dbIngs = new PouchDB('ingredients.db');
                 dbSettings = new PouchDB('settings.db');
+                dbClients = new PouchDB('clients.db');
+                dbClients.createIndex({
+                  index: {
+                    fields: ['name', 'created_date']
+                  }
+                })
                 dbIngs.createIndex({
                   index: {
                     fields: ['name', 'status']
@@ -1517,6 +1565,7 @@ export default {
                 }).then(function (result) {
                   self.getData();
                   self.getProducts();
+                  self.getClients();
                 })
             }
             var id = self.settingsID;
@@ -1525,6 +1574,32 @@ export default {
                       settings: doc
                     })
               })
+
+              dbSettings.get('logoImage', {attachments: true}).then(function (blobOrBuffer) {
+                    // handle result
+                    self.$setState({
+                      logo: blobOrBuffer
+                    })
+                    var attachments = blobOrBuffer._attachments.logoImage.data;
+                    var type = blobOrBuffer._attachments.logoImage.content_type;
+                    //console.log(blobOrBuffer._attachments.logoID);
+                    $("#logoShow").attr("src", "data:"+ type + ";base64," + attachments);
+                    //console.log(JSON.stringify(blobOrBuffer));
+                  }).catch(function (err) {
+                    console.log(err);
+                  });
+
+                  dbSettings.get('signatureImage', {attachments: true}).then(function(blobOrBuffer) {
+                    self.$setState({
+                      signature: blobOrBuffer
+                    })
+                    var attachments = blobOrBuffer._attachments.signatureImage.data;
+                    var type = blobOrBuffer._attachments.signatureImage.content_type;
+                    //console.log(blobOrBuffer._attachments.logoID);
+                    $("#signatureShow").attr("src", "data:"+ type + ";base64," + attachments);
+                  }).catch(function (err) {
+                    console.log(err);
+                  });
         },
     getData: function(){
       var self = this;
@@ -1578,6 +1653,7 @@ export default {
           },
           on: {
                 change: function (value) {
+                  console.log(value);
                   if(value.length > 0){
                   value = value[0];
                   $("#name_sell").val(value.name);
@@ -1589,6 +1665,54 @@ export default {
                       $(".total_sell").val(tp);
                       self.calculateQuantity();
                     }
+                  }
+                }
+              }
+        });
+        var autocompleteDropdownBuyer = self.$app.autocomplete.create({
+          inputEl: '#buyer_sell',//buyersNameMultiple
+          openIn: 'dropdown',
+          valueProperty: '_id', //object's "value" property name
+          textProperty: 'name', //object's "text" property name
+          source: function (query, render) {
+            var results = self.clients.filter(x => x.status == 1);
+            var newResult = [];
+            // Find matched items
+            for (var i = 0; i < self.clients.length; i++) {
+              if (results[i].name.toLowerCase().indexOf(query.toLowerCase()) >= 0) newResult.push(results[i]);
+            }
+            // Render items by passing array with result items
+            render(newResult);
+          },
+          on: {
+                change: function (value) {
+                  if(value.length > 0){
+                  value = value[0];
+                  $("#buyer_sell").val(value.name);
+                  }
+                }
+              }
+        });
+        var autocompleteDropdownMultipleBuyer = self.$app.autocomplete.create({
+          inputEl: '#buyersNameMultiple',//buyersNameMultiple
+          openIn: 'dropdown',
+          valueProperty: '_id', //object's "value" property name
+          textProperty: 'name', //object's "text" property name
+          source: function (query, render) {
+            var results = self.clients.filter(x => x.status == 1);
+            var newResult = [];
+            // Find matched items
+            for (var i = 0; i < self.clients.length; i++) {
+              if (results[i].name.toLowerCase().indexOf(query.toLowerCase()) >= 0) newResult.push(results[i]);
+            }
+            // Render items by passing array with result items
+            render(newResult);
+          },
+          on: {
+                change: function (value) {
+                  if(value.length > 0){
+                  value = value[0];
+                  $("#buyersNameMultiple").val(value.name);
                   }
                 }
               }
