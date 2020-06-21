@@ -1472,7 +1472,7 @@ export default {
                             var row = arr[i];
                             var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
                             html += '<div class="name cardName">' + row.name + '</div><div class="id display-none">' + row._id + '</div><div class="cost display-none">' + row.cost + '</div>';
-                            if(row.desc != null){
+                            if(row.desc != null && row.desc != ""){
                               html += '<div class=""><span class="labelName">Description: </span><span class="">' + row.desc + '</span></div>';
                             }
                             html += '<div class=""><span class="labelName">Cost: </span><span class="valueName">' + self.formatMoney(row.cost) + '</span></div>';
