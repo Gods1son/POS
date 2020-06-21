@@ -9,7 +9,13 @@
           <span class="if-not-md">Back</span>
         </a>
       </div>
-      <div class="title">Clients</div>
+      <div class="title padding-vertical-half">Clients</div>
+      <div class="right">
+        <a href="#" class="link icon-only panel-toggle" data-panel="left">
+          <i class="icon f7-icons if-not-md">menu</i>
+          <i class="icon material-icons if-md">menu</i>
+        </a>
+      </div>
     </div>
   </div>
 
@@ -24,36 +30,39 @@
     <!--fab-->
 
   <div class="page-content">
-    
-    <div class="item-content block-title no-margin-bottom margin-top-half text-align-center">
-        <div class="row no-padding-vertical">
-                <div class="col padding-vertical-half">
-                  <span class="roundBox display-inline-flex">
-                    <span class="item-title float-right">Show Deleted</span>
-                    <span class="item-after float-right margin-left-half">
-                        <label class="toggle toggle-init color-red showInactiveClients">
-                        <input type="checkbox">
-                        <span class="toggle-icon"></span>
-                        </label>
-                    </span>
-                    </span>
-                </div>
-            </div>
-
-            <div class="row">
-            <div class="col padding-vertical-half">
-                <span class="roundBox">You have {{totalMat}} {{js "this.totalMat > 1 ? 'clients' : 'client'"}}</span>
-            </div>
-            </div>
-    </div>
-
-    <div class="block no-margin-vertical no-margin-horizontal padding-vertical-half roundHolder no-padding-horizontal">
+    <div class="block no-margin-vertical no-margin-horizontal no-padding-vertical roundHolder no-padding-horizontal">
       <div id="clients-list" class="customList">
-        <div class="text-align-center"><input class="search" placeholder="search">
+        <div class="text-align-center">
+          <!--<input class="search" placeholder="search">-->
+          <!-- Additional "searchbar-inline" class -->
+          <div class="searchbar searchbar-inline">
+            <div class="searchbar-input-wrap">
+              <input type="search" placeholder="Search" class="search">
+              <i class="searchbar-icon"></i>
+              <span class="input-clear-button"></span>
+            </div>
+          </div>
+
           <div class="margin-vertical-half padding-vertical-half sortTextPar">
             <span class="sortText display-none">Sort By:</span>
             <!--<span class="sort" data-sort="name">Name</span>
             <span class="sort" data-sort="cost">Cost</span>-->
+          </div>
+        </div>
+        <div class="row margin-top-half">
+          <div class="col-50 no-padding-vertical">
+              <span class="margin-left-half">You have {{totalMat}} {{js "this.totalMat > 1 ? 'clients' : 'client'"}}</span>
+          </div>
+          <div class="col-50 no-padding-vertical text-align-right">
+            <span class="display-inline-flex margin-right-half">
+              <span class="item-title float-right">Show Deleted</span>
+              <span class="item-after float-right margin-left-half">
+                  <label class="toggle toggle-init color-red showInactiveClients">
+                  <input type="checkbox">
+                  <span class="toggle-icon"></span>
+                  </label>
+              </span>
+              </span>
           </div>
         </div>
         <ul class="list sortList margin-vertical-half">
@@ -64,17 +73,96 @@
     </div>
   </div>
 
+   <!--pop up-->
+   <div class="popup clientSales popup-tablet-fullscreen">
+    <div class="view">
+      <div class="page">
+        <div class="navbar">
+          <div class="navbar-bg"></div>
+          <div class="navbar-inner">
+            <div class="title">Client Purchases</div>
+            <div class="right">
+              <!-- Link to close popup -->
+              <a class="link" @click="closePopUpSales"><i class="icon f7-icons">multiply</i>Close</a>
+            </div>
+          </div>
+        </div>
+        <div class="page-content">
+          <div id="clientSales-list" class="customList">
+            <div class="text-align-center customListSub">
+              <div class="searchbar searchbar-inline">
+                <div class="searchbar-input-wrap">
+                  <input type="search" placeholder="Search" class="search">
+                  <i class="searchbar-icon"></i>
+                  <span class="input-clear-button"></span>
+                </div>
+              </div>
+            </div>
+            <div id="clientName" class="bigLabel"></div>
+            <div class="text-align-center">
+              <!--<input class="search" placeholder="search">-->
+              <!-- Additional "searchbar-inline" class -->
+              
+    
+              <div class="margin-vertical-half padding-vertical-half sortTextPar">
+                
+                <span class="sortText display-none">Sort By:</span>
+                <!--<span class="sort" data-sort="name">Name</span>
+                <span class="sort" data-sort="cost">Cost</span>-->
+              </div>
+            </div>
+  
+            <div class="block no-margin-vertical padding-horizontal-half">  
+              <div class="no-hairlines-md no-margin-bottom margin-top-half">
+                  <div class="item-content item-input1">
+                      <div class="item-inner bg-color-white specWrap">
+                      <div class="item-input-wrap">
+                          <input type="text" class="specSearch" placeholder="Filter purchases by date" id="demo-calendar-modal"/>
+                          <span class="input-clear-button specClear" @click="resetTable"></span>
+                      </div>
+                      </div>
+                  </div>
+              </div>
+            </div>
+            <div class="row margin-top-half myToolbar">
+              <div class="col-50 no-padding-vertical">
+                <span class="margin-left-half">User made {{totalMatUser}} {{js "this.totalMatUser > 1 ? 'purchases' : 'purchase'"}}</span>
+              </div>
+              <div class="col-50 no-padding-vertical text-align-right">
+                <span class="display-inline-flex margin-right-half">
+                  <span class="item-title float-right">Show Deleted</span>
+                  <span class="item-after float-right margin-left-half">
+                      <label class="toggle toggle-init color-red showInactiveClientPurchases">
+                      <input type="checkbox">
+                      <span class="toggle-icon"></span>
+                      </label>
+                  </span>
+                  </span>
+              </div>
+            </div>
+            <ul class="list sortList margin-vertical-half">
+              
+            </ul>
+            <!--<ul class="pagination"></ul>-->
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  
+  </div>
+
   <!--pop up-->
   <div class="popup newClient popup-tablet-fullscreen">
     <div class="view">
       <div class="page">
         <div class="navbar">
           <div class="navbar-bg"></div>
-          <div class="navbar-inner bg-color-blue text-color-white">
+          <div class="navbar-inner">
             <div class="title">Add/Edit Client</div>
             <div class="right">
               <!-- Link to close popup -->
-              <a class="link text-color-white" @click="closePopUp"><i class="icon f7-icons">multiply</i>Close</a>
+              <a class="link" @click="closePopUp"><i class="icon f7-icons">multiply</i>Close</a>
             </div>
           </div>
         </div>
@@ -128,7 +216,7 @@
                 <li>
                   <div class="item-content">
                     <div class="item-inner">
-                      <a href="#" class="col button button-fill button-raised color-green" @click='saveData'>Save Client</a>
+                      <a href="#" class="col button button-outline button-raised button-green" @click='saveData'>Save Client</a>
                     </div>
                   </div>
                 </li>
@@ -145,7 +233,7 @@
 </template>
 <script>
 import * as moment from 'moment';
-var db = null;
+var db = null, dbSales = null;
 
 export default {
   test: 5,
@@ -154,7 +242,8 @@ export default {
       return {
         clients: null,
         totalMat:0,
-        currentClient: null
+        currentClient: null,
+        totalMatUser: 0
       }
     },
   methods:{
@@ -172,6 +261,12 @@ export default {
           try{//id,name,unit_size,unit,cost_per_unit,status,created_date
             if(pdf != undefined){
                 db = new PouchDB('clients.db', { adapter: 'cordova-sqlite' });
+                dbSales = new PouchDB('sales.db', { adapter: 'cordova-sqlite' });
+                dbSales.createIndex({
+                  index: {
+                    fields: ['created_date','parentID', 'product_name', 'isParent', 'buyer_name', 'status']
+                  }
+                })
                 db.createIndex({
                   index: {
                     fields: ['name', 'created_date']
@@ -182,6 +277,12 @@ export default {
               }
           }catch(err){
             db = new PouchDB('clients.db');
+            dbSales = new PouchDB('sales.db');
+            dbSales.createIndex({
+                  index: {
+                    fields: ['created_date','parentID', 'product_name', 'isParent', 'buyer_name', 'status']
+                  }
+                })
             db.createIndex({
                   index: {
                     fields: ['name', 'created_date']
@@ -191,6 +292,19 @@ export default {
                 })
           }
         },
+    formatMoney:function(val){             
+      var self = this;           
+      var sym = self.settings == null ? "" : self.settings.currency;
+      sym = sym == undefined ? "" : sym;
+      if(val < 0){
+        var rev = 0 - val;
+        var val2 = val + rev + rev;
+        val = val2;
+        sym = "-" + sym;
+      }
+      var ret = sym + val.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+      return ret;
+    },
     DeleteItem: function(list, id){
         var self = this;
         var checked = 0;
@@ -224,7 +338,7 @@ export default {
                       self.showToast("Client " + text + "d!", "center");
                       list.remove("id", id);
                       if(self.clients.length == 0){
-                        $(".customList").addClass("display-none");
+                        $(".sortTextPar").addClass("display-none");
                         $("#clients-list .pagination").remove();
                       }
                   });
@@ -232,6 +346,114 @@ export default {
                 
             }, null);
         //}, null);
+    },
+    resetTable: function(){
+        var self = this;
+        //console.log("empty");
+        var name = $("#clientName").text();
+        self.openPopUpClientSales(name);
+    },
+    openPopUpClientSales: function(name){
+      var self = this;
+      $("#clientName").text(name);
+      var checked = 1;
+        var toggle = self.$app.toggle.get(".showInactiveClientPurchases");
+      if(toggle != undefined){
+        checked = toggle.checked == true ? 0 : 1;
+      }
+          dbSales.find({
+              selector: {
+                $and: [
+                  { status: {$eq: checked} },
+                  { buyer_name: { $eq: name } },
+                  {created_date: {$gt: true}}
+                ]
+              },
+              sort: [{'_id': 'desc'}]
+            }).then(function(ar){
+              var arr = ar.docs;
+            //var collection = db.ingredients.toArray(function(arr){
+            //console.log(arr);
+              self.$setState({
+                    totalMatUser:arr.length
+                  }, function(){
+                    self.setDataTablePurchases(arr);
+                  });
+            });
+      //var popup = self.$app.popup.open('.clientSales', true);
+    },
+    setDataTablePurchases: function(arr){
+      var self = this;
+            $("#clientSales-list .list").empty();//id,product_name,buyer_name,cost,amountPaid,isPaid,date_paid,created_date,status
+            $("#clientSales-list .pagination").remove();         
+            if(arr != null && arr.length > 0){
+                        $(".clientSales").find(".sortTextPar").removeClass("display-none");
+                        var pagination = "<ul class='pagination padding-left-half margin-vertical-half'><ul>";
+                        $(pagination).insertAfter($("#clientSales-list .list"));
+                        $(".clientSales").find(".sort").remove();
+                        var sorter = '<span class="sort" data-sort="name">Name</span><span class="sort" data-sort="cost">Cost</span>';
+                        sorter += '<span class="sort" data-sort="isPaid">Fully Paid</span><span class="sort" data-sort="created_date">Purchase Date</span>';
+                        $(sorter).insertAfter($(".clientSales").find(".sortText"));
+                        $(".clientSales").find(".sortText").removeClass("display-none");
+                        for(var i = 0; i < arr.length; i++){
+                            var row = arr[i];
+                            var isParent = row.isParent == null ? 0 : row.isParent;
+                            var sellToOther = "";
+                            
+                            var quantity = row.quantity == null ? 1 : row.quantity;
+                            var taxes = row.tax == null ? 0 : row.tax;
+                            var total = row.total_price == null ? row.cost : row.total_price;
+                            var afterTax = row.afterTax == null ? total : row.afterTax;
+                            var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
+                            html += '<div class="name cardName">' + row.product_name + '</div><div class="id display-none">' + row._id + '</div><div class="cost display-none">' + row.cost + '</div>';
+                            html += '<div class=""><span class="labelName">Buyer\'s name: </span><span class="valueName buyer">' + row.buyer_name + '</span></div><div class="isPaid display-none">' + row.isPaid + '</div>';
+                            html += '<div class=""><span class="labelName">Product Cost: </span><span class="valueName">' + self.formatMoney(row.cost) + '</span></div>';
+
+                            html += '<div class=""><span class="labelName">Quantity: </span><span class="valueName">' + quantity + '</span></div>';
+                            html += '<div class=""><span class="labelName">Total Cost: </span><span class="valueName">' + self.formatMoney(total) + '</span></div>';
+                            if(taxes > 0){
+                              html += '<div class=""><span class="labelName">Tax: </span><span class="valueName">' + taxes + '%</span></div>';
+                              html += '<div class=""><span class="labelName">After Tax Cost: </span><span class="valueName">' + self.formatMoney(afterTax) + '</span></div>';
+                            }
+                            html += '<div class=""><span class="labelName">Amount Paid: </span><span class="valueName">' + self.formatMoney(row.amountPaid) + '</span></div>';
+                            var stat = row.status == 1 ? "display-none" : "";
+                            var hidden = row.isPaid == 1 ? "" : "display-none";
+                            var checkbox = row.isPaid == 1 ? '<i class="icon f7-icons text-color-green paid">checkmark_circle_fill</i>' : '<i class="icon f7-icons text-color-red paid">multiply_circle_fill</i>';
+                            html += '<div class=""><span class="labelName">Fully Paid: </span>' + checkbox + '</div>' + '<div class="display-none created_date">' + row.created_date + '</div>';
+                            html += '<div class="' + hidden + '"><span class="labelName">Date Fully Paid: </span><span class="valueName">' + moment.unix(row.date_paid).format("LLL") + '</span></div>';
+                            html += '<div class=""><span class="labelName">Purchase Date: </span><span class="valueName">' + moment.unix(row.created_date).format("LLL") + '</span></div>';
+                            html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName">Deleted</span></div>';
+                            html += '</div>'; 
+                            html += '</div>'
+                            html += '</li>';
+                            $("#clientSales-list .list").append(html);
+                            //return html;
+                        }
+                        var options = {
+                            valueNames: ['id','isPaid','buyer','created_date','cost','name'],
+                            page: 5,
+                            pagination: [{outerWindow:2}]
+                        };
+
+                        var sales = new List('clientSales-list', options);
+
+                        $(".clientSales").find(".sort").off("click").on("click", function(){
+                          $(".clientSales").find(".sort").find(".asc").remove();
+                          $(".clientSales").find(".sort").find(".desc").remove();
+                            if($(this).hasClass("asc")){
+                              $(this).append("<i class='icon f7-icons asc text-color-red'>arrowtriangle_up_fill</i>");
+                            }
+                            if($(this).hasClass("desc")){
+                              $(this).append("<i class='icon f7-icons desc text-color-red'>arrowtriangle_down_fill</i>");
+                            }
+                        })
+                        }else{
+                          //var html = "<li><div class='card myCard'><div class='card-content text-align-center'>No result found</div></div></li>";
+                          //$("#sales-list .list").append(html);
+                          
+                          $(".clientSales").find(".sortTextPar").addClass("display-none");
+                        }
+                        var popup = self.$app.popup.open('.clientSales', true);
     },
     openPopUp: function(id){
         var self = this;
@@ -262,6 +484,13 @@ export default {
         var self = this;
         var popup = self.$app.popup.close('.newClient', true);
         $(".clientname,.email,.address,.phone").val("");
+        popup.once("closed", function(){
+
+        });
+    },
+    closePopUpSales: function(){
+        var self = this;
+        var popup = self.$app.popup.close('.clientSales', true);
         popup.once("closed", function(){
 
         });
@@ -321,13 +550,13 @@ export default {
                       $("#clients-list .pagination").remove();
                       //$(".sort").removeClass("asc").removeClass("desc");
                       if(self.clients != null && self.clients.length > 0){
-                        $(".customList").removeClass("display-none");
+                        $("#clients-list").find(".sortTextPar").removeClass("display-none");
                         var pagination = "<ul class='pagination padding-left-half margin-vertical-half'><ul>";
                         $(pagination).insertAfter($("#clients-list .list"));
-                        $(".sort").remove();
+                        $("#clients-list").find(".sort").remove();
                         var sorter = '<span class="sort" data-sort="name">Name</span>';
-                        $(sorter).insertAfter($(".sortText"));
-                        $(".sortText").removeClass("display-none");
+                        $(sorter).insertAfter($("#clients-list").find(".sortText"));
+                        $("#clients-list").find(".sortText").removeClass("display-none");
                         for(var i = 0; i < self.clients.length; i++){
                             var row = self.clients[i];
                             var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
@@ -344,10 +573,11 @@ export default {
                             
                             var stat = row.status == 1 ? "display-none" : "";
                             //html += '<div class=""><span class="labelName">Cost: </span><span class="valueName">' + self.formatMoney(row.cost_per_unit) + '</span></div>';
-                            html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName text-color-red">Deleted</span></div>';
-                            html += '</div><div class="card-footer padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
-                            html += '<a class="button button-raised button-small button-fill margin-right-half editButton" data-id="' + row._id + '">Edit</a>';
-                            html += '<a class="button button-raised button-small button-fill color-red deleteButton" data-id="' + row._id + '">';
+                            html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName">Deleted</span></div>';
+                            html += '</div><div class="card-footerMine padding-horizontal-half no-padding-vertical"><p class="display-inline-flex no-margin-vertical">';
+                            html += '<a class="button editButton" data-id="' + row._id + '">Edit</a>';
+                            html += '<a class="button myGreen viewPurchases" data-id="' + row.name + '">View Purchases</a>';
+                            html += '<a class="button color-red deleteButton" data-id="' + row._id + '">';
                             html +=  row.status == 1 ? 'Delete' : 'Activate'; 
                             html += '</a></p></div></div>'
                             html += '</li>';
@@ -362,9 +592,9 @@ export default {
 
                         var clientsList = new List('clients-list', options);
 
-                        $(".sort").off("click").on("click", function(){
-                          $(".sort").find(".asc").remove();
-                          $(".sort").find(".desc").remove();
+                        $("#clients-list").find(".sort").off("click").on("click", function(){
+                          $("#clients-list").find(".sort").find(".asc").remove();
+                          $("#clients-list").find(".sort").find(".desc").remove();
                             if($(this).hasClass("asc")){
                               $(this).append("<i class='icon f7-icons asc text-color-red'>arrowtriangle_up_fill</i>");
                             }
@@ -379,13 +609,16 @@ export default {
                               if($(this).hasClass("editButton")){
                                 self.openPopUp(data);
                               }
+                              if($(this).hasClass("viewPurchases")){
+                                self.openPopUpClientSales(data);
+                              }
                               if($(this).hasClass("deleteButton")){
                                 self.DeleteItem(clientsList, data);
                               }
                               //return false;
                           });
                         }else{
-                          $(".customList").addClass("display-none");
+                          $("#clients-list").find(".sortTextPar").addClass("display-none");
                         }
                       });
               });
@@ -398,6 +631,87 @@ export default {
           //console.log("inactive change");
             self.getData();
         })
+        $(".showInactiveClientPurchases").on("change", function(){
+          //console.log("inactive change");
+          var name = $("#clientName").text();
+            self.openPopUpClientSales(name);
+            
+        })
+        
+        var calendarModal = self.$app.calendar.create({
+            inputEl: '#demo-calendar-modal',
+            openIn: 'customModal',
+            rangePicker: true,
+            header: true,
+            footer: true
+        });
+        calendarModal.on("closed", function(){
+            //console.log(calendarModal.getValue());
+            var days = calendarModal.getValue();
+            if(days == undefined){
+                return;
+            }
+            var from = null; var to = null;
+            if(days.length == 1){
+                from = Date.parse(days[0]);
+                //console.log(moment(days[0]).format('LLL'));
+                from = moment(moment(days[0]).format('LLL')).format("X");
+                days.push(days[0]);
+                var date2 = days[1];
+                date2.setDate(date2.getDate() + 1);
+                to = Date.parse(date2);
+                //console.log(moment(date2).format('LLL'));
+                to = moment(moment(date2).format('LLL')).format("X");
+            }
+            else if(days.length > 1){
+                //var date1 = days[0];
+                //date1.setDate(date1.getDate() + 1);
+                from = moment(moment(days[0]).format('LLL')).format("X");
+                var date2 = days[1];
+                date2.setDate(date2.getDate() + 1);
+                to = moment(moment(date2).format('LLL')).format("X");
+            }else{
+              var name = $("#clientName").text();
+              self.openPopUpClientSales(name);
+            }
+            if(from != null && to != null){
+                //console.log(from);
+                //console.log(to);
+                var checked = 1;
+                var toggle = self.$app.toggle.get(".showInactiveClientPurchases");
+                if(toggle != undefined){
+                  checked = toggle.checked == true ? 0 : 1;
+                }
+                /*var collection = db.sales.where('created_date').between(from, to)
+                .filter(function (sale) {
+                    return ((sale.status === checked) && (sale.parentID < 1));
+                }).reverse().toArray(function(arr){*/
+                  //console.log("from: " + from);
+                  //console.log("to: " + to);
+                  var name = $("#clientName").text();
+                dbSales.find({
+                    selector: {
+                      $and: [
+                         {status: {$eq: checked}},
+                         {created_date: { $gt: from }},
+                         {created_date: { $lt: to }},
+                         {buyer_name: { $eq: name } }
+                      ]
+                    },
+                    sort: [{'_id': 'desc'}]
+                  }).then(function(ar){
+                    //var collection = db.ingredients.toArray(function(arr){
+                    //console.log(arr);
+                    var arr = ar.docs;
+                    self.$setState({
+                            totalMatUser:arr.length
+                        }, function(){
+                          var name = $("#clientName").text();
+                          self.setDataTablePurchases(arr);
+                        });
+                });
+            }
+        })  
         //console.log("test inactive init 2");
         self.startPouch();
       },

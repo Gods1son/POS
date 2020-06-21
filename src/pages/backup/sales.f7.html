@@ -9,13 +9,7 @@
           <span class="if-not-md">Back</span>
         </a>
       </div>
-      <div class="title padding-vertical-half">Sales</div>
-      <div class="right">
-        <a href="#" class="link icon-only panel-toggle" data-panel="left">
-          <i class="icon f7-icons if-not-md">menu</i>
-          <i class="icon material-icons if-md">menu</i>
-        </a>
-      </div>
+      <div class="title">Sales</div>
     </div>
   </div>
 
@@ -43,81 +37,86 @@
     <!--fab-->
 
   <div class="page-content">
-  <div class="block no-margin-vertical no-margin-horizontal no-padding-vertical roundHolder no-padding-horizontal">
-      <div id="sales-list" class="customList">
-          <div class="text-align-center customListSub">
-            <div class="searchbar searchbar-inline">
-              <div class="searchbar-input-wrap">
-                <input type="search" placeholder="Search" class="search">
-                <i class="searchbar-icon"></i>
-                <span class="input-clear-button"></span>
+    
+    <div class="item-content block-title no-margin-bottom margin-top-half text-align-center">
+      <div class="row no-padding-vertical">
+              <div class="col padding-vertical-half">
+                <span class="roundBox display-inline-flex">
+                  <span class="item-title float-right">Show Deleted</span>
+                  <span class="item-after float-right margin-left-half">
+                      <label class="toggle toggle-init color-red showInactiveSales">
+                      <input type="checkbox">
+                      <span class="toggle-icon"></span>
+                      </label>
+                  </span>
+                </span>  
               </div>
-            </div>
           </div>
 
-          <div class="no-margin-vertical padding-horizontal-half">
-                <a href="#" class="no-padding text-color-blue">
-                  <div class="item-inner padding-vertical-half">
-                    <div class="dashText">Snapshot</div>
-                  </div></a>
-                <div class="">
-                  <div class="block no-margin-vertical no-padding">
-                    <div class="row no-gap dash">
-              
-                        <div class="col-50 medium-33 small-50 xsmall-100">
-                          <div class="card card-outline">
-                            <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">Total {{js "this.totalMat > 1 ? 'Sales' : 'Sale'"}}</div>
-                            <div class="card-content">{{totalMat}}</div>
-                          </div>
-                        </div>
-              
-                        <div class="col-50 medium-33 small-50 xsmall-100">
-                          <div class="card card-outline">
-                            <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">Total Amount of Sales</div>
-                            <div class="card-content">{{money totalMoney}}</div>
-                          </div>
-                        </div>
-              
-                        <div class="col-50 medium-33 small-50 xsmall-100">
-                          <div class="card card-outline">
-                            <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">Total Amount Received</div>
-                            <div class="card-content">{{money totalPaid}}</div>
-                          </div>
-                        </div>
-              
-                        <div class="col-50 medium-33 small-50 xsmall-100">
-                          <div class="card card-outline">
-                            <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">Sales Not Fully Paid</div>
-                            <div class="card-content">{{totalUnpaid}}</div>
-                          </div>
-                        </div>
-              
-                        <div class="col-100">
-                          <div class="card card-outline">
-                            <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">(Amount Received minus Total sales)</div>
-                            <div class="card-content">{{money totalDifference}}</div>
-                          </div>
-                        </div>
-              
-                    </div>
+          
+  </div>
+  <div class="list accordion-list no-margin-vertical">
+    <ul>
+      <li class="accordion-item myOrange">
+        <a href="#" class="item-content item-link text-color-blue">
+          <div class="item-inner">
+            <div class="item-title dashText">Dashboard</div>
+          </div></a>
+        <div class="accordion-item-content">
+          <div class="block no-margin-vertical no-padding-vertical padding-bottom-half">
+            <div class="row no-gap dash">
+      
+                <div class="col-50 medium-33 small-50 xsmall-100">
+                  <div class="card card-outline">
+                    <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">Total {{js "this.totalMat > 1 ? 'Sales' : 'Sale'"}}</div>
+                    <div class="card-content">{{totalMat}}</div>
                   </div>
                 </div>
+      
+                <div class="col-50 medium-33 small-50 xsmall-100">
+                  <div class="card card-outline">
+                    <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">Total Amount of Sales</div>
+                    <div class="card-content">{{money totalMoney}}</div>
+                  </div>
+                </div>
+      
+                <div class="col-50 medium-33 small-50 xsmall-100">
+                  <div class="card card-outline">
+                    <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">Total Amount Received</div>
+                    <div class="card-content">{{money totalPaid}}</div>
+                  </div>
+                </div>
+      
+                <div class="col-50 medium-33 small-50 xsmall-100">
+                  <div class="card card-outline">
+                    <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">Sales Not Fully Paid</div>
+                    <div class="card-content">{{totalUnpaid}}</div>
+                  </div>
+                </div>
+      
+                <div class="col-100">
+                  <div class="card card-outline">
+                    <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">(Amount Received minus Total sales)</div>
+                    <div class="card-content">{{money totalDifference}}</div>
+                  </div>
+                </div>
+      
+            </div>
           </div>
-
-          <div class="text-align-center">
-            <!--<input class="search" placeholder="search">-->
-            <!-- Additional "searchbar-inline" class -->
-            
-  
+        </div>
+      </li>
+      </ul>
+  </div>
+  <div class="block no-margin-vertical no-margin-horizontal padding-vertical-half roundHolder no-padding-horizontal">
+      <div id="sales-list" class="customList">
+          <div class="text-align-center customListSub"><input class="search" placeholder="search">
             <div class="margin-vertical-half padding-vertical-half sortTextPar">
-              
               <span class="sortText display-none">Sort By:</span>
-              <!--<span class="sort" data-sort="name">Name</span>
-              <span class="sort" data-sort="cost">Cost</span>-->
+              
             </div>
           </div>
 
-          <div class="block no-margin-vertical padding-horizontal-half">  
+          <div class="block no-margin-vertical">  
             <div class="no-hairlines-md no-margin-bottom margin-top-half">
                 <div class="item-content item-input1">
                     <div class="item-inner bg-color-white specWrap">
@@ -129,22 +128,7 @@
                 </div>
             </div>
           </div>
-          <div class="row margin-top-half myToolbar">
-            <div class="col-50 no-padding-vertical">
-              <span class="margin-left-half">You have {{totalMat}} {{js "this.totalMat > 1 ? 'sales' : 'sale'"}}</span>
-            </div>
-            <div class="col-50 no-padding-vertical text-align-right">
-              <span class="display-inline-flex margin-right-half">
-                <span class="item-title float-right">Show Deleted</span>
-                <span class="item-after float-right margin-left-half">
-                    <label class="toggle toggle-init color-red showInactiveSales">
-                    <input type="checkbox">
-                    <span class="toggle-icon"></span>
-                    </label>
-                </span>
-                </span>
-            </div>
-          </div>
+
           <ul class="list sortList margin-vertical-half">
             
           </ul>
@@ -160,11 +144,11 @@
       <div class="page">
         <div class="navbar">
           <div class="navbar-bg"></div>
-          <div class="navbar-inner">
+          <div class="navbar-inner bg-color-blue text-color-white">
             <div class="title">Add/Edit Product Sale</div>
             <div class="right">
               <!-- Link to close popup -->
-              <a class="link" @click="closeUpdatePopUp"><i class="icon f7-icons">multiply</i>Close</a>
+              <a class="link text-color-white" @click="closeUpdatePopUp"><i class="icon f7-icons">multiply</i>Close</a>
             </div>
           </div>
         </div>
@@ -298,7 +282,7 @@
                 <li>
                   <div class="item-content">
                     <div class="item-inner">
-                      <a href="#" class="col button button-outline button-raised button-green" @click='updateDataSell'>Save Product Sale</a>
+                      <a href="#" class="col button button-fill button-raised color-green" @click='updateDataSell'>Save Product Sale</a>
                     </div>
                   </div>
                 </li>
@@ -317,24 +301,19 @@
       <div class="page">
         <div class="navbar">
           <div class="navbar-bg"></div>
-          <div class="navbar-inner">
+          <div class="navbar-inner bg-color-blue text-color-white">
             <div class="title">Multiple Product Sales</div>
             <div class="right">
               <!-- Link to close popup -->
-              <a class="link" @click="closePopUpMultiple"><i class="icon f7-icons">multiply</i>Close</a>
+              <a class="link text-color-white" @click="closePopUpMultiple"><i class="icon f7-icons">multiply</i>Close</a>
             </div>
           </div>
         </div>
         <div class="page-content">
             
         <div class="list margin-bottom-half no-margin-top">
-          <div class="block-header text-color-black no-margin-bottom margin-top text-align-center">Select Products Below - select multiple</div>
-          <div class="margin-horizontal-half">
-            <a class="col button button-outline button-raised" href="#" id="autocomplete-standalone-multiple">
-            <div class="item-title text-color-blue btn-blue">Add Products</div>
-          </a>
-        </div>
-          <!--<ul>
+          <div class="block-header text-color-black no-margin-bottom margin-top">Select Products Below - select multiple</div>
+          <ul>
             <li>
               <a class="item-link item-content bg-color-orange myOrange" href="#" id="autocomplete-standalone-multiple">
                 <input type="hidden">
@@ -344,7 +323,7 @@
                 </div>
               </a>
             </li>
-          </ul>-->
+          </ul>
         </div>
 
         <div id="products-list" class="customList">
@@ -354,7 +333,7 @@
           <!--<ul class="pagination"></ul>-->
         </div>
 
-        <div class="margin-horizontal-half">
+        <div class="margin-horizontal">
           <a class="button button-raised button-fill color-blue customcharges" @click="AddNewProduct(null)">Add Custom Products</a>
         </div>
 
@@ -370,20 +349,20 @@
             <div class="card-content padding-horizontal-half">
               <div><span class="labelName">Taxes in %:</span>
                 <div class="display-inline-flex">
-                  <input class="taxpercent" type="text" placeholder="0 to 100" @keyup="CalculateTotalProduct" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" value="0">
+                  <input class="taxpercent" type="text" placeholder="profit 0 to 100" @keyup="CalculateTotalProduct" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" value="0">
                 </div></div>
             </div>
           </div>
       </ul>
       <div class="row padding-horizontal-half"><div class="col-100">
-        <a class="col button button-outline button-raised button-green calculateTotalButton" @click="CalculateTotalProduct">Calculate</a>
+        <a class="button button-fill button-raised color-white text-color-green calculateTotalButton" @click="CalculateTotalProduct">Calculate</a>
       </div>
     </div>
-        <div class="margin-top-half bigLabel margin-horizontal-half">
+        <div class="margin-top-half block-title-medium margin-horizontal-half">
           <span class="labelName">Cost before Tax: </span>
           <div class="display-inline-flex"><div class="totalAmountBeforeProfitProduct">0</div></div>
         </div>
-        <div class="margin-top-half bigLabel margin-horizontal-half">
+        <div class="margin-top-half block-title-medium margin-horizontal-half">
           <span class="labelName">Cost after Tax: </span>
           <div class="display-inline-flex"><div class="totalAmountProduct">0</div></div>
         </div>
@@ -397,15 +376,15 @@
               <input class="buyersNameMultiple" id="buyersNameMultiple" type="text" placeholder="Buyer's Name" value=""></div></div>
             <div><span class="labelName">Amount Paid: </span><div class="display-inline-flex">
                 <input class="amountPaidMultiple" type="text" placeholder="Amount Paid" value="0"></div></div>
-            <div><span class="labelName">Date of Payment: </span><div class="display-inline-flex" style="width:100%">
-                  <input id="datePaidMultiple" class="text-align-center" type="text" placeholder="Date of Payment" value="0"></div></div>
-            <div><span class="labelName">Date of Purchase: </span><div class="display-inline-flex" style="width:100%">
-                    <input id="datePurchaseMultiple" class="text-align-center" type="text" placeholder="Date of Purchase" value="0"></div></div>
+            <div><span class="labelName">Date of Payment: </span><div class="display-inline-flex">
+                  <input id="datePaidMultiple" type="text" placeholder="Date of Payment" value="0"></div></div>
+            <div><span class="labelName">Date of Purchase: </span><div class="display-inline-flex">
+                    <input id="datePurchaseMultiple" type="text" placeholder="Date of Purchase" value="0"></div></div>
           </div>
         </div>
         </li></ul>
-                <div class="row padding-horizontal-half margin-bottom-half"><div class="col-100">
-                  <a class="col button button-outline button-raised button-green" @click="saveMultipleProduct">Save All</a>
+                <div class="row padding-horizontal-half"><div class="col-100">
+                  <a class="button button-fill button-raised color-green text-color-white" @click="saveMultipleProduct">Save All</a>
                 </div>
               </div>
         </div>
@@ -681,7 +660,8 @@ export default {
                     })
                   }
                   self.showToast("Saved successfully", "center");
-                  self.closePopUpMultiple();  
+                  var popup = self.$app.popup.close('.multipleSales', true);
+                    
                 }).catch(err => {
                   // Transaction aborted. NOT WITHIN ZONE!
                   //console.error (e);
@@ -709,8 +689,8 @@ export default {
           html +=  '<span class="input-clear-button"></span></div></div></div></div></div>';
           html += '<div><span class="labelName">Total Price: </span><div class="display-inline-flex"><input class="totalproductprice" type="text" disabled placeholder="Total Price" value="';
           html += totalPrice + '"></div></div>';
-        html += '</div><div class="card-footerMine padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
-          html += '<a class="button color-red removeProduct">Delete</a>';
+        html += '</div><div class="card-footer padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
+          html += '<a class="button button-raised button-small button-fill color-red removeProduct">Delete</a>';
         html += '</p></div></div>'
         html += '</li>';
         $("#productsOther-list .sortList").append(html);
@@ -778,13 +758,12 @@ export default {
           var type = self.logo._attachments.logoImage.content_type;
           logo = "<div style='text-align: left;width:50%;float: left;'><img src='" + "data:"+ type + ";base64," + attachments + "' style='max-width:100px'/></div>";
         }
-      var html = '<html><head><style>table td{padding: 5px;} thead tr{background: lightblue; color:black;} thead th{padding: 5px;} tbody tr:nth-child(even) {background-color: #f2f2f2;}</style></head>'
-        html += '<div>' + logo + '<div style="text-align:right; width:50%; float:right;">';
+      var html = '<html><div>' + logo + '<div style="text-align:right; width:50%; float:right;">';
         html += '<h2 style="margin-bottom:5px; margin-top:5px;">' + Companyname + '</h2><div>' + Comaddress + '</div></div></div>';
 
         html += '<div style="text-align:left;clear:both;"><h4 style="margin-bottom:5px; margin-top:5px;">Invoice No:' + sales._id + '</h4><h4 style="margin-bottom:5px; margin-top:5px;">Invoice To: ';
         html += buyer + '</h4>';
-        html += '<table><thead><tr><th style="width: 50vw;text-align: left;">Product Name</th>';
+        html += '<table style="border:1px solid darkgray"><thead style="background: gray;color: white;"><tr><th style="width: 50vw;text-align: left;">Product Name</th>';
         html += '<th style="width: 10vw;text-align: center;">Quantity</th><th style="width: 20vw;text-align: right;">Unit Price</th><th style="width: 20vw;text-align: right;">Total Price</th>';
         html += '</tr></thead><tbody>';
           if(children.length > 0){
@@ -803,13 +782,13 @@ export default {
         
         html += '</tbody></table>';
         html += '<div><table style="float:right"><tbody>';
-        html += '<tr><td><span style="font-weight:600">Price Before Tax: </span></td><td><span>' + totalPrice + '</span></td></tr>';
-        html += '<tr><td><span style="font-weight:600">Tax: </span></td><td><span>' + tax + '%</span></td></tr>';
-        html += '<tr><td><span style="font-weight:600">Price After Tax: </span></td><td><span>' + self.moneyFormat(afterTax) + '</span></td></tr>';
-        html += '<tr><td><span style="font-weight:600">Amount Paid: </span></td><td><span>' + totalPaid + '</span></td></tr>';
-        html += '<tr><td><span style="font-weight:600">Outstanding: </span></td><td><span>' + self.moneyFormat(outstanding) + '</span></td></tr>';
-        html += '<tr><td><span style="font-weight:600"">Purchase Date: </span></td><td><span>' + purchaseDate + '</span></td></tr>';
-        html += '<tr><td><span style="font-weight:600"">Payment Date: </span></td><td><span>' + paymentDate + '</span></td></tr>';
+        html += '<tr><td><span style="font-weight:600">Price Before Tax: </span></td><td><span style="font-size:1.2em;">' + totalPrice + '</span></td></tr>';
+        html += '<tr><td><span style="font-weight:600">Tax: </span></td><td><span style="font-size:1.2em;">' + tax + '%</span></td></tr>';
+        html += '<tr><td><span style="font-weight:600">Price After Tax: </span></td><td><span style="font-size:1.2em;">' + self.moneyFormat(afterTax) + '</span></td></tr>';
+        html += '<tr><td><span style="font-weight:600">Amount Paid: </span></td><td><span style="font-size:1.2em;">' + totalPaid + '</span></td></tr>';
+        html += '<tr><td><span style="font-weight:600">Outstanding: </span></td><td><span style="font-size:1.2em;">' + self.moneyFormat(outstanding) + '</span></td></tr>';
+        html += '<tr><td><span style="font-weight:600"">Purchase Date: </span></td><td><span style="font-size:1.2em;">' + purchaseDate + '</span></td></tr>';
+        html += '<tr><td><span style="font-weight:600"">Payment Date: </span></td><td><span style="font-size:1.2em;">' + paymentDate + '</span></td></tr>';
         html += '</tbody></table>';
         var tagline = self.settings == null ? "<h3 style='margin-bottom:5px; margin-top:5px;'>Thank you!</h3>" : "<h4 style='margin-bottom:5px; margin-top:5px;'>" + self.settings.tagline.split("\n").join("<br>") + "</h4>";
         var signature = "";
@@ -1230,24 +1209,23 @@ export default {
               openIn: 'popup', //open in page
               openerEl: '#autocomplete-standalone-multiple', //link that opens autocomplete
               multiple: true, //allow multiple values
-              navbarColorTheme: 'col bg-color-white text-color-black',
+              navbarColorTheme: 'col bg-color-orange text-color-white',
               preloader: true, //enable preloader
               valueProperty: '_id', //object's "value" property name
               textProperty: 'name', //object's "text" property name
               popupCloseLinkText: 'Done',
-              requestSourceOnOpen:true,
               source: function (query, render) {
                 var autocomplete = this;
                 autocomplete.preloaderShow();
                 var results = self.products.filter(x => x.status == 1); //.map(a => a.name);
-                //autocomplete.preloaderHide();
+                autocomplete.preloaderHide();
                 var newResult = results;
                 //render(results);
-                if (query.length === 0) {
+                /*if (query.length === 0) {
                   autocomplete.preloaderHide();
                   render(results);
                   return;
-                }
+                }*/
                 
                 if (query.length > 0) {
                   newResult = [];
@@ -1324,8 +1302,8 @@ export default {
           html +=  '<span class="input-clear-button"></span></div></div></div></div></div>';
           html += '<div><span class="labelName">Total Price: </span><div class="display-inline-flex"><input class="totalproductprice" type="text" disabled placeholder="Total Price" value="';
           html +=  totalPrice + '"></div></div>';
-        html += '</div><div class="card-footerMine padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
-          html += '<a class="button color-red removeProduct" data-id="' + select._id + '">Delete</a>';
+        html += '</div><div class="card-footer padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
+          html += '<a class="button button-raised button-small button-fill color-red removeProduct" data-id="' + select._id + '">Delete</a>';
         html += '</p></div></div>'
         html += '</li>';
         $("#products-list .sortList").append(html);
@@ -1379,7 +1357,7 @@ export default {
             $("#sales-list .list").empty();//id,product_name,buyer_name,cost,amountPaid,isPaid,date_paid,created_date,status
             $("#sales-list .pagination").remove();         
             if(self.sales != null && self.sales.length > 0){
-                        $(".sortTextPar").removeClass("display-none");
+                        $(".customListSub").removeClass("display-none");
                         var pagination = "<ul class='pagination padding-left-half margin-vertical-half'><ul>";
                         $(pagination).insertAfter($("#sales-list .list"));
                         $(".sort").remove();
@@ -1392,7 +1370,7 @@ export default {
                             var isParent = row.isParent == null ? 0 : row.isParent;
                             var sellToOther = "";
                             if(isParent == 1){
-                              sellToOther = '<a class="button color-orange sellToOthers" data-id="' + row._id + '" data-isparent="' + isParent + '">Sell To Others</a>';
+                              sellToOther = '<a class="button button-raised button-small color-orange button-fill margin-right-half sellToOthers" data-id="' + row._id + '" data-isparent="' + isParent + '">Sell To Others</a>';
                             }
                             var quantity = row.quantity == null ? 1 : row.quantity;
                             var taxes = row.tax == null ? 0 : row.tax;
@@ -1416,12 +1394,12 @@ export default {
                             html += '<div class=""><span class="labelName">Fully Paid: </span>' + checkbox + '</div>' + '<div class="display-none created_date">' + row.created_date + '</div>';
                             html += '<div class="' + hidden + '"><span class="labelName">Date Fully Paid: </span><span class="valueName">' + moment.unix(row.date_paid).format("LLL") + '</span></div>';
                             html += '<div class=""><span class="labelName">Purchase Date: </span><span class="valueName">' + moment.unix(row.created_date).format("LLL") + '</span></div>';
-                            html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName">Deleted</span></div>';
-                            html += '</div><div class="card-footerMine padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
-                            html += '<a class="button invoice myGreen" data-id="' + row._id + '">Invoice</a>';
+                            html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName text-color-red">Deleted</span></div>';
+                            html += '</div><div class="card-footer padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
+                            html += '<a class="button button-raised button-small button-fill margin-right-half invoice color-green" data-id="' + row._id + '">Invoice</a>';
                             html += sellToOther;
-                            html += '<a class="button editSale" data-id="' + row._id + '" data-isparent="' + isParent + '">Edit</a>';
-                            html += '<a class="button color-red deleteSale" data-id="' + row._id + '">';
+                            html += '<a class="button button-raised button-small button-fill margin-right-half editSale" data-id="' + row._id + '" data-isparent="' + isParent + '">Edit</a>';
+                            html += '<a class="button button-raised button-small button-fill color-red deleteSale" data-id="' + row._id + '">';
                             html +=  row.status == 1 ? 'Delete' : 'Activate'; 
                             html += '</a></p></div></div>'
                             html += '</li>';
@@ -1478,10 +1456,9 @@ export default {
                           });
                           self.calculateTotalMoney();
                         }else{
-                          //var html = "<li><div class='card myCard'><div class='card-content text-align-center'>No result found</div></div></li>";
-                          //$("#sales-list .list").append(html);
-                          self.calculateTotalMoney();
-                          $(".sortTextPar").addClass("display-none");
+                          var html = "<li><div class='card myCard'><div class='card-content text-align-center'>No result found</div></div></li>";
+                          $("#sales-list .list").append(html);
+                          $(".customListSub").addClass("display-none");
                         }
     },
     formatMoney:function(val){             

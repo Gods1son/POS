@@ -1,0 +1,61 @@
+<template>
+  <div class="page">
+    <div class="navbar">
+      <div class="navbar-bg"></div>
+      <div class="navbar-inner sliding">
+        <div class="left">
+          <a href="#" class="link back">
+            <i class="icon icon-back"></i>
+            <span class="if-not-md">Back</span>
+          </a>
+        </div>
+        <div class="title padding-vertical-half">Reports</div>
+        <div class="right">
+          <a href="#" class="link icon-only panel-toggle" data-panel="left">
+            <i class="icon f7-icons if-not-md">menu</i>
+            <i class="icon material-icons if-md">menu</i>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="page-content">
+      <div class="block-title">Extended Context</div>
+      
+    </div>
+  </div>
+</template>
+<style>
+  p {
+    margin: 10px 0;
+  }
+</style>
+<script>
+  export default {
+    // Lifecycle Hooks
+    // Component Data
+    data: function () {
+      // Must return an object
+      return {
+        name: 'Jimmy',
+        age: 25,
+        like: ['Tennis', 'Chess', 'Football'],
+      }
+    },
+    // Component Methods
+    methods: {
+      openAlert: function () {
+        var self = this;
+        self.$app.dialog.alert('Hello World');
+      },
+    },
+    // Page Events
+    on: {
+      pageInit: function(e, page) {
+        //console.log('pageInit', page);
+      },
+      pageAfterIn: function(e, page) {
+        //console.log('pageAfterIn', page);
+      }
+    }
+  }
+</script>

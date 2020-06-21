@@ -9,13 +9,7 @@
           <span class="if-not-md">Back</span>
         </a>
       </div>
-      <div class="title padding-vertical-half">Products</div>
-      <div class="right">
-        <a href="#" class="link icon-only panel-toggle" data-panel="left">
-          <i class="icon f7-icons if-not-md">menu</i>
-          <i class="icon material-icons if-md">menu</i>
-        </a>
-      </div>
+      <div class="title">Products</div>
     </div>
   </div>
 
@@ -30,43 +24,38 @@
     <!--fab-->
 
   <div class="page-content">
+      <div class="item-content block-title no-margin-bottom margin-top-half text-align-center">
+        <div class="row no-padding-vertical">
+                <div class="col padding-vertical-half">
+                  <span class="roundBox display-inline-flex">
+                    <span class="item-title float-right">Show Deleted</span>
+                    <span class="item-after float-right margin-left-half">
+                        <label class="toggle toggle-init color-red showInactive">
+                        <input type="checkbox">
+                        <span class="toggle-icon"></span>
+                        </label>
+                    </span>
+                  </span>  
+                </div>
+            </div>
 
-    <div class="block no-margin-vertical no-margin-horizontal no-padding-vertical roundHolder no-padding-horizontal">
+            <div class="row">
+            <div class="col padding-vertical-half">
+              <span class="roundBox">You have {{totalMat}} {{js "this.totalMat > 1 ? 'products' : 'product'"}}</span>
+            </div>
+  
+            </div>
+    </div>
+
+    <div class="block no-margin-vertical no-margin-horizontal padding-vertical-half roundHolder no-padding-horizontal">
       <div id="product-list" class="customList">
-        <div class="text-align-center">
-          <!--<input class="search" placeholder="search">-->
-          <!-- Additional "searchbar-inline" class -->
-          <div class="searchbar searchbar-inline">
-            <div class="searchbar-input-wrap">
-              <input type="search" placeholder="Search" class="search">
-              <i class="searchbar-icon"></i>
-              <span class="input-clear-button"></span>
+          <div class="text-align-center"><input class="search" placeholder="search">
+            <div class="margin-vertical-half padding-vertical-half sortTextPar">
+              <span class="sortText display-none">Sort By:</span>
+              <!--<span class="sort" data-sort="name">Name</span>
+              <span class="sort" data-sort="cost">Cost</span>-->
             </div>
           </div>
-
-          <div class="margin-vertical-half padding-vertical-half sortTextPar">
-            <span class="sortText display-none">Sort By:</span>
-            <!--<span class="sort" data-sort="name">Name</span>
-            <span class="sort" data-sort="cost">Cost</span>-->
-          </div>
-        </div>
-
-        <div class="row margin-top-half myToolbar">
-          <div class="col-50 no-padding-vertical">
-            <span class="margin-left-half">You have {{totalMat}} {{js "this.totalMat > 1 ? 'products' : 'product'"}}</span>
-          </div>
-          <div class="col-50 no-padding-vertical text-align-right">
-            <span class="display-inline-flex margin-right-half">
-              <span class="item-title float-right">Show Deleted</span>
-              <span class="item-after float-right margin-left-half">
-                  <label class="toggle toggle-init color-red showInactive">
-                  <input type="checkbox">
-                  <span class="toggle-icon"></span>
-                  </label>
-              </span>
-              </span>
-          </div>
-        </div>
           <ul class="list sortList margin-vertical-half">
             
           </ul>
@@ -82,11 +71,11 @@
       <div class="page">
         <div class="navbar">
           <div class="navbar-bg"></div>
-          <div class="navbar-inner">
+          <div class="navbar-inner bg-color-blue text-color-white">
             <div class="title">Add/Edit Product</div>
             <div class="right">
               <!-- Link to close popup -->
-              <a class="link" @click="closeEditProdPopUp"><i class="icon f7-icons">multiply</i>Close</a>
+              <a class="link text-color-white" @click="closeEditProdPopUp"><i class="icon f7-icons">multiply</i>Close</a>
             </div>
           </div>
         </div>
@@ -107,21 +96,6 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Product Description</div>
-                      <div class="item-input-wrap">
-                        <!--<input type="text" class="desc_of_product" placeholder="Description of product"/>
-                        <span class="input-clear-button"></span>-->
-                        <div class="text-editor desc_of_product" data-placeholder="Description of product" 
-                          data-buttons='[["bold", "italic", "underline", "strikeThrough"], ["orderedList", "unorderedList"]]'>
-                          <div class="text-editor-content" contenteditable></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </li>
-                <li>
-                  <div class="item-content item-input">
-                    <div class="item-inner">
                       <div class="item-title">Selling Price</div>
                       <div class="item-input-wrap">
                         <input type="text" class="cost_of_product" placeholder="Cost of product" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
@@ -133,7 +107,7 @@
                 <li>
                   <div class="item-content">
                     <div class="item-inner">
-                      <a href="#" class="col button button-outline button-raised button-green" @click='saveData'>Save Product</a>
+                      <a href="#" class="col button button-raised button-fill color-green" @click='saveData'>Save Product</a>
                     </div>
                   </div>
                 </li>
@@ -152,11 +126,11 @@
       <div class="page">
         <div class="navbar">
           <div class="navbar-bg"></div>
-          <div class="navbar-inner">
+          <div class="navbar-inner bg-color-blue text-color-white">
             <div class="title">Sell Product</div>
             <div class="right">
               <!-- Link to close popup -->
-              <a class="link" @click="resetSalePopUp"><i class="icon f7-icons">multiply</i>Close</a>
+              <a class="link text-color-white" @click="resetSalePopUp"><i class="icon f7-icons">multiply</i>Close</a>
             </div>
           </div>
         </div>
@@ -288,7 +262,7 @@
                 <li>
                   <div class="item-content">
                     <div class="item-inner">
-                      <a href="#" class="col button button-outline button-raised button-green" @click='saveDataSell'>Sell Product</a>
+                      <a href="#" class="col button button-fill button-raised color-green" @click='saveDataSell'>Sell Product</a>
                     </div>
                   </div>
                 </li>
@@ -307,27 +281,22 @@
       <div class="page">
         <div class="navbar">
           <div class="navbar-bg"></div>
-          <div class="navbar-inner">
+          <div class="navbar-inner bg-color-blue text-color-white">
             <div class="title">Add/Edit Product Raw Materials</div>
             <div class="right">
               <!-- Link to close popup -->
-              <a class="link" @click="closePopUp"><i class="icon f7-icons">multiply</i>Close</a>
+              <a class="link text-color-white" @click="closePopUp"><i class="icon f7-icons">multiply</i>Close</a>
             </div>
           </div>
         </div>
         <div class="page-content">
-            <div class="block margin-top-half margin-bottom-half padding-horizontal-half">
+            <div class="block margin-top-half margin-bottom-half">
                   <div class="block-title block-title-medium no-margin-bottom">{{productToEdit}}</div>
             </div>
 
         <div class="list margin-bottom-half no-margin-top">
-          <div class="block-header text-color-black no-margin-bottom margin-top-half text-align-center">Select Raw Materials Below - select multiple</div>
-          <div class="margin-horizontal-half">
-            <a class="col button button-outline button-raised" href="#" id="autocomplete-standalone-multiple">
-            <div class="item-title text-color-blue btn-blue">Add Raw Materials</div>
-          </a>
-        </div>
-          <!--<ul>
+          <div class="block-header text-color-black no-margin-bottom margin-top-half">Select Raw Materials Below - select multiple</div>
+          <ul>
             <li>
               <a class="item-link item-content bg-color-orange myOrange" href="#" id="autocomplete-standalone-multiple">
                 <input type="hidden">
@@ -337,7 +306,7 @@
                 </div>
               </a>
             </li>
-          </ul>-->
+          </ul>
         </div>
 
         <div id="prodIng-list" class="customList">
@@ -347,7 +316,7 @@
           <!--<ul class="pagination"></ul>-->
         </div>
 
-        <div class="margin-horizontal-half">
+        <div class="margin-horizontal">
           <a class="button button-raised button-fill color-blue customcharges" @click="AddNewCost">Add Custom Charges</a>
         </div>
 
@@ -361,30 +330,29 @@
         <ul class="list sortList margin-top-half margin-bottom-half">
           <div class="card myCard">
             <div class="card-content padding-horizontal-half">
-              <!--<div><span class="labelName">Add Profit in %:</span>
+              <div><span class="labelName">Add Profit in %:</span>
                 <div class="display-inline-flex">
                   <input class="profitpercent" type="text" placeholder="profit 0 to 100" @keyup="calculateprofit" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" value="0">
-                </div></div>-->
+                </div></div>
                 <div><span class="labelName">Profit in Money:</span>
                   <div class="display-inline-flex">
-                    <input class="profitvalue" type="text" @keyup="calculateprofit">
-                    <!--<div class="profitvalue valueName"></div>-->
+                    <div class="profitvalue valueName"></div>
                   </div></div>
             </div>
           </div>
       </ul>
       <div class="row padding-horizontal-half"><div class="col-50">
-        <a class="col button button-outline button-raised button-green calculateTotalButton" @click="CalculateTotal">Calculate</a>
+        <a class="button button-fill button-raised color-white text-color-green calculateTotalButton" @click="CalculateTotal">Calculate</a>
       </div>
       <div class="col-50">
-            <a class="col button button-outline button-raised button-green saveTotalButton" @click="SaveTotal">Save</a>
+            <a class="button button-fill button-raised color-green saveTotalButton" @click="SaveTotal">Save</a>
       </div>
     </div>
-        <div class="margin-top-half bigLabel margin-horizontal-half">
+        <div class="margin-top-half block-title-medium margin-horizontal-half">
           <span class="labelName">Cost before profit: </span>
           <div class="display-inline-flex"><div class="totalAmountBeforeProfit">0</div></div>
         </div>
-        <div class="margin-top-half bigLabel margin-horizontal-half">
+        <div class="margin-top-half block-title-medium margin-horizontal-half">
           <span class="labelName">Cost after profit: </span>
           <div class="display-inline-flex"><div class="totalAmount">0</div></div>
         </div>
@@ -403,24 +371,19 @@
       <div class="page">
         <div class="navbar">
           <div class="navbar-bg"></div>
-          <div class="navbar-inner">
+          <div class="navbar-inner bg-color-blue text-color-white">
             <div class="title">Multiple Product Sales</div>
             <div class="right">
               <!-- Link to close popup -->
-              <a class="link" @click="closePopUpMultiple"><i class="icon f7-icons">multiply</i>Close</a>
+              <a class="link text-color-white" @click="closePopUpMultiple"><i class="icon f7-icons">multiply</i>Close</a>
             </div>
           </div>
         </div>
         <div class="page-content">
             
         <div class="list margin-bottom-half no-margin-top">
-          <div class="block-header text-color-black no-margin-bottom margin-top text-align-center">Select Products Below - select multiple</div>
-          <div class="margin-horizontal-half">
-            <a class="col button button-outline button-raised" href="#" id="autocomplete-standalone-multiple2">
-            <div class="item-title text-color-blue btn-blue">Add Products</div>
-          </a>
-        </div>
-          <!--<ul>
+          <div class="block-header text-color-black no-margin-bottom margin-top">Select Products Below - select multiple</div>
+          <ul>
             <li>
               <a class="item-link item-content bg-color-orange myOrange" href="#" id="autocomplete-standalone-multiple2">
                 <input type="hidden">
@@ -430,7 +393,7 @@
                 </div>
               </a>
             </li>
-          </ul>-->
+          </ul>
         </div>
 
         <div id="products-list" class="customList">
@@ -440,7 +403,7 @@
           <!--<ul class="pagination"></ul>-->
         </div>
 
-        <div class="margin-horizontal-half">
+        <div class="margin-horizontal">
           <a class="button button-raised button-fill color-blue customcharges" @click="AddNewProduct(null)">Add Custom Products</a>
         </div>
 
@@ -456,20 +419,20 @@
             <div class="card-content padding-horizontal-half">
               <div><span class="labelName">Taxes in %:</span>
                 <div class="display-inline-flex">
-                  <input class="taxpercent" type="text" placeholder="0 to 100" @keyup="CalculateTotalProduct" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" value="0">
+                  <input class="taxpercent" type="text" placeholder="profit 0 to 100" @keyup="CalculateTotalProduct" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" value="0">
                 </div></div>
             </div>
           </div>
       </ul>
       <div class="row padding-horizontal-half"><div class="col-100">
-        <a class="col button button-outline button-raised button-green calculateTotalButton" @click="CalculateTotalProduct">Calculate</a>
+        <a class="button button-fill button-raised color-white text-color-green calculateTotalButton" @click="CalculateTotalProduct">Calculate</a>
       </div>
     </div>
-        <div class="margin-top-half bigLabel text-align-center margin-horizontal-half">
+        <div class="margin-top-half block-title-medium margin-horizontal-half">
           <span class="labelName">Cost before Tax: </span>
           <div class="display-inline-flex"><div class="totalAmountBeforeProfitProduct">0</div></div>
         </div>
-        <div class="margin-top-half bigLabel text-align-center margin-horizontal-half">
+        <div class="margin-top-half block-title-medium margin-horizontal-half">
           <span class="labelName">Cost after Tax: </span>
           <div class="display-inline-flex"><div class="totalAmountProduct">0</div></div>
         </div>
@@ -483,15 +446,15 @@
               <input class="buyersNameMultiple" id="buyersNameMultiple" type="text" placeholder="Buyer's Name" value=""></div></div>
             <div><span class="labelName">Amount Paid: </span><div class="display-inline-flex">
                 <input class="amountPaidMultiple" type="text" placeholder="Amount Paid" value="0"></div></div>
-            <div><span class="labelName">Date of Payment: </span><div class="display-inline-flex" style="width:100%">
-                  <input id="datePaidMultiple" class="text-align-center" type="text" placeholder="Date of Payment" value="0"></div></div>
-            <div><span class="labelName">Date of Purchase: </span><div class="display-inline-flex" style="width:100%">
-                    <input id="datePurchaseMultiple" class="text-align-center" type="text" placeholder="Date of Purchase" value="0"></div></div>
+            <div><span class="labelName">Date of Payment: </span><div class="display-inline-flex">
+                  <input id="datePaidMultiple" type="text" placeholder="Date of Payment" value="0"></div></div>
+            <div><span class="labelName">Date of Purchase: </span><div class="display-inline-flex">
+                    <input id="datePurchaseMultiple" type="text" placeholder="Date of Purchase" value="0"></div></div>
           </div>
         </div>
         </li></ul>
                 <div class="row padding-horizontal-half"><div class="col-100">
-                  <a class="col button button-outline button-raised button-green" @click="saveMultipleProduct">Save All</a>
+                  <a class="button button-fill button-raised color-green text-color-white" @click="saveMultipleProduct">Save All</a>
                 </div>
               </div>
         </div>
@@ -555,14 +518,14 @@ export default {
             var total = cost * quant;
             $(".total_sell").val(total);
             var taxes = Number($(".taxes").val().trim());
-            //console.log("0 - " + taxes);
+            console.log("0 - " + taxes);
             if(taxes != "" || taxes == 0){
-              //console.log("1 - " + taxes);
+              console.log("1 - " + taxes);
               if(!isNaN(taxes)){
-                //console.log("2 - " + taxes);
+                console.log("2 - " + taxes);
                 var taxAmt = (taxes/100) * total;
                 var aftCost = total + taxAmt;
-                //console.log("3 - " + aftCost);
+                console.log("3 - " + aftCost);
                 $(".afterTax").val(aftCost.toFixed(2));
               }
             }
@@ -588,16 +551,16 @@ export default {
       })
       
       //console.log(totalCost);
-      /*var cent = $(".profitpercent").eq(0).val();
+      var cent = $(".profitpercent").eq(0).val();
         if(cent != 0 && cent != "" && totalCost != ""){
           cent = Number(cent);
           var val = (cent/100) * totalCost;
-          $(".profitvalue").eq(0).val(val.toFixed(2));
+          $(".profitvalue").eq(0).text(val.toFixed(2));
         }else{
-          $(".profitvalue").eq(0).val("0");
-        }*/
+          $(".profitvalue").eq(0).text("0");
+        }
         $(".totalAmountBeforeProfit").text(totalCost.toFixed(2));
-        var profitvalue = Number($(".profitvalue").eq(0).val());
+        var profitvalue = Number($(".profitvalue").eq(0).text());
         totalCost += profitvalue;
         $(".totalAmount").text(totalCost.toFixed(2));
     },
@@ -635,16 +598,16 @@ export default {
         var html = '<li class="eachCostParent"><div class="card myCard"><div class="card-content padding-horizontal-half">';
         html += '<div class="name cardName">' + select.name + '</div>';
         html += '<div class=""><span class="labelName">Unit Cost: </span><span class="valueName">' + self.formatMoney(cpu) + " for " + select.unit_size + select.unit + '</span></div>';
-        html += '<div><span class="labelName">Quantity To Use: </span><div class="display-inline-flex align-items-center"><input class="margin-horizontal-half costvalue" type="text" placeholder="Enter Quantity" ';
+        html += '<div><span class="labelName">Quantity To Use: </span><div class="display-inline-flex"><input class="margin-horizontal-half costvalue" type="text" placeholder="Enter Quantity" ';
         html += 'data-cost="' + cpu +'" data-unit="' + select.unit_size + '" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" '; 
                 //var val = sus != undefined ? select.select_unit_size : 0;
         html +=  'value="' + sus + '"><span>' + select.unit + '</span></div></div>';
         var val2 = select.select_cost != undefined ? select.select_cost : 0;
         var stat = select.status == 1 ? "display-none" : "";
         html += '<div class=""><span class="labelName">Cost of Material: </span><span class="valueName eachCost">' + val2 + '</span></div>';
-        html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName">Deleted</span></div>';
-        html += '</div><div class="card-footerMine padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
-          html += '<a class="button color-red removeCost" data-id="' + select._id + '">Delete</a>';
+        html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName text-color-red">Deleted</span></div>';
+        html += '</div><div class="card-footer padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
+          html += '<a class="button button-raised button-small button-fill color-red removeCost" data-id="' + select._id + '">Delete</a>';
         html += '</p></div></div>'
         html += '</li>';
         $("#prodIng-list .sortList").append(html);
@@ -693,7 +656,7 @@ export default {
                       self.showToast("Product " + text + "d!", "center");
                       list.remove("id", id);
                       if(self.products.length == 0){
-                        $(".sortTextPar").addClass("display-none");
+                        $(".customList").addClass("display-none");
                         $("#product-list .pagination").remove();
                       }
                   });
@@ -712,9 +675,6 @@ export default {
                       currentProduct:item
                     });
                     $$("input.name").val(item.name);
-                    var textEditor = self.$app.textEditor.get('.desc_of_product');
-                    var desc = item.desc == null ? "" : item.desc;
-                    textEditor.setValue(desc);
                     $$("input.cost_of_product").val(item.cost);
                     var popup = self.$app.popup.open('.newProduct', true);
             } else{
@@ -790,8 +750,8 @@ export default {
           html +=  '<span class="input-clear-button"></span></div></div></div></div></div>';
           html += '<div><span class="labelName">Total Price: </span><div class="display-inline-flex"><input class="totalproductprice" type="text" disabled placeholder="Total Price" value="';
           html +=  totalPrice + '"></div></div>';
-        html += '</div><div class="card-footerMine padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
-          html += '<a class="button color-red removeProduct" data-id="' + select._id + '">Delete</a>';
+        html += '</div><div class="card-footer padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
+          html += '<a class="button button-raised button-small button-fill color-red removeProduct" data-id="' + select._id + '">Delete</a>';
         html += '</p></div></div>'
         html += '</li>';
         $("#products-list .sortList").append(html);
@@ -833,23 +793,22 @@ export default {
               openIn: 'popup', //open in page
               openerEl: '#autocomplete-standalone-multiple2', //link that opens autocomplete
               multiple: true, //allow multiple values
-              navbarColorTheme: 'col bg-color-white text-color-black',
+              navbarColorTheme: 'col bg-color-orange text-color-white',
               preloader: true, //enable preloader
               valueProperty: '_id', //object's "value" property name
               textProperty: 'name', //object's "text" property name
               popupCloseLinkText: 'Done',
-              requestSourceOnOpen:true,
               source: function (query, render) {
                 var autocomplete = this;
                 autocomplete.preloaderShow();
                 var results = self.products.filter(x => x.status == 1); //.map(a => a.name);
-                //autocomplete.preloaderHide();
-                //render(results);
-                if (query.length === 0) {
+                autocomplete.preloaderHide();
+                render(results);
+                /*if (query.length === 0) {
                   autocomplete.preloaderHide();
                   render(results);
                   return;
-                }
+                }*/
                 
                 if (query.length > 0) {
                   var newResult = [];
@@ -916,23 +875,21 @@ export default {
               openIn: 'popup', //open in page
               openerEl: '#autocomplete-standalone-multiple', //link that opens autocomplete
               multiple: true, //allow multiple values
-              navbarColorTheme: 'col bg-color-white text-color-black',
+              navbarColorTheme: 'col bg-color-orange text-color-white',
               preloader: true, //enable preloader
               valueProperty: '_id', //object's "value" property name
               textProperty: 'name', //object's "text" property name
               popupCloseLinkText: 'Done',
-              requestSourceOnOpen:true,
               source: function (query, render) {
                 var autocomplete = this;
                 autocomplete.preloaderShow();
                 var results = self.ings.filter(x => x.status == 1); //.map(a => a.name);
-                
-                //render(results);
-                if (query.length === 0) {
-                  autocomplete.preloaderHide();
+                autocomplete.preloaderHide();
+                render(results);
+               /* if (query.length === 0) {
                   render(results);
                   return;
-                }
+                }*/
                 if (query.length > 0) {
                   var newResult = [];
                   // Find matched items
@@ -985,7 +942,6 @@ export default {
                       }
                     }).then(function(ar){
                       var arr = ar.docs;
-                      //console.log(arr);
                     $.each(arr, function( key, value ) {
                         //$(".ing-" + value.ingredientID).click();
                         //self.SelectItem(Number(value.ingredientID));
@@ -1017,7 +973,6 @@ export default {
                       }
                     }).then(function(ar){
                     var arr = ar.docs;
-                    //console.log(arr);
                   $.each(arr, function( key, value ) {
                     if(value.name != "***Profit***"){
                       var html = '<li class="extraCostRow"><div class="card myCard"><div class="card-content padding-horizontal-half">';
@@ -1025,8 +980,8 @@ export default {
                         html +=  value.name + '"></div></div>';
                         html += '<div class="margin-top-half"><span class="labelName">Enter Cost: </span><div class="display-inline-flex"><input class="eachCost" type="text" placeholder="Enter Cost" value="';
                         html += value.cost + '"></div></div>';
-                        html += '</div><div class="card-footerMine padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
-                          html += '<a class="button color-red removeRow">Delete</a>';
+                        html += '</div><div class="card-footer padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
+                          html += '<a class="button button-raised button-small button-fill color-red removeRow">Delete</a>';
                         html += '</p></div></div>'
                         html += '</li>';
                         $("#prodOtherIng-list .sortList").append(html);
@@ -1040,13 +995,13 @@ export default {
                           //$(".calculateTotalButton").eq(0).click();
                       })
                     }else{
-                            $(".profitvalue").val(value.cost);
+                            $(".profitvalue").text(value.cost);
                             profit = value.cost;
                         }
                     })
                     var finalPrice = self.products.find(x => x._id == id).cost;
-                    //var cent = (100 * profit)/(finalPrice - profit);
-                    //$(".profitpercent").val(cent.toFixed(2));
+                    var cent = (100 * profit)/(finalPrice - profit);
+                    $(".profitpercent").val(cent.toFixed(2));
                     self.CalculateTotal();
                     var popup = self.$app.popup.open('.ProductIngredients', true);
                     //self.CalculateTotal();
@@ -1134,7 +1089,7 @@ export default {
         // validation final
         if(error){
           self.showToast("Error is found in the forms!", "center");
-          //console.log("error");
+          console.log("error");
         }else{
           // save into db
           //console.log("clean");
@@ -1199,8 +1154,8 @@ export default {
                     })
                   }
                   self.showToast("Saved successfully", "center");
-                  self.closePopUpMultiple();
-                  //self.$app.popup.close('.multipleSales', true);
+                  var popup = self.$app.popup.close('.multipleSales', true);
+                  
                     
                 }).catch(err => {
                   // Transaction aborted. NOT WITHIN ZONE!
@@ -1229,8 +1184,8 @@ export default {
           html +=  '<span class="input-clear-button"></span></div></div></div></div></div>';
           html += '<div><span class="labelName">Total Price: </span><div class="display-inline-flex"><input class="totalproductprice" type="text" disabled placeholder="Total Price" value="';
           html += totalPrice + '"></div></div>';
-        html += '</div><div class="card-footerMine padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
-          html += '<a class="button color-red removeProduct">Delete</a>';
+        html += '</div><div class="card-footer padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
+          html += '<a class="button button-raised button-small button-fill color-red removeProduct">Delete</a>';
         html += '</p></div></div>'
         html += '</li>';
         $("#productsOther-list .sortList").append(html);
@@ -1293,9 +1248,8 @@ export default {
         var self = this;
         var popup = self.$app.popup.close('.ProductIngredients', true);
         $(".extraCostRow, .eachCostParent").remove();
-            //$(".profitpercent").val("0");
-            $(".totalAmount,.totalAmountBeforeProfit").text("");
-            $(".profitvalue").val("0");
+            $(".profitpercent").val("0");
+            $(".totalAmount,.profitvalue,.totalAmountBeforeProfit,.profitpercent").text("");
             self.$app.autocomplete.destroy("#autocomplete-standalone-multiple");
             //self.CalculateTotal();
         popup.once("closed", function(){
@@ -1312,11 +1266,8 @@ export default {
       var err = self.$app.input.validateInputs(".productForm");
       //console.log(err);
       if(err){
-        var textEditor = self.$app.textEditor.get('.desc_of_product');
-        var desc = textEditor.value;
         var obj = {
                 name: $$("input.name").val(),  
-                desc: desc,
                 cost: $$("input.cost_of_product").val(), 
                 status:1,
                 created_date: moment().format("X")
@@ -1331,8 +1282,6 @@ export default {
                   //self.$app.dialog.alert("Item saved.");
                   self.showToast("Item saved.", "center");
                   $$("input.name,input.cost_of_product").val("");
-                  var textEditor = self.$app.textEditor.get('.desc_of_product');
-                  textEditor.setValue("");
                   self.getData();
               })
           }
@@ -1455,14 +1404,14 @@ export default {
                 $("#product-list .pagination").remove();
                 $(".sellMultiple").remove();
                       if(arr != null && arr.length > 0){
-                        $(".sortTextPar").removeClass("display-none");
+                        $(".customList").removeClass("display-none");
                         var pagination = "<ul class='pagination padding-left-half margin-vertical-half'><ul>";
                         $(pagination).insertAfter($("#product-list .list"));
                         $(".sort").remove();
                         var sorter = '<span class="sort" data-sort="name">Name</span><span class="sort" data-sort="cost">Cost</span>';
                         $(sorter).insertAfter($(".sortText"));
                         $(".sortText").removeClass("display-none");
-                        var mult = "<div class='margin-horizontal-half margin-top-half'><a class='button button-outline button-raised color-blue sellMultiple'>Sell Multiple Products</div>";
+                        var mult = "<div class='margin-horizontal-half'><a class='button button-raised button-fill color-blue sellMultiple'>Sell Multiple Products</div>";
                         $(mult).insertBefore($("#product-list .list"));
                         $(".sellMultiple").off("click").on("click", function(){
                           self.openPopUpMultiple();
@@ -1472,17 +1421,14 @@ export default {
                             var row = arr[i];
                             var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
                             html += '<div class="name cardName">' + row.name + '</div><div class="id display-none">' + row._id + '</div><div class="cost display-none">' + row.cost + '</div>';
-                            if(row.desc != null){
-                              html += '<div class=""><span class="labelName">Description: </span><span class="">' + row.desc + '</span></div>';
-                            }
                             html += '<div class=""><span class="labelName">Cost: </span><span class="valueName">' + self.formatMoney(row.cost) + '</span></div>';
                             var stat = row.status == 1 ? "display-none" : "";
-                            html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName">Deleted</span></div>';
-                            html += '</div><div class="card-footerMine padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
-                            html += '<a class="button myGreen sellProduct" data-id="' + row._id + '">Sell</a>';
-                            html += '<a class="button editProduct" data-id="' + row._id + '">Edit</a>';
-                            html += '<a class="button color-orange addIngredients" data-id="' + row._id + '">Add Raw Materials</a>';
-                            html += '<a class="button color-red deleteProduct" data-id="' + row._id + '">';
+                            html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName text-color-red">Deleted</span></div>';
+                            html += '</div><div class="card-footer padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
+                            html += '<a class="button button-raised button-small button-fill color-green sellProduct" data-id="' + row._id + '">Sell</a>';
+                            html += '<a class="button button-raised button-small button-fill editProduct" data-id="' + row._id + '">Edit</a>';
+                            html += '<a class="button button-raised button-small button-fill color-orange addIngredients" data-id="' + row._id + '"><i class="icon f7-icons">plus</i> Materials</a>';
+                            html += '<a class="button button-raised button-small button-fill color-red deleteProduct" data-id="' + row._id + '">';
                             html +=  row.status == 1 ? 'Delete' : 'Activate';
                             html += '</a>';
                             html += '</p></div></div></li>';
@@ -1525,7 +1471,7 @@ export default {
                               //return false;
                           });
                         }else{
-                          $(".sortTextPar").addClass("display-none");
+                          $(".customList").addClass("display-none");
                         }
                 });
           });
@@ -1564,8 +1510,8 @@ export default {
         html += '></div></div>';
         html += '<div class="margin-top-half"><span class="labelName">Enter Cost: </span><div class="display-inline-flex"><input class="eachCost" type="text" placeholder="Enter Cost" ';
         html += '></div></div>';
-        html += '</div><div class="card-footerMine padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
-          html += '<a class="button color-red removeRow">Delete</a>';
+        html += '</div><div class="card-footer padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
+          html += '<a class="button button-raised button-small button-fill color-red removeRow">Delete</a>';
         html += '</p></div></div>'
         html += '</li>';
         $("#prodOtherIng-list .sortList").append(html);
@@ -1732,7 +1678,7 @@ export default {
                 var obj = {};
                 obj.productID = self.productToEditID;
                 obj.name = "***Profit***";
-                obj.cost = Number($(".profitvalue").val());
+                obj.cost = Number($(".profitvalue").text());
                 obj.status = 1;
                 obj.created_date = moment().format("X");
                 allExtraCost.push(obj);
@@ -1751,14 +1697,13 @@ export default {
                           });*/
                           dbProdIngs.find({
                             selector: {
-                              productID: {$eq: self.productToEditID}
+                              parentID: {$eq: self.productToEditID}
                             }
                           }).then(function(ar){
                             var arr = ar.docs;
                                   arr.forEach((element, index) => {
                                   arr[index]._deleted = true;
                               });
-                              //console.log(arr);
                               dbProdIngs.bulkDocs(arr).then(function(){
                                 dbProdIngs.bulkDocs(allCost);
                               })
@@ -1766,15 +1711,13 @@ export default {
 
                           dbProdOthers.find({
                             selector: {
-                              productID: {$eq: self.productToEditID}
+                              parentID: {$eq: self.productToEditID}
                             }
                           }).then(function(ar1){
-                            //console.log(ar1);
                             var arr2 = ar1.docs;
                                   arr2.forEach((element, index) => {
                                   arr2[index]._deleted = true;
                               });
-                              //console.log(arr2);
                               dbProdOthers.bulkDocs(arr2).then(function(){
                                 dbProdOthers.bulkDocs(allExtraCost);
                               })
@@ -1817,8 +1760,7 @@ export default {
                         //}).then(() => {
                             // Transaction committed. NOT WITHIN ZONE!
                             self.showToast("Saved successfully", "center");
-                            self.closePopUp();
-                            //self.$app.popup.close('.ProductIngredients', true);
+                            var popup = self.$app.popup.close('.ProductIngredients', true);
                         }).catch(err => {
 
                             // Transaction aborted. NOT WITHIN ZONE!
@@ -1937,21 +1879,6 @@ export default {
                   //dateFormat: 'YYYY-MM-DD HH:MM'
                   //dateFormat: { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric' }
               });
-
-              var textEditorCustomButtons = self.$app.textEditor.create({
-                  el: '.desc_of_product',
-                  buttons: [["bold", "italic", "underline", 'h1', 'h2', 'h3', 'orderedList', 'unorderedList']],
-                  on: {
-                    buttonClick: function (editor, button) {
-                        var act = $('button[data-button="' + button + '"]').hasClass("active");
-                        if(act){
-                          $('button[data-button="' + button + '"]').removeClass("active");
-                        }else{
-                          $('button[data-button="' + button + '"]').addClass("active");
-                        }
-                      }
-                    }
-                });
         $$(".showInactive").on("change", function(){
             self.getData();
         })

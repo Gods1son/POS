@@ -1,5 +1,5 @@
 <template>
-<div class="page" data-name="ingredient">
+<div class="page" data-name="clients">
   <div class="navbar">
     <div class="navbar navbar-bg"></div>
     <div class="navbar-inner sliding">
@@ -9,13 +9,7 @@
           <span class="if-not-md">Back</span>
         </a>
       </div>
-      <div class="title padding-vertical-half">Raw Materials</div>
-      <div class="right">
-        <a href="#" class="link icon-only panel-toggle" data-panel="left">
-          <i class="icon f7-icons if-not-md">menu</i>
-          <i class="icon material-icons if-md">menu</i>
-        </a>
-      </div>
+      <div class="title">Clients</div>
     </div>
   </div>
 
@@ -24,45 +18,42 @@
       <a href="#" @click="openPopUp(null)">
         <i class="icon f7-icons">plus</i>
         <!-- Element with FAB text  -->
-        <div class="fab-text">Raw Material</div>
+        <div class="fab-text">Client</div>
       </a>
     </div>
     <!--fab-->
 
   <div class="page-content">
-    <div class="block no-margin-vertical no-margin-horizontal no-padding-vertical roundHolder no-padding-horizontal">
-      <div id="material-list" class="customList">
-        <div class="text-align-center">
-          <!--<input class="search" placeholder="search">-->
-          <!-- Additional "searchbar-inline" class -->
-          <div class="searchbar searchbar-inline">
-            <div class="searchbar-input-wrap">
-              <input type="search" placeholder="Search" class="search">
-              <i class="searchbar-icon"></i>
-              <span class="input-clear-button"></span>
+    
+    <div class="item-content block-title no-margin-bottom margin-top-half text-align-center">
+        <div class="row no-padding-vertical">
+                <div class="col padding-vertical-half">
+                  <span class="roundBox display-inline-flex">
+                    <span class="item-title float-right">Show Deleted</span>
+                    <span class="item-after float-right margin-left-half">
+                        <label class="toggle toggle-init color-red showInactiveClients">
+                        <input type="checkbox">
+                        <span class="toggle-icon"></span>
+                        </label>
+                    </span>
+                    </span>
+                </div>
             </div>
-          </div>
 
+            <div class="row">
+            <div class="col padding-vertical-half">
+                <span class="roundBox">You have {{totalMat}} {{js "this.totalMat > 1 ? 'clients' : 'client'"}}</span>
+            </div>
+            </div>
+    </div>
+
+    <div class="block no-margin-vertical no-margin-horizontal padding-vertical-half roundHolder no-padding-horizontal">
+      <div id="clients-list" class="customList">
+        <div class="text-align-center"><input class="search" placeholder="search">
           <div class="margin-vertical-half padding-vertical-half sortTextPar">
             <span class="sortText display-none">Sort By:</span>
             <!--<span class="sort" data-sort="name">Name</span>
             <span class="sort" data-sort="cost">Cost</span>-->
-          </div>
-        </div>
-        <div class="row margin-top-half">
-          <div class="col-50 no-padding-vertical">
-            <span class="margin-left-half">You have {{totalMat}} {{js "this.totalMat > 1 ? 'raw materials' : 'raw material'"}}</span>
-          </div>
-          <div class="col-50 no-padding-vertical text-align-right">
-            <span class="display-inline-flex margin-right-half">
-              <span class="item-title float-right">Show Deleted</span>
-              <span class="item-after float-right margin-left-half">
-                  <label class="toggle toggle-init color-red showInactiveIngs">
-                  <input type="checkbox">
-                  <span class="toggle-icon"></span>
-                  </label>
-              </span>
-              </span>
           </div>
         </div>
         <ul class="list sortList margin-vertical-half">
@@ -74,28 +65,28 @@
   </div>
 
   <!--pop up-->
-  <div class="popup newIngredient popup-tablet-fullscreen">
+  <div class="popup newClient popup-tablet-fullscreen">
     <div class="view">
       <div class="page">
         <div class="navbar">
           <div class="navbar-bg"></div>
-          <div class="navbar-inner">
-            <div class="title">Add/Edit Raw Material</div>
+          <div class="navbar-inner bg-color-blue text-color-white">
+            <div class="title">Add/Edit Client</div>
             <div class="right">
               <!-- Link to close popup -->
-              <a class="link" @click="closePopUp"><i class="icon f7-icons">multiply</i>Close</a>
+              <a class="link text-color-white" @click="closePopUp"><i class="icon f7-icons">multiply</i>Close</a>
             </div>
           </div>
         </div>
         <div class="page-content">
-            <div class="list no-hairlines-md margin-top-half margin-bottom-half ingForm">
+            <div class="list no-hairlines-md margin-top-half margin-bottom-half clientForm">
               <ul>
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Raw Material Name</div>
+                      <div class="item-title">Client Name</div>
                       <div class="item-input-wrap">
-                        <input type="text" class="name" placeholder="raw material name" required validate/>
+                        <input type="text" class="clientname" placeholder="Client name" required validate/>
                         <span class="input-clear-button"></span>
                       </div>
                     </div>
@@ -104,9 +95,9 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Unit size</div>
+                      <div class="item-title">Email Address</div>
                       <div class="item-input-wrap">
-                        <input type="text" class="unit_size" placeholder="Unit size" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                        <input type="email" class="email settingsInput" placeholder="Client email address"/>
                         <span class="input-clear-button"></span>
                       </div>
                     </div>
@@ -115,9 +106,9 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Unit measurement e.g. kg, lb, ltr</div>
+                      <div class="item-title">Contact number</div>
                       <div class="item-input-wrap">
-                        <input type="text" class="unit" placeholder="Unit measurement" required validate/>
+                        <input type="text" class="phone" placeholder="Client number"/>
                         <span class="input-clear-button"></span>
                       </div>
                     </div>
@@ -126,9 +117,9 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Cost/Unit size</div>
+                      <div class="item-title">Client Address</div>
                       <div class="item-input-wrap">
-                        <input type="text" class="cost_per_unit" placeholder="Cost/Unit size" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                        <textarea class="address settingsInput" placeholder="Client Address"></textarea>
                         <span class="input-clear-button"></span>
                       </div>
                     </div>
@@ -137,7 +128,7 @@
                 <li>
                   <div class="item-content">
                     <div class="item-inner">
-                      <a href="#" class="col button button-outline button-raised button-green" @click='saveData'>Save Raw Material</a>
+                      <a href="#" class="col button button-fill button-raised color-green" @click='saveData'>Save Client</a>
                     </div>
                   </div>
                 </li>
@@ -154,25 +145,19 @@
 </template>
 <script>
 import * as moment from 'moment';
-var db = null, dbSettings = null;
+var db = null;
 
 export default {
   test: 5,
   data: function () {
       // Must return an object
       return {
-        ings: null,
+        clients: null,
         totalMat:0,
-        currentIng: null,
-        settings: null,
-        settingsID: 'settings'
+        currentClient: null
       }
     },
   methods:{
-    fakeAlert: function(){
-        var self = this;
-        self.$app.dialog.alert("hey");
-    },
     showToast: function(text, position){
         var self = this;
         self.$app.toast.create({
@@ -186,39 +171,31 @@ export default {
           //db = null;
           try{//id,name,unit_size,unit,cost_per_unit,status,created_date
             if(pdf != undefined){
-                db = new PouchDB('ingredients.db', { adapter: 'cordova-sqlite' });
-                dbSettings = new PouchDB('settings.db', { adapter: 'cordova-sqlite' });
+                db = new PouchDB('clients.db', { adapter: 'cordova-sqlite' });
                 db.createIndex({
                   index: {
-                    fields: ['name', 'status']
+                    fields: ['name', 'created_date']
                   }
                 }).then(function (result) {
                   self.getData();
                 })
               }
           }catch(err){
-            db = new PouchDB('ingredients.db');
-            dbSettings = new PouchDB('settings.db');
+            db = new PouchDB('clients.db');
             db.createIndex({
                   index: {
-                    fields: ['name', 'status']
+                    fields: ['name', 'created_date']
                   }
                 }).then(function (result) {
                   self.getData();
                 })
           }
-          var id = self.settingsID;
-            dbSettings.get(id).then(function(doc) {
-                  self.$setState({
-                      settings: doc
-                    })
-              })
         },
     DeleteItem: function(list, id){
         var self = this;
         var checked = 0;
         var text = "delete"
-        var toggle = self.$app.toggle.get(".showInactiveIngs");
+        var toggle = self.$app.toggle.get(".showInactiveClients");
         if(toggle != undefined){
             if(toggle.checked){
                 text = "activate";
@@ -236,19 +213,19 @@ export default {
                     doc.status = checked
                     return db.put(doc);
                   }).then(function(){
-                    self.ings = self.ings.filter(function(e){ 
+                    self.clients = self.clients.filter(function(e){ 
                       return e._id != id;
                   });
                   //console.log(self.ings);
                   self.$setState({
-                      ings:self.ings,
-                      totalMat:self.ings.length
+                      clients:self.clients,
+                      totalMat:self.clients.length
                   }, function(){
-                      self.showToast("Material " + text + "d!", "center");
+                      self.showToast("Client " + text + "d!", "center");
                       list.remove("id", id);
-                      if(self.ings.length == 0){
-                        $(".sortTextPar").addClass("display-none");
-                        $("#material-list .pagination").remove();
+                      if(self.clients.length == 0){
+                        $(".customList").addClass("display-none");
+                        $("#clients-list .pagination").remove();
                       }
                   });
                 })
@@ -261,21 +238,21 @@ export default {
         
         //popup.once("opened", function(){
           if(id != null || id != undefined){
-              var item = self.ings.find(function(e){ 
+              var item = self.clients.find(function(e){ 
                         return e._id == id;
                     });
                     self.$setState({
-                      currentIng: item
+                      currentClient: item
                     });
-                    $$("input.name").val(item.name);
-                    $$("input.unit_size").val(item.unit_size);
-                    $$("input.unit").val(item.unit);
-                    $$("input.cost_per_unit").val(item.cost_per_unit);
-                    var popup = self.$app.popup.open('.newIngredient', true);
+                    $(".clientname").val(item.name);
+                    $(".email").val(item.email);
+                    $(".address").val(item.address);
+                    $(".phone").val(item.phone);
+                    var popup = self.$app.popup.open('.newClient', true);
             } else{
-              var popup = self.$app.popup.open('.newIngredient', true);
+              var popup = self.$app.popup.open('.newClient', true);
               self.$setState({
-                  currentIng:null
+                  currentClient:null
               });
             }
         //})
@@ -283,8 +260,8 @@ export default {
     },
     closePopUp: function(){
         var self = this;
-        var popup = self.$app.popup.close('.newIngredient', true);
-        $$("input.name,input.unit_size,input.unit,input.cost_per_unit").val("");
+        var popup = self.$app.popup.close('.newClient', true);
+        $(".clientname,.email,.address,.phone").val("");
         popup.once("closed", function(){
 
         });
@@ -293,47 +270,34 @@ export default {
       //var $$ = this.Dom7;
       var self = this;
       var elem = $$("input:required");
-      var err = self.$app.input.validateInputs(".ingForm");
+      var err = self.$app.input.validateInputs(".clientForm");
       if(err){
         var obj = {
-                name: $$("input.name").val(), 
-                unit_size: $$("input.unit_size").val(), 
-                unit: $$("input.unit").val(), 
-                cost_per_unit: $$("input.cost_per_unit").val(), 
+                name: $(".clientname").val().trim(), 
+                email: $(".email").val().trim(), 
+                address: $(".address").val().trim(), 
+                phone: $(".phone").val().trim(), 
                 status:1,
                 created_date: moment().format("X")
               };
-            if(self.currentIng != null){
-              obj._id = self.currentIng._id;
-              obj._rev = self.currentIng._rev;
+            if(self.currentClient != null){
+              obj._id = self.currentClient._id;
+              obj._rev = self.currentClient._rev;
             }else{
               obj._id = moment().format("X");
             }
             db.put(obj).then(function(res) {
                     //self.$app.dialog.alert("Item saved.");
-                    self.showToast("Item saved.", "center");
-                    $$("input.name,input.unit_size,input.unit,input.cost_per_unit").val("");
+                    self.showToast("Client saved.", "center");
+                    $(".clientname,.email,.address,.phone").val("");
                     self.getData();
               })
           }
     },
-    formatMoney:function(val){   
-      var self = this;          
-      var sym = self.settings == null ? "" : self.settings.currency;
-      sym = sym == undefined ? "" : sym;
-      if(val < 0){
-        var rev = 0 - val;
-        var val2 = val + rev + rev;
-        val = val2;
-        sym = "-" + sym;
-      }
-      var ret = sym + val.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
-      return ret;
-    },
     getData: function(){
       var self = this;
       var checked = 1;
-      var toggle = self.$app.toggle.get(".showInactiveIngs");
+      var toggle = self.$app.toggle.get(".showInactiveClients");
       if(toggle != undefined){
         checked = toggle.checked == true ? 0 : 1;
       }
@@ -350,44 +314,53 @@ export default {
         //console.log(arr);
         //console.log("fretched - " + checked);
           self.$setState({
-                ings: arr,
+                clients: arr,
                 totalMat:arr.length
               }, function(){
-                      $("#material-list .list").empty();
-                      $("#material-list .pagination").remove();
+                      $("#clients-list .list").empty();
+                      $("#clients-list .pagination").remove();
                       //$(".sort").removeClass("asc").removeClass("desc");
-                      if(self.ings != null && self.ings.length > 0){
-                        $(".sortTextPar").removeClass("display-none");
+                      if(self.clients != null && self.clients.length > 0){
+                        $(".customList").removeClass("display-none");
                         var pagination = "<ul class='pagination padding-left-half margin-vertical-half'><ul>";
-                        $(pagination).insertAfter($("#material-list .list"));
+                        $(pagination).insertAfter($("#clients-list .list"));
                         $(".sort").remove();
-                        var sorter = '<span class="sort" data-sort="name">Name</span><span class="sort" data-sort="cost">Cost</span>';
+                        var sorter = '<span class="sort" data-sort="name">Name</span>';
                         $(sorter).insertAfter($(".sortText"));
                         $(".sortText").removeClass("display-none");
-                        for(var i = 0; i < self.ings.length; i++){
-                            var row = self.ings[i];
+                        for(var i = 0; i < self.clients.length; i++){
+                            var row = self.clients[i];
                             var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
-                            html += '<div class="name cardName">' + row.name + '</div><div class="id display-none">' + row._id + '</div><div class="cost display-none">' + row.cost_per_unit + '</div>';
-                            html += '<div class=""><span class="labelName">Cost/Unit Size: </span><span class="valueName">' + self.formatMoney(row.cost_per_unit) + " for " + row.unit_size + row.unit + '</span></div>';
+                            html += '<div class="name cardName">' + row.name + '</div><div class="id display-none">' + row._id + '</div>';
+                            if(row.phone != ""){
+                              html += '<div class=""><span class="labelName">Contact number: </span><span class="valueName">' + row.phone + '</span></div>';
+                            }
+                            if(row.email != ""){
+                              html += '<div class=""><span class="labelName">Email: </span><span class="valueName">' + row.email + '</span></div>';
+                            }
+                            if(row.address != ""){
+                              html += '<div class="display-inline-flex"><div class="labelName">Address: </div><div class="valueName margin-left-half">' + row.address.split("\n").join("<br>") + '</div></div>';
+                            }
+                            
                             var stat = row.status == 1 ? "display-none" : "";
                             //html += '<div class=""><span class="labelName">Cost: </span><span class="valueName">' + self.formatMoney(row.cost_per_unit) + '</span></div>';
-                            html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName">Deleted</span></div>';
-                            html += '</div><div class="card-footerMine padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
-                            html += '<a class="button editButton" data-id="' + row._id + '">Edit</a>';
-                            html += '<a class="button color-red deleteButton" data-id="' + row._id + '">';
+                            html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName text-color-red">Deleted</span></div>';
+                            html += '</div><div class="card-footer padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
+                            html += '<a class="button button-raised button-small button-fill margin-right-half editButton" data-id="' + row._id + '">Edit</a>';
+                            html += '<a class="button button-raised button-small button-fill color-red deleteButton" data-id="' + row._id + '">';
                             html +=  row.status == 1 ? 'Delete' : 'Activate'; 
                             html += '</a></p></div></div>'
                             html += '</li>';
-                            $("#material-list .list").append(html);
+                            $("#clients-list .list").append(html);
                             //return html;
                         }
                         var options = {
-                            valueNames: ['id','cost','name'],
+                            valueNames: ['id','name'],
                             page: 5,
                             pagination: [{outerWindow:2}]
                         };
 
-                        var materialList = new List('material-list', options);
+                        var clientsList = new List('clients-list', options);
 
                         $(".sort").off("click").on("click", function(){
                           $(".sort").find(".asc").remove();
@@ -400,19 +373,19 @@ export default {
                             }
                         })
                         //materialList.reIndex();
-                          $('#material-list').off("click").on('click','.button', function () {
+                          $('#clients-list').off("click").on('click','.button', function () {
                               var data = $(this).attr("data-id");
                               //console.log(data);
                               if($(this).hasClass("editButton")){
                                 self.openPopUp(data);
                               }
                               if($(this).hasClass("deleteButton")){
-                                self.DeleteItem(materialList, data);
+                                self.DeleteItem(clientsList, data);
                               }
                               //return false;
                           });
                         }else{
-                          $(".sortTextPar").addClass("display-none");
+                          $(".customList").addClass("display-none");
                         }
                       });
               });
@@ -421,7 +394,7 @@ export default {
   on: {
       pageInit: function(e, page) {
         var self = this;
-        $$(".showInactiveIngs").on("change", function(){
+        $$(".showInactiveClients").on("change", function(){
           //console.log("inactive change");
             self.getData();
         })
@@ -431,7 +404,7 @@ export default {
       pageReinit: function(e, page) {
         var self = this;
         //console.log("test inactive reinit");
-        $$(".showInactiveIngs").on("change", function(){
+        $$(".showInactiveClients").on("change", function(){
           //console.log("inactive change");
             self.getData();
         })
