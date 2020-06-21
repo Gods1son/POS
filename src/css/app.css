@@ -22,6 +22,11 @@
 
 .page-content{
     background-color: white; /*#4d6b84; #d0e1ef;  #dedada; #dee2e6*/
+    overflow-x: hidden;
+}
+
+.page-content.scrollable{
+    overflow: auto !important;
 }
 
 .quicklinks .item-inner:before{
@@ -369,6 +374,24 @@ button.text-editor-button.active{
     background: inherit;
 }
 
+.eachProduct{
+    border: 1px solid lightgray;
+    border-collapse: collapse;
+    margin: 7px auto;
+}
+
+.eachProduct td{
+    border: 1px solid lightgray;
+    padding: 3px;
+}
+
+.eachProduct th{
+    padding: 3px;
+}
+
+.eachProduct tbody tr:first-of-type td{
+    font-weight: 500;
+}
 
 
 
