@@ -1,0 +1,246 @@
+<template>
+    <div class="page" data-name="sync">
+      <div class="navbar">
+        <div class="navbar navbar-bg"></div>
+        <div class="navbar-inner sliding">
+          <div class="left">
+            <a href="#" class="link back">
+              <i class="icon icon-back"></i>
+              <span class="if-not-md">Back</span>
+            </a>
+          </div>
+          <div class="title padding-vertical-half">Sync</div>
+          <div class="right">
+            <a href="#" class="link icon-only panel-toggle" data-panel="left">
+              <i class="icon f7-icons if-not-md">menu</i>
+              <i class="icon material-icons if-md">menu</i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+    
+      <div class="page-content">
+        <div class="block no-margin-vertical no-margin-horizontal no-padding-vertical roundHolder no-padding-horizontal">
+            <a class="button button-outline button-raised" @click="syncData()">Sync data online</a>
+        </div>
+      </div>
+    
+     
+    
+    </div>
+    </template>
+    <script>
+    var dbProducts = null, dbProdIngs = null, dbProdOthers = null, dbSales = null, dbIngs = null, dbSettings = null, dbClients = null, dbExpenses = null;
+    export default {
+      test: 5,
+      data: function () {
+          // Must return an object
+          return {
+            ings: null
+            
+          }
+        },
+      methods:{
+        
+        syncData: function(){
+            var self = this;
+            
+            self.$app.dialog.prompt('What is your username?', function (name) {
+                if(name.trim() != ""){
+                    var url = "http://34.106.12.119:5984/";
+                    var prefix = name.toLowerCase();
+                    prefix = prefix.replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, '-');
+                    dbProducts.sync(url + prefix + "dbproducts", {
+                        live: true
+                        }).on('complete', function () {
+                            self.showToast("synced dpProducts");
+                    }).on('error', function (err) {
+                        //console.log("error syncing dpProducts");
+                    });
+
+                    dbProdIngs.sync(url + prefix + "dbprodings", {
+                        live: true
+                        }).on('complete', function () {
+                            self.showToast("synced dbProdIngs");
+                    }).on('error', function (err) {
+                        //console.log("error syncing dbProdIngs");
+                    });
+                    
+                    dbProdOthers.sync(url + prefix + "dbprodothers", {
+                        live: true
+                        }).on('complete', function () {
+                            self.showToast("synced dbProdOthers");
+                    }).on('error', function (err) {
+                        //console.log("error syncing dbProdOthers");
+                    });
+                    
+                    dbSales.sync(url + prefix + "dbsales", {
+                        live: true
+                        }).on('complete', function () {
+                            self.showToast("synced dbSales");
+                    }).on('error', function (err) {
+                        //console.log("error syncing dbSales");
+                    });
+                    
+                    dbIngs.sync(url + prefix + "dbings", {
+                        live: true
+                        }).on('complete', function () {
+                            self.showToast("synced dbIngs");
+                    }).on('error', function (err) {
+                        //console.log("error syncing dbIngs");
+                    });
+                    
+                    dbSettings.sync(url + prefix + "dbsettings", {
+                        live: true
+                        }).on('complete', function () {
+                            self.showToast("synced dbSettings");
+                    }).on('error', function (err) {
+                        //console.log("error syncing dbSettings");
+                    });
+                    
+                    dbClients.sync(url + prefix + "dbclients", {
+                        live: true
+                        }).on('complete', function () {
+                            self.showToast("synced dbClients");
+                    }).on('error', function (err) {
+                        //console.log("error syncing dbClients");
+                    });
+
+                    dbExpenses.sync(url + prefix + "dbexpenses", {
+                        live: true
+                        }).on('complete', function () {
+                    self.showToast("synced dbExpenses");
+                    }).on('error', function (err) {
+                        //console.log("error syncing dbExpenses");
+                    });
+                }
+            }, function(val){
+                console.log("cancelled");
+            });
+
+            
+        },
+        showToast: function(text, position){
+            var self = this;
+            self.$app.toast.create({
+                            text: text,
+                            position: position,
+                            closeTimeout: 2000,
+                            }).open();
+        },
+        startPouch: function(){
+          var self = this;
+          /*products: "++id,name,cost,status,created_date",
+            product_ingredient: "++id,productID,ingredientID,unit_size,cost,status,created_date",
+            product_otherMaterials: "++id,productID,name,cost,status,created_date",*/
+            //sales: "++id,parentID,product_name,isParent,buyer_name,cost,quantity,tax,total_price,afterTax,amountPaid,isPaid,date_paid,created_date,status",
+          try{//id,name,unit_size,unit,cost_per_unit,status,created_date
+            if(pdf != undefined){
+                dbProducts = new PouchDB('products.db', { adapter: 'cordova-sqlite' });
+                dbExpenses = new PouchDB('expenses.db', { adapter: 'cordova-sqlite' });
+                dbProdIngs = new PouchDB('product_ingredients.db', { adapter: 'cordova-sqlite' });
+                dbProdOthers = new PouchDB('product_otherMaterials.db', { adapter: 'cordova-sqlite' });
+                dbSales = new PouchDB('sales.db', { adapter: 'cordova-sqlite' });
+                dbIngs = new PouchDB('ingredients.db', { adapter: 'cordova-sqlite' });
+                dbSettings = new PouchDB('settings.db', { adapter: 'cordova-sqlite' });
+                dbClients = new PouchDB('clients.db', { adapter: 'cordova-sqlite' });
+                dbExpenses.createIndex({
+                  index: {
+                    fields: ['created_date', 'name', 'status']
+                  }
+                })
+                dbClients.createIndex({
+                  index: {
+                    fields: ['name', 'created_date']
+                  }
+                })
+                dbIngs.createIndex({
+                  index: {
+                    fields: ['name', 'status']
+                  }
+                })
+                dbProdIngs.createIndex({
+                  index: {
+                    fields: ['productID', 'ingredientID', 'status']
+                  }
+                })
+                dbProdOthers.createIndex({
+                  index: {
+                    fields: ['productID', 'name', 'status']
+                  }
+                })
+                
+                dbProducts.createIndex({
+                  index: {
+                    fields: ['name', 'status']
+                  }
+                })
+                dbSales.createIndex({
+                  index: {
+                    fields: ['created_date','parentID', 'product_name', 'isParent', 'buyer_name', 'status']
+                  }
+                })
+              }
+          }catch(err){
+                dbProducts = new PouchDB('products.db');
+                dbProdIngs = new PouchDB('product_ingredients.db');
+                dbProdOthers = new PouchDB('product_otherMaterials.db');
+                dbExpenses = new PouchDB('expenses.db');
+                dbSales = new PouchDB('sales.db');
+                dbIngs = new PouchDB('ingredients.db');
+                dbSettings = new PouchDB('settings.db');
+                dbClients = new PouchDB('clients.db');
+                dbExpenses.createIndex({
+                  index: {
+                    fields: ['created_date', 'name', 'status']
+                  }
+                })
+                dbClients.createIndex({
+                  index: {
+                    fields: ['name', 'created_date']
+                  }
+                })
+                dbIngs.createIndex({
+                  index: {
+                    fields: ['name', 'status']
+                  }
+                })
+                dbProdIngs.createIndex({
+                  index: {
+                    fields: ['productID', 'ingredientID', 'status']
+                  }
+                })
+                dbProdOthers.createIndex({
+                  index: {
+                    fields: ['productID', 'name', 'status']
+                  }
+                })
+                
+                dbProducts.createIndex({
+                  index: {
+                    fields: ['name', 'status']
+                  }
+                })
+                dbSales.createIndex({
+                  index: {
+                    fields: ['created_date','parentID', 'product_name', 'isParent', 'buyer_name', 'status']
+                  }
+                })
+            }
+            
+        },
+        
+    },
+      on: {
+          pageInit: function(e, page) {
+            var self = this;
+            self.startPouch();
+          },
+          pageReinit: function(e, page) {
+            
+          }
+      }
+    
+    } 
+    </script>

@@ -124,6 +124,21 @@
             <div class="col">
               <div class="card myCard">
                 <div class="card-content text-align-center padding-vertical">
+                  <a href="/sync/" class="item-content item-link">
+                  <div class="item-inner">
+                    <div class="item-title myPurple">
+                      <i class="icon f7-icons text-color-blue1">cloud_upload</i>
+                      <div>Sync</div>
+                    </div>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+
+            <div class="col">
+              <div class="card myCard">
+                <div class="card-content text-align-center padding-vertical">
                   <a href="/settings/" class="item-content item-link">
                   <div class="item-inner">
                     <div class="item-title myPurple">
@@ -185,8 +200,32 @@ export default {
               }
           }catch(err){
             dbSettings = new PouchDB('settings.db');
+              //self.syncDB();
               self.getData();
             }
+        },
+        syncDB: function(){
+          var self = this;
+          $.ajax({
+              url: "http://34.106.12.119:5984/_all_dbs", 
+              type:"GET",
+              "crossDomain": true,
+              success: function(result){
+                console.log(result);
+              },
+              error: function(err){
+                console.log(err);
+              }
+          });
+          
+          /*var dbOnline = new PouchDB('http://34.106.12.119:5984/_all_dbs');
+          console.log(dbOnline);
+          dbOnline.get("ae5cebae376b2b2069a2a472b1000710").then(function(doc){
+            console.log(doc);
+          }).catch(function(err){
+            console.log(err);
+          })*/
+          
         },
         getData: function(){
           var self = this;
@@ -291,7 +330,7 @@ export default {
           // do something after page gets into the view
           var self = this;
           //console.log("re-enter");
-          self.getData();
+          //self.getData();
       }
     }
 }
