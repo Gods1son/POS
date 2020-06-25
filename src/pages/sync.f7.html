@@ -92,13 +92,13 @@
                         //console.log("error syncing dbIngs");
                     });
                     
-                    dbSettings.sync(url + prefix + "dbsettings", {
+                    /*dbSettings.sync(url + prefix + "dbsettings", {
                         live: true
                         }).on('complete', function () {
                             self.showToast("synced dbSettings","center");
                     }).on('error', function (err) {
                         //console.log("error syncing dbSettings");
-                    });
+                    });*/
                     
                     dbClients.sync(url + prefix + "dbclients", {
                         live: true
