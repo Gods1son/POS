@@ -48,13 +48,14 @@
             
             self.$app.dialog.prompt('What is your username?', function (name) {
                 if(name.trim() != ""){
-                    var url = "http://34.106.12.119:5984/";
+                    self.startPouch();
+                    var url = "http://admin:Conestoga01.@34.106.12.119:5984/";
                     var prefix = name.toLowerCase();
                     prefix = prefix.replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, '-');
                     dbProducts.sync(url + prefix + "dbproducts", {
                         live: true
                         }).on('complete', function () {
-                            self.showToast("synced dpProducts");
+                            self.showToast("synced dpProducts","center");
                     }).on('error', function (err) {
                         //console.log("error syncing dpProducts");
                     });
@@ -62,7 +63,7 @@
                     dbProdIngs.sync(url + prefix + "dbprodings", {
                         live: true
                         }).on('complete', function () {
-                            self.showToast("synced dbProdIngs");
+                            self.showToast("synced dbProdIngs","center");
                     }).on('error', function (err) {
                         //console.log("error syncing dbProdIngs");
                     });
@@ -70,7 +71,7 @@
                     dbProdOthers.sync(url + prefix + "dbprodothers", {
                         live: true
                         }).on('complete', function () {
-                            self.showToast("synced dbProdOthers");
+                            self.showToast("synced dbProdOthers","center");
                     }).on('error', function (err) {
                         //console.log("error syncing dbProdOthers");
                     });
@@ -78,7 +79,7 @@
                     dbSales.sync(url + prefix + "dbsales", {
                         live: true
                         }).on('complete', function () {
-                            self.showToast("synced dbSales");
+                            self.showToast("synced dbSales","center");
                     }).on('error', function (err) {
                         //console.log("error syncing dbSales");
                     });
@@ -86,7 +87,7 @@
                     dbIngs.sync(url + prefix + "dbings", {
                         live: true
                         }).on('complete', function () {
-                            self.showToast("synced dbIngs");
+                            self.showToast("synced dbIngs","center");
                     }).on('error', function (err) {
                         //console.log("error syncing dbIngs");
                     });
@@ -94,7 +95,7 @@
                     dbSettings.sync(url + prefix + "dbsettings", {
                         live: true
                         }).on('complete', function () {
-                            self.showToast("synced dbSettings");
+                            self.showToast("synced dbSettings","center");
                     }).on('error', function (err) {
                         //console.log("error syncing dbSettings");
                     });
@@ -102,7 +103,7 @@
                     dbClients.sync(url + prefix + "dbclients", {
                         live: true
                         }).on('complete', function () {
-                            self.showToast("synced dbClients");
+                            self.showToast("synced dbClients","center");
                     }).on('error', function (err) {
                         //console.log("error syncing dbClients");
                     });
@@ -110,7 +111,7 @@
                     dbExpenses.sync(url + prefix + "dbexpenses", {
                         live: true
                         }).on('complete', function () {
-                    self.showToast("synced dbExpenses");
+                    self.showToast("synced dbExpenses","center");
                     }).on('error', function (err) {
                         //console.log("error syncing dbExpenses");
                     });
