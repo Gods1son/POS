@@ -10,9 +10,9 @@
 { /* STYLES GO HERE */
     #app{
         width: 70%;
-        border-left: 5px ridge;
         margin: auto;
-        border-right: 5px ridge;
+        /*border-left: 5px ridge;
+        border-right: 5px ridge;*/
     }
 
     body{
