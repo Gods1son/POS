@@ -32,6 +32,8 @@
     </template>
     <script>
     var dbProducts = null, dbProdIngs = null, dbProdOthers = null, dbSales = null, dbIngs = null, dbSettings = null, dbClients = null, dbExpenses = null;
+    //import Cloudant from '@cloudant/cloudant';
+    //var Cloudant = require('@cloudant/cloudant');
     export default {
       test: 5,
       data: function () {
@@ -45,55 +47,65 @@
         
         syncData: function(){
             var self = this;
-            
+            var url = 'https://fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix.cloudant.com/';
+
+            let options = {
+            live: true,
+            retry: true,
+            continuous: true,
+            auth: {
+                username: "fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix",
+                password: "d05ec632e8fc51febce78dabc7c9ea6ed772e3693c8339ceb7f0f1aab83747e2"
+                }
+            };
+
+            /*dbProducts.sync(url, options).on('complete', function () {
+                            console.log("synced dbProdIngs");
+                    }).on('error', function (err) {
+                        console.log(err);
+                        //console.log("error syncing dbProdIngs");
+                    });*/
+
+           
+
             self.$app.dialog.prompt('What is your username?', function (name) {
                 if(name.trim() != ""){
-                    self.startPouch();
-                    var url = "http://34.106.12.119:5984/";
+                    //self.startPouch();
+                    //var url = "http://34.106.12.119:5984/";
                     var prefix = name.toLowerCase();
                     prefix = prefix.replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, '-');
-                    dbProducts.sync(url + prefix + "dbproducts", {
-                        live: true,
-                        retry:true
-                        }).on('complete', function () {
-                            alert("synced dpProducts","center");
+                    dbProducts.sync(url + prefix + "_dbproducts", options).on('complete', function () {
+                            alert("synced dpProducts");
                     }).on('error', function (err) {
+                        alert(err);
                         //console.log("error syncing dpProducts");
                     });
 
-                    dbProdIngs.sync(url + prefix + "dbprodings", {
-                        live: true,
-                        retry:true
-                        }).on('complete', function () {
-                            alert("synced dbProdIngs","center");
+                    dbProdIngs.sync(url + prefix + "_dbprodings", options).on('complete', function () {
+                            alert("synced dbProdIngs");
                     }).on('error', function (err) {
+                        alert(err);
                         //console.log("error syncing dbProdIngs");
                     });
                     
-                    dbProdOthers.sync(url + prefix + "dbprodothers", {
-                        live: true,
-                        retry:true
-                        }).on('complete', function () {
-                            alert("synced dbProdOthers","center");
+                    dbProdOthers.sync(url + prefix + "_dbprodothers", options).on('complete', function () {
+                            alert("synced dbProdOthers");
                     }).on('error', function (err) {
+                        alert(err);
                         //console.log("error syncing dbProdOthers");
                     });
                     
-                    dbSales.sync(url + prefix + "dbsales", {
-                        live: true,
-                        retry:true
-                        }).on('complete', function () {
-                            alert("synced dbSales","center");
+                    dbSales.sync(url + prefix + "_dbsales", options).on('complete', function () {
+                            alert("synced dbSales");
                     }).on('error', function (err) {
+                        alert(err);
                         //console.log("error syncing dbSales");
                     });
                     
-                    dbIngs.sync(url + prefix + "dbings", {
-                        live: true,
-                        retry:true
-                        }).on('complete', function () {
-                            alert("synced dbIngs","center");
+                    dbIngs.sync(url + prefix + "_dbings", options).on('complete', function () {
+                            alert("synced dbIngs");
                     }).on('error', function (err) {
+                        alert(err);
                         //console.log("error syncing dbIngs");
                     });
                     
@@ -105,21 +117,17 @@
                         //console.log("error syncing dbSettings");
                     });*/
                     
-                    dbClients.sync(url + prefix + "dbclients", {
-                        live: true,
-                        retry:true
-                        }).on('complete', function () {
+                    dbClients.sync(url + prefix + "_dbclients", options).on('complete', function () {
                             alert("synced dbClients","center");
                     }).on('error', function (err) {
+                        alert(err);
                         //console.log("error syncing dbClients");
                     });
 
-                    dbExpenses.sync(url + prefix + "dbexpenses", {
-                        live: true,
-                        retry:true
-                        }).on('complete', function () {
-                            alert("synced dbExpenses","center");
+                    dbExpenses.sync(url + prefix + "_dbexpenses", options).on('complete', function () {
+                            alert("synced dbExpenses");
                     }).on('error', function (err) {
+                        alert(err);
                         //console.log("error syncing dbExpenses");
                     });
                 }
