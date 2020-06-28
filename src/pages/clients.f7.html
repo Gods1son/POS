@@ -214,6 +214,17 @@
                   </div>
                 </li>
                 <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-title">Other Notes</div>
+                      <div class="item-input-wrap">
+                        <textarea class="otherNotes settingsInput" placeholder="Client Address"></textarea>
+                        <span class="input-clear-button"></span>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
                   <div class="item-content">
                     <div class="item-inner">
                       <a href="#" class="col button button-outline button-raised button-green" @click='saveData'>Save Client</a>
@@ -506,6 +517,7 @@ export default {
                 email: $(".email").val().trim(), 
                 address: $(".address").val().trim(), 
                 phone: $(".phone").val().trim(), 
+                otherNotes: $(".otherNotes").val().trim(), 
                 status:1,
                 created_date: moment().format("X")
               };
@@ -518,7 +530,7 @@ export default {
             db.put(obj).then(function(res) {
                     //self.$app.dialog.alert("Item saved.");
                     self.showToast("Client saved.", "center");
-                    $(".clientname,.email,.address,.phone").val("");
+                    $(".clientname,.email,.address,.phone,.otherNotes").val("");
                     self.getData();
               })
           }
@@ -569,6 +581,9 @@ export default {
                             }
                             if(row.address != ""){
                               html += '<div class="display-inline-flex"><div class="labelName">Address: </div><div class="valueName margin-left-half">' + row.address.split("\n").join("<br>") + '</div></div>';
+                            }
+                            if(row.otherNotes != "" && row.otherNotes != undefined){
+                              html += '<div class="display-inline-flex"><div class="labelName">Notes: </div><div class="valueName margin-left-half">' + row.otherNotes.split("\n").join("<br>") + '</div></div>';
                             }
                             
                             var stat = row.status == 1 ? "display-none" : "";
