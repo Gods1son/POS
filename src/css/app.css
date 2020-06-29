@@ -69,7 +69,7 @@ button.text-editor-button.active{
     background-color: black;
 }*/
 
-.popup .item-title{
+.popup .item-title, .signParent .item-title{
     font-weight: 500;
     /*letter-spacing: 0.4px;*/
     color: gray;
@@ -391,6 +391,28 @@ button.text-editor-button.active{
 
 .eachProduct tbody tr:first-of-type td{
     font-weight: 500;
+}
+
+/*.signingInput{
+    border: 1px solid #673ab7;
+    border-radius: 5px;
+}*/
+
+.signParent{
+    display: flex;
+    justify-content: center;
+    height: 100%;
+    align-items: center;
+}
+
+.signParent ul:before, .signParent ul:after{
+    display: none !important;
+}
+
+.signParent form{
+    border-radius: 5px;
+    padding: 15px 30px;
+    box-shadow: 0px 0px 1px 2px lightgrey;
 }
 
 

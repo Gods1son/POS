@@ -19,9 +19,11 @@ import List from 'list.js';
 import PouchDB from 'pouchdb';
 import cordovaSqlitePlugin from 'pouchdb-adapter-cordova-sqlite';
 import pouchFind from 'pouchdb-find';
+import pouchAuth from 'pouchdb-authentication';
 
 PouchDB.plugin(cordovaSqlitePlugin);
 PouchDB.plugin(pouchFind);
+PouchDB.plugin(pouchAuth);
 window.PouchDB = PouchDB;
 window.List = List;
 

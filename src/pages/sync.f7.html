@@ -21,8 +21,89 @@
 
     
       <div class="page-content">
-        <div class="block no-margin-vertical no-margin-horizontal no-padding-vertical roundHolder no-padding-horizontal">
-            <a class="button button-outline button-raised margin button-green" @click="syncData()">Sync data online</a>
+        <div class="signParent">
+            <form id="signIn">
+                <div class="text-align-center block-title-medium margin-vertical-half">Sign In</div>
+                <div class="list no-margin-vertical">
+                    
+                  <ul>
+                    <li class="item-content item-input">
+                      <div class="item-inner">
+                        <div class="item-title">Email</div>
+                        <div class="item-input-wrap signingInput">
+                          <input id="emailSign" type="email" name="email" placeholder="Enter Email">
+                          <span class="input-clear-button"></span>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="item-content item-input">
+                        <div class="item-inner">
+                          <div class="item-title">Username</div>
+                          <div class="item-input-wrap signingInput">
+                            <input id="usernameSign" type="email" name="email" placeholder="Enter Username">
+                            <span class="input-clear-button"></span>
+                          </div>
+                        </div>
+                      </li>
+                    <li class="item-content item-input">
+                      <div class="item-inner">
+                        <div class="item-title">Password</div>
+                        <div class="item-input-wrap signingInput">
+                          <input id="passwordSign" type="password" name="password" placeholder="Password">
+                          <span class="input-clear-button"></span>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+                <div class="">
+                    <a href="#" class="button button-fill button-outline button-raised margin color-green button-small margin-vertical-half" @click="loginMethodClick()">Log In</a>
+                    <a href="#" class="button button-outline button-raised margin button-green button-small margin-vertical-half" @click="showSignUp()">Sign Up</a>
+                </div>
+                
+              </form>
+              <div class="display-none syncParentClick"><a class="button button-outline button-raised margin button-green" @click="syncData()">Sync data online</a></div>
+              <!--<div class=""><a class="button button-outline button-raised margin button-green" @click="savetest()">save test</a></div>-->
+              <form id="signUp" class="display-none">
+                <div class="text-align-center block-title-medium margin-vertical-half">Sign Up</div>
+                <div class="list no-margin-vertical">
+                  <ul>
+                    <li class="item-content item-input">
+                        <div class="item-inner">
+                          <div class="item-title">Email</div>
+                          <div class="item-input-wrap signingInput">
+                            <input id="email" type="email" name="email" placeholder="Email">
+                            <span class="input-clear-button"></span>
+                          </div>
+                        </div>
+                      </li>
+                    <li class="item-content item-input">
+                      <div class="item-inner">
+                        <div class="item-title">Username</div>
+                        <div class="item-input-wrap signingInput">
+                          <input id="username" type="text" name="username" placeholder="Username">
+                          <span class="input-clear-button"></span>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="item-content item-input">
+                      <div class="item-inner">
+                        <div class="item-title">Password</div>
+                        <div class="item-input-wrap signingInput">
+                          <input id="password" type="password" name="password" placeholder="Password">
+                          <span class="input-clear-button"></span>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+                <div class="">
+                    <a href="#" class="button button-fill button-outline button-raised margin color-green button-small margin-vertical-half" @click="signUpMethod()">Create Account</a>
+                    <a href="#" class="button button-outline button-raised margin button-green button-small margin-vertical-half" @click="showSignIn()">Sign In</a>
+                </div>
+                
+              </form>
+            
         </div>
       </div>
     
@@ -31,7 +112,7 @@
     </div>
     </template>
     <script>
-    var dbProducts = null, dbProdIngs = null, dbProdOthers = null, dbSales = null, dbIngs = null, dbSettings = null, dbClients = null, dbExpenses = null;
+    var dbProducts = null, dbProdIngs = null, dbProdOthers = null, dbSales = null, dbIngs = null, dbSettings = null, dbClients = null, dbExpenses = null, dbAccount = null;
     //import Cloudant from '@cloudant/cloudant';
     //var Cloudant = require('@cloudant/cloudant');
     export default {
@@ -39,41 +120,202 @@
       data: function () {
           // Must return an object
           return {
-            ings: null
+            username: null,
+            email:null,
+            password: null
             
           }
         },
       methods:{
-        
+        showSignUp: function(){
+            $("#signUp").removeClass("display-none");
+            $("#signIn").addClass("display-none");
+        },
+        showSignIn: function(){
+            $("#signIn").removeClass("display-none");
+            $("#signUp").addClass("display-none");
+        },
+        signUpMethod: function(){
+            var self = this;
+            var db = new PouchDB('https://fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix.cloudant.com', 
+            {
+                auth: {
+                    username: "fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix",
+                    password: "d05ec632e8fc51febce78dabc7c9ea6ed772e3693c8339ceb7f0f1aab83747e2"
+                },
+                skip_setup: true
+            }
+            );
+           var username = $("#signUp").find("#username").val().trim();
+           var pwd = $("#signUp").find("#password").val();
+           var email = $("#signUp").find("#email").val().trim();
+           if(username == "" || pwd == "" || email == ""){
+               self.showToast("Please fill all fields", "center");
+               return;
+           }
+            db.signUp(email, pwd, {
+            metadata : {
+                email : email
+                }
+            }, function (err, response) {
+                if (err) {
+                    if (err.name === 'conflict') {
+                        self.showToast("already exists, choose another username", "center");
+                        //self.loginMethod(email, pwd, username);
+                    } else if (err.name === 'forbidden') {
+                        self.showToast("invalid username", "center");
+                    } else {
+                        self.showToast(err.message, "center");
+                    }
+                }else{
+                    //console.log(response);
+                    //console.log(response);
+                    self.saveUserAccount(email, pwd, username);
+                    self.showSignIn();
+                    $("#signIn").addClass("display-none");
+                    $(".syncParentClick").removeClass("display-none");
+                    self.$setState({
+                      username:username,
+                      email:email,
+                      password: pwd
+                  })
+                    //self.loginMethod(email, pwd, username);
+                }
+            });
+        },
+        loginMethodClick: function(){
+            var self = this;
+            var email = $("#emailSign").val().trim();
+           var pwd = $("#passwordSign").val();
+           var username = $("#usernameSign").val().trim();
+           if(email == "" || pwd == "" || username == ""){
+               self.showToast("Please fill all fields", "center");
+               return;
+           }
+           //var uname = self.username
+           self.loginMethod(email, pwd, username);
+           
+        },
+        loginMethod: function(email, pd, us){
+            var self = this;
+            var db = new PouchDB('https://fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix.cloudant.com', 
+            {
+                auth: {
+                    username: "fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix",
+                    password: "d05ec632e8fc51febce78dabc7c9ea6ed772e3693c8339ceb7f0f1aab83747e2"
+                },
+                skipSetup: true
+            }
+            );
+            db.logIn(email, pd, function (err, response) {
+            if (err) {
+                console.log(err);
+                    self.showToast(err.message, "center");
+                }else{
+                    console.log(response);
+                    self.saveUserAccount(email, pd, us);
+                    self.showSignIn();
+                    $("#signIn").addClass("display-none");
+                    $(".syncParentClick").removeClass("display-none");
+                    self.$setState({
+                      username:us,
+                      email:email,
+                      password: pd
+                  })
+                }
+            });
+        },
+        savetest: function(){
+            
+                  var u = "fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix";
+                  var p = "d05ec632e8fc51febce78dabc7c9ea6ed772e3693c8339ceb7f0f1aab83747e2";
+                  var db = new PouchDB('https://fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix.cloudant.com/_users', 
+            {
+                auth: {
+                    username: u,
+                    password: p
+                },
+                skipSetup: true
+            }
+            );
+            db.allDocs({
+            include_docs: true,
+            attachments: true
+            }).then(function (result) {
+                console.log(result);
+            }).catch(function (err) {
+            console.log(err);
+            });
+        },
+        saveUserAccount: function(email, pd, us){
+            var self = this;
+            dbAccount.get("myAccount").then(function(doc) {
+                   // console.log(doc);
+                   doc.username = us;
+                    doc.email = email;
+                    doc.password = pd;
+                    doc.signedIn = 1;
+                    return dbAccount.put(doc);
+                  }).catch(function(err){
+                    var obj = {};
+                    obj._id = "myAccount";
+                    obj.username = us;
+                    obj.password = pd;
+                    obj.email = email;
+                    obj.signedIn = 1;
+                    dbAccount.put(obj);
+                  });
+                
+        },
+        getUserMethod: function(us){
+            var self = this;
+            var db = new PouchDB('https://fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix.cloudant.com/mydb', {skipSetup: true});
+            db.getUser(us, function (err, response) {
+            if (err) {
+                if (err.name === 'unauthorized' || err.name === 'forbidden') {
+                // name or password incorrect
+                } else {
+                    console.log(err);
+                    }
+                }else{
+                    console.log(response);
+                }
+            });
+        },
         syncData: function(){
             var self = this;
             var url = 'https://fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix.cloudant.com/';
+            var name = self.email + self.username;
+            var prefix = name.toLowerCase();
+            prefix = prefix.replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, '-');
 
-            let options = {
-            live: true,
-            retry: true,
-            continuous: true,
-            auth: {
-                username: "fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix",
-                password: "d05ec632e8fc51febce78dabc7c9ea6ed772e3693c8339ceb7f0f1aab83747e2"
-                }
-            };
-
-            /*dbProducts.sync(url, options).on('complete', function () {
-                            console.log("synced dbProdIngs");
-                    }).on('error', function (err) {
-                        console.log(err);
-                        //console.log("error syncing dbProdIngs");
-                    });*/
-
+            var u = "fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix";
+            var p = "d05ec632e8fc51febce78dabc7c9ea6ed772e3693c8339ceb7f0f1aab83747e2";
+            var db = new PouchDB('https://fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix.cloudant.com', 
+            {
+                auth: {
+                    username: u,
+                    password: p
+                },
+                skipSetup: true
+            }
+            );
+                  db.logIn(u, p, function (err, response) {
+                    if (err) {
+                            self.showToast(err.message, "center");
+                        }else{
+                            console.log(response);
+                            let options = {
+                            live: true,
+                            retry: true,
+                            //continuous: true,
+                            auth: {
+                                    username: u,
+                                    password: p
+                                }
+                            };
            
-
-            self.$app.dialog.prompt('What is your username?', function (name) {
-                if(name.trim() != ""){
-                    //self.startPouch();
-                    //var url = "http://34.106.12.119:5984/";
-                    var prefix = name.toLowerCase();
-                    prefix = prefix.replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, '-');
+                    
                     dbProducts.sync(url + prefix + "_dbproducts", options).on('complete', function () {
                             alert("synced dpProducts");
                     }).on('error', function (err) {
@@ -109,13 +351,11 @@
                         //console.log("error syncing dbIngs");
                     });
                     
-                    /*dbSettings.sync(url + prefix + "dbsettings", {
-                        live: true
-                        }).on('complete', function () {
-                            self.showToast("synced dbSettings","center");
+                    dbSettings.sync(url + prefix + "_dbsettings", options).on('complete', function () {
+                            alert("synced dbSettings");
                     }).on('error', function (err) {
                         //console.log("error syncing dbSettings");
-                    });*/
+                    });
                     
                     dbClients.sync(url + prefix + "_dbclients", options).on('complete', function () {
                             alert("synced dbClients","center");
@@ -131,10 +371,7 @@
                         //console.log("error syncing dbExpenses");
                     });
                 }
-            }, function(val){
-                console.log("cancelled");
             });
-
             
         },
         showToast: function(text, position){
@@ -144,6 +381,32 @@
                             position: position,
                             closeTimeout: 2000,
                             }).open();
+        },
+        getData: function(){
+            var self = this;
+            dbAccount.get("myAccount").then(function(doc) {
+                   // console.log(doc);
+                   if(doc.signedIn == undefined || doc.signedIn == 0){
+                    self.showSignIn();
+                    $("#signIn").removeClass("display-none");
+                    $("#signUp").addClass("display-none");
+                    $(".syncParentClick").addClass("display-none");
+                    return;
+                   }
+                   self.showSignIn();
+                    $("#signIn").addClass("display-none");
+                    $(".syncParentClick").removeClass("display-none");
+                    self.$setState({
+                      username:doc.username,
+                      email:doc.email,
+                      password: doc.password
+                    })
+                  }).catch(function(err){
+                    self.showSignUp();
+                    $("#signIn").removeClass("display-none");
+                    $("#signUp").addClass("display-none");
+                    $(".syncParentClick").addClass("display-none");
+                  });
         },
         startPouch: function(){
           var self = this;
@@ -161,6 +424,7 @@
                 dbIngs = new PouchDB('ingredients.db', { adapter: 'cordova-sqlite' });
                 dbSettings = new PouchDB('settings.db', { adapter: 'cordova-sqlite' });
                 dbClients = new PouchDB('clients.db', { adapter: 'cordova-sqlite' });
+                dbAccount = new PouchDB('dbAccount.db', { adapter: 'cordova-sqlite' });
                 dbExpenses.createIndex({
                   index: {
                     fields: ['created_date', 'name', 'status']
@@ -196,6 +460,13 @@
                   index: {
                     fields: ['created_date','parentID', 'product_name', 'isParent', 'buyer_name', 'status']
                   }
+                })
+                dbAccount.createIndex({
+                  index: {
+                    fields: ['username', 'email']
+                  }
+                }).then(function (result) {
+                  self.getData();
                 })
               }
           }catch(err){
@@ -207,6 +478,7 @@
                 dbIngs = new PouchDB('ingredients.db');
                 dbSettings = new PouchDB('settings.db');
                 dbClients = new PouchDB('clients.db');
+                dbAccount = new PouchDB('dbAccount.db');
                 dbExpenses.createIndex({
                   index: {
                     fields: ['created_date', 'name', 'status']
@@ -242,6 +514,13 @@
                   index: {
                     fields: ['created_date','parentID', 'product_name', 'isParent', 'buyer_name', 'status']
                   }
+                })
+                dbAccount.createIndex({
+                  index: {
+                    fields: ['username', 'email']
+                  }
+                }).then(function (result) {
+                  self.getData();
                 })
             }
             

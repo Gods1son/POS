@@ -435,7 +435,7 @@ import * as moment from 'moment';
             sales_history: "++id,salesID,product_name,buyer_name,cost,amountPaid,isPaid,date_paid,created_date,status",
             expenses_history: "++id,expID,name,amount_to_pay,amount_paid,date_paid,created_date,recurring,status"
           })*/
-  var dbProducts = null, dbProdIngs = null, dbProdOthers = null, dbSales = null, dbIngs = null, dbSettings = null, dbClients = null;
+  var dbProducts = null, dbProdIngs = null, dbProdOthers = null, dbSales = null, dbIngs = null, dbSettings = null, dbClients = null, dbSettingsImages = null;
 //var $$ = Dom7;
 export default {
   data: function () {
@@ -1512,6 +1512,7 @@ export default {
                 dbIngs = new PouchDB('ingredients.db', { adapter: 'cordova-sqlite' });
                 dbSettings = new PouchDB('settings.db', { adapter: 'cordova-sqlite' });
                 dbClients = new PouchDB('clients.db', { adapter: 'cordova-sqlite' });
+                dbSettingsImages = new PouchDB('settingsImages.db', { adapter: 'cordova-sqlite' });
                 dbClients.createIndex({
                   index: {
                     fields: ['name', 'created_date']
@@ -1556,6 +1557,7 @@ export default {
                 dbIngs = new PouchDB('ingredients.db');
                 dbSettings = new PouchDB('settings.db');
                 dbClients = new PouchDB('clients.db');
+                dbSettingsImages = new PouchDB('settingsImages.db');
                 dbClients.createIndex({
                   index: {
                     fields: ['name', 'created_date']
@@ -1599,7 +1601,7 @@ export default {
                     })
               })
 
-              dbSettings.get('logoImage', {attachments: true}).then(function (blobOrBuffer) {
+              dbSettingsImages.get('logoImage', {attachments: true}).then(function (blobOrBuffer) {
                     // handle result
                     self.$setState({
                       logo: blobOrBuffer
@@ -1613,7 +1615,7 @@ export default {
                     console.log(err);
                   });
 
-                  dbSettings.get('signatureImage', {attachments: true}).then(function(blobOrBuffer) {
+                  dbSettingsImages.get('signatureImage', {attachments: true}).then(function(blobOrBuffer) {
                     self.$setState({
                       signature: blobOrBuffer
                     })

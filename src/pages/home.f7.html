@@ -161,15 +161,14 @@
 <script>
 //import Dexie from 'dexie';
 import {fakeAlert} from '../js/myscript.js';
-var dbSettings = null;
+var dbSettings = null, dbSettingsImages = null;
 export default {
   data() {
         return {
           settingsID: 'settings',
           settings: null,
           signature: null,
-          logo: null,
-          settingsID: 'settings'
+          logo: null
   
         };
       },
@@ -196,10 +195,12 @@ export default {
           try{//id,name,unit_size,unit,cost_per_unit,status,created_date
             if(pdf != undefined){
               dbSettings = new PouchDB('settings.db', { adapter: 'cordova-sqlite' });
+              dbSettingsImages = new PouchDB('settingsImages.db', { adapter: 'cordova-sqlite' });
                 self.getData();
               }
           }catch(err){
             dbSettings = new PouchDB('settings.db');
+            dbSettingsImages = new PouchDB('settingsImages.db');
               //self.syncDB();
               self.getData();
             }
@@ -244,7 +245,7 @@ export default {
               self.showToast("Please visit Settings page to choose your currency and save company info!", "top", 3500);
             })
 
-          dbSettings.get('logoImage', {attachments: true}).then(function (blobOrBuffer) {
+            dbSettingsImages.get('logoImage', {attachments: true}).then(function (blobOrBuffer) {
             //console.log(blobOrBuffer);
                     // handle result
                     self.$setState({
@@ -268,7 +269,7 @@ export default {
         },
       reloadPage: function(){
         var self = this;
-        dbSettings.get('logoImage', {attachments: true}).then(function (blobOrBuffer) {
+        dbSettingsImages.get('logoImage', {attachments: true}).then(function (blobOrBuffer) {
             //console.log(blobOrBuffer);
                     // handle result
                     self.$setState({

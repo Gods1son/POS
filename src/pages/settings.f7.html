@@ -113,7 +113,7 @@
   </template>
   <script>
       import currencies from '../js/currencies.js';
-      var dbSettings = null;
+      var dbSettings = null, dbSettingsImages = null;
     export default {
       data() {
         return {
@@ -210,7 +210,7 @@
                       $('#autocomplete-dropdown-all').val(savedCurr);
                   }
 
-                  dbSettings.get('logoImage', {attachments: true}).then(function (blobOrBuffer) {
+                  dbSettingsImages.get('logoImage', {attachments: true}).then(function (blobOrBuffer) {
                     // handle result
                     self.$setState({
                       logo: blobOrBuffer
@@ -224,7 +224,7 @@
                     console.log(err);
                   });
 
-                  dbSettings.get('signatureImage', {attachments: true}).then(function(blobOrBuffer) {
+                  dbSettingsImages.get('signatureImage', {attachments: true}).then(function(blobOrBuffer) {
                     self.$setState({
                       signature: blobOrBuffer
                     })
@@ -249,10 +249,12 @@
           try{//id,name,unit_size,unit,cost_per_unit,status,created_date
             if(pdf != undefined){
               dbSettings = new PouchDB('settings.db', { adapter: 'cordova-sqlite' });
+              dbSettingsImages = new PouchDB('settingsImages.db', { adapter: 'cordova-sqlite' });
                 self.getData();
               }
           }catch(err){
             dbSettings = new PouchDB('settings.db');
+            dbSettingsImages = new PouchDB('settingsImages.db');
               self.getData();
             }
         },
@@ -333,7 +335,7 @@
                     if(self.logo != null){
                       myDoc._rev = self.logo._rev;
                     }
-                      dbSettings.put(myDoc).then(function (result) {
+                    dbSettingsImages.put(myDoc).then(function (result) {
                               // handle result
                               self.showToast("Logo saved!", "center");
                               //console.log(result);
@@ -356,7 +358,7 @@
                     if(self.signature != null){
                       myDoc._rev = self.signature._rev;
                     }
-                      dbSettings.put(myDoc).then(function (result) {
+                    dbSettingsImages.put(myDoc).then(function (result) {
                               // handle result
                               self.showToast("Signature saved!", "center");
                               //console.log(result);
