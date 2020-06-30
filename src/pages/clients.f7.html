@@ -481,6 +481,8 @@ export default {
                     $(".email").val(item.email);
                     $(".address").val(item.address);
                     $(".phone").val(item.phone);
+                    var n = item.otherNotes == undefined ? "" : item.otherNotes;
+                    $(".otherNotes").val(n);
                     var popup = self.$app.popup.open('.newClient', true);
             } else{
               var popup = self.$app.popup.open('.newClient', true);
@@ -580,10 +582,10 @@ export default {
                               html += '<div class=""><span class="labelName">Email: </span><span class="valueName">' + row.email + '</span></div>';
                             }
                             if(row.address != ""){
-                              html += '<div class="display-inline-flex"><div class="labelName">Address: </div><div class="valueName margin-left-half">' + row.address.split("\n").join("<br>") + '</div></div>';
+                              html += '<div class="display-flex"><div class="labelName">Address: </div><div class="valueName margin-left-half">' + row.address.split("\n").join("<br>") + '</div></div>';
                             }
                             if(row.otherNotes != "" && row.otherNotes != undefined){
-                              html += '<div class="display-inline-flex"><div class="labelName">Notes: </div><div class="valueName margin-left-half">' + row.otherNotes.split("\n").join("<br>") + '</div></div>';
+                              html += '<div class="display-flex"><div class="labelName">Notes: </div><div class="valueName margin-left-half">' + row.otherNotes.split("\n").join("<br>") + '</div></div>';
                             }
                             
                             var stat = row.status == 1 ? "display-none" : "";
