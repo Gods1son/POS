@@ -62,8 +62,14 @@
                 </div>
                 
               </form>
-              <div class="display-none syncParentClick"><a class="button button-outline button-raised margin button-green" @click="syncData()">Sync data online</a></div>
-              <!--<div class=""><a class="button button-outline button-raised margin button-green" @click="savetest()">save test</a></div>-->
+
+              <div class="display-none syncParentClick">
+                  <a class="button button-outline button-raised margin-half button-green" @click="syncData()">Sync data online</a>
+                  <a class="button button-outline button-raised margin-half button-fill color-red" @click="logOut()">Log Out</a>
+                </div>
+
+             <!--<div class=""><a class="button button-outline button-raised margin button-green" @click="savetest()">Get User</a></div>-->
+              
               <form id="signUp" class="display-none">
                 <div class="text-align-center block-title-medium margin-vertical-half">Sign Up</div>
                 <div class="list no-margin-vertical">
@@ -122,7 +128,9 @@
           return {
             username: null,
             email:null,
-            password: null
+            password: null,
+            apiKey: "apikey-f3d864a4a757454db0036e479dc71dc6",
+            apiPwd: "d4ab4d3b1a321b67a8064cfbcce11ba833897e19"
             
           }
         },
@@ -140,8 +148,8 @@
             var db = new PouchDB('https://fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix.cloudant.com', 
             {
                 auth: {
-                    username: "fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix",
-                    password: "d05ec632e8fc51febce78dabc7c9ea6ed772e3693c8339ceb7f0f1aab83747e2"
+                    username: self.apiKey,
+                    password: self.apiPwd
                 },
                 skip_setup: true
             }
@@ -153,9 +161,13 @@
                self.showToast("Please fill all fields", "center");
                return;
            }
+           email = email.toLowerCase();
             db.signUp(email, pwd, {
+            roles: [email],
+            password_scheme: "pbkdf2",
             metadata : {
-                email : email
+                email : email,
+                //roles: [email]
                 }
             }, function (err, response) {
                 if (err) {
@@ -168,17 +180,35 @@
                         self.showToast(err.message, "center");
                     }
                 }else{
+                    db.logIn(email, pwd, function (err, response) {
+                    if (err) {
+                        console.log(err);
+                            //self.showToast(err.message, "center");
+                        }else{
+                            console.log(response);
+                            self.saveUserAccount(email, pwd, username);
+                            self.showSignIn();
+                            $("#signIn").addClass("display-none");
+                            $(".syncParentClick").removeClass("display-none");
+                            
+                                self.$setState({
+                                username:username,
+                                email:email,
+                                password: pwd
+                            })
+                        }
+                    });
                     //console.log(response);
                     //console.log(response);
-                    self.saveUserAccount(email, pwd, username);
+                   /* self.saveUserAccount(email.toLowerCase(), pwd, username);
                     self.showSignIn();
                     $("#signIn").addClass("display-none");
                     $(".syncParentClick").removeClass("display-none");
                     self.$setState({
                       username:username,
-                      email:email,
+                      email:email.toLowerCase(),
                       password: pwd
-                  })
+                  })*/
                     //self.loginMethod(email, pwd, username);
                 }
             });
@@ -200,14 +230,14 @@
             var self = this;
             var db = new PouchDB('https://fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix.cloudant.com', 
             {
-                auth: {
-                    username: "fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix",
-                    password: "d05ec632e8fc51febce78dabc7c9ea6ed772e3693c8339ceb7f0f1aab83747e2"
+                /*auth: {
+                    username: self.apiKey,
+                    password: self.apiPwd
                 },
-                skipSetup: true
+                skipSetup: true*/
             }
             );
-            db.logIn(email, pd, function (err, response) {
+            db.logIn(email.toLowerCase(), pd, function (err, response) {
             if (err) {
                 console.log(err);
                     self.showToast(err.message, "center");
@@ -217,6 +247,12 @@
                     self.showSignIn();
                     $("#signIn").addClass("display-none");
                     $(".syncParentClick").removeClass("display-none");
+                    dbAccount.get("myAccount").then(function(doc) {
+                    doc.signedIn = 1;
+                    return dbAccount.put(doc);
+                  }).catch(function(err){
+                    
+                  });
                     self.$setState({
                       username:us,
                       email:email,
@@ -225,18 +261,47 @@
                 }
             });
         },
-        savetest: function(){
-            
-                  var u = "fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix";
-                  var p = "d05ec632e8fc51febce78dabc7c9ea6ed772e3693c8339ceb7f0f1aab83747e2";
-                  var db = new PouchDB('https://fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix.cloudant.com/_users', 
+        logOut: function(){
+            var self = this;
+            var db = new PouchDB('https://fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix.cloudant.com', 
             {
                 auth: {
-                    username: u,
-                    password: p
+                    username: self.apiKey,
+                    password: self.apiPwd
                 },
                 skipSetup: true
             }
+            );
+            db.logOut(function (err, response) {
+                if (err) {
+                    self.showToast("network error", "center");
+                }else{
+                    self.showToast("Logged Out", "center");
+                    $(".syncParentClick").addClass("display-none");
+                    $("#passwordSign").val("");
+                    self.showSignIn();
+                    dbAccount.get("myAccount").then(function(doc) {
+                    doc.signedIn = 0;
+                    return dbAccount.put(doc);
+                  }).catch(function(err){
+                    
+                  });
+
+                }
+            })
+
+
+        },
+        savetest: function(){
+                var self = this;
+                var db = new PouchDB('https://fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix.cloudant.com/_users', //bossbosscombossman_dbproducts', 
+                {
+                   /* auth: {
+                        username: "Boss@boss.com", // self.apiKey,
+                        password: "Man", //self.apiPwd
+                    },*/
+                    //skipSetup: true
+                }
             );
             db.allDocs({
             include_docs: true,
@@ -267,10 +332,16 @@
                   });
                 
         },
-        getUserMethod: function(us){
+        getUserMethod: function(){
             var self = this;
-            var db = new PouchDB('https://fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix.cloudant.com/mydb', {skipSetup: true});
-            db.getUser(us, function (err, response) {
+            var db = new PouchDB('https://fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix.cloudant.com', {
+                    auth: {
+                        username: self.apiKey,
+                        password: self.apiPwd
+                    },
+                    skipSetup: true
+                });
+            db.getUser("Boss@boss.com", function (err, response) {
             if (err) {
                 if (err.name === 'unauthorized' || err.name === 'forbidden') {
                 // name or password incorrect
@@ -291,11 +362,11 @@
 
             var u = "fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix";
             var p = "d05ec632e8fc51febce78dabc7c9ea6ed772e3693c8339ceb7f0f1aab83747e2";
-            var db = new PouchDB('https://fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix.cloudant.com', 
+            var db = new PouchDB(url, 
             {
                 auth: {
-                    username: u,
-                    password: p
+                    username: self.apiKey,
+                    password: self.apiPwd
                 },
                 skipSetup: true
             }
@@ -310,8 +381,8 @@
                             retry: true,
                             //continuous: true,
                             auth: {
-                                    username: u,
-                                    password: p
+                                    username: self.apiKey,
+                                    password: self.apiPwd
                                 }
                             };
            
