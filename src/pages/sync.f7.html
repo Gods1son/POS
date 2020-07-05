@@ -36,7 +36,7 @@
                         </div>
                       </div>
                     </li>
-                    <li class="item-content item-input">
+                    <!--<li class="item-content item-input">
                         <div class="item-inner">
                           <div class="item-title">Username</div>
                           <div class="item-input-wrap signingInput">
@@ -44,7 +44,7 @@
                             <span class="input-clear-button"></span>
                           </div>
                         </div>
-                      </li>
+                      </li>-->
                     <li class="item-content item-input">
                       <div class="item-inner">
                         <div class="item-title">Password</div>
@@ -118,9 +118,11 @@
     </div>
     </template>
     <script>
+    //import * as moment from 'moment';
     var dbProducts = null, dbProdIngs = null, dbProdOthers = null, dbSales = null, dbIngs = null, dbSettings = null, dbClients = null, dbExpenses = null, dbAccount = null;
     //import Cloudant from '@cloudant/cloudant';
     //var Cloudant = require('@cloudant/cloudant');
+    //moment().format("X")  new Date().getTime()
     export default {
       test: 5,
       data: function () {
@@ -129,9 +131,11 @@
             username: null,
             email:null,
             password: null,
-            apiKey: "apikey-f3d864a4a757454db0036e479dc71dc6",
-            apiPwd: "d4ab4d3b1a321b67a8064cfbcce11ba833897e19"
-            
+            apiKey: "", 
+            apiPwd: "",  
+            personalApiKey: "",
+            personalApiPwd: "",
+            personalApiExpires: null
           }
         },
       methods:{
@@ -145,15 +149,6 @@
         },
         signUpMethod: function(){
             var self = this;
-            var db = new PouchDB('https://fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix.cloudant.com', 
-            {
-                auth: {
-                    username: self.apiKey,
-                    password: self.apiPwd
-                },
-                skip_setup: true
-            }
-            );
            var username = $("#signUp").find("#username").val().trim();
            var pwd = $("#signUp").find("#password").val();
            var email = $("#signUp").find("#email").val().trim();
@@ -161,158 +156,233 @@
                self.showToast("Please fill all fields", "center");
                return;
            }
-           email = email.toLowerCase();
-            db.signUp(email, pwd, {
-            roles: [email],
-            password_scheme: "pbkdf2",
-            metadata : {
-                email : email,
-                //roles: [email]
-                }
-            }, function (err, response) {
-                if (err) {
-                    if (err.name === 'conflict') {
-                        self.showToast("already exists, choose another username", "center");
-                        //self.loginMethod(email, pwd, username);
-                    } else if (err.name === 'forbidden') {
-                        self.showToast("invalid username", "center");
-                    } else {
-                        self.showToast(err.message, "center");
-                    }
-                }else{
-                    db.logIn(email, pwd, function (err, response) {
-                    if (err) {
-                        console.log(err);
-                            //self.showToast(err.message, "center");
-                        }else{
-                            console.log(response);
-                            self.saveUserAccount(email, pwd, username);
-                            self.showSignIn();
-                            $("#signIn").addClass("display-none");
-                            $(".syncParentClick").removeClass("display-none");
-                            
-                                self.$setState({
-                                username:username,
-                                email:email,
-                                password: pwd
-                            })
-                        }
-                    });
-                    //console.log(response);
-                    //console.log(response);
-                   /* self.saveUserAccount(email.toLowerCase(), pwd, username);
-                    self.showSignIn();
-                    $("#signIn").addClass("display-none");
-                    $(".syncParentClick").removeClass("display-none");
-                    self.$setState({
-                      username:username,
-                      email:email.toLowerCase(),
-                      password: pwd
-                  })*/
-                    //self.loginMethod(email, pwd, username);
-                }
+           self.$app.preloader.show();
+           var unique = email + username;
+           unique = unique.toLowerCase();
+           unique = unique.replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, '-');
+           var data = {};
+            data.name = username;
+            data.username = unique;
+            data.email = email;
+            data.password = pwd;
+            data.confirmPassword = pwd;
+            $.ajax({
+              url: 'https://posbackend.herokuapp.com/auth/register',
+              headers: {
+                  //'Authorization':'Basic xxxxxxxxxxxxx',
+                  //'X-CSRF-TOKEN':'xxxxxxxxxxxxxxxxxxxx',
+                  'Content-Type':'application/json'
+              },
+              method: 'POST',
+              dataType: 'json',
+              data: JSON.stringify(data),
+              success: function(data){
+                self.$app.preloader.hide();
+                console.log(data);
+                var key = data.token;
+                var pwd2 = data.password;
+                var exp = data.expires;
+                self.$setState({
+                  username: unique,
+                  email: email,
+                  password: pwd,
+                  personalApiKey: key,
+                  personalApiPwd: pwd2,
+                  personalApiExpires: exp
+                  }, function(){
+                      self.saveUserAccount(email, pwd, unique, key, pwd2, exp);
+                      self.showSignIn();
+                      $("#signIn").addClass("display-none");
+                      $(".syncParentClick").removeClass("display-none");
+                      console.log(key + " " + pwd2 + " " + exp);
+                  })
+              },
+              error: function(err){
+                self.$app.preloader.hide();
+                console.log(err);
+              }
             });
         },
         loginMethodClick: function(){
             var self = this;
             var email = $("#emailSign").val().trim();
            var pwd = $("#passwordSign").val();
-           var username = $("#usernameSign").val().trim();
-           if(email == "" || pwd == "" || username == ""){
+           //var username = $("#usernameSign").val().trim();
+           if(email == "" || pwd == ""){
                self.showToast("Please fill all fields", "center");
                return;
            }
            //var uname = self.username
-           self.loginMethod(email, pwd, username);
+           self.loginMethod(email, pwd);
            
         },
-        loginMethod: function(email, pd, us){
-            var self = this;
-            var db = new PouchDB('https://fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix.cloudant.com', 
-            {
-                /*auth: {
-                    username: self.apiKey,
-                    password: self.apiPwd
-                },
-                skipSetup: true*/
-            }
-            );
-            db.logIn(email.toLowerCase(), pd, function (err, response) {
-            if (err) {
-                console.log(err);
-                    self.showToast(err.message, "center");
-                }else{
-                    console.log(response);
-                    self.saveUserAccount(email, pd, us);
-                    self.showSignIn();
-                    $("#signIn").addClass("display-none");
-                    $(".syncParentClick").removeClass("display-none");
-                    dbAccount.get("myAccount").then(function(doc) {
-                    doc.signedIn = 1;
-                    return dbAccount.put(doc);
-                  }).catch(function(err){
-                    
-                  });
-                    self.$setState({
-                      username:us,
-                      email:email,
-                      password: pd
-                  })
+        refreshToken: function(email, pd, token){
+          var self = this;
+          self.$app.preloader.show();
+          var data = {};
+            data.token = token;
+            $.ajax({
+              url: 'https://posbackend.herokuapp.com/auth/refresh',
+              headers: {
+                'Authorization':'Bearer ' + self.personalApiKey + ":" + self.personalApiPwd,
+                  //'X-CSRF-TOKEN':'xxxxxxxxxxxxxxxxxxxx',
+                  'Content-Type':'application/json'
+              },
+              method: 'POST',
+              dataType: 'json',
+              data: JSON.stringify(data),
+              success: function(data){
+                console.log(data);
+                self.$app.preloader.hide();
+                var key = data.token;
+                if(key != token){
+                  self.showToast("Please log in again", "center");
+                  self.showSignIn();
+                  $("#signIn").removeClass("display-none");
+                  $(".syncParentClick").addClass("display-none");
+                  return;
                 }
+                var pwd = data.password;
+                var exp = data.expires;
+                var us = data.user_id;
+                self.$setState({
+                  username: us,
+                  email: email,
+                  password: pd,
+                  personalApiKey: key,
+                  personalApiPwd: pwd,
+                  personalApiExpires: exp
+                  }, function(){
+                      self.saveUserAccount(email, pd, us, key, pwd, exp);
+                      self.showSignIn();
+                      $("#signIn").addClass("display-none");
+                      $(".syncParentClick").removeClass("display-none");
+                      console.log(key + " " + pwd + " " + exp);
+                  })
+              },
+              error: function(err){
+                console.log(err);
+                self.$app.preloader.hide();
+              }
             });
+        },
+        loginMethod: function(email, pd){
+            var self = this;
+            self.$app.preloader.show();
+            var data = {};
+            data.username = email;
+            data.password = pd;
+            $.ajax({
+              url: 'https://posbackend.herokuapp.com0/auth/login',
+              headers: {
+                  //'Authorization':'Basic xxxxxxxxxxxxx',
+                  //'X-CSRF-TOKEN':'xxxxxxxxxxxxxxxxxxxx',
+                  'Content-Type':'application/json'
+              },
+              method: 'POST',
+              dataType: 'json',
+              data: JSON.stringify(data),
+              success: function(data){
+                console.log(data);
+                self.$app.preloader.hide();
+                var key = data.token;
+                var pwd = data.password;
+                var exp = data.expires;
+                var us = data.user_id;
+                self.$setState({
+                  username: us,
+                  email: email,
+                  password: pd,
+                  personalApiKey: key,
+                  personalApiPwd: pwd,
+                  personalApiExpires: exp
+                  }, function(){
+                      self.saveUserAccount(email, pd, us, key, pwd, exp);
+                      self.showSignIn();
+                      $("#signIn").addClass("display-none");
+                      $(".syncParentClick").removeClass("display-none");
+                      console.log(key + " " + pwd + " " + exp);
+                  })
+              },
+              error: function(err){
+                console.log(err);
+                self.$app.preloader.hide();
+              }
+            });
+            
         },
         logOut: function(){
             var self = this;
-            var db = new PouchDB('https://fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix.cloudant.com', 
-            {
-                auth: {
-                    username: self.apiKey,
-                    password: self.apiPwd
-                },
-                skipSetup: true
-            }
-            );
-            db.logOut(function (err, response) {
-                if (err) {
-                    self.showToast("network error", "center");
-                }else{
-                    self.showToast("Logged Out", "center");
-                    $(".syncParentClick").addClass("display-none");
+            self.$app.preloader.show();
+            var data = {};
+            data.username = self.email;
+            data.password = self.pwd;
+            $.ajax({
+              url: 'https://posbackend.herokuapp.com/auth/logout',
+              headers: {
+                  'Authorization':'Bearer ' + self.personalApiKey + ":" + self.personalApiPwd,
+                  //'X-CSRF-TOKEN':'xxxxxxxxxxxxxxxxxxxx',
+                  'Content-Type':'application/json'
+              },
+              method: 'POST',
+              dataType: 'json',
+              data: JSON.stringify(data),
+              success: function(data2){
+                self.$app.preloader.hide();
+                console.log(data2);
+                if(data2.success == "Logged out"){
+                  self.showToast("Logged Out", "center");
+                  $(".syncParentClick").addClass("display-none");
                     $("#passwordSign").val("");
                     self.showSignIn();
                     dbAccount.get("myAccount").then(function(doc) {
                     doc.signedIn = 0;
+                    doc.apiKey = "";
+                    doc.apiPwd = "";
+                    doc.apiExp = 0;
                     return dbAccount.put(doc);
                   }).catch(function(err){
                     
                   });
-
                 }
+                
+              },
+              error: function(err){
+                console.log(err);
+                self.$app.preloader.hide();
+              }
             })
-
+            
+                    
 
         },
         savetest: function(){
                 var self = this;
-                var db = new PouchDB('https://fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix.cloudant.com/_users', //bossbosscombossman_dbproducts', 
-                {
-                   /* auth: {
-                        username: "Boss@boss.com", // self.apiKey,
-                        password: "Man", //self.apiPwd
-                    },*/
-                    //skipSetup: true
-                }
-            );
-            db.allDocs({
-            include_docs: true,
-            attachments: true
-            }).then(function (result) {
-                console.log(result);
-            }).catch(function (err) {
-            console.log(err);
+                var self = this;
+          self.$app.preloader.show();
+          //var data = {};
+            //data.token = token;
+            $.ajax({
+              url: 'https://posbackend.herokuapp.com/auth/session',
+              headers: {
+                'Authorization':'Bearer ' + self.personalApiKey + ":" + self.personalApiPwd,
+                  //'X-CSRF-TOKEN':'xxxxxxxxxxxxxxxxxxxx',
+                  'Content-Type':'application/json'
+              },
+              method: 'GET',
+              //dataType: 'json',
+              //data: JSON.stringify(data),
+              success: function(data){
+                console.log(data);
+                self.$app.preloader.hide();
+              },
+              error: function(err){
+                console.log(err);
+                self.$app.preloader.hide();
+              }
             });
         },
-        saveUserAccount: function(email, pd, us){
+        saveUserAccount: function(email, pd, us, apiKey, apiPwd, apiExp){
             var self = this;
             dbAccount.get("myAccount").then(function(doc) {
                    // console.log(doc);
@@ -320,6 +390,9 @@
                     doc.email = email;
                     doc.password = pd;
                     doc.signedIn = 1;
+                    doc.apiKey = apiKey;
+                    doc.apiPwd = apiPwd;
+                    doc.apiExp = apiExp;
                     return dbAccount.put(doc);
                   }).catch(function(err){
                     var obj = {};
@@ -328,122 +401,198 @@
                     obj.password = pd;
                     obj.email = email;
                     obj.signedIn = 1;
+                    doc.apiKey = apiKey;
+                    doc.apiPwd = apiPwd;
+                    doc.apiExp = apiExp;
                     dbAccount.put(obj);
                   });
                 
         },
-        getUserMethod: function(){
-            var self = this;
-            var db = new PouchDB('https://fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix.cloudant.com', {
-                    auth: {
-                        username: self.apiKey,
-                        password: self.apiPwd
-                    },
-                    skipSetup: true
-                });
-            db.getUser("Boss@boss.com", function (err, response) {
-            if (err) {
-                if (err.name === 'unauthorized' || err.name === 'forbidden') {
-                // name or password incorrect
-                } else {
-                    console.log(err);
-                    }
-                }else{
-                    console.log(response);
-                }
-            });
-        },
         syncData: function(){
             var self = this;
-            var url = 'https://fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix.cloudant.com/';
-            var name = self.email + self.username;
-            var prefix = name.toLowerCase();
-            prefix = prefix.replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, '-');
-
-            var u = "fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix";
-            var p = "d05ec632e8fc51febce78dabc7c9ea6ed772e3693c8339ceb7f0f1aab83747e2";
-            var db = new PouchDB(url, 
-            {
-                auth: {
-                    username: self.apiKey,
-                    password: self.apiPwd
-                },
-                skipSetup: true
-            }
-            );
-                  db.logIn(u, p, function (err, response) {
-                    if (err) {
-                            self.showToast(err.message, "center");
-                        }else{
-                            console.log(response);
-                            let options = {
-                            live: true,
-                            retry: true,
-                            //continuous: true,
-                            auth: {
-                                    username: self.apiKey,
-                                    password: self.apiPwd
-                                }
-                            };
-           
-                    
-                    dbProducts.sync(url + prefix + "_dbproducts", options).on('complete', function () {
-                            alert("synced dpProducts");
-                    }).on('error', function (err) {
-                        alert(err);
-                        //console.log("error syncing dpProducts");
-                    });
-
-                    dbProdIngs.sync(url + prefix + "_dbprodings", options).on('complete', function () {
-                            alert("synced dbProdIngs");
-                    }).on('error', function (err) {
-                        alert(err);
-                        //console.log("error syncing dbProdIngs");
-                    });
-                    
-                    dbProdOthers.sync(url + prefix + "_dbprodothers", options).on('complete', function () {
-                            alert("synced dbProdOthers");
-                    }).on('error', function (err) {
-                        alert(err);
-                        //console.log("error syncing dbProdOthers");
-                    });
-                    
-                    dbSales.sync(url + prefix + "_dbsales", options).on('complete', function () {
-                            alert("synced dbSales");
-                    }).on('error', function (err) {
-                        alert(err);
-                        //console.log("error syncing dbSales");
-                    });
-                    
-                    dbIngs.sync(url + prefix + "_dbings", options).on('complete', function () {
-                            alert("synced dbIngs");
-                    }).on('error', function (err) {
-                        alert(err);
-                        //console.log("error syncing dbIngs");
-                    });
-                    
-                    dbSettings.sync(url + prefix + "_dbsettings", options).on('complete', function () {
-                            alert("synced dbSettings");
-                    }).on('error', function (err) {
-                        //console.log("error syncing dbSettings");
-                    });
-                    
-                    dbClients.sync(url + prefix + "_dbclients", options).on('complete', function () {
-                            alert("synced dbClients","center");
-                    }).on('error', function (err) {
-                        alert(err);
-                        //console.log("error syncing dbClients");
-                    });
-
-                    dbExpenses.sync(url + prefix + "_dbexpenses", options).on('complete', function () {
-                            alert("synced dbExpenses");
-                    }).on('error', function (err) {
-                        alert(err);
-                        //console.log("error syncing dbExpenses");
-                    });
-                }
-            });
+            var name = self.username;
+            var opts = { live: false, retry: false };
             
+            var dbProductsR = new PouchDB('https://fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix.cloudant.com/dbproducts$' + name, { //dbclients$bababosscombaba
+                    auth: {
+                        username:  self.personalApiKey,
+                        password:  self.personalApiPwd  
+                    },
+                    skipSetup: true
+            });
+
+            var dbProdIngsR = new PouchDB('https://fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix.cloudant.com/dbprodings$' + name, { //dbclients$bababosscombaba
+                    auth: {
+                        username:  self.personalApiKey,
+                        password:  self.personalApiPwd  
+                    },
+                    skipSetup: true
+            });
+
+            var dbProdOthersR = new PouchDB('https://fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix.cloudant.com/dbprodothers$' + name, { //dbclients$bababosscombaba
+                    auth: {
+                        username:  self.personalApiKey,
+                        password:  self.personalApiPwd  
+                    },
+                    skipSetup: true
+            });
+
+            var dbSalesR = new PouchDB('https://fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix.cloudant.com/dbsales$' + name, { //dbclients$bababosscombaba
+                    auth: {
+                        username:  self.personalApiKey,
+                        password:  self.personalApiPwd  
+                    },
+                    skipSetup: true
+            });
+
+            var dbIngsR = new PouchDB('https://fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix.cloudant.com/dbings$' + name, { //dbclients$bababosscombaba
+                    auth: {
+                        username:  self.personalApiKey,
+                        password:  self.personalApiPwd  
+                    },
+                    skipSetup: true
+            });
+
+            var dbSettingsR = new PouchDB('https://fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix.cloudant.com/dbsettings$' + name, { //dbclients$bababosscombaba
+                    auth: {
+                        username:  self.personalApiKey,
+                        password:  self.personalApiPwd  
+                    },
+                    skipSetup: true
+            });
+
+            var dbClientsR = new PouchDB('https://fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix.cloudant.com/dbclients$' + name, { //dbclients$bababosscombaba
+                    auth: {
+                        username:  self.personalApiKey,
+                        password:  self.personalApiPwd  
+                    },
+                    skipSetup: true
+            });
+
+            var dbExpensesR = new PouchDB('https://fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix.cloudant.com/dbexpenses$' + name, { //dbclients$bababosscombaba
+                    auth: {
+                        username:  self.personalApiKey,
+                        password:  self.personalApiPwd  
+                    },
+                    skipSetup: true
+            });
+                
+          //dbProducts, dbProdIngs, dbProdOthers, dbSales, dbIngs, dbSettings, dbClients, dbExpenses
+                dbProducts.sync(dbProductsR, opts).on('complete', function (info) {
+                  // handle complete
+                  //console.log(info);
+                  self.showToast("products synced to server", "center");
+                }).on('error', function (err) {
+                  // handle error
+                  console.log(err);
+                  self.showToast(err.error, "center");
+                })
+
+                dbProdIngs.sync(dbProdIngsR, opts).on('complete', function (info) {
+                  // handle complete
+                  //console.log(info);
+                  self.showToast("products ingredients synced to server", "center");
+                }).on('error', function (err) {
+                  // handle error
+                  console.log(err);
+                  self.showToast(err.error, "center");
+                })
+
+                dbProdOthers.sync(dbProdOthersR, opts).on('complete', function (info) {
+                  // handle complete
+                  //console.log(info);
+                  self.showToast("products custom charges synced to server", "center");
+                }).on('error', function (err) {
+                  // handle error
+                  console.log(err);
+                  self.showToast(err.error, "center");
+                })
+
+                dbSales.sync(dbSalesR, opts).on('complete', function (info) {
+                  // handle complete
+                  //console.log(info);
+                  self.showToast("sales synced to server", "center");
+                }).on('error', function (err) {
+                  // handle error
+                  console.log(err);
+                  self.showToast(err.error, "center");
+                })
+
+                dbIngs.sync(dbIngsR, opts).on('complete', function (info) {
+                  // handle complete
+                  //console.log(info);
+                  self.showToast("ingredients synced to server", "center");
+                }).on('error', function (err) {
+                  // handle error
+                  console.log(err);
+                  self.showToast(err.error, "center");
+                })
+
+                dbSettings.sync(dbSettingsR, opts).on('complete', function (info) {
+                  // handle complete
+                  //console.log(info);
+                  self.showToast("settings synced to server", "center");
+                }).on('error', function (err) {
+                  // handle error
+                  console.log(err);
+                  self.showToast(err.error, "center");
+                })
+
+                dbClients.sync(dbClientsR, opts).on('complete', function (info) {
+                  // handle complete
+                  //console.log(info);
+                  self.showToast("clients synced to server", "center");
+                }).on('error', function (err) {
+                  // handle error
+                  console.log(err);
+                  self.showToast(err.error, "center");
+                })
+
+                dbExpenses.sync(dbExpensesR, opts).on('complete', function (info) {
+                  // handle complete
+                  //console.log(info);
+                  self.showToast("expenses synced to server", "center");
+                }).on('error', function (err) {
+                  // handle error
+                  console.log(err);
+                  self.showToast(err.error, "center");
+                })
+                
+                
+        },
+        syncData2: function(){
+            var self = this;
+            var url = 'https://' + self.personalApiKey + ":" + self.personalApiPwd +  '@fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix.cloudant.com/';
+            var name = self.email;
+            var prefix = name.toLowerCase();
+            name = prefix.replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, '-');
+            var options =  {
+              live: true,
+              retry: true
+            }
+            var urlFull = url + "dbproducts$" + name;
+            var remoteOptions = {
+                fetch: function (url, opts) {
+                    //opts.headers.set("Authorization", "Bearer " + token);
+                    return PouchDB.fetch(url, opts);
+                }
+            };
+            var syncOptions = {
+                live: true,
+                retry: true,
+                continuous: true,
+            };
+            //localDb = new PouchDB(localName);
+            var remoteDb = new PouchDB(urlFull, remoteOptions);
+            remoteDb.allDocs({
+            include_docs: true,
+            attachments: true
+            }).then(function (result) {
+                console.log(result);
+            }).catch(function (err) {
+            console.log(err);
+            });
+
         },
         showToast: function(text, position){
             var self = this;
@@ -457,6 +606,12 @@
             var self = this;
             dbAccount.get("myAccount").then(function(doc) {
                    // console.log(doc);
+                   var now = new Date().getTime();
+                   var expired = now > doc.apiExp;
+                   if(doc.signedIn ==1 && expired){
+                    self.refreshToken(doc.email, doc.password, doc.apiKey);
+                    return;
+                   }
                    if(doc.signedIn == undefined || doc.signedIn == 0){
                     self.showSignIn();
                     $("#signIn").removeClass("display-none");
@@ -465,17 +620,22 @@
                     return;
                    }
                    self.showSignIn();
+                   //self.$app.preloader.show();
                     $("#signIn").addClass("display-none");
                     $(".syncParentClick").removeClass("display-none");
+                    console.log(doc.apiKey + " " + doc.apiPwd + " " + doc.apiExp + " " + doc.username);
                     self.$setState({
                       username:doc.username,
                       email:doc.email,
-                      password: doc.password
+                      password: doc.password,
+                      personalApiKey: doc.apiKey,
+                      personalApiPwd: doc.apiPwd,
+                      personalApiExpires: doc.apiExp
                     })
                   }).catch(function(err){
                     self.showSignUp();
-                    $("#signIn").removeClass("display-none");
-                    $("#signUp").addClass("display-none");
+                    $("#signIn").addClass("display-none");
+                    $("#signUp").removeClass("display-none");
                     $(".syncParentClick").addClass("display-none");
                   });
         },
