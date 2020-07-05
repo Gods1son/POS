@@ -156,6 +156,10 @@
                self.showToast("Please fill all fields", "center");
                return;
            }
+           if(pwd.length < 6){
+               self.showToast("Your password should be longer than 5 characters", "center");
+               return;
+           }
            self.$app.preloader.show();
            var unique = email + username;
            unique = unique.toLowerCase();
@@ -306,6 +310,7 @@
               },
               error: function(err){
                 console.log(err);
+                self.showToast("Please check your credentials", "center");
                 self.$app.preloader.hide();
               }
             });
@@ -401,9 +406,9 @@
                     obj.password = pd;
                     obj.email = email;
                     obj.signedIn = 1;
-                    doc.apiKey = apiKey;
-                    doc.apiPwd = apiPwd;
-                    doc.apiExp = apiExp;
+                    obj.apiKey = apiKey;
+                    obj.apiPwd = apiPwd;
+                    obj.apiExp = apiExp;
                     dbAccount.put(obj);
                   });
                 
