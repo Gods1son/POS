@@ -421,20 +421,9 @@
 //import Dom7 from 'dom7';
 //import Dexie from 'dexie';
 import * as moment from 'moment';
-/*var db = new Dexie("BizExpenseManagerDB");
-          db.version(3).stores({
-            ingredients: "++id,name,unit_size,unit,cost_per_unit,status,created_date",
-            products: "++id,name,cost,status,created_date",
-            product_ingredient: "++id,productID,ingredientID,unit_size,cost,status,created_date",
-            product_otherMaterials: "++id,productID,name,cost,status,created_date",
-            sales: "++id,parentID,product_name,isParent,buyer_name,cost,quantity,tax,total_price,afterTax,amountPaid,isPaid,date_paid,created_date,status",
-            expenses: "++id,name,amount_to_pay,amount_paid,date_paid,created_date,recurring,status",
+//import * as rasterizeHTML from 'rasterizehtml';
+import html2pdf from 'html2pdf.js';
 
-            ingredients_history: "++id,ingID,name,unit_size,unit,cost_per_unit,status,created_date",
-            products_history: "++id,prodID,name,cost,status,created_date",
-            sales_history: "++id,salesID,product_name,buyer_name,cost,amountPaid,isPaid,date_paid,created_date,status",
-            expenses_history: "++id,expID,name,amount_to_pay,amount_paid,date_paid,created_date,recurring,status"
-          })*/
   var dbProducts = null, dbProdIngs = null, dbProdOthers = null, dbSales = null, dbIngs = null, dbSettings = null, dbClients = null, dbSettingsImages = null;
 //var $$ = Dom7;
 export default {
@@ -778,50 +767,113 @@ export default {
           var type = self.logo._attachments.logoImage.content_type;
           logo = "<div style='text-align: left;width:50%;float: left;'><img src='" + "data:"+ type + ";base64," + attachments + "' style='max-width:100px'/></div>";
         }
-      var html = '<html><head><style>table td{padding: 5px;} thead tr{background: lightblue; color:black;} thead th{padding: 5px;} tbody tr:nth-child(even) {background-color: #f2f2f2;}</style></head>'
-        html += '<div>' + logo + '<div style="text-align:right; width:50%; float:right;">';
-        html += '<h2 style="margin-bottom:5px; margin-top:5px;">' + Companyname + '</h2><div>' + Comaddress + '</div></div></div>';
+      //try{
+        //if(pdf != undefined){
+            var html =  '<html><head><style>table td{padding: 5px;} thead tr{background: lightblue; color:black;} thead th{padding: 5px;} tbody tr:nth-child(even) {background-color: #f2f2f2;}</style></head>';
+            html += '<div>' + logo + '<div style="text-align:right; width:50%; float:right;">';
+            html += '<h2 style="margin-bottom:5px; margin-top:5px;">' + Companyname + '</h2><div>' + Comaddress + '</div></div></div>';
 
-        html += '<div style="text-align:left;clear:both;"><h4 style="margin-bottom:5px; margin-top:5px;">Invoice No:' + sales._id + '</h4><h4 style="margin-bottom:5px; margin-top:5px;">Invoice To: ';
-        html += buyer + '</h4>';
-        html += '<table><thead><tr><th style="width: 50vw;text-align: left;">Product Name</th>';
-        html += '<th style="width: 10vw;text-align: center;">Quantity</th><th style="width: 20vw;text-align: right;">Unit Price</th><th style="width: 20vw;text-align: right;">Total Price</th>';
-        html += '</tr></thead><tbody>';
-          if(children.length > 0){
-              for(var i = 0; i < children.length; i++){
-                var each = children[i];
-                html += '<tr><td>' + each.product_name + '</td><td style="text-align:center">' + each.quantity + '</td>';
-                html += '<td style="text-align: right;">' + self.moneyFormat(each.cost) + '</td>';
-                html += '<td style="text-align: right;">' + self.moneyFormat(each.total_price) + '</td></tr>';
+            html += '<div style="text-align:left;clear:both;"><h4 style="margin-bottom:5px; margin-top:5px;">Invoice No:' + sales._id + '</h4><h4 style="margin-bottom:5px; margin-top:5px;">Invoice To: ';
+            html += buyer + '</h4>';
+            html += '<table><thead><tr><th style="width: 50vw;text-align: left;">Product Name</th>';
+            html += '<th style="width: 10vw;text-align: center;">Quantity</th><th style="width: 20vw;text-align: right;">Unit Price</th><th style="width: 20vw;text-align: right;">Total Price</th>';
+            html += '</tr></thead><tbody>';
+              if(children.length > 0){
+                  for(var i = 0; i < children.length; i++){
+                    var each = children[i];
+                    html += '<tr><td>' + each.product_name + '</td><td style="text-align:center">' + each.quantity + '</td>';
+                    html += '<td style="text-align: right;">' + self.moneyFormat(each.cost) + '</td>';
+                    html += '<td style="text-align: right;">' + self.moneyFormat(each.total_price) + '</td></tr>';
+                  }
+              }else{
+                  html += '<tr><td>' + productName + '</td><td style="text-align:center">' + quant + '</td>';
+                  html += '<td style="text-align: right;">' + cost + '</td>';
+                  html += '<td style="text-align: right;">' + totalPrice + '</td></tr>';
               }
-          }else{
-              html += '<tr><td>' + productName + '</td><td style="text-align:center">' + quant + '</td>';
-              html += '<td style="text-align: right;">' + cost + '</td>';
-              html += '<td style="text-align: right;">' + totalPrice + '</td></tr>';
-          }
-        
-        
-        html += '</tbody></table>';
-        html += '<div><table style="float:right"><tbody>';
-        html += '<tr><td><span style="font-weight:600">Price Before Tax: </span></td><td><span>' + totalPrice + '</span></td></tr>';
-        html += '<tr><td><span style="font-weight:600">Tax: </span></td><td><span>' + tax + '%</span></td></tr>';
-        html += '<tr><td><span style="font-weight:600">Price After Tax: </span></td><td><span>' + self.moneyFormat(afterTax) + '</span></td></tr>';
-        html += '<tr><td><span style="font-weight:600">Amount Paid: </span></td><td><span>' + totalPaid + '</span></td></tr>';
-        html += '<tr><td><span style="font-weight:600">Outstanding: </span></td><td><span>' + self.moneyFormat(outstanding) + '</span></td></tr>';
-        html += '<tr><td><span style="font-weight:600"">Purchase Date: </span></td><td><span>' + purchaseDate + '</span></td></tr>';
-        html += '<tr><td><span style="font-weight:600"">Payment Date: </span></td><td><span>' + paymentDate + '</span></td></tr>';
-        html += '</tbody></table>';
-        var tagline = self.settings == null ? "<h3 style='margin-bottom:5px; margin-top:5px;'>Thank you!</h3>" : "<h4 style='margin-bottom:5px; margin-top:5px;'>" + self.settings.tagline.split("\n").join("<br>") + "</h4>";
-        var signature = "";
-        if(self.signature != null){
-          var attachments = self.signature._attachments.signatureImage.data;
-          var type = self.signature._attachments.signatureImage.content_type;
-          signature = "<img src='" + "data:"+ type + ";base64," + attachments + "' style='max-width:100px'/>";
-        }
-        
-        html += '<div style="text-align:left;clear:both;border-top: 1px solid darkgray;border-bottom: 1px solid darkgray;">' + tagline  + signature + '<h5 style="margin-bottom:5px; margin-top:5px;">' + today + '</h5></div>';
-        html += '</div></html>';
-        return html;
+            
+            
+            html += '</tbody></table>';
+            html += '<div><table style="float:right"><tbody>';
+            html += '<tr><td><span style="font-weight:600">Price Before Tax: </span></td><td><span>' + totalPrice + '</span></td></tr>';
+            html += '<tr><td><span style="font-weight:600">Tax: </span></td><td><span>' + tax + '%</span></td></tr>';
+            html += '<tr><td><span style="font-weight:600">Price After Tax: </span></td><td><span>' + self.moneyFormat(afterTax) + '</span></td></tr>';
+            html += '<tr><td><span style="font-weight:600">Amount Paid: </span></td><td><span>' + totalPaid + '</span></td></tr>';
+            html += '<tr><td><span style="font-weight:600">Outstanding: </span></td><td><span>' + self.moneyFormat(outstanding) + '</span></td></tr>';
+            html += '<tr><td><span style="font-weight:600"">Purchase Date: </span></td><td><span>' + purchaseDate + '</span></td></tr>';
+            html += '<tr><td><span style="font-weight:600"">Payment Date: </span></td><td><span>' + paymentDate + '</span></td></tr>';
+            html += '</tbody></table>';
+            var tagline = "";
+            if(self.settings != null){
+              if(self.settings.tagline != null && self.settings.tagline != undefined && self.settings.tagline != ""){
+                tagline = "<h5 style='margin-bottom:5px; margin-top:5px;font-weight:200;'>" + self.settings.tagline.split("\n").join("<br>") + "</h5>";
+              }else{
+                tagline = "<h5 style='margin-bottom:5px; margin-top:5px;font-weight:200;'>Thank you!</h5>";
+              }
+            }else{
+              tagline = "<h5 style='margin-bottom:5px; margin-top:5px;font-weight:200;'>Thank you!</h5>";
+            }
+            //var tagline = self.settings.tagline == "" ? "<h3 style='margin-bottom:5px; margin-top:5px;'>Thank you!</h3>" : "<h4 style='margin-bottom:5px; margin-top:5px;'>" + self.settings.tagline.split("\n").join("<br>") + "</h4>";
+            var signature = "";
+            if(self.signature != null){
+              var attachments = self.signature._attachments.signatureImage.data;
+              var type = self.signature._attachments.signatureImage.content_type;
+              signature = "<img src='" + "data:"+ type + ";base64," + attachments + "' style='max-width:100px'/>";
+            }
+            
+            html += '<div style="text-align:left;clear:both;border-top: 1px solid darkgray;border-bottom: 1px solid darkgray;">' + tagline  + signature + '<h5 style="margin-bottom:5px; margin-top:5px;">' + today + '</h5></div>';
+            html += '</div>';
+            html += '</html>';
+            return html;
+      /*  }
+      }catch(err){
+        logo = "";
+            //var html =  '<html><head><style>table td{padding: 5px;} thead tr{background: lightblue; color:black;} thead th{padding: 5px;} tbody tr:nth-child(even) {background-color: #f2f2f2;}</style></head>';
+            var html = '<div>' + logo + '<div>';
+            html += '<h2>' + Companyname + '</h2><div>' + Comaddress + '</div></div></div>';
+
+            html += '<div><h4>Invoice No:' + sales._id + '</h4><h4>Invoice To: ';
+            html += buyer + '</h4>';
+            html += '<table><thead><tr><th>Product Name</th>';
+            html += '<th>Quantity</th><th>Unit Price</th><th>Total Price</th>';
+            html += '</tr></thead><tbody>';
+              if(children.length > 0){
+                  for(var i = 0; i < children.length; i++){
+                    var each = children[i];
+                    html += '<tr><td>' + each.product_name + '</td><td>' + each.quantity + '</td>';
+                    html += '<td>' + self.moneyFormat(each.cost) + '</td>';
+                    html += '<td>' + self.moneyFormat(each.total_price) + '</td></tr>';
+                  }
+              }else{
+                  html += '<tr><td>' + productName + '</td><td>' + quant + '</td>';
+                  html += '<td>' + cost + '</td>';
+                  html += '<td>' + totalPrice + '</td></tr>';
+              }
+            
+            
+            html += '</tbody></table>';
+            html += '<div><table style="float:right"><tbody>';
+            html += '<tr><td><span style="font-weight:600">Price Before Tax: </span></td><td><span>' + totalPrice + '</span></td></tr>';
+            html += '<tr><td><span style="font-weight:600">Tax: </span></td><td><span>' + tax + '%</span></td></tr>';
+            html += '<tr><td><span style="font-weight:600">Price After Tax: </span></td><td><span>' + self.moneyFormat(afterTax) + '</span></td></tr>';
+            html += '<tr><td><span style="font-weight:600">Amount Paid: </span></td><td><span>' + totalPaid + '</span></td></tr>';
+            html += '<tr><td><span style="font-weight:600">Outstanding: </span></td><td><span>' + self.moneyFormat(outstanding) + '</span></td></tr>';
+            html += '<tr><td><span style="font-weight:600"">Purchase Date: </span></td><td><span>' + purchaseDate + '</span></td></tr>';
+            html += '<tr><td><span style="font-weight:600"">Payment Date: </span></td><td><span>' + paymentDate + '</span></td></tr>';
+            html += '</tbody></table>';
+            var tagline = self.settings.tagline == null ? "<h3>Thank you!</h3>" : "<h4>" + self.settings.tagline.split("\n").join("<br>") + "</h4>";
+            var signature = "";
+            if(self.signature != null){
+              var attachments = self.signature._attachments.signatureImage.data;
+              var type = self.signature._attachments.signatureImage.content_type;
+              signature = "<img src='" + "data:"+ type + ";base64," + attachments + "' style='max-width:100px'/>";
+            }
+            
+            html += '<div>' + tagline  + signature + '<h5>' + today + '</h5></div>';
+            html += '</div>';
+            //html += '</html>';
+            return html;
+      }*/
+      
     },
     deleteSale: function(list, id){
         var self = this;
@@ -983,13 +1035,22 @@ export default {
             pdf.fromData( html, options)
               .then((stats)=> self.showToast(stats, "center"))   // ok..., ok if it was able to handle the file to the OS.  
               .catch((err)=> self.showToast(err, "center"))
-          }else{
-            var w = window.open();
-            $(w.document.body).html(html);
           }
         }catch(err){
-            var w = window.open();
-            $(w.document.body).html(html);
+          //console.log(html);
+          var opt = {
+            margin:       0.3,
+            filename:     item.buyer_name + "-" + item._id + '.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 1.5 },
+            jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+          };
+
+          // New Promise-based usage:
+          html2pdf().set(opt).from(html).save();
+            
+            //var w = window.open();
+            //$(w.document.body).html(html);
         }
     },
     invoice: function(id){

@@ -282,7 +282,19 @@ body, html {
   </div>
   
   <!-- built script files will be auto injected -->
+  <!--<script src="js/html2pdf.bundle.js"></script>-->
   <script src="cordova.js"></script>
+  <script>
+      document.addEventListener("deviceready", onDeviceReady, false);
+
+      function onDeviceReady(){
+          document.addEventListener("backbutton", function(e){
+            navigator.app.backHistory();
+            
+          }, false);
+      }
+
+  </script>
   <!--<script src="node_modules/pouchdb/dist/pouchdb.min.js"></script>
   <script src="js/myscript.js"></script>-->
 </body>

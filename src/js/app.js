@@ -57,27 +57,33 @@ Template7.registerHelper("convertDate", function(val){
     return myDate.toLocaleString();
 })
 
-var app = new Framework7({
-  root: '#app', // App root element
-  component: App, // App main component
+setTimeout(function(){
 
-  name: 'BizExpenseManager', // App name
-  theme: 'auto', // Automatic theme detection
-  // App routes
-  routes: routes,
-  methods: {
-    alert: function() {
-      app.dialog.alert('Hello World');
-    }
-  },
-  on: {
-    init: function () {
-      console.log('App initialized');
+  var app = new Framework7({
+    root: '#app', // App root element
+    component: App, // App main component
+  
+    name: 'BizExpenseManager', // App name
+    theme: 'auto', // Automatic theme detection
+    // App routes
+    routes: routes,
+    methods: {
+      alert: function() {
+        app.dialog.alert('Hello World');
+      }
     },
-    pageInit: function () {
-      //app.methods.storage2();
-      //this.$app.storage2();
+    on: {
+      init: function () {
+        console.log('App initialized');
+      },
+      pageInit: function () {
+        //app.methods.storage2();
+        //this.$app.storage2();
+      }
     }
-  }
-});
+  });
+
+},3000)
+
+
 
