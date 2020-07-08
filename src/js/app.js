@@ -65,6 +65,9 @@ setTimeout(function(){
   
     name: 'BizExpenseManager', // App name
     theme: 'auto', // Automatic theme detection
+    view: {
+      pushState: true
+    },
     // App routes
     routes: routes,
     methods: {

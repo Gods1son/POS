@@ -179,8 +179,10 @@
         getData: function(){
           var self = this;
           var id = self.settingsID;
+          self.$app.preloader.show();
           dbSettings.get(id).then(function(doc) {
                    //console.log(doc);
+                   self.$app.preloader.hide();
                    var comName = doc.companyName;
                   if(comName != ""){
                       $("#companyname").val(comName);
@@ -221,7 +223,7 @@
                     $("#logoShow").attr("src", "data:"+ type + ";base64," + attachments);
                     //console.log(JSON.stringify(blobOrBuffer));
                   }).catch(function (err) {
-                    console.log(err);
+                    //console.log(err);
                   });
 
                   dbSettingsImages.get('signatureImage', {attachments: true}).then(function(blobOrBuffer) {
@@ -233,7 +235,7 @@
                     //console.log(blobOrBuffer._attachments.logoID);
                     $("#signatureShow").attr("src", "data:"+ type + ";base64," + attachments);
                   }).catch(function (err) {
-                    console.log(err);
+                    //console.log(err);
                   });
 
                   self.$setState({
@@ -241,6 +243,8 @@
                     })
             }).catch(function(err){
               //console.log(err);
+              self.showToast(err, "center");
+              self.$app.preloader.hide();
             })
         },
         startPouch: function(){

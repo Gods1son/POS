@@ -698,8 +698,8 @@ export default {
           html +=  '<span class="input-clear-button"></span></div></div></div></div></div>';
           html += '<div><span class="labelName">Total Price: </span><div class="display-inline-flex"><input class="totalproductprice" type="text" disabled placeholder="Total Price" value="';
           html += totalPrice + '"></div></div>';
-        html += '</div><div class="card-footerMine padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
-          html += '<a class="button color-red removeProduct">Delete</a>';
+        html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
+          html += '<a class="button button-small button-raised removeProduct">Delete</a>';
         html += '</p></div></div>'
         html += '</li>';
         $("#productsOther-list .sortList").append(html);
@@ -1385,8 +1385,8 @@ export default {
           html +=  '<span class="input-clear-button"></span></div></div></div></div></div>';
           html += '<div><span class="labelName">Total Price: </span><div class="display-inline-flex"><input class="totalproductprice" type="text" disabled placeholder="Total Price" value="';
           html +=  totalPrice + '"></div></div>';
-        html += '</div><div class="card-footerMine padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
-          html += '<a class="button color-red removeProduct" data-id="' + select._id + '">Delete</a>';
+        html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
+          html += '<a class="button button-small button-raised removeProduct" data-id="' + select._id + '">Delete</a>';
         html += '</p></div></div>'
         html += '</li>';
         $("#products-list .sortList").append(html);
@@ -1453,7 +1453,7 @@ export default {
                             var isParent = row.isParent == null ? 0 : row.isParent;
                             var sellToOther = "";
                             if(isParent == 1){
-                              sellToOther = '<a class="button color-orange sellToOthers" data-id="' + row._id + '" data-isparent="' + isParent + '">Sell To Others</a>';
+                              sellToOther = '<a class="button button-small button-raised sellToOthers" data-id="' + row._id + '" data-isparent="' + isParent + '">Sell To Others</a>';
                             }
                             var quantity = row.quantity == null ? 1 : row.quantity;
                             var taxes = row.tax == null ? 0 : row.tax;
@@ -1478,11 +1478,11 @@ export default {
                             html += '<div class="' + hidden + '"><span class="labelName">Date Fully Paid: </span><span class="valueName">' + moment.unix(row.date_paid).format("LLL") + '</span></div>';
                             html += '<div class=""><span class="labelName">Purchase Date: </span><span class="valueName">' + moment.unix(row.created_date).format("LLL") + '</span></div>';
                             html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName">Deleted</span></div>';
-                            html += '</div><div class="card-footerMine padding-horizontal-half"><p class="display-inline-flex no-margin-vertical">';
-                            html += '<a class="button invoice myGreen" data-id="' + row._id + '">Invoice</a>';
+                            html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
+                            html += '<a class="button invoice button-small button-raised" data-id="' + row._id + '">Invoice</a>';
                             html += sellToOther;
-                            html += '<a class="button editSale" data-id="' + row._id + '" data-isparent="' + isParent + '">Edit</a>';
-                            html += '<a class="button color-red deleteSale" data-id="' + row._id + '">';
+                            html += '<a class="button button-small button-raised editSale" data-id="' + row._id + '" data-isparent="' + isParent + '">Edit</a>';
+                            html += '<a class="button button-small button-raised deleteSale" data-id="' + row._id + '">';
                             html +=  row.status == 1 ? 'Delete' : 'Activate'; 
                             html += '</a></p></div></div>'
                             html += '</li>';
@@ -1696,7 +1696,7 @@ export default {
         checked = toggle.checked == true ? 0 : 1;
       }
 
-    
+      self.$app.preloader.show();
           dbSales.find({
               selector: {
                 $and: [
@@ -1707,6 +1707,7 @@ export default {
               },
               sort: [{'_id': 'desc'}]
             }).then(function(ar){
+              self.$app.preloader.hide();
               var arr = ar.docs;
             //var collection = db.ingredients.toArray(function(arr){
             //console.log(arr);
@@ -1716,6 +1717,9 @@ export default {
                   }, function(){
                     self.setDataTable();
                   });
+            }).catch(function(err){
+              self.$app.preloader.hide();
+              self.showToast(err, "center");
             });
       }
   },

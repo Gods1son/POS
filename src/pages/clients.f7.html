@@ -544,12 +544,13 @@ export default {
       if(toggle != undefined){
         checked = toggle.checked == true ? 0 : 1;
       }
-      
+      self.$app.preloader.show();
         db.find({
           selector: {
             status: {$eq: checked}
           }
         }).then(function(ar){
+          self.$app.preloader.hide();
           var arr = ar.docs;
             //console.log(arr);
         //})
@@ -591,10 +592,10 @@ export default {
                             var stat = row.status == 1 ? "display-none" : "";
                             //html += '<div class=""><span class="labelName">Cost: </span><span class="valueName">' + self.formatMoney(row.cost_per_unit) + '</span></div>';
                             html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName">Deleted</span></div>';
-                            html += '</div><div class="card-footerMine padding-horizontal-half no-padding-vertical"><p class="display-inline-flex no-margin-vertical">';
-                            html += '<a class="button editButton" data-id="' + row._id + '">Edit</a>';
-                            html += '<a class="button myGreen viewPurchases" data-id="' + row.name + '">View Purchases</a>';
-                            html += '<a class="button color-red deleteButton" data-id="' + row._id + '">';
+                            html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
+                            html += '<a class="button button-small button-raised editButton" data-id="' + row._id + '">Edit</a>';
+                            html += '<a class="button button-small button-raised viewPurchases" data-id="' + row.name + '">View Purchases</a>';
+                            html += '<a class="button button-small button-raised deleteButton" data-id="' + row._id + '">';
                             html +=  row.status == 1 ? 'Delete' : 'Activate'; 
                             html += '</a></p></div></div>'
                             html += '</li>';
@@ -638,6 +639,9 @@ export default {
                           $("#clients-list").find(".sortTextPar").addClass("display-none");
                         }
                       });
+              }).catch(function(err){
+                self.$app.preloader.hide();
+                self.showToast(err, "center");
               });
             }
           },

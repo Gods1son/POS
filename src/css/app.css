@@ -108,7 +108,8 @@ button.text-editor-button.active{
 }
 
 .parentWrap .myCard{
-    box-shadow: 0px 1px 0px 2px darkgrey;
+    /*box-shadow: 0px 1px 0px 2px darkgrey;*/
+    box-shadow: 0 1px 5px 1px darkgrey;
 }
 
 .fab a{
@@ -128,15 +129,23 @@ button.text-editor-button.active{
     color: #673ab7;
 }
 
+.page-content .button-outline{
+    border:1px solid;
+}
+
 .myCard{
-    box-shadow: 0px 0px 1px 1px darkgrey;
+    /*box-shadow: 0px 0px 1px 1px darkgrey;*/
+    box-shadow: 0 1px 4px 1px darkgrey;
     margin-left: 5px;
     margin-right: 5px;
     margin-bottom: 0.8em;
 }
 .myCard .card-footerMine{
-    /*8background-color: #0c031d;*/
-    border-top: 0.5px solid darkgray;
+    /*background-color: #0c031d;
+    border-top: 0.5px solid darkgray;*/
+    background: ghostwhite;
+    border-radius: 5px;
+    padding: 5px 0;
 }
 
 .myCard .card-content{
@@ -145,12 +154,28 @@ button.text-editor-button.active{
     padding-bottom:5px;
 }
 
-.myCard .button, #savecompanyinfo{
+.myCard .button, #savecompanyinfo1{
     font-weight: 500;
-    font-size: 1em;
+    /*font-size: 1em;*/
     margin-right: 5px;
     text-transform: none;
     letter-spacing: 0px;
+    border: 0.1px solid;
+    color: gray;
+    /*box-shadow: 0px 0px 2px 0px;*/
+}
+
+#showPwdSignUp, #showPwdSignIn{
+    cursor: pointer;
+}
+
+#password, #passwordSign{
+    margin:0 !important;
+    padding: 0 !important;
+}
+
+.deleteProduct, .deleteButton, .deleteSale, .deleteExpense, .removeCost, .removeProduct, .removeRow{
+    color:red !important;
 }
 
 .bigLabel{
@@ -161,9 +186,11 @@ button.text-editor-button.active{
 .sellMultiple{
     font-weight: 500;
     font-size: 1.2em;
-    margin-right: 5px;
     letter-spacing: 0px;
     text-transform: none;
+    color: #673ab7;
+    /*border: 0.1px solid;*/
+    box-shadow: 0px 1px 5px 1px #673ab794;
 }
 
 .btn-blue, .customcharges{
@@ -374,7 +401,7 @@ button.text-editor-button.active{
     background: inherit;
 }
 
-.eachProduct{
+/*.eachProduct{
     border: 1px solid lightgray;
     border-collapse: collapse;
     margin: 7px auto;
@@ -391,7 +418,7 @@ button.text-editor-button.active{
 
 .eachProduct tbody tr:first-of-type td{
     font-weight: 500;
-}
+}*/
 
 /*.signingInput{
     border: 1px solid #673ab7;

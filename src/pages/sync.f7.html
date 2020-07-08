@@ -46,8 +46,11 @@
                         </div>
                       </li>-->
                     <li class="item-content item-input">
-                      <div class="item-inner">
-                        <div class="item-title">Password</div>
+                      <div class="item-inner no-padding-vertical">
+                        <div class="row" style="width: 100%;">
+                            <div class="col-50 item-title">Password</div>
+                            <div class="col-50 text-align-right text-color-blue text-small" id="showPwdSignIn" @click="showPasswordSignIn()">Show Password</div>
+                          </div>
                         <div class="item-input-wrap signingInput">
                           <input id="passwordSign" type="password" name="password" placeholder="Password">
                           <span class="input-clear-button"></span>
@@ -94,7 +97,10 @@
                     </li>
                     <li class="item-content item-input">
                       <div class="item-inner">
-                        <div class="item-title">Password</div>
+                        <div class="row" style="width: 100%;">
+                          <div class="col-50 item-title">Password</div>
+                          <div class="col-50 text-align-right text-color-blue text-small" id="showPwdSignUp" @click="showPasswordSignUp()">Show Password</div>
+                        </div>
                         <div class="item-input-wrap signingInput">
                           <input id="password" type="password" name="password" placeholder="Password">
                           <span class="input-clear-button"></span>
@@ -146,6 +152,27 @@
         showSignIn: function(){
             $("#signIn").removeClass("display-none");
             $("#signUp").addClass("display-none");
+        },
+        showPasswordSignIn: function(){
+          var cur = $("#passwordSign").attr("type");
+          if(cur.toLowerCase() == "password"){
+            $("#passwordSign").attr("type", "text");
+            $("#showPwdSignIn").text("Hide Password");
+          }else{
+            $("#passwordSign").attr("type", "password");
+            $("#showPwdSignIn").text("Show Password");
+          }
+        },
+        showPasswordSignUp: function(){
+          var cur = $("#password").attr("type");
+          if(cur.toLowerCase() == "password"){
+            $("#password").attr("type", "text");
+            $("#showPwdSignUp").text("Hide Password");
+          }else{
+            $("#password").attr("type", "password");
+            $("#showPwdSignUp").text("Show Password");
+          }
+         
         },
         signUpMethod: function(){
             var self = this;
@@ -310,7 +337,7 @@
               },
               error: function(err){
                 console.log(err);
-                self.showToast("Please check your credentials", "center");
+                self.showToast("An error occcured, please try again later.", "center");
                 self.$app.preloader.hide();
               }
             });
@@ -345,6 +372,8 @@
                     doc.apiKey = "";
                     doc.apiPwd = "";
                     doc.apiExp = 0;
+                    doc._rev = doc._rev;
+                    doc._id = doc._id;
                     return dbAccount.put(doc);
                   }).catch(function(err){
                     
@@ -398,6 +427,8 @@
                     doc.apiKey = apiKey;
                     doc.apiPwd = apiPwd;
                     doc.apiExp = apiExp;
+                    doc._rev = doc._rev;
+                    doc._id = doc._id;
                     return dbAccount.put(doc);
                   }).catch(function(err){
                     var obj = {};
@@ -614,6 +645,7 @@
                    var now = new Date().getTime();
                    var expired = now > doc.apiExp;
                    if(doc.signedIn ==1 && expired){
+                    console.log(doc.email + " " + doc.password + " " + doc.apiKey);
                     self.refreshToken(doc.email, doc.password, doc.apiKey);
                     return;
                    }
