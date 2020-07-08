@@ -65,9 +65,10 @@ setTimeout(function(){
   
     name: 'BizExpenseManager', // App name
     theme: 'auto', // Automatic theme detection
-    view: {
-      pushState: true
-    },
+    /*view: {
+      pushState: true,
+      pushStateRoot: document.location.pathname.split("index.html")[0]
+    },*/
     // App routes
     routes: routes,
     methods: {
@@ -84,6 +85,18 @@ setTimeout(function(){
         //this.$app.storage2();
       }
     }
+  });
+
+  var mainView = app.views.create('.view-main');
+
+// Handle Cordova Device Ready Event
+  $$(document).on('deviceready', function() {
+    document.addEventListener("backbutton", function(e){
+      e.preventDefault();
+      mainView.router.back();
+      //navigator.app.backHistory();
+      
+    }, false);
   });
 
 },3000)

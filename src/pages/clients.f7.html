@@ -42,7 +42,6 @@
               <span class="input-clear-button"></span>
             </div>
           </div>
-
           <div class="margin-vertical-half padding-vertical-half sortTextPar">
             <span class="sortText display-none">Sort By:</span>
             <!--<span class="sort" data-sort="name">Name</span>
@@ -258,6 +257,10 @@ export default {
       }
     },
   methods:{
+    testBack: function(){
+      var self= this;
+      self.$router.back();
+    },
     showToast: function(text, position){
         var self = this;
         self.$app.toast.create({

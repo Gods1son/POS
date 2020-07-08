@@ -189,7 +189,7 @@ button.text-editor-button.active{
     letter-spacing: 0px;
     text-transform: none;
     color: #673ab7;
-    /*border: 0.1px solid;*/
+    border: 1px solid;
     box-shadow: 0px 1px 5px 1px #673ab794;
 }
 
