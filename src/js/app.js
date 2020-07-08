@@ -78,7 +78,9 @@ setTimeout(function(){
     },
     on: {
       init: function () {
-        console.log('App initialized');
+        var self = this;
+        //console.log('App initialized');
+        
       },
       pageInit: function () {
         //app.methods.storage2();
@@ -87,17 +89,40 @@ setTimeout(function(){
     }
   });
 
-  var mainView = app.views.create('.view-main');
+  //var mainView = app.views.create('.view-main');
 
-// Handle Cordova Device Ready Event
-  $$(document).on('deviceready', function() {
-    document.addEventListener("backbutton", function(e){
-      e.preventDefault();
-      mainView.router.back();
-      //navigator.app.backHistory();
+  var opened = 0;
+  function exitApp(){
+    if (opened > 0) {
+      return false;
+    } else {
+      app.dialog.confirm('Are you sure you want to exit?', 'Exit App', 
+        function () {
+        navigator.app.exitApp();
+        },
+        function () {
+        opened = 0;  
+        return false;
+        }
+      );
+      opened = 1;
+    }
+  }
+  
       
-    }, false);
-  });
+  function onBackKeyDown() {
+    // Handle the back button
+    if(app.views.main.history.length == 1){
+      exitApp();
+      e.preventDefault();
+    } else {
+      app.dialog.close();
+      app.views.main.router.back();
+      return false;
+    }
+  }
+  
+  document.addEventListener("backbutton", onBackKeyDown, false);
 
 },3000)
 
