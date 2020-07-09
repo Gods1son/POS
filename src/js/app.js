@@ -116,7 +116,7 @@ setTimeout(function(){
       exitApp();
       e.preventDefault();
     } else {
-      app.dialog.close();
+      app.dialog.close(false);
       app.views.main.router.back();
       return false;
     }
