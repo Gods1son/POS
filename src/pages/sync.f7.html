@@ -125,7 +125,8 @@
     </template>
     <script>
     //import * as moment from 'moment';
-    var dbProducts = null, dbProdIngs = null, dbProdOthers = null, dbSales = null, dbIngs = null, dbSettings = null, dbClients = null, dbExpenses = null, dbAccount = null;
+    var dbProducts = null, dbProdIngs = null, dbProdOthers = null, dbSales = null, dbIngs = null; 
+    var dbSettings = null, dbClients = null, dbExpenses = null, dbAccount = null, failedSync = [];
     //import Cloudant from '@cloudant/cloudant';
     //var Cloudant = require('@cloudant/cloudant');
     //moment().format("X")  new Date().getTime()
@@ -141,7 +142,10 @@
             apiPwd: "",  
             personalApiKey: "",
             personalApiPwd: "",
-            personalApiExpires: null
+            personalApiExpires: null,
+            cloudURL: "https://fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix.cloudant.com/",
+            opts: { live: false, retry: false },
+            syncRetries: 0
           }
         },
       methods:{
@@ -444,157 +448,307 @@
                   });
                 
         },
+        removeFailedSync: function(db){
+          var index = failedSync.indexOf(db);
+            if (index > -1) {
+              failedSync.splice(index, 1);
+            }
+        },
+        addFailedSync: function(db){
+          var index = failedSync.indexOf(db);
+            if (index == -1) {
+              failedSync.push(db);
+            }
+        },
+        syncDBProducts: function(redirect){
+          var self = this;
+          var name = self.username;
+          self.$app.preloader.show();
+          var dbProductsR = new PouchDB(self.cloudURL + 'dbproducts$' + name, { //dbclients$bababosscombaba
+                    auth: {
+                        username:  self.personalApiKey,
+                        password:  self.personalApiPwd  
+                    },
+                    skipSetup: true
+            });
+
+            dbProducts.sync(dbProductsR, self.opts).on('complete', function (info) {
+                  self.showToast("products synced to server", "center");
+                  //remove from failed
+                  self.removeFailedSync("dbProducts");
+                  self.$app.preloader.hide();
+                  if(redirect){
+                    setTimeout(function(){ self.syncDBProdIngs(redirect); },1500);
+                  }
+                }).on('error', function (err) {
+                  // handle error
+                  console.log(err);
+                  self.showToast(err.error, "center");
+                  self.addFailedSync("dbProducts");
+                  self.$app.preloader.hide();
+                  if(redirect){
+                    setTimeout(function(){ self.syncDBProdIngs(redirect); },1500);
+                  }
+                })
+        },
+        syncDBProdIngs: function(redirect){
+          var self = this;
+          var name = self.username;
+          var dbProdIngsR = new PouchDB(self.cloudURL + 'dbprodings$' + name, { //dbclients$bababosscombaba
+                    auth: {
+                        username:  self.personalApiKey,
+                        password:  self.personalApiPwd  
+                    },
+                    skipSetup: true
+            });
+            self.$app.preloader.show();
+            dbProdIngs.sync(dbProdIngsR, self.opts).on('complete', function (info) {
+                  self.showToast("products ingredients synced to server", "center");
+                  //remove from failed
+                  self.removeFailedSync("dbProdIngs");
+                  self.$app.preloader.hide();
+                  if(redirect){
+                    setTimeout(function(){ self.syncDBProdOthers(redirect); },1500);
+                  }
+                }).on('error', function (err) {
+                  // handle error
+                  console.log(err);
+                  self.showToast(err.error, "center");
+                  self.addFailedSync("dbProdIngs");
+                  self.$app.preloader.hide();
+                  if(redirect){
+                    setTimeout(function(){ self.syncDBProdOthers(redirect); },1500);
+                  }
+                })
+        },
+        syncDBProdOthers: function(redirect){
+          var self = this;
+          var name = self.username;
+          var dbProdOthersR = new PouchDB(self.cloudURL + 'dbprodothers$' + name, { //dbclients$bababosscombaba
+                    auth: {
+                        username:  self.personalApiKey,
+                        password:  self.personalApiPwd  
+                    },
+                    skipSetup: true
+            });
+            self.$app.preloader.show();
+            dbProdOthers.sync(dbProdOthersR, self.opts).on('complete', function (info) {
+                  self.showToast("products custom charges synced to server", "center");
+                  //remove from failed
+                  self.removeFailedSync("dbProdOthers");
+                  self.$app.preloader.hide();
+                  if(redirect){
+                    setTimeout(function(){ self.syncDBSales(redirect); },1500);
+                  }
+                }).on('error', function (err) {
+                  // handle error
+                  console.log(err);
+                  self.showToast(err.error, "center");
+                  self.addFailedSync("dbProdOthers");
+                  self.$app.preloader.hide();
+                  if(redirect){
+                    setTimeout(function(){ self.syncDBSales(redirect); },1500);
+                  }
+                })
+        },
+        syncDBSales: function(redirect){
+          var self = this;
+          var name = self.username;
+          var dbSalesR = new PouchDB(self.cloudURL + 'dbsales$' + name, { //dbclients$bababosscombaba
+                    auth: {
+                        username:  self.personalApiKey,
+                        password:  self.personalApiPwd  
+                    },
+                    skipSetup: true
+            });
+            self.$app.preloader.show();
+            dbSales.sync(dbSalesR, self.opts).on('complete', function (info) {
+                  self.showToast("sales synced to server", "center");
+                  //remove from failed
+                  self.removeFailedSync("dbSales");
+                  self.$app.preloader.hide();
+                  if(redirect){
+                    setTimeout(function(){ self.syncDBIngs(redirect); },1500);
+                  }
+                }).on('error', function (err) {
+                  // handle error
+                  console.log(err);
+                  self.showToast(err.error, "center");
+                  self.addFailedSync("dbSales");
+                  self.$app.preloader.hide();
+                  if(redirect){
+                    setTimeout(function(){ self.syncDBIngs(redirect); },1500);
+                  }
+                })
+        },
+        syncDBIngs: function(redirect){
+          var self = this;
+          var name = self.username;
+          var dbIngsR = new PouchDB(self.cloudURL + 'dbings$' + name, { //dbclients$bababosscombaba
+                    auth: {
+                        username:  self.personalApiKey,
+                        password:  self.personalApiPwd  
+                    },
+                    skipSetup: true
+            });
+            self.$app.preloader.show();
+            dbIngs.sync(dbIngsR, self.opts).on('complete', function (info) {
+                  self.showToast("ingredients synced to server", "center");
+                  //remove from failed
+                  self.removeFailedSync("dbIngs");
+                  self.$app.preloader.hide();
+                  if(redirect){
+                    setTimeout(function(){ self.syncDBSettings(redirect); },1500);
+                  }
+                }).on('error', function (err) {
+                  // handle error
+                  console.log(err);
+                  self.showToast(err.error, "center");
+                  self.addFailedSync("dbIngs");
+                  self.$app.preloader.hide();
+                  if(redirect){
+                    setTimeout(function(){ self.syncDBSettings(redirect); },1500);
+                  }
+                })
+        },
+        syncDBSettings: function(redirect){
+          var self = this;
+          var name = self.username;
+          var dbSettingsR = new PouchDB(self.cloudURL + 'dbsettings$' + name, { //dbclients$bababosscombaba
+                    auth: {
+                        username:  self.personalApiKey,
+                        password:  self.personalApiPwd  
+                    },
+                    skipSetup: true
+            });
+            self.$app.preloader.show();
+            dbSettings.sync(dbSettingsR, self.opts).on('complete', function (info) {
+                  self.showToast("settings synced to server", "center");
+                  //remove from failed
+                  self.removeFailedSync("dbSettings");
+                  self.$app.preloader.hide();
+                  if(redirect){
+                    setTimeout(function(){ self.syncDBClients(redirect); },1500);
+                  }
+                }).on('error', function (err) {
+                  // handle error
+                  console.log(err);
+                  self.showToast(err.error, "center");
+                  self.addFailedSync("dbSettings");
+                  self.$app.preloader.hide();
+                  if(redirect){
+                    setTimeout(function(){ self.syncDBClients(redirect); },1500);
+                  }
+                })
+        },
+        syncDBClients: function(redirect){
+          var self = this;
+          var name = self.username;
+          var dbClientsR = new PouchDB(self.cloudURL + 'dbclients$' + name, { //dbclients$bababosscombaba
+                    auth: {
+                        username:  self.personalApiKey,
+                        password:  self.personalApiPwd  
+                    },
+                    skipSetup: true
+            });
+            self.$app.preloader.show();
+            dbClients.sync(dbClientsR, self.opts).on('complete', function (info) {
+                  self.showToast("clients synced to server", "center");
+                  //remove from failed
+                  self.removeFailedSync("dbClients");
+                  self.$app.preloader.hide();
+                  if(redirect){
+                    setTimeout(function(){ self.syncDBExpenses(redirect); },1500);
+                  }
+                }).on('error', function (err) {
+                  // handle error
+                  console.log(err);
+                  self.showToast(err.error, "center");
+                  self.addFailedSync("dbClients");
+                  self.$app.preloader.hide();
+                  if(redirect){
+                    setTimeout(function(){ self.syncDBExpenses(redirect); },1500);
+                  }
+                })
+        },
+        syncDBExpenses: function(redirect){
+          var self = this;
+          var name = self.username;
+          var dbExpensesR = new PouchDB(self.cloudURL + 'dbexpenses$' + name, { //dbclients$bababosscombaba
+                    auth: {
+                        username:  self.personalApiKey,
+                        password:  self.personalApiPwd  
+                    },
+                    skipSetup: true
+            });
+            self.$app.preloader.show();
+            dbExpenses.sync(dbExpensesR, self.opts).on('complete', function (info) {
+                  self.showToast("expenses synced to server", "center");
+                  //remove from failed
+                  self.$app.preloader.hide();
+                  self.removeFailedSync("dbExpenses");
+                  if(redirect){
+                    self.retryFailedSyncs();
+                  }
+
+                }).on('error', function (err) {
+                  // handle error
+                  console.log(err);
+                  self.showToast(err.error, "center");
+                  self.addFailedSync("dbExpenses");
+                  self.$app.preloader.hide();
+                  if(redirect){
+                    self.retryFailedSyncs();
+                  }
+                })
+        },
+        retryFailedSyncs: function(){
+          var self = this;
+          //console.log("All Done Master");   
+            if(failedSync.length > 0){
+              if(self.syncRetries == 2){
+                self.showToast("Sync failed too many times", "center");
+                return;
+              }
+              var num = self.syncRetries;
+              num += 1;
+              self.$setState({
+                  syncRetries: num
+                })
+              for(var i = 0; i < failedSync.length; i++){
+                var db = failedSync[i];
+                if(db == "dbProducts"){
+                  self.syncDBProducts(false);
+                }
+                if(db == "dbProdIngs"){
+                  self.syncDBProdIngs(false);
+                }
+                if(db == "dbProdOthers"){
+                  self.syncDBProdOthers(false);
+                }
+                if(db == "dbSales"){
+                  self.syncDBSales(false);
+                }
+                if(db == "dbIngs"){
+                  self.syncDBIngs(false);
+                }
+                if(db == "dbSettings"){
+                  self.syncDBSettings(false);
+                }
+                if(db == "dbClients"){
+                  self.syncDBClients(false);
+                }
+                if(db == "dbExpenses"){
+                  self.syncDBExpenses(false);
+                }
+              }
+            }else{
+              self.showToast("Sync Completed", "center");
+            }
+        },
         syncData: function(){
             var self = this;
-            var name = self.username;
-            var opts = { live: false, retry: false };
-            
-            var dbProductsR = new PouchDB('https://fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix.cloudant.com/dbproducts$' + name, { //dbclients$bababosscombaba
-                    auth: {
-                        username:  self.personalApiKey,
-                        password:  self.personalApiPwd  
-                    },
-                    skipSetup: true
-            });
-
-            var dbProdIngsR = new PouchDB('https://fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix.cloudant.com/dbprodings$' + name, { //dbclients$bababosscombaba
-                    auth: {
-                        username:  self.personalApiKey,
-                        password:  self.personalApiPwd  
-                    },
-                    skipSetup: true
-            });
-
-            var dbProdOthersR = new PouchDB('https://fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix.cloudant.com/dbprodothers$' + name, { //dbclients$bababosscombaba
-                    auth: {
-                        username:  self.personalApiKey,
-                        password:  self.personalApiPwd  
-                    },
-                    skipSetup: true
-            });
-
-            var dbSalesR = new PouchDB('https://fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix.cloudant.com/dbsales$' + name, { //dbclients$bababosscombaba
-                    auth: {
-                        username:  self.personalApiKey,
-                        password:  self.personalApiPwd  
-                    },
-                    skipSetup: true
-            });
-
-            var dbIngsR = new PouchDB('https://fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix.cloudant.com/dbings$' + name, { //dbclients$bababosscombaba
-                    auth: {
-                        username:  self.personalApiKey,
-                        password:  self.personalApiPwd  
-                    },
-                    skipSetup: true
-            });
-
-            var dbSettingsR = new PouchDB('https://fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix.cloudant.com/dbsettings$' + name, { //dbclients$bababosscombaba
-                    auth: {
-                        username:  self.personalApiKey,
-                        password:  self.personalApiPwd  
-                    },
-                    skipSetup: true
-            });
-
-            var dbClientsR = new PouchDB('https://fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix.cloudant.com/dbclients$' + name, { //dbclients$bababosscombaba
-                    auth: {
-                        username:  self.personalApiKey,
-                        password:  self.personalApiPwd  
-                    },
-                    skipSetup: true
-            });
-
-            var dbExpensesR = new PouchDB('https://fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix.cloudant.com/dbexpenses$' + name, { //dbclients$bababosscombaba
-                    auth: {
-                        username:  self.personalApiKey,
-                        password:  self.personalApiPwd  
-                    },
-                    skipSetup: true
-            });
-                
-          //dbProducts, dbProdIngs, dbProdOthers, dbSales, dbIngs, dbSettings, dbClients, dbExpenses
-                dbProducts.sync(dbProductsR, opts).on('complete', function (info) {
-                  // handle complete
-                  //console.log(info);
-                  self.showToast("products synced to server", "center");
-                }).on('error', function (err) {
-                  // handle error
-                  console.log(err);
-                  self.showToast(err.error, "center");
-                })
-
-                dbProdIngs.sync(dbProdIngsR, opts).on('complete', function (info) {
-                  // handle complete
-                  //console.log(info);
-                  self.showToast("products ingredients synced to server", "center");
-                }).on('error', function (err) {
-                  // handle error
-                  console.log(err);
-                  self.showToast(err.error, "center");
-                })
-
-                dbProdOthers.sync(dbProdOthersR, opts).on('complete', function (info) {
-                  // handle complete
-                  //console.log(info);
-                  self.showToast("products custom charges synced to server", "center");
-                }).on('error', function (err) {
-                  // handle error
-                  console.log(err);
-                  self.showToast(err.error, "center");
-                })
-
-                dbSales.sync(dbSalesR, opts).on('complete', function (info) {
-                  // handle complete
-                  //console.log(info);
-                  self.showToast("sales synced to server", "center");
-                }).on('error', function (err) {
-                  // handle error
-                  console.log(err);
-                  self.showToast(err.error, "center");
-                })
-
-                dbIngs.sync(dbIngsR, opts).on('complete', function (info) {
-                  // handle complete
-                  //console.log(info);
-                  self.showToast("ingredients synced to server", "center");
-                }).on('error', function (err) {
-                  // handle error
-                  console.log(err);
-                  self.showToast(err.error, "center");
-                })
-
-                dbSettings.sync(dbSettingsR, opts).on('complete', function (info) {
-                  // handle complete
-                  //console.log(info);
-                  self.showToast("settings synced to server", "center");
-                }).on('error', function (err) {
-                  // handle error
-                  console.log(err);
-                  self.showToast(err.error, "center");
-                })
-
-                dbClients.sync(dbClientsR, opts).on('complete', function (info) {
-                  // handle complete
-                  //console.log(info);
-                  self.showToast("clients synced to server", "center");
-                }).on('error', function (err) {
-                  // handle error
-                  console.log(err);
-                  self.showToast(err.error, "center");
-                })
-
-                dbExpenses.sync(dbExpensesR, opts).on('complete', function (info) {
-                  // handle complete
-                  //console.log(info);
-                  self.showToast("expenses synced to server", "center");
-                }).on('error', function (err) {
-                  // handle error
-                  console.log(err);
-                  self.showToast(err.error, "center");
-                })
-                
-                
+            self.syncDBProducts(true);
         },
         syncData2: function(){
             var self = this;

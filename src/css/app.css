@@ -210,7 +210,7 @@ button.text-editor-button.active{
 }
 
 .settingsInput, .myCard input[type="text"], .item-input-wrap input[type="text"]:not(.specSearch){
-    border-bottom: 0.5px solid #673ab7 !important;
+    /*border-bottom: 0.5px solid #673ab7 !important;*/
     padding: 2px 5px !important;
     margin-top: 2px !important;
 }

@@ -762,7 +762,7 @@ export default {
       var paymentDate =  sales.date_paid == "" ? "" : moment.unix(sales.date_paid).format("LLL");
       var today = moment().format("LLL");
       var logo = "";
-        if(self.logo != null){
+        if(self.logo != null && self.logo != "not available"){
           var attachments = self.logo._attachments.logoImage.data;
           var type = self.logo._attachments.logoImage.content_type;
           logo = "<div style='text-align: left;width:50%;float: left;'><img src='" + "data:"+ type + ";base64," + attachments + "' style='max-width:100px'/></div>";
@@ -775,8 +775,8 @@ export default {
 
             html += '<div style="text-align:left;clear:both;"><h4 style="margin-bottom:5px; margin-top:5px;">Invoice No:' + sales._id + '</h4><h4 style="margin-bottom:5px; margin-top:5px;">Invoice To: ';
             html += buyer + '</h4>';
-            html += '<table><thead><tr><th style="width: 50vw;text-align: left;">Product Name</th>';
-            html += '<th style="width: 10vw;text-align: center;">Quantity</th><th style="width: 20vw;text-align: right;">Unit Price</th><th style="width: 20vw;text-align: right;">Total Price</th>';
+            html += '<table style="width:100%;"><thead><tr><th style="width: 50%;text-align: left;">Product Name</th>';
+            html += '<th style="width: 10%;text-align: center;">Quantity</th><th style="width: 20%;text-align: right;">Unit Price</th><th style="width: 20%;text-align: right;">Total Price</th>';
             html += '</tr></thead><tbody>';
               if(children.length > 0){
                   for(var i = 0; i < children.length; i++){
@@ -805,16 +805,22 @@ export default {
             var tagline = "";
             if(self.settings != null){
               if(self.settings.tagline != null && self.settings.tagline != undefined && self.settings.tagline != ""){
-                tagline = "<h5 style='margin-bottom:5px; margin-top:5px;font-weight:200;'>" + self.settings.tagline.split("\n").join("<br>") + "</h5>";
+                var lines = self.settings.tagline.split("\n");
+                tagline += "<div style='margin-bottom:5px; margin-top:5px;font-weight:500;font-size:0.8em;'>";
+                for(var v = 0; v < lines.length; v++){
+                  tagline += "<div>" + lines[v] + "</div>";
+                }
+                tagline += "</div>";
+                //tagline = "<div><span>" + self.settings.tagline.split("\n").join("<br>") + "</span></div>";
               }else{
-                tagline = "<h5 style='margin-bottom:5px; margin-top:5px;font-weight:200;'>Thank you!</h5>";
+                tagline = "<div><span style='margin-bottom:5px; margin-top:5px;font-weight:500;font-size:0.8em;'>Thank you!</span></div>";
               }
             }else{
-              tagline = "<h5 style='margin-bottom:5px; margin-top:5px;font-weight:200;'>Thank you!</h5>";
+              tagline = "<div><span style='margin-bottom:5px; margin-top:5px;font-weight:500;font-size:0.8em;'>Thank you!</span></div>";
             }
             //var tagline = self.settings.tagline == "" ? "<h3 style='margin-bottom:5px; margin-top:5px;'>Thank you!</h3>" : "<h4 style='margin-bottom:5px; margin-top:5px;'>" + self.settings.tagline.split("\n").join("<br>") + "</h4>";
             var signature = "";
-            if(self.signature != null){
+            if(self.signature != null && self.signature != "not available"){
               var attachments = self.signature._attachments.signatureImage.data;
               var type = self.signature._attachments.signatureImage.content_type;
               signature = "<img src='" + "data:"+ type + ";base64," + attachments + "' style='max-width:100px'/>";
@@ -1025,6 +1031,7 @@ export default {
               })
     },
     showPDF: function(html, item){
+      var self = this;
       var options = {
                 documentSize: 'A4',
                 type: 'share',
@@ -1033,8 +1040,12 @@ export default {
       try{
           if(pdf != undefined){
             pdf.fromData( html, options)
-              .then((stats)=> self.showToast(stats, "center"))   // ok..., ok if it was able to handle the file to the OS.  
-              .catch((err)=> self.showToast(err, "center"))
+              .then(function(stats){
+                self.$app.preloader.hide();
+              })   // ok..., ok if it was able to handle the file to the OS.  
+              .catch(function(err){
+                self.$app.preloader.hide();
+              })
           }
         }catch(err){
           //console.log(html);
@@ -1045,7 +1056,7 @@ export default {
             html2canvas:  { scale: 1.5 },
             jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
           };
-
+          self.$app.preloader.hide();
           // New Promise-based usage:
           html2pdf().set(opt).from(html).save();
             
@@ -1055,6 +1066,8 @@ export default {
     },
     invoice: function(id){
       var self = this;
+      self.$app.preloader.show();
+      //self.loadImages();
       var item = self.sales.find(function(e){ 
                   return e._id == id;
               });
@@ -1070,13 +1083,15 @@ export default {
                     var arr = ar.docs;
                   //console.log(arr);
                     children = ar;
-                    var html = self.formatPDF(item, arr);
-                    self.showPDF(html, item);
+                    //var html = self.formatPDF(item, arr);
+                    self.loadImageLogo(item, arr);
+                    //self.showPDF(html, item);
                 })
               }else{
                 //console.log(children);
-                var html = self.formatPDF(item, children);
-                self.showPDF(html, item);
+                //var html = self.formatPDF(item, children);
+                self.loadImageLogo(item, children);
+                //self.showPDF(html, item);
               }
               
       
@@ -1661,33 +1676,52 @@ export default {
                       settings: doc
                     })
               })
-
-              dbSettingsImages.get('logoImage', {attachments: true}).then(function (blobOrBuffer) {
-                    // handle result
-                    self.$setState({
-                      logo: blobOrBuffer
-                    })
-                    var attachments = blobOrBuffer._attachments.logoImage.data;
-                    var type = blobOrBuffer._attachments.logoImage.content_type;
-                    //console.log(blobOrBuffer._attachments.logoID);
-                    $("#logoShow").attr("src", "data:"+ type + ";base64," + attachments);
-                    //console.log(JSON.stringify(blobOrBuffer));
-                  }).catch(function (err) {
-                    console.log(err);
-                  });
-
-                  dbSettingsImages.get('signatureImage', {attachments: true}).then(function(blobOrBuffer) {
-                    self.$setState({
-                      signature: blobOrBuffer
-                    })
-                    var attachments = blobOrBuffer._attachments.signatureImage.data;
-                    var type = blobOrBuffer._attachments.signatureImage.content_type;
-                    //console.log(blobOrBuffer._attachments.logoID);
-                    $("#signatureShow").attr("src", "data:"+ type + ";base64," + attachments);
-                  }).catch(function (err) {
-                    console.log(err);
-                  });
         },
+    loadImageLogo: function(item, arr){
+      var self = this;
+      if(self.logo == null){
+        dbSettingsImages.get('logoImage', {attachments: true}).then(function (blobOrBuffer) {
+            // handle result
+            self.$setState({
+              logo: blobOrBuffer
+            }).then(function(){
+              self.loadImageSignature(item, arr);
+            })
+          }).catch(function (err) {
+            self.$setState({
+              logo: "not available"
+            }).then(function(){
+              self.loadImageSignature(item, arr);
+            })
+          });
+        }else{
+          self.loadImageSignature(item, arr);
+        }         
+    },
+    loadImageSignature: function(item, arr){
+      var self = this;
+      if(self.signature == null){
+        dbSettingsImages.get('signatureImage', {attachments: true}).then(function(blobOrBuffer) {
+              self.$setState({
+                signature: blobOrBuffer
+              }).then(function(){
+                var html = self.formatPDF(item, arr);
+               self.showPDF(html, item);
+            })
+              
+            }).catch(function (err) {
+              self.$setState({
+                signature: "not available"
+              }).then(function(){
+                var html = self.formatPDF(item, arr);
+              self.showPDF(html, item);
+            })
+          });
+        }else{
+          var html = self.formatPDF(item, arr);
+            self.showPDF(html, item);
+        }           
+    },
     getData: function(){
       var self = this;
       var checked = 1;

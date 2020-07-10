@@ -115,8 +115,11 @@ setTimeout(function(){
     if(app.views.main.history.length == 1){
       exitApp();
       e.preventDefault();
-    } else {
-      app.dialog.close(false);
+    } else if($(".modal-in").length > 0){
+      app.dialog.close(true);
+    }
+    else {
+      
       app.views.main.router.back();
       return false;
     }
