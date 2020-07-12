@@ -319,6 +319,40 @@ export default {
       var ret = sym + val.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
       return ret;
     },
+    permDeleteItem: function(list, id){
+        var self = this;
+        
+        self.$app.dialog.confirm("Are you sure you want to permanently delete this?", function(){
+                  /*var item = self.ings.find(function(e){ 
+                      return e._id = id;
+                  });
+                  item.status = checked;*/
+                  //console.log(item);
+                  db.get(id).then(function(doc) {
+                   // console.log(doc);
+                    doc.status = -1
+                    return db.put(doc);
+                  }).then(function(){
+                    self.clients = self.clients.filter(function(e){ 
+                      return e._id != id;
+                  });
+                  //console.log(self.ings);
+                  self.$setState({
+                      clients:self.clients,
+                      totalMat:self.clients.length
+                  }, function(){
+                      self.showToast("Client permanently deleted!", "center");
+                      list.remove("id", id);
+                      if(self.clients.length == 0){
+                        $(".sortTextPar").addClass("display-none");
+                        $("#clients-list .pagination").remove();
+                      }
+                  });
+                })
+                
+            }, null);
+        //}, null);
+    },
     DeleteItem: function(list, id){
         var self = this;
         var checked = 0;
@@ -580,10 +614,10 @@ export default {
                             var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
                             html += '<div class="name cardName">' + row.name + '</div><div class="id display-none">' + row._id + '</div>';
                             if(row.phone != ""){
-                              html += '<div class=""><span class="labelName">Contact number: </span><span class="valueName">' + row.phone + '</span></div>';
+                              html += '<div class=""><span class="labelName">Contact number: </span><span class="valueName"><a class="external" target="_system" href="tel:' + row.phone + '"><i class="icon f7-icons phone">phone</i><span class="in-link">' + row.phone + '</span></a></span></div>';
                             }
                             if(row.email != ""){
-                              html += '<div class=""><span class="labelName">Email: </span><span class="valueName">' + row.email + '</span></div>';
+                              html += '<div class=""><span class="labelName">Email: </span><span class="valueName"><a class="external" target="_system" href="mailto:' + row.email + '"><i class="icon f7-icons envelope">envelope</i><span class="in-link">' + row.email + '</span></a></span></div>';
                             }
                             if(row.address != ""){
                               html += '<div class="display-flex"><div class="labelName">Address: </div><div class="valueName margin-left-half">' + row.address.split("\n").join("<br>") + '</div></div>';
@@ -600,7 +634,11 @@ export default {
                             html += '<a class="button button-small button-raised viewPurchases" data-id="' + row.name + '">View Purchases</a>';
                             html += '<a class="button button-small button-raised deleteButton" data-id="' + row._id + '">';
                             html +=  row.status == 1 ? 'Delete' : 'Activate'; 
-                            html += '</a></p></div></div>'
+                            html += '</a>';
+                            if(row.status == 0){
+                              html += '<a class="button button-small button-raised permDelButton" data-id="' + row._id + '">Delete</a>';
+                            }
+                            html += '</p></div></div>';
                             html += '</li>';
                             $("#clients-list .list").append(html);
                             //return html;
@@ -635,6 +673,9 @@ export default {
                               }
                               if($(this).hasClass("deleteButton")){
                                 self.DeleteItem(clientsList, data);
+                              }
+                              if($(this).hasClass("permDelButton")){
+                                self.permDeleteItem(clientsList, data);
                               }
                               //return false;
                           });

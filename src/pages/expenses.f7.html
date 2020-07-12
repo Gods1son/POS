@@ -275,6 +275,34 @@ export default {
       }
     },
   methods:{
+    permdeleteExpense: function(list, id){
+        var self = this;
+        
+        self.$app.dialog.confirm("Are you sure you want to permanently delete this expense?", function(){
+                dbExpenses.get(id).then(function(doc) {
+                        // console.log(doc);
+                          doc.status = -1
+                          return dbExpenses.put(doc);
+                        }).then(function(){
+                self.expenses = self.expenses.filter(function(e){ 
+                      return e._id != id;
+                  });
+
+                  self.showToast("Expense permanently deleted", "center");
+                  //console.log(self.ings);
+                  self.$setState({
+                      expenses:self.expenses,
+                      totalMat:self.expenses.length
+                  }, function(){
+                      self.showToast("Expense permanently deleted!", "center");
+                      list.remove("id", id);
+                      self.setDataTable();
+                    self.calculateTotalMoneyExpense();
+                  });
+             // }
+            });
+        }, null);
+    },
     deleteExpense: function(list, id){
         var self = this;
         var checked = 0;
@@ -304,11 +332,6 @@ export default {
                   }, function(){
                       self.showToast("Expense " + text + "d!", "center");
                       list.remove("id", id);
-                      /*if(self.expenses.length == 0){
-
-                          $(".customListSub").addClass("display-none");
-                          $("#expenses-list .pagination").remove();
-                      }*/
                       self.setDataTable();
                     self.calculateTotalMoneyExpense();
                   });
@@ -506,7 +529,11 @@ export default {
                             html += '<a class="button button-small button-raised editExpense" data-id="' + row._id + '">Edit</a>';
                             html += '<a class="button button-small button-raised deleteExpense" data-id="' + row._id + '">';
                             html +=  row.status == 1 ? 'Delete' : 'Activate'; 
-                            html += '</a></p></div></div>'
+                            html += '</a>';
+                            if(row.status == 0){
+                              html += '<a class="button button-small button-raised permDelButton" data-id="' + row._id + '">Delete</a>';
+                            }
+                            html += '</p></div></div>';
                             html += '</li>';
                             $("#expenses-list .list").append(html);
                             //return html;
@@ -538,6 +565,9 @@ export default {
                               }
                               if($(this).hasClass("deleteExpense")){
                                 self.deleteExpense(expense, data);
+                              }
+                              if($(this).hasClass("permDelButton")){
+                                self.permdeleteExpense(expense, data);
                               }
                               //return false;
                           });

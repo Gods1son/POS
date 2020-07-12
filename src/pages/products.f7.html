@@ -668,6 +668,33 @@ export default {
                         closeTimeout: 2000,
                         }).open();
     },
+    permDeleteItem: function(list, id){
+        var self = this;
+        
+        self.$app.dialog.confirm("Are you sure you want to permanently delete this?", function(){
+                  dbProducts.get(id).then(function(doc) {
+                   // console.log(doc);
+                    doc.status = -1
+                    return dbProducts.put(doc);
+                  }).then(function(){
+
+                  self.products = self.products.filter(function(e){ 
+                      return e._id != id;
+                  });
+                  self.$setState({
+                      products:self.products,
+                      totalMat:self.products.length
+                  },function(){
+                      self.showToast("Product permanently deleted!", "center");
+                      list.remove("id", id);
+                      if(self.products.length == 0){
+                        $(".sortTextPar").addClass("display-none");
+                        $("#product-list .pagination").remove();
+                      }
+                  });
+              })
+          }, null);
+    },
     DeleteItem: function(list, id){
         var self = this;
         var checked = 0;
@@ -1489,6 +1516,9 @@ export default {
                             html += '<a class="button button-small button-raised deleteProduct" data-id="' + row._id + '">';
                             html +=  row.status == 1 ? 'Delete' : 'Activate';
                             html += '</a>';
+                            if(row.status == 0){
+                              html += '<a class="button button-small button-raised permDelButton" data-id="' + row._id + '">Delete</a>';
+                            }
                             html += '</p></div></div></li>';
                             $("#product-list .list").append(html);
                             //return html;
@@ -1525,6 +1555,9 @@ export default {
                               }
                               if($(this).hasClass("deleteProduct")){
                                 self.DeleteItem(productList,data);
+                              }
+                              if($(this).hasClass("permDelButton")){
+                                self.permDeleteItem(productList, data);
                               }
                               //return false;
                           });

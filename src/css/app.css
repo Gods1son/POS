@@ -183,6 +183,12 @@ button.text-editor-button.active{
     color:red !important;
 }
 
+.permDelButton{
+    background: red !important;
+    color: white !important;
+    border-color: red !important;
+}
+
 .bigLabel{
     font-size: 1.3em;
     text-align: center;
@@ -238,6 +244,25 @@ button.text-editor-button.active{
 .valueName{
     font-weight: 400;
     font-size: 1em;
+    vertical-align: baseline;
+}
+
+.valueName .icon{
+    font-size: 1em;
+    vertical-align: baseline;
+    color:black;
+}
+
+.in-link{
+    /*color: black*/
+}
+
+.envelope{
+    margin-right: 3px;
+}
+
+.phone{
+    margin-right: 1.5px;
 }
 
 .myGreen{

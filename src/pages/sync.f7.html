@@ -251,6 +251,30 @@
            self.loginMethod(email, pwd);
            
         },
+        deleteCurrentSession: function(sessionID){
+          var self = this;
+          //self.$app.preloader.show();
+          var data = {};
+            data.session_id = sessionID;
+            $.ajax({
+              url: 'https://posbackend.herokuapp.com/auth/logoutSession',
+              headers: {
+                //'Authorization':'Bearer ' + self.personalApiKey + ":" + self.personalApiPwd,
+                  //'X-CSRF-TOKEN':'xxxxxxxxxxxxxxxxxxxx',
+                  'Content-Type':'application/json'
+              },
+              method: 'POST',
+              dataType: 'json',
+              data: JSON.stringify(data),
+              success: function(data){
+                console.log(data);
+              },
+              error: function(err){
+                console.log(err);
+                //self.$app.preloader.hide();
+              }
+            });
+        },
         refreshToken: function(email, pd, token){
           var self = this;
           self.$app.preloader.show();
@@ -800,7 +824,14 @@
                    var expired = now > doc.apiExp;
                    if(doc.signedIn ==1 && expired){
                     console.log(doc.email + " " + doc.password + " " + doc.apiKey);
-                    self.refreshToken(doc.email, doc.password, doc.apiKey);
+                    //self.refreshToken(doc.email, doc.password, doc.apiKey);
+                    self.showSignIn();
+                    $("#signIn").removeClass("display-none");
+                    $("#signUp").addClass("display-none");
+                    $("#emailSign").val(doc.email);
+                    $("#passwordSign").val(doc.password);
+                    $(".syncParentClick").addClass("display-none");
+                    //self.deleteCurrentSession(doc.apiKey);
                     return;
                    }
                    if(doc.signedIn == undefined || doc.signedIn == 0){

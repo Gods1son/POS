@@ -743,7 +743,7 @@ export default {
       var ret = sym + val.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
       return ret;
     },
-    formatPDF: function(sales, children){//product_name,buyer_name,cost,amountPaid,isPaid,date_paid,created_date
+    formatPDF: function(sales, children, logoImage, signImage){//product_name,buyer_name,cost,amountPaid,isPaid,date_paid,created_date
       var self = this;
       var Companyname = self.settings == null ? "" : self.settings.companyName;
       var Comaddress = self.settings == null ? "" : self.settings.companyAddress.split("\n").join("<br>");
@@ -762,9 +762,9 @@ export default {
       var paymentDate =  sales.date_paid == "" ? "" : moment.unix(sales.date_paid).format("LLL");
       var today = moment().format("LLL");
       var logo = "";
-        if(self.logo != null && self.logo != "not available"){
-          var attachments = self.logo._attachments.logoImage.data;
-          var type = self.logo._attachments.logoImage.content_type;
+        if(logoImage != null){
+          var attachments = logoImage._attachments.logoImage.data;
+          var type = logoImage._attachments.logoImage.content_type;
           logo = "<div style='text-align: left;width:50%;float: left;'><img src='" + "data:"+ type + ";base64," + attachments + "' style='max-width:100px'/></div>";
         }
       //try{
@@ -820,9 +820,9 @@ export default {
             }
             //var tagline = self.settings.tagline == "" ? "<h3 style='margin-bottom:5px; margin-top:5px;'>Thank you!</h3>" : "<h4 style='margin-bottom:5px; margin-top:5px;'>" + self.settings.tagline.split("\n").join("<br>") + "</h4>";
             var signature = "";
-            if(self.signature != null && self.signature != "not available"){
-              var attachments = self.signature._attachments.signatureImage.data;
-              var type = self.signature._attachments.signatureImage.content_type;
+            if(signImage != null){
+              var attachments = signImage._attachments.signatureImage.data;
+              var type = signImage._attachments.signatureImage.content_type;
               signature = "<img src='" + "data:"+ type + ";base64," + attachments + "' style='max-width:100px'/>";
             }
             
@@ -830,56 +830,34 @@ export default {
             html += '</div>';
             html += '</html>';
             return html;
-      /*  }
-      }catch(err){
-        logo = "";
-            //var html =  '<html><head><style>table td{padding: 5px;} thead tr{background: lightblue; color:black;} thead th{padding: 5px;} tbody tr:nth-child(even) {background-color: #f2f2f2;}</style></head>';
-            var html = '<div>' + logo + '<div>';
-            html += '<h2>' + Companyname + '</h2><div>' + Comaddress + '</div></div></div>';
-
-            html += '<div><h4>Invoice No:' + sales._id + '</h4><h4>Invoice To: ';
-            html += buyer + '</h4>';
-            html += '<table><thead><tr><th>Product Name</th>';
-            html += '<th>Quantity</th><th>Unit Price</th><th>Total Price</th>';
-            html += '</tr></thead><tbody>';
-              if(children.length > 0){
-                  for(var i = 0; i < children.length; i++){
-                    var each = children[i];
-                    html += '<tr><td>' + each.product_name + '</td><td>' + each.quantity + '</td>';
-                    html += '<td>' + self.moneyFormat(each.cost) + '</td>';
-                    html += '<td>' + self.moneyFormat(each.total_price) + '</td></tr>';
-                  }
-              }else{
-                  html += '<tr><td>' + productName + '</td><td>' + quant + '</td>';
-                  html += '<td>' + cost + '</td>';
-                  html += '<td>' + totalPrice + '</td></tr>';
-              }
-            
-            
-            html += '</tbody></table>';
-            html += '<div><table style="float:right"><tbody>';
-            html += '<tr><td><span style="font-weight:600">Price Before Tax: </span></td><td><span>' + totalPrice + '</span></td></tr>';
-            html += '<tr><td><span style="font-weight:600">Tax: </span></td><td><span>' + tax + '%</span></td></tr>';
-            html += '<tr><td><span style="font-weight:600">Price After Tax: </span></td><td><span>' + self.moneyFormat(afterTax) + '</span></td></tr>';
-            html += '<tr><td><span style="font-weight:600">Amount Paid: </span></td><td><span>' + totalPaid + '</span></td></tr>';
-            html += '<tr><td><span style="font-weight:600">Outstanding: </span></td><td><span>' + self.moneyFormat(outstanding) + '</span></td></tr>';
-            html += '<tr><td><span style="font-weight:600"">Purchase Date: </span></td><td><span>' + purchaseDate + '</span></td></tr>';
-            html += '<tr><td><span style="font-weight:600"">Payment Date: </span></td><td><span>' + paymentDate + '</span></td></tr>';
-            html += '</tbody></table>';
-            var tagline = self.settings.tagline == null ? "<h3>Thank you!</h3>" : "<h4>" + self.settings.tagline.split("\n").join("<br>") + "</h4>";
-            var signature = "";
-            if(self.signature != null){
-              var attachments = self.signature._attachments.signatureImage.data;
-              var type = self.signature._attachments.signatureImage.content_type;
-              signature = "<img src='" + "data:"+ type + ";base64," + attachments + "' style='max-width:100px'/>";
-            }
-            
-            html += '<div>' + tagline  + signature + '<h5>' + today + '</h5></div>';
-            html += '</div>';
-            //html += '</html>';
-            return html;
-      }*/
       
+    },
+    permDeleteSale: function(list, id){
+        var self = this;
+        
+        self.$app.dialog.confirm("Are you sure you want to permanently delete this sale?", function(){
+              dbSales.get(id).then(function(doc) {
+                   // console.log(doc);
+                    doc.status = -1
+                    return dbSales.put(doc);
+                  }).then(function(){
+                self.sales = self.sales.filter(function(e){ 
+                      return e._id != id;
+                  });
+                  self.showToast("Sale permanently deleted", "center");
+                  //console.log(self.ings);
+                  self.$setState({
+                      sales:self.sales
+                  }, function(){
+                      self.showToast("Sale permanently deleted!", "center");
+                      list.remove("id", id);
+                      self.setDataTable();
+                      self.calculateTotalMoney();
+                  });
+            }).catch(function(){
+              self.showToast("An error occured, please try again", "center");
+            })
+        });
     },
     deleteSale: function(list, id){
         var self = this;
@@ -907,23 +885,11 @@ export default {
                   self.$setState({
                       sales:self.sales
                   }, function(){
-                      //var but = $("#salesTable").find(".deleteSale[data-id='" + id + "']");
-                      //var row = $(but).parents("tr").eq(0);
                       self.showToast("Sale " + text + "d!", "center");
                       list.remove("id", id);
                       self.setDataTable();
                       self.calculateTotalMoney();
-                      /*if(sales.sales.length == 0){
-                        var html = "<li><div class='card myCard'><div class='card-content text-align-center'>No result found</div></div></li>";
-                          $("#sales-list .list").append(html);
-                          $(".customListSub").addClass("display-none");
-                          $("#sales-list .pagination").remove();
-                      }*/
                   });
-               /* }else{
-                    self.showToast("An error occured, please try again", "center");
-                    //self.$app.dialog.alert("An error occured, please try again");
-                }*/
             }).catch(function(){
               self.showToast("An error occured, please try again", "center");
             })
@@ -1499,7 +1465,11 @@ export default {
                             html += '<a class="button button-small button-raised editSale" data-id="' + row._id + '" data-isparent="' + isParent + '">Edit</a>';
                             html += '<a class="button button-small button-raised deleteSale" data-id="' + row._id + '">';
                             html +=  row.status == 1 ? 'Delete' : 'Activate'; 
-                            html += '</a></p></div></div>'
+                            html += '</a>';
+                            if(row.status == 0){
+                              html += '<a class="button button-small button-raised permDelButton" data-id="' + row._id + '">Delete</a>';
+                            }
+                            html += '</p></div></div>';
                             html += '</li>';
                             $("#sales-list .list").append(html);
                             //return html;
@@ -1540,6 +1510,9 @@ export default {
                               }
                               if($(this).hasClass("deleteSale")){
                                 self.deleteSale(sales, data);
+                              }
+                              if($(this).hasClass("permDelButton")){
+                                self.permDeleteSale(sales, data);
                               }
                               if($(this).hasClass("sellToOthers")){
                                 self.$setState({
@@ -1679,48 +1652,22 @@ export default {
         },
     loadImageLogo: function(item, arr){
       var self = this;
-      if(self.logo == null){
         dbSettingsImages.get('logoImage', {attachments: true}).then(function (blobOrBuffer) {
             // handle result
-            self.$setState({
-              logo: blobOrBuffer
-            }).then(function(){
-              self.loadImageSignature(item, arr);
-            })
+            self.loadImageSignature(item, arr, blobOrBuffer);
           }).catch(function (err) {
-            self.$setState({
-              logo: "not available"
-            }).then(function(){
-              self.loadImageSignature(item, arr);
-            })
-          });
-        }else{
-          self.loadImageSignature(item, arr);
-        }         
+            self.loadImageSignature(item, arr, null);
+          });       
     },
-    loadImageSignature: function(item, arr){
+    loadImageSignature: function(item, arr, logoImage){
       var self = this;
-      if(self.signature == null){
-        dbSettingsImages.get('signatureImage', {attachments: true}).then(function(blobOrBuffer) {
-              self.$setState({
-                signature: blobOrBuffer
-              }).then(function(){
-                var html = self.formatPDF(item, arr);
-               self.showPDF(html, item);
-            })
-              
+        dbSettingsImages.get('signatureImage', {attachments: true}).then(function(signImage) {
+          var html = self.formatPDF(item, arr, logoImage, signImage);
+          self.showPDF(html, item);    
             }).catch(function (err) {
-              self.$setState({
-                signature: "not available"
-              }).then(function(){
-                var html = self.formatPDF(item, arr);
+              var html = self.formatPDF(item, arr, logoImage, null);
               self.showPDF(html, item);
-            })
-          });
-        }else{
-          var html = self.formatPDF(item, arr);
-            self.showPDF(html, item);
-        }           
+          });        
     },
     getData: function(){
       var self = this;
