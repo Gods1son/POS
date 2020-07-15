@@ -526,7 +526,7 @@ export default {
                             html += '<div class=""><span class="labelName">Created Date: </span><span class="valueName">' + moment.unix(row.created_date).format("LLL") + '</span></div>';
                             html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName">Deleted</span></div>';
                             html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
-                            html += '<a class="button button-small button-raised editExpense" data-id="' + row._id + '">Edit</a>';
+                            html += '<a class="button button-small button-raised editExpense" data-id="' + row._id + '">View / Edit</a>';
                             html += '<a class="button button-small button-raised deleteExpense" data-id="' + row._id + '">';
                             html +=  row.status == 1 ? 'Delete' : 'Activate'; 
                             html += '</a>';

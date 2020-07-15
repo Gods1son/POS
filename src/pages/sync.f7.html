@@ -251,13 +251,14 @@
            self.loginMethod(email, pwd);
            
         },
-        deleteCurrentSession: function(sessionID){
+        deleteCurrentSession: function(sessionID, key){
           var self = this;
-          //self.$app.preloader.show();
+          self.$app.preloader.show();
           var data = {};
-            data.session_id = sessionID;
+          data.session_id = sessionID;
+            //data.session_id = sessionID;
             $.ajax({
-              url: 'https://posbackend.herokuapp.com/auth/logoutSession',
+              url: "https://posbackend.herokuapp.com/logoutSession",
               headers: {
                 //'Authorization':'Bearer ' + self.personalApiKey + ":" + self.personalApiPwd,
                   //'X-CSRF-TOKEN':'xxxxxxxxxxxxxxxxxxxx',
@@ -267,11 +268,13 @@
               dataType: 'json',
               data: JSON.stringify(data),
               success: function(data){
+                self.$app.preloader.hide();
+                self.showToast("Old session cleared", "center");
                 console.log(data);
               },
               error: function(err){
                 console.log(err);
-                //self.$app.preloader.hide();
+                self.$app.preloader.hide();
               }
             });
         },
@@ -281,7 +284,7 @@
           var data = {};
             data.token = token;
             $.ajax({
-              url: 'https://posbackend.herokuapp.com/auth/refresh',
+              url: 'https://posbackend.herokuapp.com/auth/refresh', // 
               headers: {
                 'Authorization':'Bearer ' + self.personalApiKey + ":" + self.personalApiPwd,
                   //'X-CSRF-TOKEN':'xxxxxxxxxxxxxxxxxxxx',
@@ -332,7 +335,7 @@
             data.username = email;
             data.password = pd;
             $.ajax({
-              url: 'https://posbackend.herokuapp.com/auth/login',
+              url: 'https://posbackend.herokuapp.com/auth/login', //
               headers: {
                   //'Authorization':'Basic xxxxxxxxxxxxx',
                   //'X-CSRF-TOKEN':'xxxxxxxxxxxxxxxxxxxx',
@@ -378,7 +381,7 @@
             data.username = self.email;
             data.password = self.pwd;
             $.ajax({
-              url: 'https://posbackend.herokuapp.com/auth/logout',
+              url: 'https://posbackend.herokuapp.com/auth/logout',  //
               headers: {
                   'Authorization':'Bearer ' + self.personalApiKey + ":" + self.personalApiPwd,
                   //'X-CSRF-TOKEN':'xxxxxxxxxxxxxxxxxxxx',
@@ -831,7 +834,7 @@
                     $("#emailSign").val(doc.email);
                     $("#passwordSign").val(doc.password);
                     $(".syncParentClick").addClass("display-none");
-                    //self.deleteCurrentSession(doc.apiKey);
+                    self.deleteCurrentSession(doc.apiKey, doc.email);
                     return;
                    }
                    if(doc.signedIn == undefined || doc.signedIn == 0){

@@ -217,7 +217,7 @@
                     <div class="item-inner">
                       <div class="item-title">Total Price</div>
                       <div class="item-input-wrap">
-                        <input type="text" class="total_sell" placeholder="Total Price" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                        <input type="text" class="total_sell" @keyup="calculateQuantity2" placeholder="Total Price" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                         <span class="input-clear-button"></span>
                       </div>
                     </div>
@@ -242,7 +242,7 @@
                           <div class="item-inner">
                             <div class="item-title">After Tax Price</div>
                             <div class="item-input-wrap">
-                              <input type="text" class="afterTax" placeholder="After Tax Price" disabled/>
+                              <input type="text" class="afterTax" placeholder="After Tax Price"/>
                               <span class="input-clear-button"></span>
                             </div>
                           </div>
@@ -547,7 +547,7 @@ export default {
           $(".taxpercent").parents("ul").eq(0).removeClass("bg-color-red");
         }
 
-        if(grpName == "" || buyername == "" || isNaN(amountPaid)){
+        if(buyername == "" || isNaN(amountPaid)){
             $(".buyersNameMultiple").parents("li").eq(0).addClass("bg-color-red");
             error = true;
         }else{
@@ -607,7 +607,7 @@ export default {
         }else{
           // save into db
           //console.log("clean");
-      
+        grpName = grpName == "" ? buyername + " group purchase" : grpName;
         var objMaster = {
                 product_name: grpName,  
                 buyer_name: buyername,
@@ -696,7 +696,7 @@ export default {
           html += '<div class="col-50"><div class="item-content item-input no-padding-left"><div class="item-inner no-padding-right"><div class="labelName">Quantity</div>';
           html += '<div class="item-input-wrap"><input class="productQuantity" type="text" placeholder="Product Quantity" value="' + quantity + '">';
           html +=  '<span class="input-clear-button"></span></div></div></div></div></div>';
-          html += '<div><span class="labelName">Total Price: </span><div class="display-inline-flex"><input class="totalproductprice" type="text" disabled placeholder="Total Price" value="';
+          html += '<div><span class="labelName">Total Price: </span><div class="display-inline-flex"><input class="totalproductprice" type="text" placeholder="Total Price" value="';
           html += totalPrice + '"></div></div>';
         html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
           html += '<a class="button button-small button-raised removeProduct">Delete</a>';
@@ -729,6 +729,24 @@ export default {
               }
             }
         }
+    },
+    calculateQuantity2: function(){
+      var self = this;
+      var total = Number($(".total_sell").val());
+            var taxes = Number($(".taxes").val().trim());
+            //console.log("0 - " + taxes);
+            if(taxes != "" || taxes == 0){
+              //console.log("1 - " + taxes);
+              if(!isNaN(taxes)){
+                //console.log("2 - " + taxes);
+                var taxAmt = (taxes/100) * total;
+                var aftCost = total + taxAmt;
+                //console.log("3 - " + aftCost);
+                $(".afterTax").val(aftCost.toFixed(2));
+              }
+            }else{
+              $(".afterTax").val(total.toFixed(2)); 
+            }
     },
     moneyFormat: function(val){
       var self = this;           
@@ -1364,7 +1382,7 @@ export default {
           html += '<div class="col-50"><div class="item-content item-input no-padding-left"><div class="item-inner no-padding-right"><div class="labelName">Quantity</div>';
           html += '<div class="item-input-wrap"><input class="productQuantity" type="text" placeholder="Product Quantity" value="' + quantity + '">';
           html +=  '<span class="input-clear-button"></span></div></div></div></div></div>';
-          html += '<div><span class="labelName">Total Price: </span><div class="display-inline-flex"><input class="totalproductprice" type="text" disabled placeholder="Total Price" value="';
+          html += '<div><span class="labelName">Total Price: </span><div class="display-inline-flex"><input class="totalproductprice" type="text" placeholder="Total Price" value="';
           html +=  totalPrice + '"></div></div>';
         html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
           html += '<a class="button button-small button-raised removeProduct" data-id="' + select._id + '">Delete</a>';
@@ -1447,14 +1465,15 @@ export default {
 
                             html += '<div class=""><span class="labelName">Quantity: </span><span class="valueName">' + quantity + '</span></div>';
                             html += '<div class=""><span class="labelName">Total Cost: </span><span class="valueName">' + self.formatMoney(total) + '</span></div>';
-                            if(taxes > 0){
+                            //if(taxes > 0){
                               html += '<div class=""><span class="labelName">Tax: </span><span class="valueName">' + taxes + '%</span></div>';
                               html += '<div class=""><span class="labelName">After Tax Cost: </span><span class="valueName">' + self.formatMoney(afterTax) + '</span></div>';
-                            }
+                            //}
                             html += '<div class=""><span class="labelName">Amount Paid: </span><span class="valueName">' + self.formatMoney(row.amountPaid) + '</span></div>';
                             var stat = row.status == 1 ? "display-none" : "";
                             var hidden = row.isPaid == 1 ? "" : "display-none";
-                            var checkbox = row.isPaid == 1 ? '<i class="icon f7-icons text-color-green paid">checkmark_circle_fill</i>' : '<i class="icon f7-icons text-color-red paid">multiply_circle_fill</i>';
+                            var checkbox = row.isPaid == 1 ? '<span class="badge color-green paid">Fully Paid</span>' : '<span class="badge color-red paid">Not Fully Paid</span>';
+                            //var checkbox = row.isPaid == 1 ? '<i class="icon f7-icons text-color-green paid">checkmark_circle_fill</i>' : '<i class="icon f7-icons text-color-red paid">multiply_circle_fill</i>';
                             html += '<div class=""><span class="labelName">Fully Paid: </span>' + checkbox + '</div>' + '<div class="display-none created_date">' + row.created_date + '</div>';
                             html += '<div class="' + hidden + '"><span class="labelName">Date Fully Paid: </span><span class="valueName">' + moment.unix(row.date_paid).format("LLL") + '</span></div>';
                             html += '<div class=""><span class="labelName">Purchase Date: </span><span class="valueName">' + moment.unix(row.created_date).format("LLL") + '</span></div>';
@@ -1462,7 +1481,7 @@ export default {
                             html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
                             html += '<a class="button invoice button-small button-raised" data-id="' + row._id + '">Invoice</a>';
                             html += sellToOther;
-                            html += '<a class="button button-small button-raised editSale" data-id="' + row._id + '" data-isparent="' + isParent + '">Edit</a>';
+                            html += '<a class="button button-small button-raised editSale" data-id="' + row._id + '" data-isparent="' + isParent + '">View / Edit</a>';
                             html += '<a class="button button-small button-raised deleteSale" data-id="' + row._id + '">';
                             html +=  row.status == 1 ? 'Delete' : 'Activate'; 
                             html += '</a>';

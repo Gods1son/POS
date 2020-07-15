@@ -215,6 +215,16 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
+                      <div class="item-title">Client's Birthday</div>
+                      <div class="item-input-wrap">
+                        <input type="text" placeholder="Client's birth date" readonly="readonly" id="client_bday"/>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
                       <div class="item-title">Other Notes</div>
                       <div class="item-input-wrap">
                         <textarea class="otherNotes settingsInput" placeholder="Client Address"></textarea>
@@ -454,7 +464,7 @@ export default {
                             var afterTax = row.afterTax == null ? total : row.afterTax;
                             var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
                             html += '<div class="name cardName">' + row.product_name + '</div><div class="id display-none">' + row._id + '</div><div class="cost display-none">' + row.cost + '</div>';
-                            html += '<div class=""><span class="labelName">Buyer\'s name: </span><span class="valueName buyer">' + row.buyer_name + '</span></div><div class="isPaid display-none">' + row.isPaid + '</div>';
+                            //html += '<div class=""><span class="labelName">Buyer\'s name: </span><span class="valueName buyer">' + row.buyer_name + '</span></div><div class="isPaid display-none">' + row.isPaid + '</div>';
                             html += '<div class=""><span class="labelName">Product Cost: </span><span class="valueName">' + self.formatMoney(row.cost) + '</span></div>';
 
                             html += '<div class=""><span class="labelName">Quantity: </span><span class="valueName">' + quantity + '</span></div>';
@@ -466,7 +476,8 @@ export default {
                             html += '<div class=""><span class="labelName">Amount Paid: </span><span class="valueName">' + self.formatMoney(row.amountPaid) + '</span></div>';
                             var stat = row.status == 1 ? "display-none" : "";
                             var hidden = row.isPaid == 1 ? "" : "display-none";
-                            var checkbox = row.isPaid == 1 ? '<i class="icon f7-icons text-color-green paid">checkmark_circle_fill</i>' : '<i class="icon f7-icons text-color-red paid">multiply_circle_fill</i>';
+                            var checkbox = row.isPaid == 1 ? '<span class="badge color-green paid">Fully Paid</span>' : '<span class="badge color-red paid">Not Fully Paid</span>';
+                            //var checkbox = row.isPaid == 1 ? '<i class="icon f7-icons text-color-green paid">checkmark_circle_fill</i>' : '<i class="icon f7-icons text-color-red paid">multiply_circle_fill</i>';
                             html += '<div class=""><span class="labelName">Fully Paid: </span>' + checkbox + '</div>' + '<div class="display-none created_date">' + row.created_date + '</div>';
                             html += '<div class="' + hidden + '"><span class="labelName">Date Fully Paid: </span><span class="valueName">' + moment.unix(row.date_paid).format("LLL") + '</span></div>';
                             html += '<div class=""><span class="labelName">Purchase Date: </span><span class="valueName">' + moment.unix(row.created_date).format("LLL") + '</span></div>';
@@ -520,6 +531,10 @@ export default {
                     $(".phone").val(item.phone);
                     var n = item.otherNotes == undefined ? "" : item.otherNotes;
                     $(".otherNotes").val(n);
+                    if(item.bday != null && item.bday != 0){
+                      $("#client_bday").val(moment.unix(item.bday).format("LLL"));
+                    }
+                    
                     var popup = self.$app.popup.open('.newClient', true);
             } else{
               var popup = self.$app.popup.open('.newClient', true);
@@ -549,6 +564,11 @@ export default {
       //var $$ = this.Dom7;
       var self = this;
       var elem = $$("input:required");
+      var bday = 0;
+      if($("#client_bday").val() != ""){
+        bday = moment($("#client_bday").val()).format("X");
+      }
+      
       var err = self.$app.input.validateInputs(".clientForm");
       if(err){
         var obj = {
@@ -558,6 +578,7 @@ export default {
                 phone: $(".phone").val().trim(), 
                 otherNotes: $(".otherNotes").val().trim(), 
                 status:1,
+                bday: bday,
                 created_date: moment().format("X")
               };
             if(self.currentClient != null){
@@ -569,7 +590,7 @@ export default {
             db.put(obj).then(function(res) {
                     //self.$app.dialog.alert("Item saved.");
                     self.showToast("Client saved.", "center");
-                    $(".clientname,.email,.address,.phone,.otherNotes").val("");
+                    $(".clientname,.email,.address,.phone,.otherNotes, #client_bday").val("");
                     self.getData();
               })
           }
@@ -622,9 +643,15 @@ export default {
                             if(row.address != ""){
                               html += '<div class="display-flex"><div class="labelName">Address: </div><div class="valueName margin-left-half">' + row.address.split("\n").join("<br>") + '</div></div>';
                             }
-                            if(row.otherNotes != "" && row.otherNotes != undefined){
-                              html += '<div class="display-flex"><div class="labelName">Notes: </div><div class="valueName margin-left-half">' + row.otherNotes.split("\n").join("<br>") + '</div></div>';
+
+                            if(row.bday != null && row.bday != 0){
+                              html += '<div class="display-flex"><div class="labelName">Birthday: </div><div class="valueName margin-left-half">' + moment.unix(row.bday).format("LLL") + '</div></div>';
                             }
+
+                            if(row.otherNotes != "" && row.otherNotes != undefined){
+                              html += '<div class="display-flex"><div class="labelName">Notes: </div><div class="valueName margin-left-half">' + row.otherNotes.split("\n").join("<br>")  + '</div></div>';
+                            }
+
                             
                             var stat = row.status == 1 ? "display-none" : "";
                             //html += '<div class=""><span class="labelName">Cost: </span><span class="valueName">' + self.formatMoney(row.cost_per_unit) + '</span></div>';
@@ -702,7 +729,9 @@ export default {
             self.openPopUpClientSales(name);
             
         })
-        
+        var calendarDefault = self.$app.calendar.create({
+          inputEl: '#client_bday',
+        });
         var calendarModal = self.$app.calendar.create({
             inputEl: '#demo-calendar-modal',
             openIn: 'customModal',

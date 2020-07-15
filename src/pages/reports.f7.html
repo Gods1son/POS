@@ -48,7 +48,7 @@
 <script>
   import * as moment from 'moment';
   import Chart from 'chart.js';
-  Chart.plugins.register({
+  /*Chart.plugins.register({
   afterDraw: function(chartInstance) {
     if (chartInstance.config.options.showDatapoints) {
       var helpers = Chart.helpers;
@@ -71,7 +71,7 @@
       });
     }
   }
-});
+});*/
   var db = null, dbSales = null, dbExpenses = null, myProductSalesChart = null;
   export default {
     // Lifecycle Hooks
@@ -253,6 +253,7 @@
                             backgroundColor: "darkseagreen",
                             data: dataBar,
                             yAxisID: 'y-axis-1',
+                            maxBarThickness: 30,
                             // this dataset is drawn below
                             order: 3
                         }, {

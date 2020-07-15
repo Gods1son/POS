@@ -207,7 +207,7 @@
                     <div class="item-inner">
                       <div class="item-title">Total Price</div>
                       <div class="item-input-wrap">
-                        <input type="text" class="total_sell" @keyup="calculateQuantity" placeholder="Total Price" disabled required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                        <input type="text" class="total_sell" @keyup="calculateQuantity2" placeholder="Total Price" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                         <span class="input-clear-button"></span>
                       </div>
                     </div>
@@ -232,7 +232,7 @@
                           <div class="item-inner">
                             <div class="item-title">After Tax Price</div>
                             <div class="item-input-wrap">
-                              <input type="text" class="afterTax" placeholder="After Tax Price" disabled/>
+                              <input type="text" class="afterTax" placeholder="After Tax Price"/>
                               <span class="input-clear-button"></span>
                             </div>
                           </div>
@@ -571,6 +571,24 @@ export default {
             }
         }
     },
+    calculateQuantity2: function(){
+      var self = this;
+      var total = Number($(".total_sell").val());
+            var taxes = Number($(".taxes").val().trim());
+            //console.log("0 - " + taxes);
+            if(taxes != "" || taxes == 0){
+              //console.log("1 - " + taxes);
+              if(!isNaN(taxes)){
+                //console.log("2 - " + taxes);
+                var taxAmt = (taxes/100) * total;
+                var aftCost = total + taxAmt;
+                //console.log("3 - " + aftCost);
+                $(".afterTax").val(aftCost.toFixed(2));
+              }
+            }else{
+              $(".afterTax").val(total.toFixed(2)); 
+            }
+    },
     CalculateTotal: function(){
       var totalCost = 0;
       $$(".eachCost").forEach(function(curr, i){
@@ -818,7 +836,7 @@ export default {
           html += '<div class="col-50"><div class="item-content item-input no-padding-left"><div class="item-inner no-padding-right"><div class="labelName">Quantity</div>';
           html += '<div class="item-input-wrap"><input class="productQuantity" type="text" placeholder="Product Quantity" value="' + quantity + '">';
           html +=  '<span class="input-clear-button"></span></div></div></div></div></div>';
-          html += '<div><span class="labelName">Total Price: </span><div class="display-inline-flex"><input class="totalproductprice" type="text" disabled placeholder="Total Price" value="';
+          html += '<div><span class="labelName">Total Price: </span><div class="display-inline-flex"><input class="totalproductprice" type="text" placeholder="Total Price" value="';
           html +=  totalPrice + '"></div></div>';
         html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
           html += '<a class="button button-small button-raised removeProduct" data-id="' + select._id + '">Delete</a>';
@@ -1108,7 +1126,7 @@ export default {
           $(".taxpercent").parents("ul").eq(0).removeClass("bg-color-red");
         }
 
-        if(grpName == "" || buyername == "" || isNaN(amountPaid)){
+        if(buyername == "" || isNaN(amountPaid)){
             $(".buyersNameMultiple").parents("li").eq(0).addClass("bg-color-red");
             error = true;
         }else{
@@ -1168,7 +1186,7 @@ export default {
         }else{
           // save into db
           //console.log("clean");
-      
+          grpName = grpName == "" ? buyername + " group purchase" : grpName;
         var objMaster = {
                 product_name: grpName,  
                 buyer_name: buyername,
@@ -1257,7 +1275,7 @@ export default {
           html += '<div class="col-50"><div class="item-content item-input no-padding-left"><div class="item-inner no-padding-right"><div class="labelName">Quantity</div>';
           html += '<div class="item-input-wrap"><input class="productQuantity" type="text" placeholder="Product Quantity" value="' + quantity + '">';
           html +=  '<span class="input-clear-button"></span></div></div></div></div></div>';
-          html += '<div><span class="labelName">Total Price: </span><div class="display-inline-flex"><input class="totalproductprice" type="text" disabled placeholder="Total Price" value="';
+          html += '<div><span class="labelName">Total Price: </span><div class="display-inline-flex"><input class="totalproductprice" type="text" placeholder="Total Price" value="';
           html += totalPrice + '"></div></div>';
         html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
           html += '<a class="button button-small button-raised removeProduct">Delete</a>';

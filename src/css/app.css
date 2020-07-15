@@ -189,6 +189,10 @@ button.text-editor-button.active{
     border-color: red !important;
 }
 
+.myCard .badge{
+    margin-bottom: 4px;
+}
+
 .bigLabel{
     font-size: 1.3em;
     text-align: center;
@@ -201,7 +205,7 @@ button.text-editor-button.active{
     text-transform: none;
     color: #673ab7;
     border: 1px solid;
-    box-shadow: 0px 1px 3px 1px #673ab794;
+    /*box-shadow: 0px 1px 3px 1px #673ab794;*/
 }
 
 .btn-blue, .customcharges{
@@ -219,6 +223,10 @@ button.text-editor-button.active{
     /*border-bottom: 0.5px solid #673ab7 !important;*/
     padding: 2px 5px !important;
     margin-top: 2px !important;
+}
+
+.eachCostParent input, .extraCostRow input{
+    border-bottom: 0.5px solid darkgrey !important;
 }
 
 .compName{
