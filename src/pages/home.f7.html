@@ -9,7 +9,7 @@
       <div class="navbar">
         <div class="navbar navbar-bg"></div>
       <div class="navbar-inner sliding">
-        <div class="title padding-vertical-half logoname">Biz Track</div>
+        <div class="title padding-vertical-half logoname">BizTrack</div>
       </div>
     </div>
 
@@ -212,20 +212,12 @@ export default {
               type:"GET",
               "crossDomain": true,
               success: function(result){
-                console.log(result);
+                
               },
               error: function(err){
-                console.log(err);
+                
               }
           });
-          
-          /*var dbOnline = new PouchDB('http://34.106.12.119:5984/_all_dbs');
-          console.log(dbOnline);
-          dbOnline.get("ae5cebae376b2b2069a2a472b1000710").then(function(doc){
-            console.log(doc);
-          }).catch(function(err){
-            console.log(err);
-          })*/
           
         },
         getData: function(){
@@ -246,14 +238,14 @@ export default {
             })
 
             dbSettingsImages.get('logoImage', {attachments: true}).then(function (blobOrBuffer) {
-            //console.log(blobOrBuffer);
+
                     // handle result
                     self.$setState({
                       logo: blobOrBuffer
                     })
                     var attachments = blobOrBuffer._attachments.logoImage.data;
                     var type = blobOrBuffer._attachments.logoImage.content_type;
-                    //console.log(blobOrBuffer._attachments.logoID);
+
                     var imgPresent = $(".compName").find("img").length;
                     if(imgPresent == 0){
                       var img = "<img src='" + "data:"+ type + ";base64," + attachments + "' style='max-width:50px;margin-right:5px;'/>";
@@ -262,22 +254,19 @@ export default {
                       var src = "data:"+ type + ";base64," + attachments;
                       $(".compName").find("img").attr("src", src);
                     }
-                    //console.log(JSON.stringify(blobOrBuffer));
+
                   }).catch(function (err) {
-                    console.log(err);
                   });
         },
       reloadPage: function(){
         var self = this;
         dbSettingsImages.get('logoImage', {attachments: true}).then(function (blobOrBuffer) {
-            //console.log(blobOrBuffer);
                     // handle result
                     self.$setState({
                       logo: blobOrBuffer
                     })
                     var attachments = blobOrBuffer._attachments.logoImage.data;
                               var type = blobOrBuffer._attachments.logoImage.content_type;
-                              //console.log(blobOrBuffer._attachments.logoID);
                               var imgPresent = $(".compName").find("img").length;
                     if(imgPresent == 0){
                       var img = "<img src='" + "data:"+ type + ";base64," + attachments + "' style='max-width:50px;margin-right:5px;'/>";
@@ -287,12 +276,11 @@ export default {
                       $(".compName").find("img").attr("src", src);
                     }
                   }).catch(function (err) {
-                    console.log(err);
+                    
                   });
       },
       startDB: function(){
          //this.$app.methods.storage2();
-         console.log('db init');
           var self = this;
          var db = new Dexie("BizExpenseManagerDB");
           db.version(1).stores({
@@ -308,7 +296,7 @@ export default {
             sales_history: "++id,salesID,product_name,buyer_name,cost,amountPaid,isPaid,date_paid,created_date,status",
             expenses_history: "++id,expID,name,amount_to_pay,amount_paid,date_paid,created_date,recurring,status"
           })
-         console.log('db init end');          
+                
           //self.$app.dialog.alert("DB Created");
       }
     },
@@ -330,7 +318,7 @@ export default {
       pageAfterIn: function (event, page) {
           // do something after page gets into the view
           var self = this;
-          //console.log("re-enter");
+          
           //self.getData();
       }
     }

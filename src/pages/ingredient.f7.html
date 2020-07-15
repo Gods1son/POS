@@ -218,20 +218,13 @@ export default {
         var self = this;
         
         self.$app.dialog.confirm("Are you sure you want to permanently delete this?", function(){
-                  /*var item = self.ings.find(function(e){ 
-                      return e._id = id;
-                  });
-                  item.status = checked;*/
-                  //console.log(item);
                   db.get(id).then(function(doc) {
-                   // console.log(doc);
                     doc.status = -1
                     return db.put(doc);
                   }).then(function(){
                     self.ings = self.ings.filter(function(e){ 
                       return e._id != id;
                   });
-                  //console.log(self.ings);
                   self.$setState({
                       ings:self.ings,
                       totalMat:self.ings.length
@@ -260,20 +253,14 @@ export default {
             }
         }
         self.$app.dialog.confirm("Are you sure you want to " + text + "?", function(){
-                  /*var item = self.ings.find(function(e){ 
-                      return e._id = id;
-                  });
-                  item.status = checked;*/
-                  //console.log(item);
+
                   db.get(id).then(function(doc) {
-                   // console.log(doc);
                     doc.status = checked
                     return db.put(doc);
                   }).then(function(){
                     self.ings = self.ings.filter(function(e){ 
                       return e._id != id;
                   });
-                  //console.log(self.ings);
                   self.$setState({
                       ings:self.ings,
                       totalMat:self.ings.length
@@ -378,11 +365,7 @@ export default {
           }
         }).then(function(ar){
           var arr = ar.docs;
-            //console.log(arr);
-        //})
-        //var collection = db.ingredients.toArray(function(arr){
-        //console.log(arr);
-        //console.log("fretched - " + checked);
+ 
           self.$setState({
                 ings: arr,
                 totalMat:arr.length
@@ -441,7 +424,6 @@ export default {
                         //materialList.reIndex();
                           $('#material-list').off("click").on('click','.button', function () {
                               var data = $(this).attr("data-id");
-                              //console.log(data);
                               if($(this).hasClass("editButton")){
                                 self.openPopUp(data);
                               }
@@ -467,20 +449,15 @@ export default {
       pageInit: function(e, page) {
         var self = this;
         $$(".showInactiveIngs").on("change", function(){
-          //console.log("inactive change");
             self.getData();
         })
-        //console.log("test inactive init 2");
         self.startPouch();
       },
       pageReinit: function(e, page) {
         var self = this;
-        //console.log("test inactive reinit");
         $$(".showInactiveIngs").on("change", function(){
-          //console.log("inactive change");
             self.getData();
         })
-        //console.log("test inactive reinit 2");
         self.getData();
       }
   }

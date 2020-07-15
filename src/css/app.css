@@ -35,6 +35,8 @@
 
 .navbar-inner .logoname{
     color: #673ab7 !important;
+    font-weight: 600;
+    font-size: 1.3em;
 }
 
 .navbar-inner .link{
@@ -49,10 +51,10 @@
     font-size: 0.9em;
 }
 
-.logoName{
+/*.logoName{
     font-size: 1.3em;
     font-weight: 500;
-}
+}*/
 
 .text-editor{
     border: var(--f7-text-editor-border-width) solid var(--f7-text-editor-border-color) !important;
@@ -104,7 +106,16 @@ button.text-editor-button.active{
 }
 
 .parentWrap .item-title{
-    font-weight: 700;
+    font-weight: 600;
+    color: inherit;
+}
+
+.parentWrap .myCard:hover{
+    background:#673ab7;
+}
+    
+.parentWrap .myCard:hover .item-title{
+    color:white;
 }
 
 .parentWrap .myCard{
@@ -112,6 +123,11 @@ button.text-editor-button.active{
     box-shadow: 0 1px 5px 1px darkgrey;
     /*background: ghostwhite;*/
 }
+
+/*.myCard:hover, .myCard:hover .card-footerMine, .myCard:hover .labelName{
+    background: #673ab7;
+    color: white !important;
+}*/
 
 .fab a{
     background: #673ab7;
@@ -225,15 +241,16 @@ button.text-editor-button.active{
     margin-top: 2px !important;
 }
 
-.eachCostParent input, .extraCostRow input{
+.eachCostParent input, .extraCostRow input, .profitvalue{
     border-bottom: 0.5px solid darkgrey !important;
 }
 
 .compName{
     font-size: 1.2em;
-    color:black;
+    color:#007aff;
     display: inline-flex;
     width: 100%;
+    font-weight: 600;
     justify-content: center;
 }
 

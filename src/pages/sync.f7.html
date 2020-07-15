@@ -213,7 +213,6 @@
               data: JSON.stringify(data),
               success: function(data){
                 self.$app.preloader.hide();
-                console.log(data);
                 var key = data.token;
                 var pwd2 = data.password;
                 var exp = data.expires;
@@ -229,12 +228,10 @@
                       self.showSignIn();
                       $("#signIn").addClass("display-none");
                       $(".syncParentClick").removeClass("display-none");
-                      console.log(key + " " + pwd2 + " " + exp);
                   })
               },
               error: function(err){
                 self.$app.preloader.hide();
-                console.log(err);
               }
             });
         },
@@ -270,10 +267,8 @@
               success: function(data){
                 self.$app.preloader.hide();
                 self.showToast("Old session cleared", "center");
-                console.log(data);
               },
               error: function(err){
-                console.log(err);
                 self.$app.preloader.hide();
               }
             });
@@ -294,7 +289,6 @@
               dataType: 'json',
               data: JSON.stringify(data),
               success: function(data){
-                console.log(data);
                 self.$app.preloader.hide();
                 var key = data.token;
                 if(key != token){
@@ -323,7 +317,6 @@
                   })
               },
               error: function(err){
-                console.log(err);
                 self.$app.preloader.hide();
               }
             });
@@ -345,7 +338,6 @@
               dataType: 'json',
               data: JSON.stringify(data),
               success: function(data){
-                console.log(data);
                 self.$app.preloader.hide();
                 var key = data.token;
                 var pwd = data.password;
@@ -367,7 +359,6 @@
                   })
               },
               error: function(err){
-                console.log(err);
                 self.showToast("An error occcured, please try again later.", "center");
                 self.$app.preloader.hide();
               }
@@ -392,7 +383,6 @@
               data: JSON.stringify(data),
               success: function(data2){
                 self.$app.preloader.hide();
-                console.log(data2);
                 if(data2.success == "Logged out"){
                   self.showToast("Logged Out", "center");
                   $(".syncParentClick").addClass("display-none");
@@ -413,7 +403,6 @@
                 
               },
               error: function(err){
-                console.log(err);
                 self.$app.preloader.hide();
               }
             })
@@ -438,11 +427,9 @@
               //dataType: 'json',
               //data: JSON.stringify(data),
               success: function(data){
-                console.log(data);
                 self.$app.preloader.hide();
               },
               error: function(err){
-                console.log(err);
                 self.$app.preloader.hide();
               }
             });
@@ -450,7 +437,6 @@
         saveUserAccount: function(email, pd, us, apiKey, apiPwd, apiExp){
             var self = this;
             dbAccount.get("myAccount").then(function(doc) {
-                   // console.log(doc);
                    doc.username = us;
                     doc.email = email;
                     doc.password = pd;
@@ -509,7 +495,6 @@
                   }
                 }).on('error', function (err) {
                   // handle error
-                  console.log(err);
                   self.showToast(err.error, "center");
                   self.addFailedSync("dbProducts");
                   self.$app.preloader.hide();
@@ -539,7 +524,6 @@
                   }
                 }).on('error', function (err) {
                   // handle error
-                  console.log(err);
                   self.showToast(err.error, "center");
                   self.addFailedSync("dbProdIngs");
                   self.$app.preloader.hide();
@@ -569,7 +553,6 @@
                   }
                 }).on('error', function (err) {
                   // handle error
-                  console.log(err);
                   self.showToast(err.error, "center");
                   self.addFailedSync("dbProdOthers");
                   self.$app.preloader.hide();
@@ -599,7 +582,6 @@
                   }
                 }).on('error', function (err) {
                   // handle error
-                  console.log(err);
                   self.showToast(err.error, "center");
                   self.addFailedSync("dbSales");
                   self.$app.preloader.hide();
@@ -629,7 +611,6 @@
                   }
                 }).on('error', function (err) {
                   // handle error
-                  console.log(err);
                   self.showToast(err.error, "center");
                   self.addFailedSync("dbIngs");
                   self.$app.preloader.hide();
@@ -659,7 +640,6 @@
                   }
                 }).on('error', function (err) {
                   // handle error
-                  console.log(err);
                   self.showToast(err.error, "center");
                   self.addFailedSync("dbSettings");
                   self.$app.preloader.hide();
@@ -689,7 +669,6 @@
                   }
                 }).on('error', function (err) {
                   // handle error
-                  console.log(err);
                   self.showToast(err.error, "center");
                   self.addFailedSync("dbClients");
                   self.$app.preloader.hide();
@@ -720,7 +699,6 @@
 
                 }).on('error', function (err) {
                   // handle error
-                  console.log(err);
                   self.showToast(err.error, "center");
                   self.addFailedSync("dbExpenses");
                   self.$app.preloader.hide();
@@ -731,7 +709,6 @@
         },
         retryFailedSyncs: function(){
           var self = this;
-          //console.log("All Done Master");   
             if(failedSync.length > 0){
               if(self.syncRetries == 2){
                 self.showToast("Sync failed too many times", "center");
@@ -805,9 +782,7 @@
             include_docs: true,
             attachments: true
             }).then(function (result) {
-                console.log(result);
             }).catch(function (err) {
-            console.log(err);
             });
 
         },
@@ -822,7 +797,6 @@
         getData: function(){
             var self = this;
             dbAccount.get("myAccount").then(function(doc) {
-                   // console.log(doc);
                    var now = new Date().getTime();
                    var expired = now > doc.apiExp;
                    if(doc.signedIn ==1 && expired){
@@ -848,7 +822,6 @@
                    //self.$app.preloader.show();
                     $("#signIn").addClass("display-none");
                     $(".syncParentClick").removeClass("display-none");
-                    console.log(doc.apiKey + " " + doc.apiPwd + " " + doc.apiExp + " " + doc.username);
                     self.$setState({
                       username:doc.username,
                       email:doc.email,
