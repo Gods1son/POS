@@ -1556,12 +1556,14 @@ export default {
       var self = this;           
       var sym = self.settings == null ? "" : self.settings.currency;
       sym = sym == undefined ? "" : sym;
+      val = Number(val);
       if(val < 0){
         var rev = 0 - val;
         var val2 = val + rev + rev;
         val = val2;
         sym = "-" + sym;
       }
+      val = Math.round((val + Number.EPSILON) * 100) / 100;
       var ret = sym + val.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
       return ret;
     },
@@ -1811,6 +1813,7 @@ export default {
         var calendar1 = self.$app.calendar.create({
                   inputEl: '#datePaidMultiple',
                   timePicker: true,
+                  closeOnSelect: true,
                   formatValue: function(values){
                     //console.log(values[0]);
                     var t = moment(values[0]).format('LLL');
@@ -1824,6 +1827,7 @@ export default {
               var calendar2 = self.$app.calendar.create({
                   inputEl: '#datePurchaseMultiple',
                   timePicker: true,
+                  closeOnSelect: true,
                   formatValue: function(values){
                     //console.log(values[0]);
                     var t = moment(values[0]).format('LLL');
@@ -1837,6 +1841,7 @@ export default {
         var calendar = self.$app.calendar.create({
                   inputEl: '#paid-calendar-modal',
                   timePicker: true,
+                  closeOnSelect: true,
                   formatValue: function(values){
                     //console.log(values[0]);
                     var t = moment(values[0]).format('LLL');
@@ -1850,6 +1855,7 @@ export default {
               var calendarPurchase = self.$app.calendar.create({
                   inputEl: '#purchase-calendar-modal',
                   timePicker: true,
+                  closeOnSelect: true,
                   formatValue: function(values){
                     //console.log(values[0]);
                     var t = moment(values[0]).format('LLL');
@@ -1868,6 +1874,7 @@ export default {
             inputEl: '#demo-calendar-modal',
             openIn: 'customModal',
             rangePicker: true,
+            closeOnSelect: true,
             header: true,
             footer: true
         });

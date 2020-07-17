@@ -168,7 +168,7 @@
                       }
                   }   
                   reader.onerror = function (error) {
-                    console.log('Error: ', error);
+                   // console.log('Error: ', error);
                     //reject("");
                   };
               }else{
@@ -303,7 +303,7 @@
                 self.uploadImages();
                 self.showToast("Information Saved!", "center");
               }).catch(function(err){
-                console.log(err);
+                //console.log(err);
                 self.showToast("An error occured, please try again!", "center");
               })
             }else{
@@ -318,7 +318,7 @@
                     localStorage.setItem("currency", currency);
                     self.showToast("Information Saved!", "center");
                 }).catch(function(err){
-                  console.log(err);
+                  //console.log(err);
                   self.showToast("An error occured, please try again!", "center");
                 })
             }
@@ -344,7 +344,7 @@
                               self.showToast("Logo saved!", "center");
                               //console.log(result);
                       }).catch(function (err) {
-                        console.log(err);
+                        //console.log(err);
                       });
                   }
               
@@ -367,7 +367,7 @@
                               self.showToast("Signature saved!", "center");
                               //console.log(result);
                       }).catch(function (err) {
-                        console.log(err);
+                        //console.log(err);
                       });
                   }
           }

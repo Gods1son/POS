@@ -48,6 +48,7 @@ Template7.registerHelper("money", function(val){
       val = val2;
       sym = "-" + sym;
     }
+    val = Math.round((val + Number.EPSILON) * 100) / 100;
     var ret = sym + val.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
     return ret;
 })

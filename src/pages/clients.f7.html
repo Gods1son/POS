@@ -48,7 +48,7 @@
             <span class="sort" data-sort="cost">Cost</span>-->
           </div>
         </div>
-        <div class="row margin-top-half">
+        <div class="row margin-top-half myToolbar">
           <div class="col-50 no-padding-vertical">
               <span class="margin-left-half">You have {{totalMat}} {{js "this.totalMat > 1 ? 'clients' : 'client'"}}</span>
           </div>
@@ -217,7 +217,7 @@
                     <div class="item-inner">
                       <div class="item-title">Client's Birthday</div>
                       <div class="item-input-wrap">
-                        <input type="text" placeholder="Client's birth date" readonly="readonly" id="client_bday"/>
+                        <input type="text" placeholder="Client's birth date" readonly="readonly" id="client_bday" class="client_bday"/>
                       </div>
                     </div>
                   </div>
@@ -253,7 +253,7 @@
 </template>
 <script>
 import * as moment from 'moment';
-var db = null, dbSales = null;
+var db = null, dbSales = null, dbSettings = null, calendarBday = null;
 
 export default {
   test: 5,
@@ -263,7 +263,9 @@ export default {
         clients: null,
         totalMat:0,
         currentClient: null,
-        totalMatUser: 0
+        totalMatUser: 0,
+        settingsID: 'settings',
+        settings: null
       }
     },
   methods:{
@@ -286,6 +288,7 @@ export default {
             if(pdf != undefined){
                 db = new PouchDB('clients.db', { adapter: 'cordova-sqlite' });
                 dbSales = new PouchDB('sales.db', { adapter: 'cordova-sqlite' });
+                dbSettings = new PouchDB('settings.db', { adapter: 'cordova-sqlite' });
                 dbSales.createIndex({
                   index: {
                     fields: ['created_date','parentID', 'product_name', 'isParent', 'buyer_name', 'status']
@@ -296,12 +299,19 @@ export default {
                     fields: ['name', 'created_date']
                   }
                 }).then(function (result) {
+                  var id = self.settingsID;
+                  dbSettings.get(id).then(function(doc) {
+                  self.$setState({
+                      settings: doc
+                    })
+                  })
                   self.getData();
                 })
               }
           }catch(err){
             db = new PouchDB('clients.db');
             dbSales = new PouchDB('sales.db');
+            dbSettings = new PouchDB('settings.db');
             dbSales.createIndex({
                   index: {
                     fields: ['created_date','parentID', 'product_name', 'isParent', 'buyer_name', 'status']
@@ -312,6 +322,12 @@ export default {
                     fields: ['name', 'created_date']
                   }
                 }).then(function (result) {
+                  var id = self.settingsID;
+                  dbSettings.get(id).then(function(doc) {
+                  self.$setState({
+                      settings: doc
+                    })
+                  })
                   self.getData();
                 })
           }
@@ -320,12 +336,14 @@ export default {
       var self = this;           
       var sym = self.settings == null ? "" : self.settings.currency;
       sym = sym == undefined ? "" : sym;
+      val = Number(val);
       if(val < 0){
         var rev = 0 - val;
         var val2 = val + rev + rev;
         val = val2;
         sym = "-" + sym;
       }
+      val = Math.round((val + Number.EPSILON) * 100) / 100;
       var ret = sym + val.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
       return ret;
     },
@@ -424,6 +442,7 @@ export default {
                 $and: [
                   { status: {$eq: checked} },
                   { buyer_name: { $eq: name } },
+                  { parentID: { $lt: 1 } },
                   {created_date: {$gt: true}}
                 ]
               },
@@ -464,7 +483,7 @@ export default {
                             var afterTax = row.afterTax == null ? total : row.afterTax;
                             var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
                             html += '<div class="name cardName">' + row.product_name + '</div><div class="id display-none">' + row._id + '</div><div class="cost display-none">' + row.cost + '</div>';
-                            //html += '<div class=""><span class="labelName">Buyer\'s name: </span><span class="valueName buyer">' + row.buyer_name + '</span></div><div class="isPaid display-none">' + row.isPaid + '</div>';
+                          //html += '<div class=""><span class="labelName">Buyer\'s name: </span><span class="valueName buyer">' + row.buyer_name + '</span></div><div class="isPaid display-none">' + row.isPaid + '</div>';
                             html += '<div class=""><span class="labelName">Product Cost: </span><span class="valueName">' + self.formatMoney(row.cost) + '</span></div>';
 
                             html += '<div class=""><span class="labelName">Quantity: </span><span class="valueName">' + quantity + '</span></div>';
@@ -531,8 +550,16 @@ export default {
                     $(".phone").val(item.phone);
                     var n = item.otherNotes == undefined ? "" : item.otherNotes;
                     $(".otherNotes").val(n);
-                    if(item.bday != null && item.bday != 0){
-                      $("#client_bday").val(moment.unix(item.bday).format("LLL"));
+                    $("#client_bday").val();
+                    if(item.bday != null && item.bday != 0 && item.bday != ""){
+                      $("#client_bday").val(moment.unix(item.bday).format("MMMM DD"));
+                      self.updateCalendar();
+                    }else{
+                      
+                      var arr = [];
+                      arr.push(new Date());
+                      calendarBday.setValue(arr);
+                      $("#client_bday").val("");
                     }
                     
                     var popup = self.$app.popup.open('.newClient', true);
@@ -548,7 +575,7 @@ export default {
     closePopUp: function(){
         var self = this;
         var popup = self.$app.popup.close('.newClient', true);
-        $(".clientname,.email,.address,.phone").val("");
+        $(".clientname,.email,.address,.phone,#client_bday").val("");
         popup.once("closed", function(){
 
         });
@@ -594,6 +621,19 @@ export default {
                     self.getData();
               })
           }
+    },
+    updateCalendar: function(){
+      var self = this;
+      //var calendarDefault = self.$app.calendar.get($$("#client_bday"));
+          var arr = [];
+          var dt = $("#client_bday").val() == "" ? new Date() : new Date($("#client_bday").val());
+          //var dt = new Date($("#client_bday").val());
+          console.log(dt);
+          arr.push(dt);
+          //arr.push(new Date());
+          calendarBday.setValue(arr);
+          //calendarDefault.update()
+          console.log($("#client_bday").val());
     },
     getData: function(){
       var self = this;
@@ -645,7 +685,7 @@ export default {
                             }
 
                             if(row.bday != null && row.bday != 0){
-                              html += '<div class="display-flex"><div class="labelName">Birthday: </div><div class="valueName margin-left-half">' + moment.unix(row.bday).format("LLL") + '</div></div>';
+                              html += '<div class="display-flex"><div class="labelName">Birthday: </div><div class="valueName margin-left-half">' + moment.unix(row.bday).format("MMMM Do") + '</div></div>';
                             }
 
                             if(row.otherNotes != "" && row.otherNotes != undefined){
@@ -729,15 +769,21 @@ export default {
             self.openPopUpClientSales(name);
             
         })
-        var calendarDefault = self.$app.calendar.create({
+        calendarBday = self.$app.calendar.create({
           inputEl: '#client_bday',
+          closeOnSelect: true,
+          yearSelector: false,
+          dateFormat: { month: 'long', day: '2-digit'}
         });
+        
+        
         var calendarModal = self.$app.calendar.create({
             inputEl: '#demo-calendar-modal',
             openIn: 'customModal',
             rangePicker: true,
             header: true,
-            footer: true
+            footer: true,
+            closeOnSelect: true
         });
         calendarModal.on("closed", function(){
             //console.log(calendarModal.getValue());

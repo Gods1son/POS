@@ -163,6 +163,7 @@ button.text-editor-button.active{
     background: ghostwhite;
     border-radius: 5px;
     padding: 5px 0;
+    overflow-x: scroll;
 }
 
 .card-footerMine .button{
@@ -391,9 +392,22 @@ button.text-editor-button.active{
     padding:0 !important;
 }
 
+.myToolbar{
+    align-items: center;
+}
+
+.myToolbar .display-inline-flex{
+    align-items: center;
+}
+
 .specWrap{
     border-radius: 20px;
     box-shadow: 0px 0px 1px 1px darkgrey;
+    margin: 13px auto;
+}
+
+.specWrap .item-input-wrap{
+    min-height: 2.5em;
 }
 
 .specClear{
