@@ -122,9 +122,20 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
+                      <div class="item-title">Cost Price</div>
+                      <div class="item-input-wrap">
+                        <input type="text" class="cost_price" placeholder="Cost price of product" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                        <span class="input-clear-button"></span>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
                       <div class="item-title">Selling Price</div>
                       <div class="item-input-wrap">
-                        <input type="text" class="cost_of_product" placeholder="Cost of product" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                        <input type="text" class="selling_price" placeholder="Selling price of product" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                         <span class="input-clear-button"></span>
                       </div>
                     </div>
@@ -133,7 +144,7 @@
                 <li>
                   <div class="item-content">
                     <div class="item-inner">
-                      <a href="#" class="col button button-outline button-raised button-green" @click='saveData'>Save Product</a>
+                      <a href="#" class="col button button-outline button-raised mainButton" @click='saveData'>Save Product</a>
                     </div>
                   </div>
                 </li>
@@ -205,6 +216,17 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
+                      <div class="item-title">Discount</div>
+                      <div class="item-input-wrap">
+                        <input type="text" class="discount_sell" @keyup="calculateQuantity" value="0" placeholder="Discount" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                        <span class="input-clear-button"></span>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
                       <div class="item-title">Total Price</div>
                       <div class="item-input-wrap">
                         <input type="text" class="total_sell" @keyup="calculateQuantity2" placeholder="Total Price" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
@@ -253,15 +275,35 @@
                   </div>
                 </li>
                 <li>
-                  <div class="item-content item-input">
-                    <div class="item-inner">
-                      <div class="item-title">Amount Paid</div>
-                      <div class="item-input-wrap">
-                        <input type="text" class="amountpaid_sell" placeholder="Amount customer paid" value="0" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
-                        <span class="input-clear-button"></span>
+                  <div class="row">
+                    <div class="col-50">
+                      <div class="item-content item-input">
+                        <div class="item-inner">
+                          <div class="item-title">Amount Paid</div>
+                          <div class="item-input-wrap">
+                            <input type="text" class="amountpaid_sell" placeholder="Amount customer paid" value="0" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                            <span class="input-clear-button"></span>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
+
+                    <div class="col-50">
+                      <div class="item-content item-input">
+                        <div class="item-inner">
+                          <div class="item-title">It's an Estimate<i class="icon f7-icons icon-tooltip estimateExplain color-black">info_circle_fill</i></div>
+                          <div class="item-input-wrap">
+                            <label class="checkbox">
+                              <!-- checkbox input -->
+                              <input type="checkbox" class="isEstimate">
+                              <!-- checkbox icon -->
+                              <i class="icon-checkbox"></i>
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                </div>
                 </li>
                 <li>
                   <div class="item-content item-input">
@@ -288,7 +330,7 @@
                 <li>
                   <div class="item-content">
                     <div class="item-inner">
-                      <a href="#" class="col button button-outline button-raised button-green" @click='saveDataSell'>Sell Product</a>
+                      <a href="#" class="col button button-outline button-raised mainButton" @click='saveDataSell'>Sell Product</a>
                     </div>
                   </div>
                 </li>
@@ -384,10 +426,10 @@
       </div>
 
       <div class="row padding-horizontal-half margin-bottom-half"><div class="col-50">
-        <a class="col button button-outline button-raised button-green calculateTotalButton" @click="CalculateTotal">Calculate</a>
+        <a class="col button button-outline button-raised mainButton calculateTotalButton" @click="CalculateTotal">Calculate</a>
       </div>
       <div class="col-50">
-            <a class="col button button-outline button-raised button-green saveTotalButton" @click="SaveTotal">Save</a>
+            <a class="col button button-outline button-raised mainButton saveTotalButton" @click="SaveTotal">Save</a>
       </div>
     </div>
         
@@ -465,7 +507,7 @@
           </div>
       </ul>
       <div class="row padding-horizontal-half"><div class="col-100">
-        <a class="col button button-outline button-raised button-green calculateTotalButton" @click="CalculateTotalProduct">Calculate</a>
+        <a class="col button button-outline button-raised mainButton calculateTotalButton" @click="CalculateTotalProduct">Calculate</a>
       </div>
     </div>
         <div class="margin-top-half bigLabel text-align-center margin-horizontal-half">
@@ -484,6 +526,18 @@
               <input class="groupProductNameMultiple" type="text" placeholder="Give Group Name" value=""></div></div>
             <div><span class="labelName">Buyer's Name: </span><div class="display-inline-flex">
               <input class="buyersNameMultiple" id="buyersNameMultiple" type="text" placeholder="Buyer's Name" value=""></div></div>
+            
+              <div>
+                <span class="labelName">It's an Estimate<i class="icon f7-icons icon-tooltip estimateExplain color-black">info_circle_fill</i></span>
+                <div class="display-inline-flex" style="vertical-align: bottom;">
+                  <div class="item-input-wrap" style="position: relative;">
+                    <label class="checkbox" style="position: absolute;bottom: 4px;">
+                      <input type="checkbox" class="isEstimateMultiple">
+                      <i class="icon-checkbox"></i>
+                    </label>
+                  </div>
+              </div></div>
+            
             <div><span class="labelName">Amount Paid: </span><div class="display-inline-flex">
                 <input class="amountPaidMultiple" type="text" placeholder="Amount Paid" value="0"></div></div>
             <div><span class="labelName">Date of Payment: </span><div class="display-inline-flex" style="width:100%">
@@ -494,7 +548,7 @@
         </div>
         </li></ul>
                 <div class="row padding-horizontal-half"><div class="col-100">
-                  <a class="col button button-outline button-raised button-green" @click="saveMultipleProduct">Save All</a>
+                  <a class="col button button-outline button-raised mainButton margin-bottom-half" @click="saveMultipleProduct">Save All</a>
                 </div>
               </div>
         </div>
@@ -556,6 +610,8 @@ export default {
         var quant = Number($(".quantity_sell").val().trim());
         if(!isNaN(cost) && !isNaN(quant)){
             var total = cost * quant;
+            var discount = Number($(".discount_sell").val());
+            total = total - discount;
             $(".total_sell").val(total);
             var taxes = Number($(".taxes").val().trim());
             //console.log("0 - " + taxes);
@@ -763,7 +819,8 @@ export default {
                     var textEditor = self.$app.textEditor.get('.desc_of_product');
                     var desc = item.desc == null ? "" : item.desc;
                     textEditor.setValue(desc);
-                    $$("input.cost_of_product").val(item.cost);
+                    $("input.cost_price").val(item.cost_price);
+                    $$("input.selling_price").val(item.selling_price);
                     var popup = self.$app.popup.open('.newProduct', true);
             } else{
               var popup = self.$app.popup.open('.newProduct', true);
@@ -787,9 +844,9 @@ export default {
               });
 
                 $$("input.name_sell").val(item.name);
-                $$("input.cost_sell").val(item.cost);
+                $$("input.cost_sell").val(item.selling_price);
                 var quantity = item.quantity == null ? 1 : item.quantity;
-                var total = item.total_price == null ? item.cost : item.total_price;
+                var total = item.total_price == null ? item.selling_price : item.total_price;
                 //var taxes = localStorage.getItem("taxes");
                 var taxes = self.settings == null ? 0 : self.settings.taxes;
                 var taxesAmt = taxes == undefined ? 0 : taxes;
@@ -824,7 +881,8 @@ export default {
       if(name == ""){
         name = select.name == null ? "" : select.name;
       }
-      var cost = select.cost == null ? "" : select.cost;
+      var discount = select.discount == null ? "0" : select.discount;
+      var cost = select.selling_price == null ? "" : select.selling_price;
       var quantity = select.quantity == null ? 1 : select.quantity;
       var totalPrice = select.total_price == null ? "" : select.total_price; 
         var html = '<li class="eachSaleParent eachProduct"><div class="card myCard"><div class="card-content padding-horizontal-half">';
@@ -835,7 +893,9 @@ export default {
           html +=  '<span class="input-clear-button"></span></div></div></div></div>';
           html += '<div class="col-50"><div class="item-content item-input no-padding-left"><div class="item-inner no-padding-right"><div class="labelName">Quantity</div>';
           html += '<div class="item-input-wrap"><input class="productQuantity" type="text" placeholder="Product Quantity" value="' + quantity + '">';
-          html +=  '<span class="input-clear-button"></span></div></div></div></div></div>';
+          html +=  '<span class="input-clear-button"></span></div></div></div></div></div>'; 
+          html += '<div><span class="labelName">Discount: </span><div class="display-inline-flex"><input class="discount" type="text" placeholder="Discount" value="';
+          html +=  discount + '"></div></div>';
           html += '<div><span class="labelName">Total Price: </span><div class="display-inline-flex"><input class="totalproductprice" type="text" placeholder="Total Price" value="';
           html +=  totalPrice + '"></div></div>';
         html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
@@ -1092,10 +1152,14 @@ export default {
                             profit = value.cost;
                         }
                     })
-                    var finalPrice = self.products.find(x => x._id == id).cost;
+                    var prd = self.products.find(x => x._id == id);
+                    var costPrice = Number(prd.cost_price);
+                    var sellingPrice = Number(prd.selling_price);
+                    $(".totalAmountBeforeProfit").text(costPrice.toFixed(2));
+                    $(".totalAmount").text(sellingPrice.toFixed(2));
                     //var cent = (100 * profit)/(finalPrice - profit);
                     //$(".profitpercent").val(cent.toFixed(2));
-                    self.CalculateTotal();
+                    //self.CalculateTotal();
                     var popup = self.$app.popup.open('.ProductIngredients', true);
                     //self.CalculateTotal();
                 });
@@ -1143,14 +1207,15 @@ export default {
         fullyPaid = 0;
       }
       isPaidDate = moment($("#datePaidMultiple").val()).format("X");//  Date.parse($("#paid-calendar-modal").val());
-
+      var isEstimate = $(".isEstimateMultiple").prop("checked") == true ? 1 : 0;
         $(".eachProduct").each(function(i, curr){
         var productName = $(curr).find(".productName").eq(0).val().trim();
         var price = Number($(curr).find(".productCost").eq(0).val().trim());
         var quant = Number($(curr).find(".productQuantity").eq(0).val().trim());
         var totalPric = Number($(curr).find(".totalproductprice").eq(0).val().trim());
-
-        if(isNaN(price) || isNaN(quant) || productName == ""){
+        var discount = Number($(curr).find(".discount").eq(0).val().trim());
+        
+        if(isNaN(price) || isNaN(quant) || productName == "" || isNaN(discount)){
             $(curr).addClass("bg-color-red");
             error = true;
         }else{
@@ -1162,7 +1227,9 @@ export default {
           var obj = {
                 product_name: productName,  
                 buyer_name: buyername,
-                cost: price,
+                selling_price: price,
+                discount: discount,
+                isEstimate: isEstimate,
                 tax: taxes,
                 parentID: 0,
                 isParent: isParent,
@@ -1187,10 +1254,13 @@ export default {
           // save into db
           //console.log("clean");
           grpName = grpName == "" ? buyername + " group purchase" : grpName;
+          
         var objMaster = {
                 product_name: grpName,  
                 buyer_name: buyername,
-                cost: beforeTaxes,
+                selling_price: beforeTaxes,
+                discount: 0,
+                isEstimate: isEstimate,
                 tax: taxes,
                 parentID: 0,
                 isParent:1,
@@ -1262,7 +1332,8 @@ export default {
     AddNewProduct: function(select){
       var self = this;
       var name = select == null ? "" : select.product_name;
-      var cost = select == null ? "" : select.cost;
+      var cost = select == null ? "" : select.selling_price;
+      var discount = select == null ? "0" : select.discount;
       var quantity = select == null ? 1 : select.quantity;
       var totalPrice = select == null ? "" : select.total_price;
         //var cost = select.cost == undefined ? 0 : select.cost; 
@@ -1275,6 +1346,8 @@ export default {
           html += '<div class="col-50"><div class="item-content item-input no-padding-left"><div class="item-inner no-padding-right"><div class="labelName">Quantity</div>';
           html += '<div class="item-input-wrap"><input class="productQuantity" type="text" placeholder="Product Quantity" value="' + quantity + '">';
           html +=  '<span class="input-clear-button"></span></div></div></div></div></div>';
+          html += '<div><span class="labelName">Discount: </span><div class="display-inline-flex"><input class="discount" type="text" placeholder="Discount" value="';
+          html +=  discount + '"></div></div>';
           html += '<div><span class="labelName">Total Price: </span><div class="display-inline-flex"><input class="totalproductprice" type="text" placeholder="Total Price" value="';
           html += totalPrice + '"></div></div>';
         html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
@@ -1295,10 +1368,11 @@ export default {
       $(".eachProduct").each(function(i, curr){
         var price = Number($(curr).find(".productCost").eq(0).val().trim());
         var quant = Number($(curr).find(".productQuantity").eq(0).val().trim());
-
+        var discount = Number($(curr).find(".discount").eq(0).val().trim());
         //$(curr).find(".totalproductprice")
         if(!isNaN(price) && !isNaN(quant)){
             var total = price * quant;
+            total = total - discount;
             totalCost += total;
             $(curr).find(".totalproductprice").eq(0).val(total.toFixed(2));
         }
@@ -1334,7 +1408,7 @@ export default {
     },
     closeEditProdPopUp: function(){
       var self = this;
-      $$("input.name,input.cost_of_product").val("");
+      $$("input.name,input.selling_price,.cost_price").val("");
       var popup = self.$app.popup.close('.newProduct', true);
     },
     closePopUp: function(){
@@ -1365,7 +1439,8 @@ export default {
         var obj = {
                 name: $$("input.name").val(),  
                 desc: desc,
-                cost: $$("input.cost_of_product").val(), 
+                cost_price: $("input.cost_price").val(),
+                selling_price: $$("input.selling_price").val(), 
                 status:1,
                 created_date: moment().format("X")
               };
@@ -1378,7 +1453,7 @@ export default {
           dbProducts.put(obj).then(function(id) {
                   //self.$app.dialog.alert("Item saved.");
                   self.showToast("Item saved.", "center");
-                  $$("input.name,input.cost_of_product").val("");
+                  $$("input.name,input.selling_price,.cost_price").val("");
                   var textEditor = self.$app.textEditor.get('.desc_of_product');
                   textEditor.setValue("");
                   self.getData();
@@ -1399,6 +1474,7 @@ export default {
       /*if(toggle != undefined){
         checked = toggle.checked == true ? 1 : 0;
       }*/
+      var isEstimate = $(".isEstimate").prop("checked");
       if($("#purchase-calendar-modal").val().trim() == ""){
         self.showToast("Please pick date of purchase", "center");
         return;
@@ -1419,7 +1495,7 @@ export default {
           self.showToast("Please choose date buyer paid!", "center");
           return;
       }
-      if(($$("input.amountpaid_sell").val() == "0" || $$("input.amountpaid_sell").val().trim() == "")){
+      if(($$("input.amountpaid_sell").val() == "0" || $$("input.amountpaid_sell").val().trim() == "") && isEstimate == false){
           self.$app.dialog.confirm("Do you want to record the purchase without a payment made?", function(){
             $$("input.amountpaid_sell").val(0);  
             self.processPayment();
@@ -1440,13 +1516,16 @@ export default {
         fullyPaid = 0;
       }
       isPaidDate = moment($("#paid-calendar-modal").val()).format("X");//  Date.parse($("#paid-calendar-modal").val());
-        var obj = {
+      var isEstimate = $(".isEstimate").prop("checked") == true ? 1 : 0; 
+      var obj = {
                 product_name: $$("input.name_sell").val(),  
                 buyer_name: $$("input.buyer_sell").val(),
-                cost: $$("input.cost_sell").val(),
+                selling_price: $$("input.cost_sell").val(),
                 tax: $$("input.taxes").val(),
                 parentID: 0,
                 isParent:0,
+                isEstimate: isEstimate,
+                discount: $(".discount_sell").val(),
                 afterTax: $$("input.afterTax").val(),
                 quantity: $$("input.quantity_sell").val(),
                 total_price: $$("input.total_sell").val(),
@@ -1460,7 +1539,8 @@ export default {
  
             dbSales.put(obj).then(function(){
                   self.showToast("Record saved!","center");
-                  $$("input.buyer_sell, input.amountpaid_sell, #purchase-calendar-modal, #paid-calendar-modal, .quantity_sell, .total_sell").val("");
+                  $$("input.buyer_sell, input.amountpaid_sell, #purchase-calendar-modal, #paid-calendar-modal, .quantity_sell, .total_sell, .discount_sell").val("");
+                  $(".isEstimate").prop("checked", false);
                   self.$app.popup.close('.sellProduct', true);
                   
               }).catch(function (error) {
@@ -1522,17 +1602,17 @@ export default {
                         for(var i = 0; i < arr.length; i++){
                             var row = arr[i];
                             var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
-                            html += '<div class="name cardName">' + row.name + '</div><div class="id display-none">' + row._id + '</div><div class="cost display-none">' + row.cost + '</div>';
+                            html += '<div class="name cardName">' + row.name + '</div><div class="id display-none">' + row._id + '</div><div class="cost display-none">' + row.selling_price + '</div>';
                             if(row.desc != null && row.desc != ""){
                               html += '<div class=""><span class="labelName">Description: </span><span class="">' + row.desc + '</span></div>';
                             }
-                            html += '<div class=""><span class="labelName">Cost: </span><span class="valueName">' + self.formatMoney(row.cost) + '</span></div>';
+                            html += '<div class=""><span class="labelName">Selling Price: </span><span class="valueName">' + self.formatMoney(row.selling_price) + '</span></div>';
                             var stat = row.status == 1 ? "display-none" : "";
                             html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName">Deleted</span></div>';
                             html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
                             html += '<a class="button button-small button-raised sellProduct" data-id="' + row._id + '">Sell</a>';
                             html += '<a class="button button-small button-raised editProduct" data-id="' + row._id + '">Edit</a>';
-                            html += '<a class="button button-small button-raised addIngredients" data-id="' + row._id + '">Add Raw Materials</a>';
+                            html += '<a class="button button-small button-raised addIngredients" data-id="' + row._id + '">Add/Edit Raw Materials</a>';
                             html += '<a class="button button-small button-raised deleteProduct" data-id="' + row._id + '">';
                             html +=  row.status == 1 ? 'Delete' : 'Activate';
                             html += '</a>';
@@ -1800,7 +1880,8 @@ export default {
           if(passed){
                 //console.log(allCost);
                 //console.log(allExtraCost);
-                var totall = Number($(".totalAmount").text());
+                var total1 = Number($(".totalAmountBeforeProfit").text());
+                var total2 = Number($(".totalAmount").text());
                 //console.log(totall);
                 //db.transaction('rw', db.product_ingredient, db.product_otherMaterials, db.products, () => {
                   
@@ -1841,7 +1922,8 @@ export default {
 
                           dbProducts.get(self.productToEditID).then(function(doc) {
                           // console.log(doc);
-                            doc.cost = totall
+                            doc.cost_price = total1;
+                            doc.selling_price = total2;
                             return dbProducts.put(doc);
                           })
 
@@ -1896,6 +1978,10 @@ export default {
   on: {
       pageInit: function(e, page) {
         var self = this;
+        var iconTooltip = self.$app.tooltip.create({
+          targetEl: '.estimateExplain',
+          text: '<b>Check if this is just an estimate,</b><br><b>no purchase is being made yet.</b>',
+        });
         var autocompleteDropdownBuyer = self.$app.autocomplete.create({
           inputEl: '#buyer_sell',//buyersNameMultiple
           openIn: 'dropdown',

@@ -150,6 +150,14 @@ button.text-editor-button.active{
     border:1px solid;
 }
 
+.mainButton{
+    border: 1px solid #673ab7 !important;
+    background: #673ab7;
+    color: white;
+    text-transform: none;
+    font-size: 1.1em;
+}
+
 .myCard{
     /*box-shadow: 0px 0px 1px 1px darkgrey;*/
     box-shadow: 0 1px 4px 1px darkgrey;
@@ -163,7 +171,7 @@ button.text-editor-button.active{
     background: ghostwhite;
     border-radius: 5px;
     padding: 5px 0;
-    overflow-x: scroll;
+    overflow-x: auto;
 }
 
 .card-footerMine .button{
@@ -232,12 +240,28 @@ button.text-editor-button.active{
     text-transform: none;
 }
 
+.estimateExplain{
+    font-size: 1.2em;
+    vertical-align: text-bottom !important;
+    margin-left: 2px;
+}
+
+.switchEstimate{
+    border: 1px solid #673ab7 !important;
+    color: #673ab7 !important;
+    font-weight: 700;
+}
+
+.header_title{
+    color: dimgray;
+}
+
 .button .f7-icons, .paid{
     vertical-align: bottom !important;
 }
 
 .settingsInput, .myCard input[type="text"], .item-input-wrap input[type="text"]:not(.specSearch){
-    /*border-bottom: 0.5px solid #673ab7 !important;*/
+    border-bottom: 0.5px solid #673ab7 !important;
     padding: 2px 5px !important;
     margin-top: 2px !important;
 }

@@ -236,7 +236,7 @@
                 <li>
                   <div class="item-content">
                     <div class="item-inner">
-                      <a href="#" class="col button button-outline button-raised button-green" @click='saveData'>Save Client</a>
+                      <a href="#" class="col button button-outline button-raised mainButton" @click='saveData'>Save Client</a>
                     </div>
                   </div>
                 </li>
@@ -479,14 +479,17 @@ export default {
                             
                             var quantity = row.quantity == null ? 1 : row.quantity;
                             var taxes = row.tax == null ? 0 : row.tax;
-                            var total = row.total_price == null ? row.cost : row.total_price;
+                            var total = row.total_price == null ? row.selling_price : row.total_price;
                             var afterTax = row.afterTax == null ? total : row.afterTax;
                             var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
-                            html += '<div class="name cardName">' + row.product_name + '</div><div class="id display-none">' + row._id + '</div><div class="cost display-none">' + row.cost + '</div>';
+                            html += '<div class="name cardName">' + row.product_name + '</div><div class="id display-none">' + row._id + '</div><div class="cost display-none">' + row.selling_price + '</div>';
                           //html += '<div class=""><span class="labelName">Buyer\'s name: </span><span class="valueName buyer">' + row.buyer_name + '</span></div><div class="isPaid display-none">' + row.isPaid + '</div>';
-                            html += '<div class=""><span class="labelName">Product Cost: </span><span class="valueName">' + self.formatMoney(row.cost) + '</span></div>';
+                            html += '<div class=""><span class="labelName">Product Cost: </span><span class="valueName">' + self.formatMoney(row.selling_price) + '</span></div>';
 
                             html += '<div class=""><span class="labelName">Quantity: </span><span class="valueName">' + quantity + '</span></div>';
+                            if(row.discount != null && row.discount != 0){
+                              html += '<div class=""><span class="labelName">Discount: </span><span class="valueName">' + self.formatMoney(row.discount) + '</span></div>';
+                            }
                             html += '<div class=""><span class="labelName">Total Cost: </span><span class="valueName">' + self.formatMoney(total) + '</span></div>';
                             if(taxes > 0){
                               html += '<div class=""><span class="labelName">Tax: </span><span class="valueName">' + taxes + '%</span></div>';

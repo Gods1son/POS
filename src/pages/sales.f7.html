@@ -9,7 +9,7 @@
           <span class="if-not-md">Back</span>
         </a>
       </div>
-      <div class="title padding-vertical-half">Sales</div>
+      <div class="title padding-vertical-half">Sales / Estimates</div>
       <div class="right">
         <a href="#" class="link icon-only panel-toggle" data-panel="left">
           <i class="icon f7-icons if-not-md">menu</i>
@@ -131,7 +131,11 @@
           </div>
           <div class="row margin-top-half myToolbar">
             <div class="col-50 no-padding-vertical">
-              <span class="margin-left-half">You have {{totalMat}} {{js "this.totalMat > 1 ? 'sales' : 'sale'"}}</span>
+              <span class="display-inline-flex">
+              <!--<span class="margin-left-half">You have {{totalMat}} {{js "this.totalMat > 1 ? 'sales' : 'sale'"}}</span>-->
+                <span class="margin-horizontal-half">Show</span>
+                <span><a class="button button-small button-raised switchEstimate" data-estimate="0" @click="switchEstimate">Estimates</a></span>
+             </span>
             </div>
             <div class="col-50 no-padding-vertical text-align-right">
               <span class="display-inline-flex margin-right-half">
@@ -145,6 +149,7 @@
                 </span>
             </div>
           </div>
+          <div class="block header_title text-align-center no-margin-vertical block-title-medium display-none">Sales</div>
           <ul class="list sortList margin-vertical-half">
             
           </ul>
@@ -209,9 +214,18 @@
                         </div>
                       </div>
                   </div>
-                  
                 </li>
-
+                <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-title">Discount</div>
+                      <div class="item-input-wrap">
+                        <input type="text" class="discount_sell" @keyup="calculateQuantity" value="0" placeholder="Discount" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                        <span class="input-clear-button"></span>
+                      </div>
+                    </div>
+                  </div>
+                </li>
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
@@ -263,15 +277,35 @@
                   </div>
                 </li>
                 <li>
-                  <div class="item-content item-input">
-                    <div class="item-inner">
-                      <div class="item-title">Amount Paid</div>
-                      <div class="item-input-wrap">
-                        <input type="text" class="amountpaid_sell" placeholder="Amount paid" value="0" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
-                        <span class="input-clear-button"></span>
+                  <div class="row">
+                    <div class="col-50">
+                      <div class="item-content item-input">
+                        <div class="item-inner">
+                          <div class="item-title">Amount Paid</div>
+                          <div class="item-input-wrap">
+                            <input type="text" class="amountpaid_sell" placeholder="Amount customer paid" value="0" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                            <span class="input-clear-button"></span>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
+
+                    <div class="col-50">
+                      <div class="item-content item-input">
+                        <div class="item-inner">
+                          <div class="item-title">It's an Estimate<i class="icon f7-icons icon-tooltip estimateExplain color-black">info_circle_fill</i></div>
+                          <div class="item-input-wrap">
+                            <label class="checkbox">
+                              <!-- checkbox input -->
+                              <input type="checkbox" class="isEstimate">
+                              <!-- checkbox icon -->
+                              <i class="icon-checkbox"></i>
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                </div>
                 </li>
                 <li>
                   <div class="item-content item-input">
@@ -298,7 +332,7 @@
                 <li>
                   <div class="item-content">
                     <div class="item-inner">
-                      <a href="#" class="col button button-outline button-raised button-green" @click='updateDataSell'>Save Product Sale</a>
+                      <a href="#" class="col button button-outline button-raised mainButton" @click='updateDataSell'>Save Product Sale</a>
                     </div>
                   </div>
                 </li>
@@ -376,7 +410,7 @@
           </div>
       </ul>
       <div class="row padding-horizontal-half"><div class="col-100">
-        <a class="col button button-outline button-raised button-green calculateTotalButton" @click="CalculateTotalProduct">Calculate</a>
+        <a class="col button button-outline button-raised mainButton calculateTotalButton" @click="CalculateTotalProduct">Calculate</a>
       </div>
     </div>
         <div class="margin-top-half bigLabel margin-horizontal-half">
@@ -395,6 +429,18 @@
               <input class="groupProductNameMultiple" type="text" placeholder="Give Group Name" value=""></div></div>
             <div><span class="labelName">Buyer's Name: </span><div class="display-inline-flex">
               <input class="buyersNameMultiple" id="buyersNameMultiple" type="text" placeholder="Buyer's Name" value=""></div></div>
+
+              <div>
+                <span class="labelName">It's an Estimate<i class="icon f7-icons icon-tooltip estimateExplain color-black">info_circle_fill</i></span>
+                <div class="display-inline-flex" style="vertical-align: bottom;">
+                  <div class="item-input-wrap" style="position: relative;">
+                    <label class="checkbox" style="position: absolute;bottom: 4px;">
+                      <input type="checkbox" class="isEstimateMultiple">
+                      <i class="icon-checkbox"></i>
+                    </label>
+                  </div>
+              </div></div>
+
             <div><span class="labelName">Amount Paid: </span><div class="display-inline-flex">
                 <input class="amountPaidMultiple" type="text" placeholder="Amount Paid" value="0"></div></div>
             <div><span class="labelName">Date of Payment: </span><div class="display-inline-flex" style="width:100%">
@@ -405,7 +451,7 @@
         </div>
         </li></ul>
                 <div class="row padding-horizontal-half margin-bottom-half"><div class="col-100">
-                  <a class="col button button-outline button-raised button-green" @click="saveMultipleProduct">Save All</a>
+                  <a class="col button button-outline button-raised mainButton" @click="saveMultipleProduct">Save All</a>
                 </div>
               </div>
         </div>
@@ -449,6 +495,21 @@ export default {
       }
     },
   methods:{
+    switchEstimate: function(){
+      var self = this;
+      var data = $(".switchEstimate").attr("data-estimate");
+      if(data == "0"){
+        $(".switchEstimate").text("Sales");
+        $(".switchEstimate").attr("data-estimate", "1");
+        $(".header_title").text("Estimates");
+      }
+      if(data == "1"){
+        $(".switchEstimate").text("Estimates");
+        $(".switchEstimate").attr("data-estimate", "0");
+        $(".header_title").text("Sales");
+      }
+      self.getData();
+    },
     userpaid: function(id,cost){
         var self = this;
         if(self.$app.toggle.get(".product-" + id).checked){
@@ -507,10 +568,11 @@ export default {
       $(".eachProduct").each(function(i, curr){
         var price = Number($(curr).find(".productCost").eq(0).val().trim());
         var quant = Number($(curr).find(".productQuantity").eq(0).val().trim());
-
+        var discount = Number($(curr).find(".discount").eq(0).val().trim());
         //$(curr).find(".totalproductprice")
         if(!isNaN(price) && !isNaN(quant)){
             var total = price * quant;
+            total = total - discount;
             totalCost += total;
             $(curr).find(".totalproductprice").eq(0).val(total.toFixed(2));
         }
@@ -564,12 +626,13 @@ export default {
         fullyPaid = 0;
       }
       isPaidDate = moment($("#datePaidMultiple").val()).format("X");//  Date.parse($("#paid-calendar-modal").val());
-
+      var isEstimate = $(".isEstimateMultiple").prop("checked") == true ? 1 : 0;
         $(".eachProduct").each(function(i, curr){
         var productName = $(curr).find(".productName").eq(0).val().trim();
         var price = Number($(curr).find(".productCost").eq(0).val().trim());
         var quant = Number($(curr).find(".productQuantity").eq(0).val().trim());
         var totalPric = Number($(curr).find(".totalproductprice").eq(0).val().trim());
+        var discount = Number($(curr).find(".discount").eq(0).val().trim());
 
         if(isNaN(price) || isNaN(quant) || productName == ""){
             $(curr).addClass("bg-color-red");
@@ -583,7 +646,9 @@ export default {
           var obj = {
                 product_name: productName,  
                 buyer_name: buyername,
-                cost: price,
+                selling_price: price,
+                discount: discount,
+                isEstimate: isEstimate,
                 tax: taxes,
                 parentID: 0,
                 isParent: isParent,
@@ -611,7 +676,9 @@ export default {
         var objMaster = {
                 product_name: grpName,  
                 buyer_name: buyername,
-                cost: beforeTaxes,
+                selling_price: beforeTaxes,
+                discount: 0,
+                isEstimate: isEstimate,
                 tax: taxes,
                 parentID: 0,
                 isParent:1,
@@ -683,9 +750,10 @@ export default {
     AddNewProduct: function(select){
       var self = this;
       var name = select == null ? "" : select.product_name;
-      var cost = select == null ? "" : select.cost;
+      var cost = select == null ? "" : select.selling_price;
       var quantity = select == null ? 1 : select.quantity;
       var totalPrice = select == null ? "" : select.total_price;
+      var discount = select == null ? "0" : select.discount;
         //var cost = select.cost == undefined ? 0 : select.cost; 
         var html = '<li class="eachSaleParentOther eachProduct"><div class="card myCard"><div class="card-content padding-horizontal-half">';
           html += '<div><span class="labelName">Product Name: </span><div class="display-inline-flex"><input class="productName" type="text" placeholder="Product Name" value="';
@@ -696,6 +764,8 @@ export default {
           html += '<div class="col-50"><div class="item-content item-input no-padding-left"><div class="item-inner no-padding-right"><div class="labelName">Quantity</div>';
           html += '<div class="item-input-wrap"><input class="productQuantity" type="text" placeholder="Product Quantity" value="' + quantity + '">';
           html +=  '<span class="input-clear-button"></span></div></div></div></div></div>';
+          html += '<div><span class="labelName">Discount: </span><div class="display-inline-flex"><input class="discount" type="text" placeholder="Discount" value="';
+          html +=  discount + '"></div></div>';
           html += '<div><span class="labelName">Total Price: </span><div class="display-inline-flex"><input class="totalproductprice" type="text" placeholder="Total Price" value="';
           html += totalPrice + '"></div></div>';
         html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
@@ -719,6 +789,8 @@ export default {
         var quant = Number($(".quantity_sell").val().trim());
         if(!isNaN(cost) && !isNaN(quant)){
             var total = cost * quant;
+            var discount = Number($(".discount_sell").val());
+            total = total - discount;
             $(".total_sell").val(total);
             var taxes = Number($(".taxes").val().trim());
             if(taxes != "" || taxes == 0){
@@ -769,8 +841,10 @@ export default {
       var productName = sales.product_name;
       var curr = self.settings == null ? "" : self.settings.currency;
       var quant = sales.quantity == null ? 1 : sales.quantity;
-      var cost = self.moneyFormat(sales.cost);
-      var tPrice = sales.total_price == null ? sales.cost : sales.total_price;
+      var discount = sales.discount == null ? 0 : sales.discount;
+      discount = self.moneyFormat(discount);
+      var cost = self.moneyFormat(sales.selling_price);
+      var tPrice = sales.total_price == null ? sales.selling_price : sales.total_price;
       var totalPrice = self.moneyFormat(tPrice);
       var totalPaid = self.moneyFormat(sales.amountPaid);
       var afterTax = sales.afterTax == null ? totalPrice : sales.afterTax;
@@ -793,19 +867,21 @@ export default {
 
             html += '<div style="text-align:left;clear:both;"><h4 style="margin-bottom:5px; margin-top:5px;">Invoice No:' + sales._id + '</h4><h4 style="margin-bottom:5px; margin-top:5px;">Invoice To: ';
             html += buyer + '</h4>';
-            html += '<table style="width:100%;"><thead><tr><th style="width: 50%;text-align: left;">Product Name</th>';
-            html += '<th style="width: 10%;text-align: center;">Quantity</th><th style="width: 20%;text-align: right;">Unit Price</th><th style="width: 20%;text-align: right;">Total Price</th>';
+            html += '<table style="width:100%;"><thead><tr><th style="width: 30%;text-align: left;">Product Name</th>';
+            html += '<th style="width: 5%;text-align: center;">Quantity</th><th style="width: 20%;text-align: right;">Unit Price</th><th style="width: 15%;text-align: right;">Discount</th><th style="width: 20%;text-align: right;">Total Price</th>';
             html += '</tr></thead><tbody>';
               if(children.length > 0){
                   for(var i = 0; i < children.length; i++){
                     var each = children[i];
                     html += '<tr><td>' + each.product_name + '</td><td style="text-align:center">' + each.quantity + '</td>';
-                    html += '<td style="text-align: right;">' + self.moneyFormat(each.cost) + '</td>';
+                    html += '<td style="text-align: right;">' + self.moneyFormat(each.selling_price) + '</td>';
+                    html += '<td style="text-align: right;">' + self.moneyFormat(each.discount) + '</td>';
                     html += '<td style="text-align: right;">' + self.moneyFormat(each.total_price) + '</td></tr>';
                   }
               }else{
                   html += '<tr><td>' + productName + '</td><td style="text-align:center">' + quant + '</td>';
                   html += '<td style="text-align: right;">' + cost + '</td>';
+                  html += '<td style="text-align: right;">' + discount + '</td>';
                   html += '<td style="text-align: right;">' + totalPrice + '</td></tr>';
               }
             
@@ -935,6 +1011,7 @@ export default {
       var self = this;
       var checked = 0;
       var isPaidDate = null;
+      var isEstimate = $(".isEstimate").prop("checked");
       if($("#purchase-calendar-modal").val().trim() == ""){
         self.showToast("Please pick date of purchase", "center");
         return;
@@ -955,7 +1032,7 @@ export default {
           self.showToast("Please choose date buyer paid!", "center");
           return;
       }
-      if(($$("input.amountpaid_sell").val() == "0" || $$("input.amountpaid_sell").val().trim() == "")){
+      if(($$("input.amountpaid_sell").val() == "0" || $$("input.amountpaid_sell").val().trim() == "") && isEstimate == false){
           self.$app.dialog.confirm("Do you want to record the purchase without a payment made?", function(){
             $$("input.amountpaid_sell").val(0);
             self.processPaymentUpdate();
@@ -977,13 +1054,18 @@ export default {
           fullyPaid = 0;
       }
       var isPaidDate = moment($("#paid-calendar-modal").val()).format("X");
+      var isEstimate = $(".isEstimate").prop("checked") == true ? 1 : 0;
+      var taxes = $$("input.taxes").val();
+      taxes = taxes.trim() == "" ? 0 : Number(taxes.trim());
         var obj = {
                 //id: Number(self.currentSale),
                 product_name: $$("input.name_sell").val(),  
                 buyer_name: $$("input.buyer_sell").val(),
-                cost: $$("input.cost_sell").val(),
-                tax: $$("input.taxes").val(),
+                selling_price: $$("input.cost_sell").val(),
+                tax: taxes,
                 parentID: 0,
+                isEstimate: isEstimate,
+                discount: $(".discount_sell").val(),
                 afterTax: $$("input.afterTax").val(),
                 quantity: $$("input.quantity_sell").val(),
                 total_price: $$("input.total_sell").val(),
@@ -1001,7 +1083,7 @@ export default {
               }
             dbSales.put(obj).then(function(){
                     self.showToast("Record saved!", "center");
-                    $$("input.buyer_sell, input.amountpaid_sell, #purchase-calendar-modal, #paid-calendar-modal, .quantity_sell, .total_sell").val("");
+                    $$("input.buyer_sell, input.amountpaid_sell, #purchase-calendar-modal, #paid-calendar-modal, .quantity_sell, .total_sell, .discount_sell").val("");
                     self.$app.popup.close('.newSales', true);
                     self.getData();
                     self.$setState({
@@ -1094,18 +1176,26 @@ export default {
               });
                 $$("input.name_sell").val(item.product_name);
                 $$("input.buyer_sell").val(item.buyer_name);
-                $$("input.cost_sell").val(item.cost);
+                $$("input.cost_sell").val(item.selling_price);
                 var quantity = item.quantity == null ? 1 : item.quantity;
                   var total = item.total_price == null ? item.cost : item.total_price;
                   var taxes = item.tax;
                   var taxesAmt = taxes == undefined ? 0 : taxes;
                   taxesAmt = Number(taxesAmt);
                   total = Number(total);
+                  var discount = item.discount == null ? 0 : item.discount;
                   var afterTax = item.afterTax == undefined ? total : item.afterTax;
                   $(".quantity_sell").val(quantity);
                   $(".taxes").val(taxesAmt);
                   $(".afterTax").val(afterTax);
+                  $(".discount_sell").val(discount);
                   $(".total_sell").val(total);
+                  if(item.isEstimate != undefined && item.isEstimate != null){
+                    var est = item.isEstimate == 1 ? true : false;
+                    $(".isEstimate").prop("checked", est);
+                  }else{
+                    $(".isEstimate").prop("checked", false);
+                  }
                 $$("input.amountpaid_sell").val(item.amountPaid);
                 if(item.created_date != ""){
                   var myDate = new Date(item.created_date);
@@ -1131,6 +1221,7 @@ export default {
                 var taxes = self.settings == null ? 0 : self.settings.taxes;
                 var taxesAmt = taxes == undefined ? 0 : taxes;
                 $(".quantity_sell").val("1");
+                $(".discount_sell").val(0);
                 $(".taxes").val(taxesAmt);
                 $(".afterTax").val("0");
                 $$("input.amountpaid_sell").val("");
@@ -1247,11 +1338,18 @@ export default {
               $(".amountPaidMultiple ").val(arr.amountPaid);
               $("#datePaidMultiple").val(moment.unix(arr.date_paid).format("LLL"));
               $("#datePurchaseMultiple").val(moment.unix(arr.created_date).format("LLL"));
+              if(arr.isEstimate != null && arr.isEstimate != undefined){
+                var est = arr.isEstimate == 1 ? true : false;
+                $(".isEstimateMultiple").prop("checked", est);
+              }else{
+                $(".isEstimateMultiple").prop("checked", false);
+              }
             }else{
               $(".buyersNameMultiple").val("");
               $(".amountPaidMultiple ").val(0);
               $("#datePaidMultiple").val(moment().format("LLL"));
               $("#datePurchaseMultiple").val(moment().format("LLL"));
+              $(".isEstimateMultiple").prop("checked", false);
             }
             $(".taxpercent").val(taxesAmt);
         })
@@ -1370,8 +1468,10 @@ export default {
       if(name == ""){
         name = select.name == null ? "" : select.name;
       }
-      var cost = select.cost == null ? "" : select.cost;
+      var cost = select.selling_price == null ? "" : select.selling_price;
       var quantity = select.quantity == null ? 1 : select.quantity;
+      var discount = select.discount == null ? 0 : select.discount;
+      //var discount = 0;
       var totalPrice = select.total_price == null ? "" : select.total_price; 
         var html = '<li class="eachSaleParent eachProduct"><div class="card myCard"><div class="card-content padding-horizontal-half">';
           html += '<div><span class="labelName">Product Name: </span><div class="display-inline-flex"><input class="productName" type="text" placeholder="Product Name" value="';
@@ -1382,6 +1482,8 @@ export default {
           html += '<div class="col-50"><div class="item-content item-input no-padding-left"><div class="item-inner no-padding-right"><div class="labelName">Quantity</div>';
           html += '<div class="item-input-wrap"><input class="productQuantity" type="text" placeholder="Product Quantity" value="' + quantity + '">';
           html +=  '<span class="input-clear-button"></span></div></div></div></div></div>';
+          html += '<div><span class="labelName">Discount: </span><div class="display-inline-flex"><input class="discount" type="text" placeholder="Discount" value="';
+          html +=  discount + '"></div></div>';
           html += '<div><span class="labelName">Total Price: </span><div class="display-inline-flex"><input class="totalproductprice" type="text" placeholder="Total Price" value="';
           html +=  totalPrice + '"></div></div>';
         html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
@@ -1439,7 +1541,7 @@ export default {
             $("#sales-list .list").empty();//id,product_name,buyer_name,cost,amountPaid,isPaid,date_paid,created_date,status
             $("#sales-list .pagination").remove();         
             if(self.sales != null && self.sales.length > 0){
-                        $(".sortTextPar").removeClass("display-none");
+                        $(".sortTextPar, .header_title").removeClass("display-none");
                         var pagination = "<ul class='pagination padding-left-half margin-vertical-half'><ul>";
                         $(pagination).insertAfter($("#sales-list .list"));
                         $(".sort").remove();
@@ -1461,10 +1563,16 @@ export default {
                             var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
                             html += '<div class="name cardName">' + row.product_name + '</div><div class="id display-none">' + row._id + '</div><div class="cost display-none">' + row.cost + '</div>';
                             html += '<div class=""><span class="labelName">Buyer\'s name: </span><span class="valueName buyer">' + row.buyer_name + '</span></div><div class="isPaid display-none">' + row.isPaid + '</div>';
-                            html += '<div class=""><span class="labelName">Product Cost: </span><span class="valueName">' + self.formatMoney(row.cost) + '</span></div>';
+                            html += '<div class=""><span class="labelName">Product Cost: </span><span class="valueName">' + self.formatMoney(row.selling_price) + '</span></div>';
 
                             html += '<div class=""><span class="labelName">Quantity: </span><span class="valueName">' + quantity + '</span></div>';
                             html += '<div class=""><span class="labelName">Total Cost: </span><span class="valueName">' + self.formatMoney(total) + '</span></div>';
+                            if(row.discount != null && row.discount != 0){
+                              html += '<div class=""><span class="labelName">Discount: </span><span class="valueName">' + self.formatMoney(row.discount) + '</span></div>';
+                            }
+                            /*if(row.isEstimate != null && row.isEstimate != undefined && row.isEstimate > 0){
+                              html += '<div class=""><span class="labelName">Estimate: </span><span class="valueName">' + row.isEstimate + '</span></div>';
+                            }*/
                             //if(taxes > 0){
                               html += '<div class=""><span class="labelName">Tax: </span><span class="valueName">' + taxes + '%</span></div>';
                               html += '<div class=""><span class="labelName">After Tax Cost: </span><span class="valueName">' + self.formatMoney(afterTax) + '</span></div>';
@@ -1549,7 +1657,7 @@ export default {
                           //var html = "<li><div class='card myCard'><div class='card-content text-align-center'>No result found</div></div></li>";
                           //$("#sales-list .list").append(html);
                           self.calculateTotalMoney();
-                          $(".sortTextPar").addClass("display-none");
+                          $(".sortTextPar, .header_title").addClass("display-none");
                         }
     },
     formatMoney:function(val){             
@@ -1697,13 +1805,22 @@ export default {
       if(toggle != undefined){
         checked = toggle.checked == true ? 0 : 1;
       }
-
+      var data = $(".switchEstimate").attr("data-estimate");
+      var sales_estimate = Number(data);
+      var condition = null;
+      if(sales_estimate == 1){
+        condition = { isEstimate: { $eq: sales_estimate } };
+      }else{
+        condition = { isEstimate: { $ne: 1 } };
+      }
+      
       self.$app.preloader.show();
           dbSales.find({
               selector: {
                 $and: [
                   { status: {$eq: checked} },
                   { parentID: { $lt: 1 } },
+                  condition,
                   {created_date: {$gt: true}}
                 ]
               },
@@ -1750,11 +1867,12 @@ export default {
                   if(value.length > 0){
                   value = value[0];
                   $("#name_sell").val(value.name);
-                  $(".cost_sell").val(value.cost);
+                  $(".cost_sell").val(value.selling_price);
                   var quant = Number($(".quantity_sell").val());
                     if(!isNaN(quant) || quant == 0){
                       var q = quant == 0 ? 1 : quant;
-                      var tp = Number(value.cost) * q;
+                      var tp = Number(value.selling_price) * q;
+                      //tp = tp - discount;
                       $(".total_sell").val(tp);
                       self.calculateQuantity();
                     }

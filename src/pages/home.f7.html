@@ -64,7 +64,7 @@
                       <div class="item-inner">
                         <div class="item-title myPurple">
                           <i class="icon f7-icons text-color-blue1">tag</i>
-                          <div>Sales</div>
+                          <div>Sales / Estimates</div>
                         </div>
                       </div>
                     </a>
@@ -208,7 +208,7 @@ export default {
         syncDB: function(){
           var self = this;
           $.ajax({
-              url: "http://34.106.12.119:5984/_all_dbs", 
+              url: "_all_dbs", 
               type:"GET",
               "crossDomain": true,
               success: function(result){
@@ -218,6 +218,25 @@ export default {
                 
               }
           });
+          
+        },
+        clearAllDB: function(){
+          var self = this;
+          self.$app.preloader.show();
+          try{
+              window.indexedDB.databases().then((r) => {
+                for (var i = 0; i < r.length; i++) window.indexedDB.deleteDatabase(r[i].name);
+            }).then(() => {
+              self.$app.preloader.hide();
+                self.showToast('All data cleared.', "center");
+            }).catch((e) => {
+              self.$app.preloader.show();
+              self.showToast(e, "center");
+            });
+          }catch(err){
+            self.$app.preloader.hide();
+            self.showToast(err, "center");
+          }
           
         },
         getData: function(){
