@@ -33,8 +33,10 @@
         </div>
       </div>
       <div class="block no-margin"> 
-        <p class="display-inline-flex margin-vertical-half">
-          <a class="button button-outline" @click="getProductSales">Product Sales</a>
+        <p class="display-inline-flex margin-vertical-half reportAllButtons">
+          <!--<a class="button button-outline" @click="getProductSales">Product Sales</a>-->
+          <a class="button button-outline" @click="productSales">Unique Product Sales</a>
+          <a class="button button-outline" @click="customerPurchases">Customer Purchases</a>
         </p>
       </div>
       <div>
@@ -72,14 +74,15 @@
     }
   }
 });*/
-  var db = null, dbSales = null, dbExpenses = null, myProductSalesChart = null;
+  var db = null, dbSales = null, dbExpenses = null, myChart = null;
   export default {
     // Lifecycle Hooks
     // Component Data
     data: function () {
       // Must return an object
       return {
-        
+        from: 0,
+        to: 0,
       }
     },
     // Component Methods
@@ -182,7 +185,10 @@
       },
       resetTable: function(){
         var self = this;
-        self.getProductSales();
+        self.$setState({
+                  from: 0,
+                  to:0
+                })
       },
       getProductSales: function(){
         var self = this;
@@ -201,6 +207,261 @@
                       self.showProductSales(arr);
                     }
             });
+      },
+      clearChartTable: function(){
+        var self = this;
+        if(myChart != null){
+            myChart.destroy();
+          }
+        $("#myChart").addClass("display-none");
+        $("#allTables").empty();
+      },
+      customerPurchases: function(){
+        var self = this;
+        var from = self.from;
+        var to = self.to;
+        var dateFilterFrom = null;
+        var dateFilterTo = null;
+        if(from == 0 && to == 0){
+          dateFilterFrom = {created_date: {$gt: true}};
+          dateFilterTo = dateFilterFrom;
+        }else{
+          dateFilterFrom = {created_date: { $gt: from }};
+          dateFilterTo =  {created_date: { $lt: to }};
+        }
+        self.$app.preloader.show();
+        dbSales.find({
+              selector: {
+                $or:[
+                    {
+                      //group member
+                      $and: [
+                        { isParent: {$eq: 1}},
+                        { status: {$eq: 1}},
+                        {isEstimate: { $ne: 1 }},
+                        dateFilterFrom,
+                        dateFilterTo,
+                        { parentID: {$ne: 0} }
+                      ]
+                  },{
+                    //single product
+                    $and: [
+                      { isParent: {$ne: 1}},
+                      { status: {$eq: 1}},
+                      dateFilterFrom,
+                      dateFilterTo,
+                      {isEstimate: { $ne: 1 }},
+                      { parentID: {$eq: 0} }
+                    ]
+                  },{
+                    //group
+                    $and: [
+                      { isParent: {$eq: 1}},
+                      { status: {$eq: 1}},
+                      dateFilterFrom,
+                      dateFilterTo,
+                      {isEstimate: { $ne: 1 }},
+                      { parentID: {$eq: 0} }
+                    ]
+                  }
+                ]
+              },
+              sort: [{'_id': 'desc'}]
+            }).then(function(ar){
+              try{
+                  self.clearChartTable();
+                  self.$app.preloader.hide();
+                  var arr = ar.docs;
+                  var arr2 = arr.filter(x => ((x.isParent != 1 && x.parentID == 0) || (x.isParent == 1 && x.parentID == 0)));
+                  var obj = {};
+                  //var unique = arr.map(item => item.product_name).filter((value, index, self) => self.indexOf(value) === index);
+                  $.each(arr2, function(ind, val){
+                    var name = val.buyer_name;
+                    if(obj[name] == undefined){
+                      obj[name] = {};
+                    }
+                    var prod = val.product_name;
+                    if(val.isParent != 1 && val.parentID == 0){
+                      if(obj[name][prod] == undefined){
+                        obj[name][prod] = Number(val.quantity);
+                      }else{
+                        var count = Number(val.quantity);
+                        var oldCount = obj[name][prod];
+                        obj[name][prod] = count + oldCount;
+                      }
+                    }
+                    // group
+                    if(val.isParent == 1 && val.parentID == 0){
+                      if(obj[name][prod] == undefined){
+                        obj[name][prod] = {};
+                        var children = arr.filter(x => x.parentID == val._id);
+                        obj[name][prod]["children"] = children;
+                      }else{
+                        var keys = Object.keys(obj[name]);
+                        var ct = 0;
+                        $.each(keys, function(ind, val){
+                          if(val.indexOf(prod) > -1){
+                            ct += 1;
+                          }
+                        })
+                        var prod2 = prod + "(" + ct + ")";
+                        var children = arr.filter(x => x.parentID == val._id);
+                        obj[name][prod2] = {};
+                        obj[name][prod2]["children"] = children;
+                      }
+                      
+                      
+                    }
+                    
+                  })
+                  var html = "<div class='card myCard'><table><thead><tr><th>Buyer's name</th><th>Product name -- quantity</th><th>Sub Products</th></tr></thead>";
+                  html += "<tbody>";
+                  //console.log(obj);
+                  for(var user in obj){
+                    var sub = obj[user];
+                    var keys = Object.keys(sub);
+                    var rowspan = "";
+                    if(keys.length > 1){
+                      rowspan = " rowspan='" + keys.length + "'";
+                    }
+                    html += "<tr><td" + rowspan + ">" + user + "</td>";
+                    var start = true;
+                    for(var x = 0; x < keys.length; x++){
+                      
+                      var each = keys[x];
+                      var eachKey = sub[each];
+                      if(eachKey["children"] == undefined){
+                        if(!start){
+                        html += "<tr>";
+                        if(rowspan == ""){
+                          html += "<td></td>";
+                        }
+                      }
+                        //no children
+                        html += "<td>" + each + " -- " + eachKey + "</td>";
+                        html += "<td></td></tr>";
+                        start = false;
+                      }else{
+                        //there are children
+                        if(!start){
+                        html += "<tr>";
+                      }
+                        html += "<td>" + each + "</td>";
+                        html += "<td>";
+                          var eachChild = eachKey["children"];
+                          for(var y = 0; y < eachChild.length; y++){
+                            var product = eachChild[y];
+                            html += product.product_name + " -- " + product.quantity + "<br>";
+                          }
+                        html += "</td></tr>";
+                        start = false;
+                      }
+                    }
+                  }
+                  html += "</tbody></table></div>";
+                  $("#allTables").empty();
+                  $("#allTables").append(html);
+                  self.$app.preloader.hide();
+                }catch(err){
+                  self.$app.preloader.hide();
+                }
+            }).catch(function(err){
+              self.$app.preloader.hide();
+            })
+      },
+      productSales: function(){
+        var self = this;
+        var from = self.from;
+        var to = self.to;
+        var dateFilterFrom = null;
+        var dateFilterTo = null;
+        if(from == 0 && to == 0){
+          dateFilterFrom = {created_date: {$gt: true}};
+          dateFilterTo = dateFilterFrom;
+        }else{
+          dateFilterFrom = {created_date: { $gt: from }};
+          dateFilterTo =  {created_date: { $lt: to }};
+        }
+        self.$app.preloader.show();
+        dbSales.find({
+              selector: {
+                $or:[
+                    {
+                      $and: [
+                        { isParent: {$eq: 1}},
+                        { status: {$eq: 1}},
+                        {isEstimate: { $ne: 1 }},
+                        dateFilterFrom,
+                        dateFilterTo,
+                        { parentID: {$ne: 0} }
+                      ]
+                  },{
+                    $and: [
+                      { isParent: {$ne: 1}},
+                      { status: {$eq: 1}},
+                      dateFilterFrom,
+                      dateFilterTo,
+                      {isEstimate: { $ne: 1 }},
+                      { parentID: {$eq: 0} }
+                    ]
+                  }
+                ]
+              },
+              sort: [{'_id': 'desc'}]
+            }).then(function(ar){
+              try{
+                  var arr = ar.docs;
+                  var obj = {};
+                  //var unique = arr.map(item => item.product_name).filter((value, index, self) => self.indexOf(value) === index);
+                  $.each(arr, function(ind, val){
+                    var name = val.product_name;
+                    if(obj[name] == undefined){
+                      var count = Number(val.quantity);
+                      obj[name] = count;
+                    }else{
+                      var count = Number(val.quantity);
+                      var oldCount = obj[name];
+                      obj[name] = count + oldCount;
+                    }
+                  })
+                  var bg = [];
+                  var bc = [];
+                  for(var key in obj){
+                      var r = Math.floor(Math.random() * 200);
+                      var g = Math.floor(Math.random() * 200);
+                      var b = Math.floor(Math.random() * 200);
+                      //v = Math.floor(Math.random() * 500);
+                      var c = 'rgb(' + r + ', ' + g + ', ' + b + ')';
+                      var h = 'rgb(' + (r+20) + ', ' + (g+20) + ', ' + (b+20) + ')';
+                      bg.push(c);
+                      bc.push(h);
+                  }
+                  var ctx = document.getElementById('myChart');
+                  self.clearChartTable();
+                  $("#myChart").removeClass("display-none");
+                  myChart = new Chart(ctx, {
+                  type: 'doughnut',
+                  data: {
+                    labels: Object.keys(obj),
+                    datasets: [{
+                      label: 'Product Sales',
+                      data: Object.values(obj),
+                      backgroundColor: bg,
+                      borderColor: bc,
+                      borderWidth: 1
+                    }]
+                  },
+                  options: {
+                    cutoutPercentage: 40,
+                    responsive: true,
+
+                  }
+                });
+                self.$app.preloader.hide();
+              }catch(err){
+                self.$app.preloader.hide();
+              }
+          }).catch(() => {self.$app.preloader.hide();})
       },
       showProductSales: function(arr){
         var self = this;
@@ -241,10 +502,10 @@
                 }
               })
               var ctx = document.getElementById('myChart');
-              if(myProductSalesChart != null){
-                myProductSalesChart.destroy();
+              if(myChart != null){
+                myChart.destroy();
               }
-              myProductSalesChart = new Chart(ctx, {
+              myChart = new Chart(ctx, {
                     type: 'bar',
                     data: {
                         datasets: [{
@@ -364,12 +625,14 @@
                 date2.setDate(date2.getDate() + 1);
                 to = moment(moment(date2).format('LLL')).format("X");
             }else{
-              self.getProductSales();
+              //self.getProductSales();
             }
             if(from != null && to != null){
-                //console.log(from);
-                //console.log(to);
-                var checked = 1;
+                self.$setState({
+                  from: from,
+                  to:to
+                })
+                /*var checked = 1;
 
                 dbSales.find({
                     selector: {
@@ -389,7 +652,7 @@
                       self.showProductSales(arr);
                     }
                     
-                });
+                });*/
             }
         })  
         self.startPouch();

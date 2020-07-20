@@ -240,6 +240,24 @@ button.text-editor-button.active{
     text-transform: none;
 }
 
+.reportAllButtons{
+    flex-wrap: wrap;
+}
+
+.reportAllButtons a{
+    margin-right: 5px;
+    font-size: 0.8em;
+}
+
+#allTables table{
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#allTables th, #allTables td{
+    border: 1px solid black;
+}
+
 .estimateExplain{
     font-size: 1.2em;
     vertical-align: text-bottom !important;

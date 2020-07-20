@@ -612,7 +612,7 @@ export default {
             var total = cost * quant;
             var discount = Number($(".discount_sell").val());
             total = total - discount;
-            $(".total_sell").val(total);
+            $(".total_sell").val(total.toFixed(2));
             var taxes = Number($(".taxes").val().trim());
             //console.log("0 - " + taxes);
             if(taxes != "" || taxes == 0){
@@ -856,7 +856,7 @@ export default {
                 $(".quantity_sell").val(quantity);
                 $(".taxes").val(taxesAmt);
                 $(".afterTax").val(afterTax.toFixed(2));
-                $(".total_sell").val(total);
+                $(".total_sell").val(total.toFixed(2));
                 $("#paid-calendar-modal").val(moment().format('LLL'));
                 $("#purchase-calendar-modal").val(moment().format('LLL'));
                 var popup = self.$app.popup.open('.sellProduct', true);
@@ -944,7 +944,7 @@ export default {
               navbarColorTheme: 'col bg-color-white text-color-black',
               preloader: true, //enable preloader
               valueProperty: '_id', //object's "value" property name
-              textProperty: 'name', //object's "text" property name
+              textProperty: 'name_price', //object's "text" property name
               popupCloseLinkText: 'Done',
               requestSourceOnOpen:true,
               source: function (query, render) {
@@ -954,6 +954,9 @@ export default {
                 //autocomplete.preloaderHide();
                 //render(results);
                 if (query.length === 0) {
+                  $.each(results, function(ind, val){
+                      val["name_price"] = val["name"] + "\t" + " - " + self.formatMoney(val["selling_price"]);
+                  })
                   autocomplete.preloaderHide();
                   render(results);
                   return;
@@ -963,7 +966,10 @@ export default {
                   var newResult = [];
                   // Find matched items
                   for (var i = 0; i < results.length; i++) {
-                    if (results[i].name.toLowerCase().indexOf(query.toLowerCase()) >= 0) newResult.push(results[i]);
+                    if (results[i].name.toLowerCase().indexOf(query.toLowerCase()) >= 0) {
+                        results[i].name_price = results[i].name + "\t" + " - " + self.formatMoney(results[i].selling_price);
+                        newResult.push(results[i]);
+                      }
                   }
                   // Render items by passing array with result items
                   autocomplete.preloaderHide();
@@ -1027,7 +1033,7 @@ export default {
               navbarColorTheme: 'col bg-color-white text-color-black',
               preloader: true, //enable preloader
               valueProperty: '_id', //object's "value" property name
-              textProperty: 'name', //object's "text" property name
+              textProperty: 'name_price', //object's "text" property name
               popupCloseLinkText: 'Done',
               requestSourceOnOpen:true,
               source: function (query, render) {
@@ -1037,6 +1043,9 @@ export default {
                 
                 //render(results);
                 if (query.length === 0) {
+                  $.each(results, function(ind, val){
+                      val["name_price"] = val["name"] + "\t" + " - " + self.formatMoney(val["cost_per_unit"]) + " for " + val["unit_size"] + val["unit"];
+                  })
                   autocomplete.preloaderHide();
                   render(results);
                   return;
@@ -1045,7 +1054,10 @@ export default {
                   var newResult = [];
                   // Find matched items
                   for (var i = 0; i < results.length; i++) {
-                    if (results[i].name.toLowerCase().indexOf(query.toLowerCase()) >= 0) newResult.push(results[i]);
+                    if (results[i].name.toLowerCase().indexOf(query.toLowerCase()) >= 0) {
+                        results[i].name_price = results[i].name + "\t" + " - " + self.formatMoney(results[i].cost_per_unit) + " for " + results[i].unit_size + results[i].unit;
+                        newResult.push(results[i]);
+                      }
                   }
                   // Render items by passing array with result items
                   autocomplete.preloaderHide();

@@ -791,7 +791,7 @@ export default {
             var total = cost * quant;
             var discount = Number($(".discount_sell").val());
             total = total - discount;
-            $(".total_sell").val(total);
+            $(".total_sell").val(total.toFixed(2));
             var taxes = Number($(".taxes").val().trim());
             if(taxes != "" || taxes == 0){
               if(!isNaN(taxes)){
@@ -938,6 +938,20 @@ export default {
                 self.sales = self.sales.filter(function(e){ 
                       return e._id != id;
                   });
+
+                  dbSales.find({
+                    selector: {
+                      parentID: {$eq: id}
+                    }
+                  }).then(function(ar){
+                    var arr = ar.docs;
+                          arr.forEach((element, index) => {
+                          arr[index].status = -1;
+                      });
+                      dbSales.bulkDocs(arr).then(function(){
+                        //dbSales.bulkDocs(bigData);
+                      })
+                    })
                   self.showToast("Sale permanently deleted", "center");
                   //console.log(self.ings);
                   self.$setState({
@@ -970,6 +984,21 @@ export default {
                     doc.status = checked
                     return dbSales.put(doc);
                   }).then(function(){
+
+                dbSales.find({
+                    selector: {
+                      parentID: {$eq: id}
+                    }
+                  }).then(function(ar){
+                    var arr = ar.docs;
+                          arr.forEach((element, index) => {
+                          arr[index].status = checked;
+                      });
+                      dbSales.bulkDocs(arr).then(function(){
+                        //dbSales.bulkDocs(bigData);
+                      })
+                    })
+
                 self.sales = self.sales.filter(function(e){ 
                       return e._id != id;
                   });
@@ -1189,7 +1218,7 @@ export default {
                   $(".taxes").val(taxesAmt);
                   $(".afterTax").val(afterTax);
                   $(".discount_sell").val(discount);
-                  $(".total_sell").val(total);
+                  $(".total_sell").val(total.toFixed(2));
                   if(item.isEstimate != undefined && item.isEstimate != null){
                     var est = item.isEstimate == 1 ? true : false;
                     $(".isEstimate").prop("checked", est);
@@ -1391,7 +1420,7 @@ export default {
               navbarColorTheme: 'col bg-color-white text-color-black',
               preloader: true, //enable preloader
               valueProperty: '_id', //object's "value" property name
-              textProperty: 'name', //object's "text" property name
+              textProperty: 'name_price', //object's "text" property name
               popupCloseLinkText: 'Done',
               requestSourceOnOpen:true,
               source: function (query, render) {
@@ -1402,6 +1431,9 @@ export default {
                 var newResult = results;
                 //render(results);
                 if (query.length === 0) {
+                  $.each(results, function(ind, val){
+                      val["name_price"] = val["name"] + "\t" + " - " + self.formatMoney(val["selling_price"]);
+                  })
                   autocomplete.preloaderHide();
                   render(results);
                   return;
@@ -1411,7 +1443,10 @@ export default {
                   newResult = [];
                   // Find matched items
                   for (var i = 0; i < results.length; i++) {
-                    if (results[i].name.toLowerCase().indexOf(query.toLowerCase()) >= 0) newResult.push(results[i]);
+                    if (results[i].name.toLowerCase().indexOf(query.toLowerCase()) >= 0) {
+                        results[i].name_price = results[i].name + "\t" + " - " + self.formatMoney(results[i].selling_price);
+                        newResult.push(results[i]);
+                      }
                   }
                   // Render items by passing array with result items
                   autocomplete.preloaderHide();
@@ -1850,20 +1885,26 @@ export default {
           inputEl: '#name_sell',
           openIn: 'dropdown',
           valueProperty: '_id', //object's "value" property name
-          textProperty: 'name', //object's "text" property name
+          textProperty: 'name_price', //object's "text" property name
           source: function (query, render) {
+            var autocomplete = this;
+            autocomplete.preloaderShow();
             var results = self.products.filter(x => x.status == 1);
             var newResult = [];
             // Find matched items
             for (var i = 0; i < self.products.length; i++) {
-              if (results[i].name.toLowerCase().indexOf(query.toLowerCase()) >= 0) newResult.push(results[i]);
+              if (results[i].name.toLowerCase().indexOf(query.toLowerCase()) >= 0) {
+                results[i].name_price = results[i].name + "\t" + " - " + self.formatMoney(results[i].selling_price);
+                newResult.push(results[i]);
+              }
             }
             // Render items by passing array with result items
+            autocomplete.preloaderHide();
             render(newResult);
           },
           on: {
                 change: function (value) {
-                  console.log(value);
+                  //console.log(value);
                   if(value.length > 0){
                   value = value[0];
                   $("#name_sell").val(value.name);
@@ -1873,7 +1914,7 @@ export default {
                       var q = quant == 0 ? 1 : quant;
                       var tp = Number(value.selling_price) * q;
                       //tp = tp - discount;
-                      $(".total_sell").val(tp);
+                      $(".total_sell").val(tp.toFixed(2));
                       self.calculateQuantity();
                     }
                   }
@@ -2038,12 +2079,21 @@ export default {
                 }).reverse().toArray(function(arr){*/
                   //console.log("from: " + from);
                   //console.log("to: " + to);
+                  var data = $(".switchEstimate").attr("data-estimate");
+                  var sales_estimate = Number(data);
+                  var condition = null;
+                  if(sales_estimate == 1){
+                    condition = { isEstimate: { $eq: sales_estimate } };
+                  }else{
+                    condition = { isEstimate: { $ne: 1 } };
+                  }
                 dbSales.find({
                     selector: {
                       $and: [
                          {status: {$eq: checked}},
                          {created_date: { $gt: from }},
                          {created_date: { $lt: to }},
+                         condition,
                          {parentID: { $lt: 1 } }
                       ]
                     },
