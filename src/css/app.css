@@ -242,11 +242,33 @@ button.text-editor-button.active{
 
 .reportAllButtons{
     flex-wrap: wrap;
+    justify-content: center;
 }
 
 .reportAllButtons a{
     margin-right: 5px;
     font-size: 0.8em;
+    margin-top: 5px;
+}
+
+/*#myChart{
+    width:80%;
+    height: 500px;
+}*/
+
+#allTables{
+    width: 96%;
+    overflow: auto;
+}
+
+#allTables .eachChild{
+    border-bottom: 1px solid lightgray;
+}
+
+.chartHolder{
+    display: flex;
+    justify-content: center;
+    overflow: auto;
 }
 
 #allTables table{
@@ -255,7 +277,7 @@ button.text-editor-button.active{
 }
 
 #allTables th, #allTables td{
-    border: 1px solid black;
+    border: 1px solid lightgray;
 }
 
 .estimateExplain{

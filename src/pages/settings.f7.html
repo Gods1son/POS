@@ -69,6 +69,19 @@
                           </div>
                         </div>
                       </li>
+                      <li>
+                        <div class="item-content item-input">
+                          <div class="item-inner">
+                            <div class="item-title">Terms and Conditions</div>
+                            <div class="item-input-wrap">
+                              <div class="text-editor terms_condition margin-top-half" data-placeholder="Terms and Condition" 
+                                data-buttons='[["bold", "italic", "underline", "strikeThrough"], ["orderedList", "unorderedList"]]'>
+                                <div class="text-editor-content" contenteditable></div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </li>
                       <li class="item-content item-input">
                         <div class="item-inner">
                           <div class="item-title item-label">Taxes in percentage (do not include %)</div>
@@ -199,6 +212,11 @@
                   if(tagline != ""){
                       $("#companytagline").val(tagline);
                   }
+                  var terms = doc.terms_condition;
+                  if(terms != "" && terms != undefined){
+                    var textEditor = self.$app.textEditor.get('.terms_condition');
+                    textEditor.setValue(terms);
+                  }
                   /*var logo = doc.logo;
                   if(logo != "" && logo != null){
                       $("#logoShow").attr("src", logo);
@@ -210,6 +228,7 @@
                   var savedCurr = doc.currency;
                   if(savedCurr != ""){
                       $('#autocomplete-dropdown-all').val(savedCurr);
+                      localStorage.setItem("currency", savedCurr);
                   }
 
                   dbSettingsImages.get('logoImage', {attachments: true}).then(function (blobOrBuffer) {
@@ -277,6 +296,7 @@
             var taxes = $("#taxes").val().trim();
             var currency = $('#autocomplete-dropdown-all').val();
             var tagline = $("#companytagline").val();
+            var terms = self.$app.textEditor.get('.terms_condition').value;
             if(taxes != ""){
                 var tax = Number(taxes);
                 if(isNaN(tax)){
@@ -293,23 +313,26 @@
             obj.currency = currency;
             obj.country = self.country;
             obj.tagline = tagline;
+            obj.terms_condition = terms;
             //obj.logo = logo;
             //obj.signature = sig;
 
             if(self.settings == null){
               obj._id = self.settingsID;
+
               dbSettings.put(obj).then(function(){
                 saved = true;
                 self.uploadImages();
                 self.showToast("Information Saved!", "center");
               }).catch(function(err){
-                //console.log(err);
+                console.log(err);
                 self.showToast("An error occured, please try again!", "center");
               })
             }else{
-              obj._id = self.settingsID;
+              //obj._id = self.settingsID;
               dbSettings.get(self.settingsID).then(function(doc) {
                    // console.log(doc);
+                   obj._id = doc._id;
                     obj._rev = doc._rev;
                     return dbSettings.put(obj);
                   }).then(function(){
@@ -318,7 +341,7 @@
                     localStorage.setItem("currency", currency);
                     self.showToast("Information Saved!", "center");
                 }).catch(function(err){
-                  //console.log(err);
+                  console.log(err);
                   self.showToast("An error occured, please try again!", "center");
                 })
             }
@@ -406,6 +429,20 @@
                         //localStorage.setItem("currency", val);
                     }     
                 }
+                });
+                var textEditorCustomButtons = self.$app.textEditor.create({
+                  el: '.terms_condition',
+                  buttons: [["bold", "italic", "underline", 'h1', 'h2', 'h3', 'orderedList', 'unorderedList']],
+                  on: {
+                    buttonClick: function (editor, button) {
+                        var act = $('button[data-button="' + button + '"]').hasClass("active");
+                        if(act){
+                          $('button[data-button="' + button + '"]').removeClass("active");
+                        }else{
+                          $('button[data-button="' + button + '"]').addClass("active");
+                        }
+                      }
+                    }
                 });
             }  
         }

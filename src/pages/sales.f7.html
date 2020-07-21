@@ -922,6 +922,12 @@ export default {
             
             html += '<div style="text-align:left;clear:both;border-top: 1px solid darkgray;border-bottom: 1px solid darkgray;">' + tagline  + signature + '<h5 style="margin-bottom:5px; margin-top:5px;">' + today + '</h5></div>';
             html += '</div>';
+            if(self.settings.terms_condition != undefined && self.settings.terms_condition != ""){
+              html += "<div style='text-align:center;margin-top:10px;'>";
+              html += "<div>Terms and Conditions</div>";
+              html += "<div>" + self.settings.terms_condition + "</div>";
+              html += "</div>";
+            }
             html += '</html>';
             return html;
       

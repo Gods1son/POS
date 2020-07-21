@@ -34,13 +34,17 @@
       </div>
       <div class="block no-margin"> 
         <p class="display-inline-flex margin-vertical-half reportAllButtons">
-          <!--<a class="button button-outline" @click="getProductSales">Product Sales</a>-->
+          <a class="button button-outline" @click="getProductSales">Product Sold and Amount Paid</a>
           <a class="button button-outline" @click="productSales">Unique Product Sales</a>
           <a class="button button-outline" @click="customerPurchases">Customer Purchases</a>
+          <a class="button button-outline" @click="dailySales">Daily Sales</a>
+          <a class="button button-outline" @click="getProfitStart">Cost and Amount Received</a>
         </p>
       </div>
       <div>
+        <div class="chartHolder text-center">
         <canvas id="myChart" width="400" height="400"></canvas>
+      </div>
         <div id="allTables" class="text-align-center padding-horizontal-half"></div>
       </div>
       
@@ -74,7 +78,7 @@
     }
   }
 });*/
-  var db = null, dbSales = null, dbExpenses = null, myChart = null;
+  var db = null, dbSales = null, dbExpenses = null, myChart = null, dbProducts = null;
   export default {
     // Lifecycle Hooks
     // Component Data
@@ -83,6 +87,7 @@
       return {
         from: 0,
         to: 0,
+        products: null
       }
     },
     // Component Methods
@@ -95,6 +100,28 @@
                         closeTimeout: 2000,
                         }).open();
     },
+    getProfitStart: function(){
+      var self = this;
+      if(self.products == null){
+      dbProducts.find({
+          selector: {
+            status: {$eq: 1}
+          }
+        }).then(function(ar){
+          var arr = ar.docs;
+          
+          //self.$app.preloader.hide();
+          self.$setState({
+                products: arr
+              }).then(function(){
+                //console.log(arr);
+                self.getProfit();
+              })
+        })
+      }else{
+        self.getProfit();
+      }
+    },
     startPouch: function(){
           var self = this;
           //db = null;
@@ -102,6 +129,7 @@
             if(pdf != undefined){
                 db = new PouchDB('clients.db', { adapter: 'cordova-sqlite' });
                 dbSales = new PouchDB('sales.db', { adapter: 'cordova-sqlite' });
+                dbProducts = new PouchDB('products.db', { adapter: 'cordova-sqlite' });
                 dbExpenses = new PouchDB('expenses.db', { adapter: 'cordova-sqlite' });
                 dbExpenses.createIndex({
                   index: {
@@ -111,6 +139,11 @@
                 dbSales.createIndex({
                   index: {
                     fields: ['created_date','parentID', 'product_name', 'isParent', 'buyer_name', 'status']
+                  }
+                })
+                dbProducts.createIndex({
+                  index: {
+                    fields: ['name', 'status']
                   }
                 })
                 db.createIndex({
@@ -125,6 +158,7 @@
             db = new PouchDB('clients.db');
             dbSales = new PouchDB('sales.db');
             dbExpenses = new PouchDB('expenses.db');
+            dbProducts = new PouchDB('products.db');
                 dbExpenses.createIndex({
                   index: {
                     fields: ['created_date', 'name', 'status']
@@ -133,6 +167,11 @@
             dbSales.createIndex({
                   index: {
                     fields: ['created_date','parentID', 'product_name', 'isParent', 'buyer_name', 'status']
+                  }
+                })
+                dbProducts.createIndex({
+                  index: {
+                    fields: ['name', 'status']
                   }
                 })
             db.createIndex({
@@ -192,29 +231,280 @@
       },
       getProductSales: function(){
         var self = this;
+        var from = self.from;
+        var to = self.to;
+        var dateFilterFrom = null;
+        var dateFilterTo = null;
+        if(from == 0 && to == 0){
+          dateFilterFrom = {created_date: {$gt: true}};
+          dateFilterTo = dateFilterFrom;
+        }else{
+          dateFilterFrom = {created_date: { $gt: from }};
+          dateFilterTo =  {created_date: { $lt: to }};
+        }
+        self.$app.preloader.show();
         dbSales.find({
               selector: {
-                $and: [
-                  { status: {$eq: 1} },
-                  { parentID: { $lt: 1 } },
-                  {created_date: {$gt: true}}
+                $or:[
+                    {
+                    //single product
+                    $and: [
+                      { isParent: {$ne: 1}},
+                      { status: {$eq: 1}},
+                      dateFilterFrom,
+                      dateFilterTo,
+                      {isEstimate: { $ne: 1 }},
+                      { parentID: {$eq: 0} }
+                    ]
+                  },{
+                    //group
+                    $and: [
+                      { isParent: {$eq: 1}},
+                      { status: {$eq: 1}},
+                      dateFilterFrom,
+                      dateFilterTo,
+                      {isEstimate: { $ne: 1 }},
+                      { parentID: {$eq: 0} }
+                    ]
+                  }
                 ]
               },
-              sort: [{'_id': 'desc'}]
+              sort: [{'_id': 'asc'}]
             }).then(function(ar){
+              try{
               var arr = ar.docs;
+              self.$app.preloader.hide();
               if(arr != null && arr.length > 0){
                       self.showProductSales(arr);
                     }
-            });
+              }catch(err){
+                self.showToast("An error occured", "center");
+                self.$app.preloader.hide();
+              }
+            }).catch(() => {self.$app.preloader.hide();})
       },
       clearChartTable: function(){
         var self = this;
         if(myChart != null){
             myChart.destroy();
           }
-        $("#myChart").addClass("display-none");
+        $(".chartHolder").addClass("display-none");
         $("#allTables").empty();
+      },
+      dailySales: function(){
+        var self = this;
+        var from = self.from;
+        var to = self.to;
+        var dateFilterFrom = null;
+        var dateFilterTo = null;
+        if(from == 0 && to == 0){
+          dateFilterFrom = {created_date: {$gt: true}};
+          dateFilterTo = dateFilterFrom;
+        }else{
+          dateFilterFrom = {created_date: { $gt: from }};
+          dateFilterTo =  {created_date: { $lt: to }};
+        }
+        self.$app.preloader.show();
+        dbSales.find({
+              selector: {
+                $or:[
+                    {
+                    //single product
+                    $and: [
+                      { isParent: {$ne: 1}},
+                      { status: {$eq: 1}},
+                      dateFilterFrom,
+                      dateFilterTo,
+                      {isEstimate: { $ne: 1 }},
+                      { parentID: {$eq: 0} }
+                    ]
+                  },{
+                    //group
+                    $and: [
+                      { isParent: {$eq: 1}},
+                      { status: {$eq: 1}},
+                      dateFilterFrom,
+                      dateFilterTo,
+                      {isEstimate: { $ne: 1 }},
+                      { parentID: {$eq: 0} }
+                    ]
+                  }
+                ]
+              },
+              sort: [{'_id': 'asc'}]
+            }).then(function(ar){
+              try{
+              self.$app.preloader.hide();
+              var arr = ar.docs;
+              //console.log(arr);
+              var obj = {};
+              $.each(arr, function(ind, val){
+                var date = val.created_date;
+                var formatDate = moment.unix(date).format("ll");
+                if(obj[formatDate] == undefined){
+                  obj[formatDate] = [];
+                }
+                  var save = {};
+                  save.product_name = val.product_name;
+                  save.quantity = val.quantity;
+                  save.created_date = val.created_date;
+                  var saving = obj[formatDate];
+                  saving.push(save);
+              })
+              //console.log(obj);
+              if(Object.keys(obj).length > 0){
+                var html = "<div class='block-title no-margin-vertical margin-bottom-half'>Cost and Amount Received</div>";
+                html += '<div class="timeline timeline-horizontal col-50 tablet-20">';
+                  for(var key in obj){
+                   html += '<div class="timeline-item">';
+                   html += '<div class="timeline-item-date">' + key + '</div>';
+                   //html += '<div class="timeline-item-divider"></div>';
+                   html += '<div class="timeline-item-content">';
+                   
+                    var arrays = obj[key];
+                    $.each(arrays, function(ind, val){
+                      html += '<div class="timeline-item-inner">';
+                      var time = moment.unix(val.created_date).format("LT");
+                      html += '<div class="timeline-item-time">' + time + '</div>';
+                      html += '<div class="timeline-item-subtitle"><b>Product</b> -> <b>Quantity</b></div>';
+                      html += '<div class="timeline-item-text">' + val.product_name + ' -> ' + val.quantity + '</div>';
+                      html += '</div>';
+                    })
+                            
+                        
+                   html += '</div></div>';
+                  }
+                  html += "</div>";
+                  self.clearChartTable();
+                  $("#allTables").append(html);
+                }
+              }catch(err){
+                self.showToast("An error occured", "center");
+                self.$app.preloader.hide();
+              }
+            }).catch(() => {self.$app.preloader.hide();})
+      },
+      getProfit: function(){
+        var self = this;
+        var from = self.from;
+        var to = self.to;
+        var dateFilterFrom = null;
+        var dateFilterTo = null;
+        if(from == 0 && to == 0){
+          dateFilterFrom = {created_date: {$gt: true}};
+          dateFilterTo = dateFilterFrom;
+        }else{
+          dateFilterFrom = {created_date: { $gt: from }};
+          dateFilterTo =  {created_date: { $lt: to }};
+        }
+        self.$app.preloader.show();
+        dbSales.find({
+              selector: {
+                $or:[
+                    {
+                      //group member
+                      $and: [
+                        { isParent: {$eq: 1}},
+                        { status: {$eq: 1}},
+                        {isEstimate: { $ne: 1 }},
+                        dateFilterFrom,
+                        dateFilterTo,
+                        { parentID: {$ne: 0} }
+                      ]
+                  },{
+                    //single product
+                    $and: [
+                      { isParent: {$ne: 1}},
+                      { status: {$eq: 1}},
+                      dateFilterFrom,
+                      dateFilterTo,
+                      {isEstimate: { $ne: 1 }},
+                      { parentID: {$eq: 0} }
+                    ]
+                  },{
+                    //group
+                    $and: [
+                      { isParent: {$eq: 1}},
+                      { status: {$eq: 1}},
+                      dateFilterFrom,
+                      dateFilterTo,
+                      {isEstimate: { $ne: 1 }},
+                      { parentID: {$eq: 0} }
+                    ]
+                  },{
+                    //group member other
+                    $and: [
+                      { isParent: {$eq: 0}},
+                      { status: {$eq: 1}},
+                      dateFilterFrom,
+                      dateFilterTo,
+                      {isEstimate: { $ne: 1 }},
+                      { parentID: {$ne: 0} }
+                    ]
+                  }
+                ]
+              },
+              sort: [{'_id': 'desc'}]
+            }).then(function(ar){
+              try{
+              var arr = ar.docs;
+                  var arr2 = arr.filter(x => ((x.isParent != 1 && x.parentID == 0) || (x.isParent == 1 && x.parentID == 0)));
+                  var obj = {};
+                  var cost = 0;
+                  var sold = 0;
+                  var owed = 0;
+                  //var unique = arr.map(item => item.product_name).filter((value, index, self) => self.indexOf(value) === index);
+                  $.each(arr2, function(ind, val){
+                    var prod = val.product_name;
+                    //single sale
+                    if(val.isParent != 1 && val.parentID == 0){
+                      var findProd = self.products.find(x => x.name == prod);
+                      var cst = Number(findProd.cost_price) * Number(val.quantity);
+                      cost += cst;
+                      sold += Number(val.amountPaid);
+                      var owing = Number(val.afterTax) - Number(val.amountPaid);
+                      owed += owing;
+                    }
+                    //group sale
+                    if(val.isParent == 1 && val.parentID == 0){
+                      var children = arr.filter(x => x.parentID == val._id);
+                      sold += Number(val.amountPaid);
+                      var owing = Number(val.afterTax) - Number(val.amountPaid);
+                      owed += owing;
+                      $.each(children, function(ind2, val2){
+                        //singleProduct
+                        if(val2.isParent == 1 && val2.parentID != 0){
+                          var prod2 = val2.product_name;
+                          var findProd = self.products.find(x => x.name == prod2);
+                          var cst = Number(findProd.cost_price) * Number(val2.quantity);
+                          cost += cst;
+                        }
+                        //singleProductOther
+                        if(val2.isParent == 0 && val2.parentID != 0){
+                          var cst = Number(val2.afterTax);
+                          cost += cst;
+                        }
+                      })
+                    }
+                  })
+                  self.clearChartTable();
+                  var html = "<div class='block-title no-margin-vertical margin-bottom-half'>Cost and Amount Received</div>";
+                  html += "<div class='card myCard'>";
+                  html += "<div>Total Cost: " + self.formatMoney(cost) + "</div>";
+                  html += "<div>Total Received: " + self.formatMoney(sold) + "</div>";
+                  html += "<div>Amount Owed To You: " + self.formatMoney(owed) + "</div>";
+                  var text = sold >= cost ? "Profit: " : "Loss: ";
+                  var diff = sold - cost;
+                  html += "<div>" + text + self.formatMoney(diff) + "</div>";
+                  html += "</div>";
+                  html += "<div class='block-header no-margin-vertical'>*This doesn't factor your expenses and estimates.</div>";
+                  $("#allTables").append(html);
+                  self.$app.preloader.hide();
+                }catch(err){
+                  self.showToast("An error occured", "center");
+                  self.$app.preloader.hide();
+                }
+            }).catch(() => {self.$app.preloader.hide();})
       },
       customerPurchases: function(){
         var self = this;
@@ -263,6 +553,16 @@
                       {isEstimate: { $ne: 1 }},
                       { parentID: {$eq: 0} }
                     ]
+                  },{
+                    //group member other
+                    $and: [
+                      { isParent: {$eq: 0}},
+                      { status: {$eq: 1}},
+                      dateFilterFrom,
+                      dateFilterTo,
+                      {isEstimate: { $ne: 1 }},
+                      { parentID: {$ne: 0} }
+                    ]
                   }
                 ]
               },
@@ -283,11 +583,17 @@
                     var prod = val.product_name;
                     if(val.isParent != 1 && val.parentID == 0){
                       if(obj[name][prod] == undefined){
-                        obj[name][prod] = Number(val.quantity);
+                        var spendings = {};
+                        spendings.quantity = Number(val.quantity);
+                        spendings.paid = Number(val.amountPaid); 
+                        obj[name][prod] = spendings;
                       }else{
                         var count = Number(val.quantity);
-                        var oldCount = obj[name][prod];
-                        obj[name][prod] = count + oldCount;
+                        var oldCount = obj[name][prod][quantity];
+                        var paid = Number(val.amountPaid); 
+                        var oldPaid = obj[name][prod][paid];
+                        obj[name][prod][quantity] = count + oldCount;
+                        obj[name][prod][paid] = paid + oldPaid;
                       }
                     }
                     // group
@@ -295,6 +601,7 @@
                       if(obj[name][prod] == undefined){
                         obj[name][prod] = {};
                         var children = arr.filter(x => x.parentID == val._id);
+                        obj[name][prod]["paid"] = self.formatMoney(Number(val.amountPaid));
                         obj[name][prod]["children"] = children;
                       }else{
                         var keys = Object.keys(obj[name]);
@@ -307,14 +614,15 @@
                         var prod2 = prod + "(" + ct + ")";
                         var children = arr.filter(x => x.parentID == val._id);
                         obj[name][prod2] = {};
+                        obj[name][prod2]["paid"] = self.formatMoney(Number(val.amountPaid));
                         obj[name][prod2]["children"] = children;
                       }
-                      
                       
                     }
                     
                   })
-                  var html = "<div class='card myCard'><table><thead><tr><th>Buyer's name</th><th>Product name -- quantity</th><th>Sub Products</th></tr></thead>";
+                  var html = "<div class='block-title no-margin-vertical margin-bottom-half'>Cost and Amount Received</div>";
+                  html += "<div class='card myCard'><table><thead><tr><th>Buyer's name</th><th>Product name <br> Quantity -> Amount Received</th><th>Sub Products</th></tr></thead>";
                   html += "<tbody>";
                   //console.log(obj);
                   for(var user in obj){
@@ -338,7 +646,7 @@
                         }
                       }
                         //no children
-                        html += "<td>" + each + " -- " + eachKey + "</td>";
+                        html += "<td>" + each + "<br>" + eachKey.quantity + " -> " + self.formatMoney(eachKey.paid) + "</td>";
                         html += "<td></td></tr>";
                         start = false;
                       }else{
@@ -346,12 +654,12 @@
                         if(!start){
                         html += "<tr>";
                       }
-                        html += "<td>" + each + "</td>";
+                        html += "<td>" + each + "<br>" + "1 -> " + eachKey["paid"] + "</td>";
                         html += "<td>";
                           var eachChild = eachKey["children"];
                           for(var y = 0; y < eachChild.length; y++){
                             var product = eachChild[y];
-                            html += product.product_name + " -- " + product.quantity + "<br>";
+                            html += "<div class='eachChild'>" + product.product_name + "<br>" + product.quantity + " -> " + self.formatMoney(product.afterTax) + "</div>";
                           }
                         html += "</td></tr>";
                         start = false;
@@ -363,6 +671,7 @@
                   $("#allTables").append(html);
                   self.$app.preloader.hide();
                 }catch(err){
+                  self.showToast("An error occured", "center");
                   self.$app.preloader.hide();
                 }
             }).catch(function(err){
@@ -438,7 +747,7 @@
                   }
                   var ctx = document.getElementById('myChart');
                   self.clearChartTable();
-                  $("#myChart").removeClass("display-none");
+                  $(".chartHolder").removeClass("display-none");
                   myChart = new Chart(ctx, {
                   type: 'doughnut',
                   data: {
@@ -454,24 +763,32 @@
                   options: {
                     cutoutPercentage: 40,
                     responsive: true,
-
+                    title: {
+                        display: true,
+                        text: 'Product Sales'
+                      },
                   }
                 });
                 self.$app.preloader.hide();
               }catch(err){
+                self.showToast("An error occured", "center");
                 self.$app.preloader.hide();
               }
           }).catch(() => {self.$app.preloader.hide();})
       },
       showProductSales: function(arr){
         var self = this;
+        try{
+        //console.log(arr);
+        var labels = [];
         var dataBar = [];
               var dataLinePaid = [];
               var dataLineTotal = [];
-              self.getparentChildren(arr);
+              //self.getparentChildren(arr);
               $.each(arr, function(ind, elem){
                 var pres = dataBar.find(v => v.x === elem.product_name);
                 if(pres == undefined){
+                  labels.push(elem.product_name);
                   var b = {};
                   var a = {};
                   var c = {};
@@ -493,8 +810,8 @@
                   var p = Number(elem.amountPaid);
                   var fintotal = presTotal + t;
                   var finPaid = presPaid + p;
-                  var objIndexBar = dataBar.findIndex((obj => obj.x === elem.product_name));
-                  dataBar[objIndexBar].y = curr;
+                  //var objIndexBar = dataBar.findIndex((obj => obj.x === elem.product_name));
+                  //dataBar[objIndexBar].y = curr;
                   var objIndexTotal = dataLineTotal.findIndex((obj => obj.x === elem.product_name));
                   dataLineTotal[objIndexTotal].y = fintotal;
                   var objIndexPaid = dataLinePaid.findIndex((obj => obj.x === elem.product_name));
@@ -502,13 +819,13 @@
                 }
               })
               var ctx = document.getElementById('myChart');
-              if(myChart != null){
-                myChart.destroy();
-              }
+              self.clearChartTable();
+              $(".chartHolder").removeClass("display-none");
               myChart = new Chart(ctx, {
                     type: 'bar',
                     data: {
-                        datasets: [{
+                        datasets: [
+                         /* {
                             label: 'Product Sales Count',
                             borderColor: "darkseagreen",
                             backgroundColor: "darkseagreen",
@@ -517,13 +834,14 @@
                             maxBarThickness: 30,
                             // this dataset is drawn below
                             order: 3
-                        }, {
+                        }, */
+                        {
                           label: 'Amount Received',
                           borderColor: "red",
                           backgroundColor: "red",
                           fill: false,
                             data: dataLinePaid,
-                            yAxisID: 'y-axis-2',
+                            yAxisID: 'y-axis-1',
                             type: 'line',
                             // this dataset is drawn on top
                             order: 1
@@ -534,11 +852,11 @@
                           fill: false,
                             data: dataLineTotal,
                             type: 'line',
-                            yAxisID: 'y-axis-2',
+                            yAxisID: 'y-axis-1',
                             // this dataset is drawn on top
                             order: 2
                         }],
-                        labels: dataBar.map(v => v.x)
+                        labels: labels
                     },
                     options: {
                       responsive: true,
@@ -547,26 +865,19 @@
                       showDatapoints: true,
                       title: {
                         display: true,
-                        text: 'Product Sales Count, Amount Received and Total Sales Amount'
+                        text: 'Amount Received and Total Sales Amount'
                       },
                       scales: {
                         yAxes: [{
                           type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
-                          display: true,
                           position: 'left',
                           id: 'y-axis-1',
-                          ticks: {
-                                beginAtZero: true,
-                                stepSize: 1,
-                                precision: 1
-                            }
-                        }, {
-                          type: 'linear', // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
                           display: true,
-                          position: 'right',
-                          id: 'y-axis-2',
+                          labelString: 'Amount',
                           ticks:{
-                            display: true
+                            callback: function(value, index, values) {
+                                return self.formatMoney(value);
+                            }
                           },
                           // grid line settings
                           gridLines: {
@@ -576,6 +887,10 @@
                       }
                     }
                 });
+        }catch(err){
+          self.showToast("An error occured", "center");
+          self.$app.preloader.hide();
+        }
       },
       openAlert: function () {
         var self = this;
@@ -583,8 +898,18 @@
       },
       formatMoney: function(val){
         var cur = localStorage.getItem("currency");
-        var curr = cur == undefined ? "" : cur;
-        return curr + val.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");;
+        var sym = cur == undefined ? "" : cur;
+      val = Number(val);
+      if(val < 0){
+        var rev = 0 - val;
+        var val2 = val + rev + rev;
+        val = val2;
+        sym = "-" + sym;
+      }
+      val = Math.round((val + Number.EPSILON) * 100) / 100;
+      var ret = sym + val.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+      return ret;
+        //return curr + val.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");;
       },
     },
     // Page Events
@@ -632,27 +957,6 @@
                   from: from,
                   to:to
                 })
-                /*var checked = 1;
-
-                dbSales.find({
-                    selector: {
-                      $and: [
-                         {status: {$eq: checked}},
-                         {created_date: { $gt: from }},
-                         {created_date: { $lt: to }},
-                         {parentID: { $lt: 1 } }
-                      ]
-                    },
-                    sort: [{'_id': 'desc'}]
-                  }).then(function(ar){
-                    //var collection = db.ingredients.toArray(function(arr){
-                    //console.log(arr);
-                    var arr = ar.docs;
-                    if(arr != null && arr.length > 0){
-                      self.showProductSales(arr);
-                    }
-                    
-                });*/
             }
         })  
         self.startPouch();
