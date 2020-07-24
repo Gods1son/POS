@@ -145,7 +145,8 @@
             personalApiExpires: null,
             cloudURL: "https://fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix.cloudant.com/",
             opts: { live: false, retry: false },
-            syncRetries: 0
+            syncRetries: 0,
+            backendUrl: 'https://posbackend.herokuapp.com/',   // 'http://localhost:3000/'
           }
         },
       methods:{
@@ -191,7 +192,18 @@
                self.showToast("Your password should be longer than 5 characters", "center");
                return;
            }
-           self.$app.preloader.show();
+           //self.$app.preloader.show();
+           var unique = email + username;
+           unique = unique.toLowerCase();
+           unique = unique.replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, '-');
+            self.checkUsernameUnique(unique);
+        },
+        finalRegister: function() {
+          var self = this;
+          self.$app.preloader.show();
+          var username = $("#signUp").find("#username").val().trim();
+           var pwd = $("#signUp").find("#password").val();
+           var email = $("#signUp").find("#email").val().trim();
            var unique = email + username;
            unique = unique.toLowerCase();
            unique = unique.replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, '-');
@@ -201,8 +213,8 @@
             data.email = email;
             data.password = pwd;
             data.confirmPassword = pwd;
-            $.ajax({
-              url: 'https://posbackend.herokuapp.com/auth/register',
+           $.ajax({
+              url: self.backendUrl + 'auth/register',
               headers: {
                   //'Authorization':'Basic xxxxxxxxxxxxx',
                   //'X-CSRF-TOKEN':'xxxxxxxxxxxxxxxxxxxx',
@@ -232,6 +244,7 @@
               },
               error: function(err){
                 self.$app.preloader.hide();
+                self.showToast(err.responseJSON.message, "center");
               }
             });
         },
@@ -255,7 +268,7 @@
           data.session_id = sessionID;
             //data.session_id = sessionID;
             $.ajax({
-              url: "https://posbackend.herokuapp.com/logoutSession",
+              url: self.backendUrl + "logoutSession",
               headers: {
                 //'Authorization':'Bearer ' + self.personalApiKey + ":" + self.personalApiPwd,
                   //'X-CSRF-TOKEN':'xxxxxxxxxxxxxxxxxxxx',
@@ -279,7 +292,7 @@
           var data = {};
             data.token = token;
             $.ajax({
-              url: 'https://posbackend.herokuapp.com/auth/refresh', // 
+              url: self.backendUrl + 'auth/refresh', // 
               headers: {
                 'Authorization':'Bearer ' + self.personalApiKey + ":" + self.personalApiPwd,
                   //'X-CSRF-TOKEN':'xxxxxxxxxxxxxxxxxxxx',
@@ -328,7 +341,7 @@
             data.username = email;
             data.password = pd;
             $.ajax({
-              url: 'https://posbackend.herokuapp.com/auth/login', //
+              url: self.backendUrl + 'auth/login',
               headers: {
                   //'Authorization':'Basic xxxxxxxxxxxxx',
                   //'X-CSRF-TOKEN':'xxxxxxxxxxxxxxxxxxxx',
@@ -359,7 +372,8 @@
                   })
               },
               error: function(err){
-                self.showToast("An error occcured, please try again later.", "center");
+                console.log(err);
+                self.showToast(err.responseJSON.message, "center");
                 self.$app.preloader.hide();
               }
             });
@@ -372,7 +386,7 @@
             data.username = self.email;
             data.password = self.pwd;
             $.ajax({
-              url: 'https://posbackend.herokuapp.com/auth/logout',  //
+              url: self.backendUrl + 'auth/logout',
               headers: {
                   'Authorization':'Bearer ' + self.personalApiKey + ":" + self.personalApiPwd,
                   //'X-CSRF-TOKEN':'xxxxxxxxxxxxxxxxxxxx',
@@ -404,6 +418,8 @@
               },
               error: function(err){
                 self.$app.preloader.hide();
+                console.log("err");
+                console.log(err);
               }
             })
             
@@ -411,26 +427,73 @@
 
         },
         savetest: function(){
-                var self = this;
-                var self = this;
+          var self = this;
           self.$app.preloader.show();
-          //var data = {};
-            //data.token = token;
+          var data = {};
+          //data.username = "bobobobocombobo";
+          data.username = "bade";
+            //data.session_id = sessionID;
             $.ajax({
-              url: 'https://posbackend.herokuapp.com/auth/session',
+              url: self.backendUrl + "checkUsername",
               headers: {
-                'Authorization':'Bearer ' + self.personalApiKey + ":" + self.personalApiPwd,
+                //'Authorization':'Bearer ' + self.personalApiKey + ":" + self.personalApiPwd,
                   //'X-CSRF-TOKEN':'xxxxxxxxxxxxxxxxxxxx',
                   'Content-Type':'application/json'
               },
-              method: 'GET',
-              //dataType: 'json',
-              //data: JSON.stringify(data),
+              method: 'POST',
+              dataType: 'json',
+              data: JSON.stringify(data),
               success: function(data){
                 self.$app.preloader.hide();
+                console.log("success");
+                console.log(data.responseText);
+                //self.showToast("Old session cleared", "center");
               },
               error: function(err){
                 self.$app.preloader.hide();
+                console.log("failed");
+                console.log(err.responseText);
+              }
+            });
+        },
+        checkUsernameUnique: function(user){
+          var self = this;
+          self.$app.preloader.show();
+          var data = {};
+          //data.username = "bobobobocombobo";
+          data.username = user;
+            //data.session_id = sessionID;
+            $.ajax({
+              url: self.backendUrl + "checkUsername",
+              headers: {
+                //'Authorization':'Bearer ' + self.personalApiKey + ":" + self.personalApiPwd,
+                  //'X-CSRF-TOKEN':'xxxxxxxxxxxxxxxxxxxx',
+                  'Content-Type':'application/json'
+              },
+              method: 'POST',
+              dataType: 'json',
+              data: JSON.stringify(data),
+              success: function(data){
+                self.$app.preloader.hide();
+                var res = data.responseText;
+                //console.log(res);
+                if(res != ""){
+                    self.showToast("Username: " + res, "center");
+                }else{
+                  self.finalRegister();
+                }
+              },
+              error: function(err){
+                self.$app.preloader.hide();
+                //console.log("failed");
+                //console.log(err);
+                var res = err.responseText;
+                console.log(res);
+                if(res != ""){
+                    self.showToast("Username: " + res, "center");
+                }else{
+                  self.finalRegister();
+                }
               }
             });
         },
