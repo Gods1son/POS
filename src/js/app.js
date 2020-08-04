@@ -19,11 +19,11 @@ import List from 'list.js';
 import PouchDB from 'pouchdb';
 import cordovaSqlitePlugin from 'pouchdb-adapter-cordova-sqlite';
 import pouchFind from 'pouchdb-find';
-import pouchAuth from 'pouchdb-authentication';
+//import pouchAuth from 'pouchdb-authentication';
 
 PouchDB.plugin(cordovaSqlitePlugin);
 PouchDB.plugin(pouchFind);
-PouchDB.plugin(pouchAuth);
+//PouchDB.plugin(pouchAuth);
 window.PouchDB = PouchDB;
 window.List = List;
 
@@ -34,7 +34,7 @@ import App from '../app.f7.html';
 //window.Dexie = Dexie;
 import Dom7 from 'dom7';
 window.$$ = Dom7;
-import * as moment from 'moment';
+//import * as moment from 'moment';
 import jQuery from 'jquery';
 window.jQuery = jQuery;
 window.$ = jQuery;
@@ -128,7 +128,7 @@ setTimeout(function(){
   
   document.addEventListener("backbutton", onBackKeyDown, false);
 
-},3000)
+},1200)
 
 
 

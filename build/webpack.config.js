@@ -6,7 +6,6 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 
-
 const path = require('path');
 
 function resolvePath(dir) {
@@ -212,7 +211,5 @@ module.exports = {
       },
 
     ]),
-
-
   ],
 };
