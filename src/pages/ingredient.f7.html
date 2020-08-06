@@ -407,7 +407,7 @@ export default {
                         }
                         var options = {
                             valueNames: ['id','cost','name'],
-                            page: 5,
+                            page: 10,
                             pagination: [{outerWindow:2}]
                         };
 
@@ -448,6 +448,10 @@ export default {
             }
           },
   on: {
+    pageAfterIn: function(e, page) {
+        var self = this;
+        trackIngPage();
+      },
       pageInit: function(e, page) {
         var self = this;
         $$(".showInactiveIngs").on("change", function(){
@@ -465,4 +469,19 @@ export default {
   }
 
 } 
+
+function trackIngPage(){
+  //console.log("track ings");
+  try{
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+    'event': 'Pageview',
+    'pagePath': 'https://www.mogulsheet.com/ingredients',
+    'pageTitle': 'Ingredients' //some arbitrary name for the page/state
+    });
+    //console.log("track ings success");
+  }catch(err){
+    //console.log("track ings error");
+  }
+}
 </script>

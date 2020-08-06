@@ -1637,7 +1637,7 @@ export default {
                         }
                         var options = {
                             valueNames: ['id','cost','name'],
-                            page: 5,
+                            page: 10,
                             pagination: [{outerWindow:2}]
                         };
 
@@ -1988,6 +1988,10 @@ export default {
 
   },
   on: {
+    pageAfterIn: function(e, page) {
+        var self = this;
+        trackProductsPage();
+      },
       pageInit: function(e, page) {
         var self = this;
         var iconTooltip = self.$app.tooltip.create({
@@ -2121,4 +2125,19 @@ export default {
   }
 
 } 
+
+function trackProductsPage(){
+  //console.log("track products");
+  try{
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+    'event': 'Pageview',
+    'pagePath': 'https://www.mogulsheet.com/products',
+    'pageTitle': 'Products' //some arbitrary name for the page/state
+    });
+    //console.log("track products success");
+  }catch(err){
+    //console.log("track products error");
+  }
+}
 </script>

@@ -396,6 +396,10 @@
           }
       },
       on: {
+        pageAfterIn: function(e, page) {
+        var self = this;
+        trackSettingsPage();
+      },
       pageInit: function(e, page) {
             var self = this;
             self.startPouch();
@@ -446,6 +450,19 @@
                 });
             }  
         }
+    }
+
+    function trackSettingsPage(){
+      try{
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+    'event': 'Pageview',
+    'pagePath': 'https://www.mogulsheet.com/settings',
+    'pageTitle': 'Settings' //some arbitrary name for the page/state
+    });
+  }catch(err){
+    
+  }
     }
   </script>
   

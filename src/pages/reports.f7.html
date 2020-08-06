@@ -914,6 +914,10 @@
     },
     // Page Events
     on: {
+      pageMounted: function(e, page) {
+        var self = this;
+        //trackReportsPage();
+      },
       pageInit: function(e, page) {
         var self = this;
         var calendarModal = self.$app.calendar.create({
@@ -964,7 +968,22 @@
       },
       pageAfterIn: function(e, page) {
         //console.log('pageAfterIn', page);
+        var self = this;
+        trackReportsPage();
       }
     }
+  }
+
+  function trackReportsPage(){
+    try{
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+    'event': 'Pageview',
+    'pagePath': 'https://www.mogulsheet.com/reports',
+    'pageTitle': 'Reports' //some arbitrary name for the page/state
+    });
+  }catch(err){
+    
+  }
   }
 </script>

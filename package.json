@@ -1,8 +1,8 @@
 {
-  "name": "magnate",
+  "name": "mogulsheet",
   "private": true,
   "version": "1.0.0",
-  "description": "Magnate",
+  "description": "Mogul Sheet",
   "repository": "",
   "license": "UNLICENSED",
   "scripts": {

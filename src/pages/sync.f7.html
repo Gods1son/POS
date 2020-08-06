@@ -67,7 +67,7 @@
               </form>
 
               <div class="display-none syncParentClick">
-                  <a class="button button-outline button-raised margin-half button-green" @click="syncData()">Sync data online</a>
+                  <a class="button button-outline button-raised margin-half button-green" @click="syncData()">Sync data with cloud</a>
                   <a class="button button-outline button-raised margin-half button-fill color-red" @click="logOut()">Log Out</a>
                 </div>
 
@@ -1020,6 +1020,10 @@
         
     },
       on: {
+        pageAfterIn: function(e, page) {
+        var self = this;
+        trackSyncPage();
+      },
           pageInit: function(e, page) {
             var self = this;
             self.startPouch();
@@ -1030,4 +1034,17 @@
       }
     
     } 
+
+    function trackSyncPage(){
+      try{
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+    'event': 'Pageview',
+    'pagePath': 'https://www.mogulsheet.com/sync',
+    'pageTitle': 'Sync' //some arbitrary name for the page/state
+    });
+  }catch(err){
+    
+  }
+    }
     </script>

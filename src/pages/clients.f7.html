@@ -512,7 +512,7 @@ export default {
                         }
                         var options = {
                             valueNames: ['id','isPaid','buyer','created_date','cost','name'],
-                            page: 5,
+                            page: 10,
                             pagination: [{outerWindow:2}]
                         };
 
@@ -760,6 +760,10 @@ export default {
             }
           },
   on: {
+    pageAfterIn: function(e, page) {
+        var self = this;
+        trackClientsPage();
+      },
       pageInit: function(e, page) {
         var self = this;
         $$(".showInactiveClients").on("change", function(){
@@ -871,4 +875,17 @@ export default {
   }
 
 } 
+
+function trackClientsPage(){
+  try{
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+    'event': 'Pageview',
+    'pagePath': 'https://www.mogulsheet.com/clients',
+    'pageTitle': 'Clients' //some arbitrary name for the page/state
+    });
+  }catch(err){
+    
+  }
+}
 </script>

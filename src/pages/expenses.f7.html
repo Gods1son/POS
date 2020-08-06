@@ -544,7 +544,7 @@ export default {
                         }
                         var options = {
                             valueNames: ['id','cost','paidAll','name','created_date'],
-                            page: 5,
+                            page: 10,
                             pagination: [{outerWindow:2}]
                         };
 
@@ -650,6 +650,10 @@ export default {
     }
   },
   on: {
+    pageAfterIn: function(e, page) {
+        var self = this;
+        trackExpensesPage();
+      },
       pageInit: function(e, page) {
         var self = this;
         var calendar = self.$app.calendar.create({
@@ -749,4 +753,17 @@ export default {
   }
 
 } 
+
+function trackExpensesPage(){
+  try{
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+    'event': 'Pageview',
+    'pagePath': 'https://www.mogulsheet.com/expenses',
+    'pageTitle': 'Expenses' //some arbitrary name for the page/state
+    });
+  }catch(err){
+    
+  }
+}
 </script>
