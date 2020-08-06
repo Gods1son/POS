@@ -815,6 +815,7 @@
         },
         syncData: function(){
             var self = this;
+            trackStartSyncing();
             self.syncDBProducts(true);
         },
         syncData2: function(){
@@ -1042,6 +1043,19 @@
     'event': 'Pageview',
     'pagePath': 'https://www.mogulsheet.com/sync',
     'pageTitle': 'Sync' //some arbitrary name for the page/state
+    });
+  }catch(err){
+    
+  }
+    }
+
+    function trackStartSyncing(){
+      try{
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+    'event': 'Pageview',
+    'pagePath': 'https://www.mogulsheet.com/syncingstarted',
+    'pageTitle': 'Started Syncing' //some arbitrary name for the page/state
     });
   }catch(err){
     
