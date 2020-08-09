@@ -444,9 +444,23 @@
             <div><span class="labelName">Amount Paid: </span><div class="display-inline-flex">
                 <input class="amountPaidMultiple" type="text" placeholder="Amount Paid" value="0"></div></div>
             <div><span class="labelName">Date of Payment: </span><div class="display-inline-flex" style="width:100%">
-                  <input id="datePaidMultiple" class="text-align-center" type="text" placeholder="Date of Payment" value="0"></div></div>
+              
+              <div class="item-input" style="width: 100%;"> 
+              <div class="item-input-wrap">   
+                <input id="datePaidMultiple" class="text-align-center" type="text" placeholder="Date of Payment" value="0">
+                <span class="input-clear-button"></span>
+              </div>
+              </div>
+
+                </div></div>
             <div><span class="labelName">Date of Purchase: </span><div class="display-inline-flex" style="width:100%">
-                    <input id="datePurchaseMultiple" class="text-align-center" type="text" placeholder="Date of Purchase" value="0"></div></div>
+              <div class="item-input" style="width: 100%;"> 
+                <div class="item-input-wrap">   
+                  <input id="datePurchaseMultiple" class="text-align-center" type="text" placeholder="Date of Purchase" value="0">
+                  <span class="input-clear-button"></span>
+                </div>
+                </div>
+                  </div></div>
           </div>
         </div>
         </li></ul>
@@ -1034,6 +1048,8 @@ export default {
     },
     closeUpdatePopUp: function(){
         var self = this;
+        $("#paid-calendar-modal").next("span").click();
+        $("#purchase-calendar-modal").next("span").click();
         $$("input.buyer_sell, input.amountpaid_sell, .quantity_sell, .total_sell").val("");
         var popup = self.$app.popup.close('.newSales', true);
     },
@@ -1118,6 +1134,8 @@ export default {
               }
             dbSales.put(obj).then(function(){
                     self.showToast("Record saved!", "center");
+                    $("#paid-calendar-modal").next("span").click();
+                    $("#purchase-calendar-modal").next("span").click();
                     $$("input.buyer_sell, input.amountpaid_sell, #purchase-calendar-modal, #paid-calendar-modal, .quantity_sell, .total_sell, .discount_sell").val("");
                     self.$app.popup.close('.newSales', true);
                     self.getData();
@@ -1567,8 +1585,10 @@ export default {
           $(".buyersNameMultiple").parents("li").eq(0).removeClass("bg-color-red");
           $(".totalAmountBeforeProfitProduct, .totalAmountProduct").text("0");
           $(".amountPaidMultiple, .buyersNameMultiple, .groupProductNameMultiple").val("");
-          $("#datePaidMultiple").val(moment().format('LLL'));
-          $("#datePurchaseMultiple").val(moment().format('LLL'));
+          $("#datePaidMultiple").next("span").click();
+          $("#datePurchaseMultiple").next("span").click();
+          //$("#datePaidMultiple").val(moment().format('LLL'));
+          //$("#datePurchaseMultiple").val(moment().format('LLL'));
           self.$app.autocomplete.destroy("#autocomplete-standalone-multiple");
             self.$setState({
                 selectedProducts:[],
@@ -1621,7 +1641,7 @@ export default {
                             html += '<div class=""><span class="labelName">Amount Paid: </span><span class="valueName">' + self.formatMoney(row.amountPaid) + '</span></div>';
                             var stat = row.status == 1 ? "display-none" : "";
                             var hidden = row.isPaid == 1 ? "" : "display-none";
-                            var checkbox = row.isPaid == 1 ? '<span class="badge color-green paid">Fully Paid</span>' : '<span class="badge color-red paid">Not Fully Paid</span>';
+                            var checkbox = row.isPaid == 1 ? '<span class="badge color-green paid">Yes</span>' : '<span class="badge color-red paid">No</span>';
                             //var checkbox = row.isPaid == 1 ? '<i class="icon f7-icons text-color-green paid">checkmark_circle_fill</i>' : '<i class="icon f7-icons text-color-red paid">multiply_circle_fill</i>';
                             html += '<div class=""><span class="labelName">Fully Paid: </span>' + checkbox + '</div>' + '<div class="display-none created_date">' + row.created_date + '</div>';
                             html += '<div class="' + hidden + '"><span class="labelName">Date Fully Paid: </span><span class="valueName">' + moment.unix(row.date_paid).format("LLL") + '</span></div>';

@@ -529,7 +529,7 @@
             
               <div>
                 <span class="labelName">It's an Estimate<i class="icon f7-icons icon-tooltip estimateExplain color-black">info_circle_fill</i></span>
-                <div class="display-inline-flex" style="vertical-align: bottom;">
+                <div class="display-inline-flex" style="vertical-align: bottom;margin-left: 10px;">
                   <div class="item-input-wrap" style="position: relative;">
                     <label class="checkbox" style="position: absolute;bottom: 4px;">
                       <input type="checkbox" class="isEstimateMultiple">
@@ -541,9 +541,25 @@
             <div><span class="labelName">Amount Paid: </span><div class="display-inline-flex">
                 <input class="amountPaidMultiple" type="text" placeholder="Amount Paid" value="0"></div></div>
             <div><span class="labelName">Date of Payment: </span><div class="display-inline-flex" style="width:100%">
-                  <input id="datePaidMultiple" class="text-align-center" type="text" placeholder="Date of Payment" value="0"></div></div>
+                  
+              <div class="item-input" style="width: 100%;"> 
+                <div class="item-input-wrap">   
+                  <input id="datePaidMultiple" class="text-align-center" type="text" placeholder="Date of Payment" value="0">
+                  <span class="input-clear-button"></span>
+                </div>
+                </div>
+                
+                </div></div>
             <div><span class="labelName">Date of Purchase: </span><div class="display-inline-flex" style="width:100%">
-                    <input id="datePurchaseMultiple" class="text-align-center" type="text" placeholder="Date of Purchase" value="0"></div></div>
+                    
+              <div class="item-input" style="width: 100%;"> 
+                <div class="item-input-wrap">   
+                  <input id="datePurchaseMultiple" class="text-align-center" type="text" placeholder="Date of Purchase" value="0">
+                  <span class="input-clear-button"></span>
+                </div>
+                </div>
+                  
+                  </div></div>
           </div>
         </div>
         </li></ul>
@@ -1409,8 +1425,10 @@ export default {
           $(".buyersNameMultiple").parents("li").eq(0).removeClass("bg-color-red");
           $(".totalAmountBeforeProfitProduct, .totalAmountProduct").text("0");
           $(".amountPaidMultiple, .buyersNameMultiple, .groupProductNameMultiple").val("");
-          $("#datePaidMultiple").val(moment().format('LLL'));
-          $("#datePurchaseMultiple").val(moment().format('LLL'));
+          $("#datePaidMultiple").next("span").click();
+          $("#datePurchaseMultiple").next("span").click();
+          //$("#datePaidMultiple").val(moment().format('LLL'));
+          //$("#datePurchaseMultiple").val(moment().format('LLL'));
           self.$app.autocomplete.destroy("#autocomplete-standalone-multiple2");
             self.$setState({
                 selectedProducts:[]
@@ -1474,6 +1492,8 @@ export default {
     },
     resetSalePopUp: function(){
       var self = this;
+      $("#paid-calendar-modal").next("span").click();
+      $("#purchase-calendar-modal").next("span").click();
       $$("input.buyer_sell, input.amountpaid_sell, #purchase-calendar-modal, #paid-calendar-modal, .quantity_sell, .total_sell").val("");
       var popup = self.$app.popup.close('.sellProduct', true);
     },
@@ -1551,6 +1571,8 @@ export default {
  
             dbSales.put(obj).then(function(){
                   self.showToast("Record saved!","center");
+                  $("#paid-calendar-modal").next("span").click();
+                  $("#purchase-calendar-modal").next("span").click();
                   $$("input.buyer_sell, input.amountpaid_sell, #purchase-calendar-modal, #paid-calendar-modal, .quantity_sell, .total_sell, .discount_sell").val("");
                   $(".isEstimate").prop("checked", false);
                   self.$app.popup.close('.sellProduct', true);

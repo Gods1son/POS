@@ -420,7 +420,10 @@ export default {
       },
     closePopUp: function(){
         var self = this;
+        $("#paid-calendar-modal").next("span").click();
+        $("#expense-calendar-modal").next("span").click();
         $$("input.name,input.amount_to_pay,input.amount_paid, #expense-calendar-modal, #paid-calendar-modal").val("");
+        self.getData();
         var popup = self.$app.popup.close('.newExpense', true);
         popup.once("closed", function(){
 
@@ -469,9 +472,14 @@ export default {
               dbExpenses.put(obj).then(function(res) {
                   //db.expenses.get(id).then(function(item) {
                     self.showToast("Item saved.", "center");
+                    $("#paid-calendar-modal").next("span").click();
+                    $("#expense-calendar-modal").next("span").click();
                     $$("input.name,input.amount_to_pay,input.amount_paid, #expense-calendar-modal, #paid-calendar-modal").val("");
-                    self.$app.popup.close('.newExpense', true);
-                    self.getData();
+                    self.$setState({
+                      currentExpense: null
+                    })
+                    //self.$app.popup.close('.newExpense', true);
+                    //self.getData();
                 //})
               })
           }else{
@@ -525,7 +533,7 @@ export default {
                             var paidAll = row.amount_paid >= row.amount_to_pay ? 1 : 0;
                             var checkbox = row.recurring == 1 ? '' : 'display-none';
                             html += '<div class="paidAll display-none">' + paidAll + '</div>'
-                            html += '<div class="' + checkbox + '"><span class="labelName">Recurring Payment: </span><label class="checkbox"><input type="checkbox" checked disabled><i class="icon-checkbox"></i></label></div>' + '<div class="display-none created_date">' + row.created_date + '</div>';
+                            html += '<div class="' + checkbox + '"><span class="labelName">Recurring Payment: </span><span class="badge color-green">Yes</span></div>' + '<div class="display-none created_date">' + row.created_date + '</div>';
                             html += '<div class="' + hidden + '"><span class="labelName">Date Fully Paid: </span><span class="valueName">' + moment.unix(row.date_paid).format("LLL") + '</span></div>';
                             html += '<div class=""><span class="labelName">Created Date: </span><span class="valueName">' + moment.unix(row.created_date).format("LLL") + '</span></div>';
                             html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName">Deleted</span></div>';
@@ -666,6 +674,14 @@ export default {
                     //console.log(moment(values[0]).format("X"));
                     //console.log(t);
                     return t;
+                  },
+                  on: {
+                    close: function () {
+                      //var values = [];
+                      //var dat = new Date();
+                      //values.push(dat);
+                      //calendar.setValue(values)
+                    }
                   }
                 //dateFormat: { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }
               });
