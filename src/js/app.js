@@ -128,7 +128,7 @@ setTimeout(function(){
   
   document.addEventListener("backbutton", onBackKeyDown, false);
 
-},1200)
+},200)
 
 
 

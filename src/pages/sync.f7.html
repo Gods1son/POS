@@ -146,7 +146,7 @@
             cloudURL: "https://fc06d1ea-7cd0-4ba8-8be9-02ec889ef7bc-bluemix.cloudant.com/",
             opts: { live: false, retry: false },
             syncRetries: 0,
-            backendUrl: 'https://posbackend.herokuapp.com/',   //'http://localhost:3000/' 
+            backendUrl: 'http://localhost:3000/',   //  'https://posbackend.herokuapp.com/' 
           }
         },
       methods:{
@@ -196,7 +196,8 @@
            var unique = email + username;
            unique = unique.toLowerCase();
            unique = unique.replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, '-');
-            self.checkUsernameUnique(unique);
+            //self.checkUsernameUnique(unique);
+            self.checkUsernameUnique(email);
         },
         finalRegister: function() {
           var self = this;
@@ -209,7 +210,7 @@
            unique = unique.replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, '-');
            var data = {};
             data.name = username;
-            data.username = unique;
+            data.username = email; //unique;
             data.email = email;
             data.password = pwd;
             data.confirmPassword = pwd;
@@ -228,15 +229,21 @@
                 var key = data.token;
                 var pwd2 = data.password;
                 var exp = data.expires;
+                var ob = data.userDBs;
+                var usDb = ob[Object.keys(ob)[0]];
+                //console.log(usDb);
+                var b = usDb.indexOf("$");
+                var coded = usDb.substr(b + 1);
+
                 self.$setState({
-                  username: unique,
+                  username: coded, //unique,
                   email: email,
                   password: pwd,
                   personalApiKey: key,
                   personalApiPwd: pwd2,
                   personalApiExpires: exp
                   }, function(){
-                      self.saveUserAccount(email, pwd, unique, key, pwd2, exp);
+                      self.saveUserAccount(email, pwd, coded, key, pwd2, exp);
                       self.showSignIn();
                       $("#signIn").addClass("display-none");
                       $(".syncParentClick").removeClass("display-none");
@@ -314,19 +321,25 @@
                 var pwd = data.password;
                 var exp = data.expires;
                 var us = data.user_id;
+                var ob = data.userDBs;
+                var usDb = ob[Object.keys(ob)[0]];
+                //console.log(usDb);
+                var b = usDb.indexOf("$");
+                var coded = usDb.substr(b + 1);
+
                 self.$setState({
-                  username: us,
+                  username: coded,
                   email: email,
                   password: pd,
                   personalApiKey: key,
                   personalApiPwd: pwd,
                   personalApiExpires: exp
                   }, function(){
-                      self.saveUserAccount(email, pd, us, key, pwd, exp);
+                      self.saveUserAccount(email, pd, coded, key, pwd, exp);
                       self.showSignIn();
                       $("#signIn").addClass("display-none");
                       $(".syncParentClick").removeClass("display-none");
-                      console.log(key + " " + pwd + " " + exp);
+                      //console.log(key + " " + pwd + " " + exp);
                   })
               },
               error: function(err){
@@ -352,27 +365,35 @@
               data: JSON.stringify(data),
               success: function(data){
                 self.$app.preloader.hide();
+                //console.log(data);
+                var ob = data.userDBs;
+                var usDb = ob[Object.keys(ob)[0]];
+                //console.log(usDb);
+                var b = usDb.indexOf("$");
+                var coded = usDb.substr(b + 1);
+                //console.log(coded);
+
                 var key = data.token;
                 var pwd = data.password;
                 var exp = data.expires;
                 var us = data.user_id;
                 self.$setState({
-                  username: us,
+                  username: coded,
                   email: email,
                   password: pd,
                   personalApiKey: key,
                   personalApiPwd: pwd,
                   personalApiExpires: exp
                   }, function(){
-                      self.saveUserAccount(email, pd, us, key, pwd, exp);
+                      self.saveUserAccount(email, pd, coded, key, pwd, exp);
                       self.showSignIn();
                       $("#signIn").addClass("display-none");
                       $(".syncParentClick").removeClass("display-none");
-                      console.log(key + " " + pwd + " " + exp);
+                      //console.log(key + " " + pwd + " " + exp + " " + coded);
                   })
               },
               error: function(err){
-                console.log(err);
+                //console.log(err);
                 self.showToast(err.responseJSON.message, "center");
                 self.$app.preloader.hide();
               }
@@ -461,10 +482,10 @@
           self.$app.preloader.show();
           var data = {};
           //data.username = "bobobobocombobo";
-          data.username = user;
+          data.email = user;
             //data.session_id = sessionID;
             $.ajax({
-              url: self.backendUrl + "checkUsername",
+              url: self.backendUrl + "checkEmailUsername",
               headers: {
                 //'Authorization':'Bearer ' + self.personalApiKey + ":" + self.personalApiPwd,
                   //'X-CSRF-TOKEN':'xxxxxxxxxxxxxxxxxxxx',
@@ -485,8 +506,8 @@
               },
               error: function(err){
                 self.$app.preloader.hide();
-                //console.log("failed");
-                //console.log(err);
+                console.log("failed");
+                console.log(err);
                 var res = err.responseText;
                 console.log(res);
                 if(res != ""){
@@ -540,6 +561,7 @@
           var self = this;
           var name = self.username;
           self.$app.preloader.show();
+          //console.log(name);
           var dbProductsR = new PouchDB(self.cloudURL + 'dbproducts$' + name, { //dbclients$bababosscombaba
                     auth: {
                         username:  self.personalApiKey,
@@ -558,7 +580,8 @@
                   }
                 }).on('error', function (err) {
                   // handle error
-                  self.showToast(err.error, "center");
+                  //console.log(err);
+                  self.showToast("Error: " + err.error, "center");
                   self.addFailedSync("dbProducts");
                   self.$app.preloader.hide();
                   if(redirect){
@@ -587,7 +610,7 @@
                   }
                 }).on('error', function (err) {
                   // handle error
-                  self.showToast(err.error, "center");
+                  self.showToast("Error: " + err.error, "center");
                   self.addFailedSync("dbProdIngs");
                   self.$app.preloader.hide();
                   if(redirect){
@@ -616,7 +639,7 @@
                   }
                 }).on('error', function (err) {
                   // handle error
-                  self.showToast(err.error, "center");
+                  self.showToast("Error: " + err.error, "center");
                   self.addFailedSync("dbProdOthers");
                   self.$app.preloader.hide();
                   if(redirect){
@@ -645,7 +668,7 @@
                   }
                 }).on('error', function (err) {
                   // handle error
-                  self.showToast(err.error, "center");
+                  self.showToast("Error: " + err.error, "center");
                   self.addFailedSync("dbSales");
                   self.$app.preloader.hide();
                   if(redirect){
@@ -674,7 +697,7 @@
                   }
                 }).on('error', function (err) {
                   // handle error
-                  self.showToast(err.error, "center");
+                  self.showToast("Error: " + err.error, "center");
                   self.addFailedSync("dbIngs");
                   self.$app.preloader.hide();
                   if(redirect){
@@ -703,7 +726,7 @@
                   }
                 }).on('error', function (err) {
                   // handle error
-                  self.showToast(err.error, "center");
+                  self.showToast("Error: " + err.error, "center");
                   self.addFailedSync("dbSettings");
                   self.$app.preloader.hide();
                   if(redirect){
@@ -732,7 +755,7 @@
                   }
                 }).on('error', function (err) {
                   // handle error
-                  self.showToast(err.error, "center");
+                  self.showToast("Error: " + err.error, "center");
                   self.addFailedSync("dbClients");
                   self.$app.preloader.hide();
                   if(redirect){
@@ -762,7 +785,7 @@
 
                 }).on('error', function (err) {
                   // handle error
-                  self.showToast(err.error, "center");
+                  self.showToast("Error: " + err.error, "center");
                   self.addFailedSync("dbExpenses");
                   self.$app.preloader.hide();
                   if(redirect){
@@ -864,7 +887,7 @@
                    var now = new Date().getTime();
                    var expired = now > doc.apiExp;
                    if(doc.signedIn ==1 && expired){
-                    console.log(doc.email + " " + doc.password + " " + doc.apiKey);
+                    //console.log(doc.email + " " + doc.password + " " + doc.apiKey);
                     //self.refreshToken(doc.email, doc.password, doc.apiKey);
                     self.showSignIn();
                     $("#signIn").removeClass("display-none");
@@ -886,6 +909,7 @@
                    //self.$app.preloader.show();
                     $("#signIn").addClass("display-none");
                     $(".syncParentClick").removeClass("display-none");
+                    //console.log(doc.username, doc.email);
                     self.$setState({
                       username:doc.username,
                       email:doc.email,

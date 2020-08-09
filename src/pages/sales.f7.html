@@ -432,7 +432,7 @@
 
               <div>
                 <span class="labelName">It's an Estimate<i class="icon f7-icons icon-tooltip estimateExplain color-black">info_circle_fill</i></span>
-                <div class="display-inline-flex" style="vertical-align: bottom;">
+                <div class="display-inline-flex" style="vertical-align: bottom;margin-left: 10px;">
                   <div class="item-input-wrap" style="position: relative;">
                     <label class="checkbox" style="position: absolute;bottom: 4px;">
                       <input type="checkbox" class="isEstimateMultiple">
@@ -1891,6 +1891,10 @@ export default {
       pageInit: function(e, page) {
         var self = this;
         //self.getProducts();
+        var iconTooltip = self.$app.tooltip.create({
+          targetEl: '.estimateExplain',
+          text: '<b>Check if this is just an estimate,</b><br><b>no purchase is being made yet.</b>',
+        });
         var autocompleteDropdownAll = self.$app.autocomplete.create({
           inputEl: '#name_sell',
           openIn: 'dropdown',
