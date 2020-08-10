@@ -37,6 +37,12 @@
     color: #673ab7 !important;
     font-weight: 700;
     font-size: 1.2em;
+    padding-left: 3px !important;
+}
+
+.navbar-inner .logoIcon{
+    max-width: 70%;
+    max-height: 70%;
 }
 
 .navbar-inner .link{
