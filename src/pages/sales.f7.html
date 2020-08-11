@@ -858,8 +858,8 @@ export default {
       var discount = sales.discount == null ? 0 : sales.discount;
       discount = self.moneyFormat(discount);
       var cost = self.moneyFormat(sales.selling_price);
-      var tPrice = sales.total_price == null ? sales.selling_price : sales.total_price;
-      var totalPrice = self.moneyFormat(tPrice);
+      var totalPrice = sales.total_price == null ? sales.selling_price : sales.total_price;
+      //var totalPrice = self.moneyFormat(tPrice);
       var totalPaid = self.moneyFormat(sales.amountPaid);
       var afterTax = sales.afterTax == null ? totalPrice : sales.afterTax;
       var outstanding = (Number(afterTax) - Number(sales.amountPaid));
@@ -867,6 +867,8 @@ export default {
       var purchaseDate = moment.unix(sales.created_date).format("LLL");
       var paymentDate =  sales.date_paid == "" ? "" : moment.unix(sales.date_paid).format("LLL");
       var today = moment().format("LLL");
+      var isEstimate = sales.isEstimate == 1 ? true : false;
+      var invoiceLabel = isEstimate == true ? "Estimate" : "Invoice";
       var logo = "";
         if(logoImage != null){
           var attachments = logoImage._attachments.logoImage.data;
@@ -875,12 +877,12 @@ export default {
         }
       //try{
         //if(pdf != undefined){
-            var html =  '<html><head><style>table td{padding: 5px;} thead tr{background: lightblue; color:black;} thead th{padding: 5px;} tbody tr:nth-child(even) {background-color: #f2f2f2;}</style></head>';
+            var html =  '<html><head><style>table td{padding: 5px;} thead tr{background: lightblue; color:black;} thead th{padding: 5px;} tbody tr:nth-child(even) {background-color: #f2f2f2;}</style></head><body>';
             html += '<div>' + logo + '<div style="text-align:right; width:50%; float:right;">';
             html += '<h2 style="margin-bottom:5px; margin-top:5px;">' + Companyname + '</h2><div>' + Comaddress + '</div></div></div>';
-
-            html += '<div style="text-align:left;clear:both;"><h4 style="margin-bottom:5px; margin-top:5px;">Invoice No:' + sales._id + '</h4><h4 style="margin-bottom:5px; margin-top:5px;">Invoice To: ';
-            html += buyer + '</h4>';
+            html += '<div style="text-align:left;clear:both;"><h4 style="margin-bottom:5px; margin-top:5px;">' + invoiceLabel + ' No: ' + sales._id + '</h4><h4 style="margin-bottom:5px; margin-top:5px;">' + invoiceLabel + ' To: ';
+            html += buyer + '</h4></div>';
+            html += '<div style="text-align:center;font-size:1.7em;font-weight:600;width:100%;">' + invoiceLabel + '</div>';
             html += '<table style="width:100%;"><thead><tr><th style="width: 30%;text-align: left;">Product Name</th>';
             html += '<th style="width: 5%;text-align: center;">Quantity</th><th style="width: 20%;text-align: right;">Unit Price</th><th style="width: 15%;text-align: right;">Discount</th><th style="width: 20%;text-align: right;">Total Price</th>';
             html += '</tr></thead><tbody>';
@@ -901,10 +903,15 @@ export default {
             
             
             html += '</tbody></table>';
-            html += '<div><table style="float:right"><tbody>';
-            html += '<tr><td><span style="font-weight:600">Price Before Tax: </span></td><td><span>' + totalPrice + '</span></td></tr>';
-            html += '<tr><td><span style="font-weight:600">Tax: </span></td><td><span>' + tax + '%</span></td></tr>';
-            html += '<tr><td><span style="font-weight:600">Price After Tax: </span></td><td><span>' + self.moneyFormat(afterTax) + '</span></td></tr>';
+            html += '<table style="float:right"><tbody>';
+            if(tax != 0 || afterTax != totalPrice){
+              html += '<tr><td><span style="font-weight:600">Price Before Tax: </span></td><td><span>' + self.formatMoney(totalPrice) + '</span></td></tr>';
+              html += '<tr><td><span style="font-weight:600">Tax: </span></td><td><span>' + tax + '%</span></td></tr>';
+              html += '<tr><td><span style="font-weight:600">Price After Tax: </span></td><td><span>' + self.formatMoney(afterTax) + '</span></td></tr>';
+            }else{
+              html += '<tr><td><span style="font-weight:600">Total Price: </span></td><td><span>' + self.formatMoney(totalPrice) + '</span></td></tr>';
+            }
+            
             html += '<tr><td><span style="font-weight:600">Amount Paid: </span></td><td><span>' + totalPaid + '</span></td></tr>';
             html += '<tr><td><span style="font-weight:600">Outstanding: </span></td><td><span>' + self.moneyFormat(outstanding) + '</span></td></tr>';
             html += '<tr><td><span style="font-weight:600"">Purchase Date: </span></td><td><span>' + purchaseDate + '</span></td></tr>';
@@ -942,7 +949,7 @@ export default {
               html += "<div>" + self.settings.terms_condition + "</div>";
               html += "</div>";
             }
-            html += '</html>';
+            html += '</body></html>';
             return html;
       
     },
@@ -1634,10 +1641,10 @@ export default {
                             /*if(row.isEstimate != null && row.isEstimate != undefined && row.isEstimate > 0){
                               html += '<div class=""><span class="labelName">Estimate: </span><span class="valueName">' + row.isEstimate + '</span></div>';
                             }*/
-                            //if(taxes > 0){
+                            if(taxes != 0 || total != afterTax){
                               html += '<div class=""><span class="labelName">Tax: </span><span class="valueName">' + taxes + '%</span></div>';
                               html += '<div class=""><span class="labelName">After Tax Cost: </span><span class="valueName">' + self.formatMoney(afterTax) + '</span></div>';
-                            //}
+                            }
                             html += '<div class=""><span class="labelName">Amount Paid: </span><span class="valueName">' + self.formatMoney(row.amountPaid) + '</span></div>';
                             var stat = row.status == 1 ? "display-none" : "";
                             var hidden = row.isPaid == 1 ? "" : "display-none";
@@ -1911,6 +1918,7 @@ export default {
       pageInit: function(e, page) {
         var self = this;
         //self.getProducts();
+        registerPagination();
         var iconTooltip = self.$app.tooltip.create({
           targetEl: '.estimateExplain',
           text: '<b>Check if this is just an estimate,</b><br><b>no purchase is being made yet.</b>',
@@ -2151,6 +2159,12 @@ export default {
   }
 
 } 
+
+function registerPagination(){
+  $(document).on('click', 'a.page', function() {
+        $(".page-current .page-content").eq(0).scrollTop(0);
+      });
+}
 
 function trackSalesPage(){
   try{

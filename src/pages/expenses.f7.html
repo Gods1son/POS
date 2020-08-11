@@ -664,6 +664,7 @@ export default {
       },
       pageInit: function(e, page) {
         var self = this;
+        registerPagination();
         var calendar = self.$app.calendar.create({
                 inputEl: '#paid-calendar-modal',
                 timePicker: true,
@@ -769,6 +770,12 @@ export default {
   }
 
 } 
+
+function registerPagination(){
+  $(document).on('click', 'a.page', function() {
+        $(".page-current .page-content").eq(0).scrollTop(0);
+      });
+}
 
 function trackExpensesPage(){
   try{

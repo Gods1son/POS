@@ -19,15 +19,36 @@
     </div>
   </div>
 
-      <!--fab-->
+  <!--fab-->
+  <div class="fab-backdrop"></div>
+  <div class="fab fab-extended fab-right-bottom">
+    <a href="#">
+      <i class="icon f7-icons">plus</i>
+      <i class="icon f7-icons">multiply</i>
+      <div class="fab-text">Raw Material</div>
+    </a>
+      
+      <div class="fab-buttons fab-buttons-top">
+        <a href="#" class="fab-label-button" @click="openPopUp(null)">
+          <span><i class="icon f7-icons">plus</i></span>
+          <span class="fab-label">Single Raw Material</span>
+        </a>
+        <a href="#" class="fab-label-button" @click="openPopUpExcel()">
+          <span><i class="icon f7-icons">upload_circle</i></span>
+          <span class="fab-label">Upload Excel File</span>
+        </a>
+      </div>
+  </div>
+  <!--fab-->
+
+  <!--
     <div class="fab fab-extended fab-right-bottom">
       <a href="#" @click="openPopUp(null)">
         <i class="icon f7-icons">plus</i>
-        <!-- Element with FAB text  -->
         <div class="fab-text">Raw Material</div>
       </a>
     </div>
-    <!--fab-->
+  -->
 
   <div class="page-content">
     <div class="block no-margin-vertical no-margin-horizontal no-padding-vertical roundHolder no-padding-horizontal">
@@ -71,6 +92,34 @@
         <!--<ul class="pagination"></ul>-->
       </div>
     </div>
+  </div>
+
+  <!--pop up add new product-->
+  <div class="popup uploadIngredients popup-tablet-fullscreen">
+    <div class="view">
+      <div class="page">
+        <div class="navbar">
+          <div class="navbar-bg"></div>
+          <div class="navbar-inner">
+            <div class="title">Upload Raw Materials</div>
+            <div class="right">
+              <!-- Link to close popup -->
+              <a class="link" @click="closePopUpExcel()"><i class="icon f7-icons">multiply</i>Close</a>
+            </div>
+          </div>
+        </div>
+        <div class="page-content">
+          <div class="block margin-half">
+            <div class="item-label">* Ensure you don't have duplicate raw materials in Excel and on system.</div>
+            <div class="item-label">Expected column names are: <b>name</b>, <b>unit_size</b>, <b>unit</b>, <b>cost_per_unit</b></div>
+            <input type="file" id="fileUpload" accept=".xls,.xlsx" />
+            <a href="#" class="col button button-outline button-raised mainButton margin-top-half" @click='uploadFile'>Save Excel Data</a>
+            <div class="errorContent"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
   </div>
 
   <!--pop up-->
@@ -154,6 +203,7 @@
 </template>
 <script>
 import * as moment from 'moment';
+import * as XLSX from 'xlsx';
 var db = null, dbSettings = null;
 
 export default {
@@ -277,6 +327,115 @@ export default {
             }, null);
         //}, null);
     },
+    openPopUpExcel: function(){
+      var self = this;
+      var popup = self.$app.popup.open('.uploadIngredients', true);
+    },
+    closePopUpExcel: function(){
+      var self = this;
+      self.resetUploader();
+      $(".errorContent").html("");
+      var popup = self.$app.popup.close('.uploadIngredients', true);
+      self.getData();
+    },
+    uploadFile: function(){
+      var self = this;
+      $(".errorContent").html("");
+      if (selectedFile) {
+        try{
+        self.$app.preloader.show();
+          var fileReader = new FileReader();
+          fileReader.onload = function(event) {
+            var data = event.target.result;
+
+            var workbook = XLSX.read(data, {
+              type: "binary"
+            });
+
+            var sheet = workbook.SheetNames[0];
+            var toSave = [];
+            var rejected = [];
+            var totalLength = 0;
+            var errors = "";
+            var rowObject = XLSX.utils.sheet_to_row_object_array(
+                workbook.Sheets[sheet]
+              );
+              totalLength = rowObject.length;
+              $.each(rowObject, function(ind, val){
+                var obj = {}; 
+
+                if(val.name != undefined && val.name.trim() != ""){
+                  obj.name = val.name;
+
+                  if(val.unit_size != undefined){
+                    obj.unit_size = val.unit_size;
+                  }else{
+                    obj.unit_size = 1;
+                  }
+
+                  if(val.unit != undefined){
+                    obj.unit = val.unit;
+                  }else{
+                    obj.unit = "";
+                  }
+
+                  if(val.cost_per_unit != undefined){
+                    obj.cost_per_unit = val.cost_per_unit;
+                  }else{
+                    obj.cost_per_unit = 0;
+                  }
+
+                  obj.status = 1;
+                  obj.created_date = moment().format("X");
+                  var ids = moment().format("X");
+                  ids = Number(ids) - ind;
+                  obj._id = ids.toString();
+                  toSave.push(obj);
+                }else{
+                  rejected.push(val);
+                  errors += JSON.stringify(val) + "<br>";
+                }
+                
+              })
+
+              if(toSave.length > 0){
+                  console.log(" to save");
+                  console.log(toSave);
+                  db.bulkDocs(toSave).then(() => {
+                    self.showToast(toSave.length + " records were saved", "center");
+                  }).catch((err) => {
+                    self.$app.preloader.hide();
+                    self.showToast("error occured during saving", "center");
+                  })
+                }else if(toSave.length == totalLength){
+                  self.showToast("No record was saved", "center");
+                }
+
+                if(rejected.length > 0){
+                  var html = rejected.length + " rows were not saved. <br> Please ensure raw material name is not blank and the header of the raw material names column is called <b>name</b>. <br> Please delete the rows that were saved from your excel file to prevent duplicate records.<br>";
+                  html += "Unsaved rows are: <br>" + errors;
+                  $(".errorContent").html(html);
+                  console.log(" rejected");
+                  console.log(rejected);
+                }else if(rejected.length == totalLength){
+                  self.showToast("No error was found", "center");
+                }
+              self.$app.preloader.hide();
+              self.resetUploader();
+          };
+          fileReader.readAsBinaryString(selectedFile);
+        }catch(err){
+          self.showToast("error occured during saving", "center");
+          self.$app.preloader.hide();
+        }
+      }
+    },
+    resetUploader: function(){
+      var self = this;
+        selectedFile = null;
+        //$(".errorContent").html("");
+        document.getElementById("fileUpload").value = "";
+    },
     openPopUp: function(id){
         var self = this;
         
@@ -364,7 +523,8 @@ export default {
         db.find({
           selector: {
             status: {$eq: checked}
-          }
+          },
+          sort: [{'_id': 'desc'}]
         }).then(function(ar){
           var arr = ar.docs;
  
@@ -454,6 +614,7 @@ export default {
       },
       pageInit: function(e, page) {
         var self = this;
+        registerUpload();
         $$(".showInactiveIngs").on("change", function(){
             self.getData();
         })
@@ -469,6 +630,20 @@ export default {
   }
 
 } 
+
+var selectedFile = null;
+function registerUpload(){
+  //document.getElementById("fileUpload").addEventListener("change", handleFile);
+  document
+      .getElementById("fileUpload")
+      .addEventListener("change", function(event) {
+        selectedFile = event.target.files[0];
+      });
+
+      $(document).on('click', 'a.page', function() {
+        $(".page-current .page-content").eq(0).scrollTop(0);
+      });
+}
 
 function trackIngPage(){
   //console.log("track ings");
