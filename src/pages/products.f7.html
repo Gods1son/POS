@@ -1507,6 +1507,8 @@ export default {
     closeEditProdPopUp: function(){
       var self = this;
       $$("input.name,input.selling_price,.cost_price").val("");
+      var textEditor = self.$app.textEditor.get('.desc_of_product');
+      textEditor.setValue("");
       var popup = self.$app.popup.close('.newProduct', true);
     },
     closePopUp: function(){
@@ -2325,7 +2327,7 @@ function registerUpload(){
       });
 
       $(document).on('click', 'a.page', function() {
-        $(".page-current .page-content").eq(0).scrollTop(0);
+        $(".page-current .page-content").eq(0).animate({scrollTop:0 }, "fast");
       });
 }
 

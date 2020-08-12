@@ -641,7 +641,7 @@ function registerUpload(){
       });
 
       $(document).on('click', 'a.page', function() {
-        $(".page-current .page-content").eq(0).scrollTop(0);
+        $(".page-current .page-content").eq(0).animate({scrollTop:0 }, "fast");
       });
 }
 
