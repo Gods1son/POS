@@ -81,6 +81,13 @@ button.text-editor-button.active{
     background-color: black;
 }*/
 
+#showInvoice{
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    border: none;
+}
+
 .popup .item-title, .signParent .item-title{
     font-weight: 500;
     /*letter-spacing: 0.4px;*/
@@ -346,6 +353,7 @@ button.text-editor-button.active{
     color: gray;
 }
 
+
 .valueName{
     font-weight: 400;
     font-size: 1em;
@@ -358,8 +366,8 @@ button.text-editor-button.active{
     color:black;
 }
 
-.in-link{
-    /*color: black*/
+.valueBold{
+    font-weight: 500;
 }
 
 .envelope{

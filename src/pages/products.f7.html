@@ -637,6 +637,7 @@
 //import Dexie from 'dexie';
 import * as moment from 'moment';
 import * as XLSX from 'xlsx';
+var selectedUserName = null, selectedUserID = null;
 /*var db = new Dexie("BizExpenseManagerDB");
           db.version(3).stores({
             ingredients: "++id,name,unit_size,unit,cost_per_unit,status,created_date",
@@ -818,7 +819,7 @@ export default {
     permDeleteItem: function(list, id){
         var self = this;
         
-        self.$app.dialog.confirm("Are you sure you want to permanently delete this?", function(){
+        self.$app.dialog.confirm("Are you sure you want to permanently delete this?", "Mogul Sheet", function(){
                   dbProducts.get(id).then(function(doc) {
                    // console.log(doc);
                     doc.status = -1
@@ -853,7 +854,7 @@ export default {
                 checked = 1;
             }
         }
-        self.$app.dialog.confirm("Are you sure you want to " + text + "?", function(){
+        self.$app.dialog.confirm("Are you sure you want to " + text + "?", "Mogul Sheet", function(){
                   dbProducts.get(id).then(function(doc) {
                    // console.log(doc);
                     doc.status = checked
@@ -1347,83 +1348,105 @@ export default {
           self.showToast("Error is found in the forms!", "center");
           //console.log("error");
         }else{
-          // save into db
-          //console.log("clean");
-          grpName = grpName == "" ? buyername + " group purchase" : grpName;
-          
-        var objMaster = {
-                product_name: grpName,  
-                buyer_name: buyername,
-                selling_price: beforeTaxes,
-                discount: 0,
-                isEstimate: isEstimate,
-                tax: taxes,
-                parentID: 0,
-                isParent:1,
-                afterTax: afterTaxes,
-                quantity: 1,
-                total_price: beforeTaxes,
-                amountPaid:  amountPaid,
-                isPaid: fullyPaid,
-                date_paid: isPaidDate,
-                created_date: moment($("#datePurchaseMultiple").val()).format("X"), //Date.parse($("#purchase-calendar-modal").val()),
-                status:1
-              };
-              var deleted = "";
-              if(self.currentMultipleSale != null){
-                objMaster._id = self.currentMultipleSale;
-              }else{
-                objMaster._id = moment().format("X");
+            // save into db
+            //console.log("clean");
+            var theBuyerID = "";
+            var theBuyerName = "";
+            if(buyername == selectedUserName){
+              theBuyerName = selectedUserName;
+              theBuyerID = selectedUserID;
+              self.saveProcessedMultiplePayment(grpName, theBuyerName,theBuyerID,isEstimate,taxes,afterTaxes,beforeTaxes,amountPaid,fullyPaid,isPaidDate,bigData);
+            }else{
+              //console.log("differ", chosenUser);
+              var generatedID = moment().format("X");
+              var objNew = {
+                  name: buyername,
+                  _id: generatedID,
+                  created_date: generatedID,
+                  status:1
               }
+              dbClients.put(objNew).then(function(res) {
+                      //self.$app.dialog.alert("Item saved.");
+                      self.showToast("New User Created.", "center");
+                      self.saveProcessedMultiplePayment(grpName, buyername,generatedID,isEstimate,taxes,afterTaxes,beforeTaxes,amountPaid,fullyPaid,isPaidDate,bigData);
+                })
+            }
 
-              //db.transaction('rw', db.sales, () => {
-                  
-                  dbSales.put(objMaster).then(function(res){
-                      bigData.forEach((element, index) => {
-                      bigData[index].parentID = res.id;
-                      bigData[index]._id = index + moment().format("X");
-                      deleted = res.id; 
-                    });
-
-                  if(self.currentMultipleSale != null){
-                    dbSales.find({
-                        selector: {
-                          parentID: {$eq: deleted}
-                        }
-                      }).then(function(ar){
-                        var arr = ar.docs;
-                              arr.forEach((element, index) => {
-                              arr[index]._deleted = true;
-                          });
-                          dbSales.bulkDocs(arr).then(function(){
-                            dbSales.bulkDocs(bigData);
-                          })
-                      })
-                      /*db.sales.where("parentID").equals(Number(self.currentMultipleSale)).delete()
-                          .then(function (deleteCount) {
-                              //console.log( "Deleted " + deleteCount + " objects");
-                              db.sales.bulkAdd(bigData).then(function(lastKey) {
-                                //console.log("Last allcost's id was: " + lastKey); // Will be 100000.
-                                })
-                          });*/
-                  
-                  }else{
-                      dbSales.bulkDocs(bigData).then(function(lastKey) {
-                          //console.log("Last allcost's id was: " + lastKey); // Will be 100000.
-                    })
-                  }
-                  self.showToast("Saved successfully", "center");
-                  self.closePopUpMultiple();
-                  //self.$app.popup.close('.multipleSales', true);
-                    
-                }).catch(err => {
-                  // Transaction aborted. NOT WITHIN ZONE!
-                  //console.error (e);
-                    self.showToast(err, "center");
-                 });
-
-              //saving clean data
+           
           }
+    },
+    saveProcessedMultiplePayment: function(grpName1,buyername1,theBuyerID1,isEstimate1,taxes1,afterTaxes1,beforeTaxes1,amountPaid1,fullyPaid1,isPaidDate1,sbigData){
+      var self = this;
+      grpName1 = grpName1 == "" ? buyername1 + " group purchase" : grpName1;
+          
+          var objMaster = {
+              product_name: grpName1,  
+              buyer_name: buyername1,
+              buyer_id: theBuyerID1,
+              selling_price: beforeTaxes1,
+              discount: 0,
+              isEstimate: isEstimate1,
+              tax: taxes1,
+              parentID: 0,
+              isParent:1,
+              afterTax: afterTaxes1,
+              quantity: 1,
+              total_price: beforeTaxes1,
+              amountPaid:  amountPaid1,
+              isPaid: fullyPaid1,
+              date_paid: isPaidDate1,
+              created_date: moment($("#datePurchaseMultiple").val()).format("X"), //Date.parse($("#purchase-calendar-modal").val()),
+              status:1
+            };
+            var deleted = "";
+            if(self.currentMultipleSale != null){
+              objMaster._id = self.currentMultipleSale;
+            }else{
+              objMaster._id = moment().format("X");
+            }
+
+            //db.transaction('rw', db.sales, () => {
+                
+                dbSales.put(objMaster).then(function(res){
+                    sbigData.forEach((element, index) => {
+                    sbigData[index].parentID = res.id;
+                    sbigData[index]._id = index + moment().format("X");
+                    sbigData[index].buyer_name = buyername1;
+                    sbigData[index].buyer_id = theBuyerID1;
+                    deleted = res.id; 
+                  });
+
+                if(self.currentMultipleSale != null){
+                  dbSales.find({
+                      selector: {
+                        parentID: {$eq: deleted}
+                      }
+                    }).then(function(ar){
+                      var arr = ar.docs;
+                            arr.forEach((element, index) => {
+                            arr[index]._deleted = true;
+                        });
+                        dbSales.bulkDocs(arr).then(function(){
+                          dbSales.bulkDocs(sbigData);
+                        })
+                    })
+
+                }else{
+                    dbSales.bulkDocs(sbigData).then(function(lastKey) {
+                        //console.log("Last allcost's id was: " + lastKey); // Will be 100000.
+                  })
+                }
+                self.showToast("Saved successfully", "center");
+                self.closePopUpMultiple();
+                //self.$app.popup.close('.multipleSales', true);
+                  
+              }).catch(err => {
+                // Transaction aborted. NOT WITHIN ZONE!
+                //console.error (e);
+                  self.showToast(err, "center");
+               });
+
+            //saving clean data
     },
     AddNewProduct: function(select){
       var self = this;
@@ -1487,6 +1510,8 @@ export default {
     },
     closePopUpMultiple:function(){
       var self = this;
+      selectedUserID = null;
+      selectedUserName = null;
         var popup = self.$app.popup.close('.multipleSales', true);
         popup.once("closed", function(){
           $(".multipleSales .sortList li").remove();
@@ -1566,6 +1591,8 @@ export default {
       $("#purchase-calendar-modal").next("span").click();
       $$("input.buyer_sell, input.amountpaid_sell, #purchase-calendar-modal, #paid-calendar-modal, .quantity_sell, .total_sell").val("");
       var popup = self.$app.popup.close('.sellProduct', true);
+      selectedUserName = null;
+      selectedUserID = null;
     },
     saveDataSell: function(){
       //var $$ = this.Dom7;
@@ -1598,7 +1625,7 @@ export default {
           return;
       }
       if(($$("input.amountpaid_sell").val() == "0" || $$("input.amountpaid_sell").val().trim() == "") && isEstimate == false){
-          self.$app.dialog.confirm("Do you want to record the purchase without a payment made?", function(){
+          self.$app.dialog.confirm("Do you want to record the purchase without a payment made?", "Mogul Sheet", function(){
             $$("input.amountpaid_sell").val(0);  
             self.processPayment();
           })
@@ -1619,9 +1646,38 @@ export default {
       }
       isPaidDate = moment($("#paid-calendar-modal").val()).format("X");//  Date.parse($("#paid-calendar-modal").val());
       var isEstimate = $(".isEstimate").prop("checked") == true ? 1 : 0; 
+      var chosenUser = $("input.buyer_sell").val();
+      var theBuyerID = "";
+      var theBuyerName = "";
+      console.log("chosen", selectedUserName, selectedUserID, "typed", chosenUser);
+      if(chosenUser == selectedUserName){
+        console.log("same");
+        theBuyerID = selectedUserID;
+        theBuyerName = selectedUserName;
+        self.saveProcessedPayement(theBuyerName, theBuyerID, isEstimate, fullyPaid, isPaidDate);
+      }else{
+        console.log("differ", chosenUser);
+        var generatedID = moment().format("X");
+        var obj = {
+                name: chosenUser,
+                _id: generatedID,
+                created_date: generatedID,
+                status:1
+            }
+            dbClients.put(obj).then(function(res) {
+                    //self.$app.dialog.alert("Item saved.");
+                    self.showToast("New User Created.", "center");
+                    self.saveProcessedPayement(chosenUser, generatedID, isEstimate, fullyPaid, isPaidDate);
+              })
+        }
+      
+    },
+    saveProcessedPayement: function(theBuyerName, theBuyerID, isEstimate, fullyPaid, isPaidDate){
+      var self = this;
       var obj = {
                 product_name: $$("input.name_sell").val(),  
-                buyer_name: $$("input.buyer_sell").val(),
+                buyer_name: theBuyerName,
+                buyer_id: theBuyerID,
                 selling_price: $$("input.cost_sell").val(),
                 tax: $$("input.taxes").val(),
                 parentID: 0,
@@ -1646,7 +1702,8 @@ export default {
                   $$("input.buyer_sell, input.amountpaid_sell, #purchase-calendar-modal, #paid-calendar-modal, .quantity_sell, .total_sell, .discount_sell").val("");
                   $(".isEstimate").prop("checked", false);
                   self.$app.popup.close('.sellProduct', true);
-                  
+                  selectedUserName = null;
+                  selectedUserID = null;
               }).catch(function (error) {
                   //console.log(error);
                  self.showToast("An error occurred!", "center");
@@ -2025,7 +2082,7 @@ export default {
       var allExtraCost = [];
       var passed = true;
       if($(".extraCostRow").length == 0 && $(".eachCostParent").length == 0){
-          self.$app.dialog.alert("Please choose raw materials to save!");
+          self.$app.dialog.alert("Please choose raw materials to save!", "Mogul Sheet");
           return false;
       }
       $(".eachCostParent").each(function(index,item){
@@ -2033,7 +2090,7 @@ export default {
           var val = $(item).find(".costvalue").eq(0).val();
           var ingID = $(item).find(".removeCost").eq(0).attr("data-id");
           if((cost == "" || cost == "0") || (val == "")){
-              self.$app.dialog.alert("Please fill all fields or remove unused selected raw materials");
+              self.$app.dialog.alert("Please fill all fields or remove unused selected raw materials", "Mogul Sheet");
               passed = false;
               return false;
           }else{
@@ -2054,7 +2111,7 @@ export default {
               var extraname = $(item).find(".extraName").val().trim();
               var extracost = $(item).find(".eachCost").val().trim();
               if(extraname == "" || extracost == ""){
-                  self.$app.dialog.alert("Please fill all fields or remove unused for custom charges");
+                  self.$app.dialog.alert("Please fill all fields or remove unused for custom charges", "Mogul Sheet");
                   passed = false;
                   return false;
               }else{
@@ -2208,8 +2265,9 @@ export default {
                 change: function (value) {
                   if(value.length > 0){
                   value = value[0];
-                  
                   $("#buyer_sell").val(value.name);
+                  selectedUserName = value.name;
+                  selectedUserID = value._id;
                   }
                 }
               }
@@ -2234,6 +2292,8 @@ export default {
                   if(value.length > 0){
                   value = value[0];
                   $("#buyersNameMultiple").val(value.name);
+                  selectedUserName = value.name;
+                  selectedUserID = value._id;
                   }
                 }
               }

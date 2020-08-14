@@ -147,6 +147,7 @@
               </div>
             </div>
             <div id="clientName" class="bigLabel"></div>
+            <div id="clientID" class="display-none"></div>
             <div class="text-align-center">
               <!--<input class="search" placeholder="search">-->
               <!-- Additional "searchbar-inline" class -->
@@ -400,7 +401,7 @@ export default {
     permDeleteItem: function(list, id){
         var self = this;
         
-        self.$app.dialog.confirm("Are you sure you want to permanently delete this?", function(){
+        self.$app.dialog.confirm("Are you sure you want to permanently delete this?", "Mogul Sheet", function(){
                   /*var item = self.ings.find(function(e){ 
                       return e._id = id;
                   });
@@ -442,7 +443,7 @@ export default {
                 checked = 1;
             }
         }
-        self.$app.dialog.confirm("Are you sure you want to " + text + "?", function(){
+        self.$app.dialog.confirm("Are you sure you want to " + text + "?", "Mogul Sheet", function(){
                   /*var item = self.ings.find(function(e){ 
                       return e._id = id;
                   });
@@ -476,12 +477,14 @@ export default {
     resetTable: function(){
         var self = this;
         //console.log("empty");
+        var id = $("#clientID").text();
         var name = $("#clientName").text();
-        self.openPopUpClientSales(name);
+        self.openPopUpClientSales(id, name);
     },
-    openPopUpClientSales: function(name){
+    openPopUpClientSales: function(id, name){
       var self = this;
       $("#clientName").text(name);
+      //console.log(name);
       var checked = 1;
         var toggle = self.$app.toggle.get(".showInactiveClientPurchases");
       if(toggle != undefined){
@@ -491,7 +494,7 @@ export default {
               selector: {
                 $and: [
                   { status: {$eq: checked} },
-                  { buyer_name: { $eq: name } },
+                  { buyer_id: { $eq: id } },
                   { parentID: { $lt: 1 } },
                   {created_date: {$gt: true}}
                 ]
@@ -499,6 +502,7 @@ export default {
               sort: [{'_id': 'desc'}]
             }).then(function(ar){
               var arr = ar.docs;
+              //console.log(arr);
             //var collection = db.ingredients.toArray(function(arr){
             //console.log(arr);
               self.$setState({
@@ -534,7 +538,9 @@ export default {
                             var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
                             html += '<div class="name cardName">' + row.product_name + '</div><div class="id display-none">' + row._id + '</div><div class="cost display-none">' + row.selling_price + '</div>';
                           //html += '<div class=""><span class="labelName">Buyer\'s name: </span><span class="valueName buyer">' + row.buyer_name + '</span></div><div class="isPaid display-none">' + row.isPaid + '</div>';
-                            html += '<div class=""><span class="labelName">Product Cost: </span><span class="valueName">' + self.formatMoney(row.selling_price) + '</span></div>';
+                          var type = row.isEstimate == 1 ? "Estimate" : "Invoice";
+                            html += '<div class=""><span class="labelName">Type: </span><span class="valueName valueBold">' + type + '</span></div>';  
+                          html += '<div class=""><span class="labelName">Product Cost: </span><span class="valueName">' + self.formatMoney(row.selling_price) + '</span></div>';
 
                             html += '<div class=""><span class="labelName">Quantity: </span><span class="valueName">' + quantity + '</span></div>';
                             if(row.discount != null && row.discount != 0){
@@ -548,7 +554,7 @@ export default {
                             html += '<div class=""><span class="labelName">Amount Paid: </span><span class="valueName">' + self.formatMoney(row.amountPaid) + '</span></div>';
                             var stat = row.status == 1 ? "display-none" : "";
                             var hidden = row.isPaid == 1 ? "" : "display-none";
-                            var checkbox = row.isPaid == 1 ? '<span class="badge color-green paid">Fully Paid</span>' : '<span class="badge color-red paid">Not Fully Paid</span>';
+                            var checkbox = row.isPaid == 1 ? '<span class="badge color-green paid">Yes</span>' : '<span class="badge color-red paid">No</span>';
                             //var checkbox = row.isPaid == 1 ? '<i class="icon f7-icons text-color-green paid">checkmark_circle_fill</i>' : '<i class="icon f7-icons text-color-red paid">multiply_circle_fill</i>';
                             html += '<div class=""><span class="labelName">Fully Paid: </span>' + checkbox + '</div>' + '<div class="display-none created_date">' + row.created_date + '</div>';
                             html += '<div class="' + hidden + '"><span class="labelName">Date Fully Paid: </span><span class="valueName">' + moment.unix(row.date_paid).format("LLL") + '</span></div>';
@@ -564,11 +570,6 @@ export default {
                             valueNames: ['id','isPaid','buyer','created_date','cost','name'],
                             page: 10,
                             pagination: [{outerWindow:2}],
-                            on:{
-                              updated: function(){
-                                console.log("hey list");
-                              }
-                            }
                         };
 
                         var sales = new List('clientSales-list', options);
@@ -848,17 +849,17 @@ export default {
                             var row = self.clients[i];
                             var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
                             html += '<div class="name cardName">' + row.name + '</div><div class="id display-none">' + row._id + '</div>';
-                            if(row.phone != ""){
+                            if(row.phone != "" && row.phone != undefined){
                               html += '<div class=""><span class="labelName">Contact number: </span><span class="valueName"><a class="external" target="_system" href="tel:' + row.phone + '"><i class="icon f7-icons phone">phone</i><span class="in-link">' + row.phone + '</span></a></span></div>';
                             }
-                            if(row.email != ""){
+                            if(row.email != "" && row.email != undefined){
                               html += '<div class=""><span class="labelName">Email: </span><span class="valueName"><a class="external" target="_system" href="mailto:' + row.email + '"><i class="icon f7-icons envelope">envelope</i><span class="in-link">' + row.email + '</span></a></span></div>';
                             }
-                            if(row.address != ""){
+                            if(row.address != "" && row.address != undefined){
                               html += '<div class="display-flex"><div class="labelName">Address: </div><div class="valueName margin-left-half">' + row.address.split("\n").join("<br>") + '</div></div>';
                             }
 
-                            if(row.bday != null && row.bday != 0){
+                            if(row.bday != null && row.bday != 0 && row.bday != undefined){
                               html += '<div class="display-flex"><div class="labelName">Birthday: </div><div class="valueName margin-left-half">' + moment.unix(row.bday).format("MMMM Do") + '</div></div>';
                             }
 
@@ -872,7 +873,7 @@ export default {
                             html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName">Deleted</span></div>';
                             html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
                             html += '<a class="button button-small button-raised editButton" data-id="' + row._id + '">Edit</a>';
-                            html += '<a class="button button-small button-raised viewPurchases" data-id="' + row.name + '">View Purchases</a>';
+                            html += '<a class="button button-small button-raised viewPurchases" data-id="' + row._id + '" data-name="' + row.name + '">View Purchases</a>';
                             html += '<a class="button button-small button-raised deleteButton" data-id="' + row._id + '">';
                             html +=  row.status == 1 ? 'Delete' : 'Activate'; 
                             html += '</a>';
@@ -905,12 +906,13 @@ export default {
                         //materialList.reIndex();
                           $('#clients-list').off("click").on('click','.button', function () {
                               var data = $(this).attr("data-id");
+                              var name = $(this).attr("data-name");
                               //console.log(data);
                               if($(this).hasClass("editButton")){
                                 self.openPopUp(data);
                               }
                               if($(this).hasClass("viewPurchases")){
-                                self.openPopUpClientSales(data);
+                                self.openPopUpClientSales(data, name);
                               }
                               if($(this).hasClass("deleteButton")){
                                 self.DeleteItem(clientsList, data);
@@ -945,7 +947,8 @@ export default {
         $(".showInactiveClientPurchases").on("change", function(){
           //console.log("inactive change");
           var name = $("#clientName").text();
-            self.openPopUpClientSales(name);
+          var id = $("#clientID").text();
+            self.openPopUpClientSales(id, name);
             
         })
         calendarBday = self.$app.calendar.create({
@@ -991,7 +994,8 @@ export default {
                 to = moment(moment(date2).format('LLL')).format("X");
             }else{
               var name = $("#clientName").text();
-              self.openPopUpClientSales(name);
+              var id = $("#clientID").text();
+              self.openPopUpClientSales(id, name);
             }
             if(from != null && to != null){
                 //console.log(from);
@@ -1007,14 +1011,14 @@ export default {
                 }).reverse().toArray(function(arr){*/
                   //console.log("from: " + from);
                   //console.log("to: " + to);
-                  var name = $("#clientName").text();
+                  var id = $("#clientID").text();
                 dbSales.find({
                     selector: {
                       $and: [
                          {status: {$eq: checked}},
                          {created_date: { $gt: from }},
                          {created_date: { $lt: to }},
-                         {buyer_name: { $eq: name } }
+                         {buyer_id: { $eq: id } }
                       ]
                     },
                     sort: [{'_id': 'desc'}]

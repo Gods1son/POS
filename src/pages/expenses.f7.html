@@ -278,7 +278,7 @@ export default {
     permdeleteExpense: function(list, id){
         var self = this;
         
-        self.$app.dialog.confirm("Are you sure you want to permanently delete this expense?", function(){
+        self.$app.dialog.confirm("Are you sure you want to permanently delete this expense?", "Mogul Sheet", function(){
                 dbExpenses.get(id).then(function(doc) {
                         // console.log(doc);
                           doc.status = -1
@@ -314,7 +314,7 @@ export default {
                 checked = 1;
             }
         }
-        self.$app.dialog.confirm("Are you sure you want to " + text + " this expense?", function(){
+        self.$app.dialog.confirm("Are you sure you want to " + text + " this expense?", "Mogul Sheet", function(){
                 dbExpenses.get(id).then(function(doc) {
                         // console.log(doc);
                           doc.status = checked

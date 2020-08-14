@@ -223,7 +223,7 @@ export default {
         warn += "<div class='text-align-center'>Type <b>Mogul Sheet</b> in the textbox below to proceed</div>";
         self.$app.dialog.prompt(warn, function (name) {
           if(name.toLowerCase() == "mogul sheet"){
-            self.$app.dialog.confirm('Once deleted, data cannot be recovered except you have synced your data, do you want to proceed?', function () {
+            self.$app.dialog.confirm('Once deleted, data cannot be recovered except you have synced your data, do you want to proceed?', "Mogul Sheet", function () {
               //self.$app.dialog.alert('Deleted');
               self.clearAllDB();
             });

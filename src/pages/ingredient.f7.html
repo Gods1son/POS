@@ -267,7 +267,7 @@ export default {
         permDeleteItem: function(list, id){
         var self = this;
         
-        self.$app.dialog.confirm("Are you sure you want to permanently delete this?", function(){
+        self.$app.dialog.confirm("Are you sure you want to permanently delete this?", "Mogul Sheet", function(){
                   db.get(id).then(function(doc) {
                     doc.status = -1
                     return db.put(doc);
@@ -302,7 +302,7 @@ export default {
                 checked = 1;
             }
         }
-        self.$app.dialog.confirm("Are you sure you want to " + text + "?", function(){
+        self.$app.dialog.confirm("Are you sure you want to " + text + "?", "Mogul Sheet", function(){
 
                   db.get(id).then(function(doc) {
                     doc.status = checked

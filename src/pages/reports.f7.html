@@ -576,55 +576,61 @@
                   var obj = {};
                   //var unique = arr.map(item => item.product_name).filter((value, index, self) => self.indexOf(value) === index);
                   $.each(arr2, function(ind, val){
-                    var name = val.buyer_name;
-                    if(obj[name] == undefined){
-                      obj[name] = {};
-                    }
-                    var prod = val.product_name;
-                    if(val.isParent != 1 && val.parentID == 0){
-                      if(obj[name][prod] == undefined){
-                        var spendings = {};
-                        spendings.quantity = Number(val.quantity);
-                        spendings.paid = Number(val.amountPaid); 
-                        obj[name][prod] = spendings;
-                      }else{
-                        var count = Number(val.quantity);
-                        var oldCount = obj[name][prod][quantity];
-                        var paid = Number(val.amountPaid); 
-                        var oldPaid = obj[name][prod][paid];
-                        obj[name][prod][quantity] = count + oldCount;
-                        obj[name][prod][paid] = paid + oldPaid;
+                    try{
+                      var name = val.buyer_name + "-" + val.buyer_id;
+                      if(obj[name] == undefined){
+                        obj[name] = {};
                       }
-                    }
-                    // group
-                    if(val.isParent == 1 && val.parentID == 0){
-                      if(obj[name][prod] == undefined){
-                        obj[name][prod] = {};
-                        var children = arr.filter(x => x.parentID == val._id);
-                        obj[name][prod]["paid"] = self.formatMoney(Number(val.amountPaid));
-                        obj[name][prod]["children"] = children;
-                      }else{
-                        var keys = Object.keys(obj[name]);
-                        var ct = 0;
-                        $.each(keys, function(ind, val){
-                          if(val.indexOf(prod) > -1){
-                            ct += 1;
-                          }
-                        })
-                        var prod2 = prod + "(" + ct + ")";
-                        var children = arr.filter(x => x.parentID == val._id);
-                        obj[name][prod2] = {};
-                        obj[name][prod2]["paid"] = self.formatMoney(Number(val.amountPaid));
-                        obj[name][prod2]["children"] = children;
+                      var prod = val.product_name;
+                      if(val.isParent != 1 && val.parentID == 0){
+                        if(obj[name][prod] == undefined){
+                          var spendings = {};
+                          spendings.quantity = Number(val.quantity);
+                          spendings.paid = Number(val.amountPaid); 
+                          obj[name][prod] = spendings;
+                        }else{
+                          var count = Number(val.quantity);
+                          console.log(obj[name][prod]);
+                          console.log(obj);
+                          var oldCount = obj[name][prod][quantity];
+                          var paid = Number(val.amountPaid); 
+                          var oldPaid = obj[name][prod][paid];
+                          obj[name][prod][quantity] = count + oldCount;
+                          obj[name][prod][paid] = paid + oldPaid;
+                        }
                       }
-                      
+                      // group
+                      if(val.isParent == 1 && val.parentID == 0){
+                        if(obj[name][prod] == undefined){
+                          obj[name][prod] = {};
+                          var children = arr.filter(x => x.parentID == val._id);
+                          obj[name][prod]["paid"] = self.formatMoney(Number(val.amountPaid));
+                          obj[name][prod]["children"] = children;
+                        }else{
+                          var keys = Object.keys(obj[name]);
+                          var ct = 0;
+                          $.each(keys, function(ind, val){
+                            if(val.indexOf(prod) > -1){
+                              ct += 1;
+                            }
+                          })
+                          var prod2 = prod + "(" + ct + ")";
+                          var children = arr.filter(x => x.parentID == val._id);
+                          obj[name][prod2] = {};
+                          obj[name][prod2]["paid"] = self.formatMoney(Number(val.amountPaid));
+                          obj[name][prod2]["children"] = children;
+                        }
+                        
+                      }
+                    }catch(err){
+                      //continue;
+                      return;
                     }
-                    
                   })
                   var html = "<div class='block-title no-margin-vertical margin-bottom-half'>Cost and Amount Received</div>";
                   html += "<div class='card myCard'><table><thead><tr><th>Buyer's name</th><th>Product name <br> Quantity -> Amount Received</th><th>Sub Products</th></tr></thead>";
                   html += "<tbody>";
-                  //console.log(obj);
+                  console.log(obj);
                   for(var user in obj){
                     var sub = obj[user];
                     var keys = Object.keys(sub);
@@ -632,7 +638,9 @@
                     if(keys.length > 1){
                       rowspan = " rowspan='" + keys.length + "'";
                     }
-                    html += "<tr><td" + rowspan + ">" + user + "</td>";
+                    var lastInd = user.lastIndexOf("-");
+                    var userUnique = user.substr(0, lastInd);
+                    html += "<tr><td" + rowspan + ">" + userUnique + "</td>";
                     var start = true;
                     for(var x = 0; x < keys.length; x++){
                       
@@ -672,6 +680,7 @@
                   self.$app.preloader.hide();
                 }catch(err){
                   self.showToast("An error occured", "center");
+                  console.log(err);
                   self.$app.preloader.hide();
                 }
             }).catch(function(err){
