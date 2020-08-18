@@ -305,7 +305,7 @@
 import * as moment from 'moment';
 import * as XLSX from 'xlsx';
 var db = null, dbSales = null, dbSettings = null, calendarBday = null;
-
+var dataToUpload = null, eachBatch = 50, uploaded = 0;
 export default {
   test: 5,
   data: function () {
@@ -603,6 +603,32 @@ export default {
       var popup = self.$app.popup.close('.uploadClients', true);
       self.getData();
     },
+    uploadFileBatches: function(){
+      var self = this;
+      var dataLength = dataToUpload.length;
+      var smallUpload = null;
+      if(dataLength > uploaded){
+        var pick = dataLength - uploaded;
+        var picking = pick >= eachBatch ? eachBatch : pick;
+        smallUpload = dataToUpload.slice(uploaded, picking + uploaded); 
+        //upload small amount
+
+          db.bulkDocs(smallUpload).then(() => {
+            //console.log("uploaded", uploaded, "picking", picking + uploaded);
+            uploaded += picking;
+            setTimeout(self.uploadFileBatches(), 1000);
+          }).catch((err) => {
+            self.$app.preloader.hide();
+            self.showToast("error occured during saving", "center");
+          })
+      }else{
+        self.$app.preloader.hide();
+        self.showToast(uploaded + " records were saved", "center");
+        dataToUpload = null;
+        uploaded = 0;
+        return;
+      } 
+    },
     uploadFile: function(){
       var self = this;
       $(".errorContent").html("");
@@ -670,14 +696,17 @@ export default {
               })
 
               if(toSave.length > 0){
-                  console.log(" to save");
+                dataToUpload = toSave;
+                self.uploadFileBatches();
+                
+                 /* console.log(" to save");
                   console.log(toSave);
                   db.bulkDocs(toSave).then(() => {
                     self.showToast(toSave.length + " records were saved", "center");
                   }).catch((err) => {
                     self.$app.preloader.hide();
                     self.showToast("error occured during saving", "center");
-                  })
+                  })*/
                 }else if(toSave.length == totalLength){
                   self.showToast("No record was saved", "center");
                 }
@@ -686,8 +715,8 @@ export default {
                   var html = rejected.length + " rows were not saved. <br> Please ensure client name is not blank and the header of the product names column is called <b>name</b>. <br> Please delete the rows that were saved from your excel file to prevent duplicate records.<br>";
                   html += "Unsaved rows are: <br>" + errors;
                   $(".errorContent").html(html);
-                  console.log(" rejected");
-                  console.log(rejected);
+                  //console.log(" rejected");
+                  //console.log(rejected);
                 }else if(rejected.length == totalLength){
                   self.showToast("No error was found", "center");
                 }

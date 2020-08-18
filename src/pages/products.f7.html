@@ -653,6 +653,7 @@ var selectedUserName = null, selectedUserID = null;
             expenses_history: "++id,expID,name,amount_to_pay,amount_paid,date_paid,created_date,recurring,status"
           })*/
 var dbProducts = null, dbProdIngs = null, dbProdOthers = null, dbSales = null, dbIngs = null, dbSettings = null, dbClients = null;
+var dataToUpload = null, eachBatch = 50, uploaded = 0;
 //var $$ = Dom7;
 export default {
   data: function () {
@@ -1858,6 +1859,32 @@ export default {
               });
       });
     },
+    uploadFileBatches: function(){
+      var self = this;
+      var dataLength = dataToUpload.length;
+      var smallUpload = null;
+      if(dataLength > uploaded){
+        var pick = dataLength - uploaded;
+        var picking = pick >= eachBatch ? eachBatch : pick;
+        smallUpload = dataToUpload.slice(uploaded, picking + uploaded); 
+        //upload small amount
+
+        dbProducts.bulkDocs(smallUpload).then(() => {
+            //console.log("uploaded", uploaded, "picking", picking + uploaded);
+            uploaded += picking;
+            setTimeout(self.uploadFileBatches(), 1000);
+          }).catch((err) => {
+            self.$app.preloader.hide();
+            self.showToast("error occured during saving", "center");
+          })
+      }else{
+        self.$app.preloader.hide();
+        self.showToast(uploaded + " records were saved", "center");
+        dataToUpload = null;
+        uploaded = 0;
+        return;
+      } 
+    },
     uploadFile: function(){
       var self = this;
       $(".errorContent").html("");
@@ -1918,14 +1945,17 @@ export default {
               })
 
               if(toSave.length > 0){
-                  console.log(" to save");
+                dataToUpload = toSave;
+                self.uploadFileBatches();
+
+                  /*console.log(" to save");
                   console.log(toSave);
                   dbProducts.bulkDocs(toSave).then(() => {
                     self.showToast(toSave.length + " records were saved", "center");
                   }).catch((err) => {
                     self.$app.preloader.hide();
                     self.showToast("error occured during saving", "center");
-                  })
+                  })*/
                 }else if(toSave.length == totalLength){
                   self.showToast("No record was saved", "center");
                 }
@@ -1934,8 +1964,8 @@ export default {
                   var html = rejected.length + " rows were not saved. <br> Please ensure product name is not blank and the header of the product names column is called <b>name</b>. <br> Please delete the rows that were saved from your excel file to prevent duplicate records.<br>";
                   html += "Unsaved rows are: <br>" + errors;
                   $(".errorContent").html(html);
-                  console.log(" rejected");
-                  console.log(rejected);
+                  //console.log(" rejected");
+                  //console.log(rejected);
                 }else if(rejected.length == totalLength){
                   self.showToast("No error was found", "center");
                 }

@@ -205,7 +205,7 @@
 import * as moment from 'moment';
 import * as XLSX from 'xlsx';
 var db = null, dbSettings = null;
-
+var dataToUpload = null, eachBatch = 50, uploaded = 0;
 export default {
   test: 5,
   data: function () {
@@ -399,14 +399,16 @@ export default {
               })
 
               if(toSave.length > 0){
-                  console.log(" to save");
+                dataToUpload = toSave;
+                self.uploadFileBatches();
+                  /*console.log(" to save");
                   console.log(toSave);
                   db.bulkDocs(toSave).then(() => {
                     self.showToast(toSave.length + " records were saved", "center");
                   }).catch((err) => {
                     self.$app.preloader.hide();
                     self.showToast("error occured during saving", "center");
-                  })
+                  })*/
                 }else if(toSave.length == totalLength){
                   self.showToast("No record was saved", "center");
                 }
@@ -415,8 +417,8 @@ export default {
                   var html = rejected.length + " rows were not saved. <br> Please ensure raw material name is not blank and the header of the raw material names column is called <b>name</b>. <br> Please delete the rows that were saved from your excel file to prevent duplicate records.<br>";
                   html += "Unsaved rows are: <br>" + errors;
                   $(".errorContent").html(html);
-                  console.log(" rejected");
-                  console.log(rejected);
+                  //console.log(" rejected");
+                  //console.log(rejected);
                 }else if(rejected.length == totalLength){
                   self.showToast("No error was found", "center");
                 }
@@ -429,6 +431,32 @@ export default {
           self.$app.preloader.hide();
         }
       }
+    },
+    uploadFileBatches: function(){
+      var self = this;
+      var dataLength = dataToUpload.length;
+      var smallUpload = null;
+      if(dataLength > uploaded){
+        var pick = dataLength - uploaded;
+        var picking = pick >= eachBatch ? eachBatch : pick;
+        smallUpload = dataToUpload.slice(uploaded, picking + uploaded); 
+        //upload small amount
+
+          db.bulkDocs(smallUpload).then(() => {
+            //console.log("uploaded", uploaded, "picking", picking + uploaded);
+            uploaded += picking;
+            setTimeout(self.uploadFileBatches(), 1000);
+          }).catch((err) => {
+            self.$app.preloader.hide();
+            self.showToast("error occured during saving", "center");
+          })
+      }else{
+        self.$app.preloader.hide();
+        self.showToast(uploaded + " records were saved", "center");
+        dataToUpload = null;
+        uploaded = 0;
+        return;
+      } 
     },
     resetUploader: function(){
       var self = this;
@@ -527,7 +555,6 @@ export default {
           sort: [{'_id': 'desc'}]
         }).then(function(ar){
           var arr = ar.docs;
- 
           self.$setState({
                 ings: arr,
                 totalMat:arr.length
@@ -548,7 +575,7 @@ export default {
                             var row = self.ings[i];
                             var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
                             html += '<div class="name cardName">' + row.name + '</div><div class="id display-none">' + row._id + '</div><div class="cost display-none">' + row.cost_per_unit + '</div>';
-                            html += '<div class=""><span class="labelName">Cost/Unit Size: </span><span class="valueName">' + self.formatMoney(row.cost_per_unit) + " for " + row.unit_size + row.unit + '</span></div>';
+                            html += '<div class=""><span class="labelName">Cost/Unit Size: </span><span class="valueName">' + self.formatMoney(row.cost_per_unit) + " for " + row.unit_size + " " + row.unit + '</span></div>';
                             var stat = row.status == 1 ? "display-none" : "";
                             //html += '<div class=""><span class="labelName">Cost: </span><span class="valueName">' + self.formatMoney(row.cost_per_unit) + '</span></div>';
                             html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName">Deleted</span></div>';
