@@ -154,7 +154,7 @@
           </div>
       </div>
 
-      <div class="no-margin-top" style="width: 100%;margin: auto;position: absolute;bottom: 0;">
+      <div class="no-margin-top" style="width: inherit;margin: auto;position: absolute;bottom: 0;">
         <div class="row padding-horizontal-half">
         <div class="col text-align-center">
           <div class="margin-bottom-half">
@@ -368,6 +368,17 @@ export default {
           })
                 
           //self.$app.dialog.alert("DB Created");
+      },
+      closePanel: function(){
+        var self = this;
+        var panel = self.$app.panel.get('.panel-left');
+
+        if (panel.opened) {
+          // do something
+          console.log("panel opened");
+          //$(".homeMenu").click();
+          panel.toggle(false);
+        }
       }
     },
     on: {
@@ -377,6 +388,7 @@ export default {
       },
       pageInit: function(e, page) {
         var self = this;
+        //self.closePanel();
         self.startPouch();
         //self.startPouch();
         
@@ -384,7 +396,9 @@ export default {
       pageAfterIn: function (event, page) {
           // do something after page gets into the view
           var self = this;
+          //self.closePanel();
           trackHomePage();
+
           //self.getData();
       }
     }

@@ -84,8 +84,29 @@ setTimeout(function(){
         
       },
       pageInit: function () {
-        //app.methods.storage2();
-        //this.$app.storage2();
+        var self = this;
+        //app.methods.alert();
+        //self.$app.alert();
+      },
+      pageBeforeIn: function (event, page) {
+        // do something after page gets into the view
+        var self = this;
+        var page = event.el;
+        var name = $$(page).data("name");
+        var panel = app.panel.get('.panel-left');
+        if(name == "home"){
+
+          if(panel.opened){
+            panel.toggle(false);
+          }
+        }else{
+          if(!panel.opened){
+            var width = $(window).width();
+            if(width >= 1024){
+              panel.toggle(false);
+            }
+          }
+        }
       }
     }
   });

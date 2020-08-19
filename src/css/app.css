@@ -5,21 +5,6 @@
 .size-29 { font-size: 29px; text-transform: none; }
 .size-50 { font-size: 50px; text-transform: none; }
 
-@media only screen and (min-device-width : 1030px)   
-/* and (max-device-width : 1024px)  */
-{ /* STYLES GO HERE */
-    #app{
-        width: 70%;
-        margin: auto;
-        /*border-left: 5px ridge;
-        border-right: 5px ridge;*/
-    }
-
-    body{
-        background-color:#dee2e6;
-    }
-} 
-
 /* stripe */
 .StripeElement {
     box-sizing: border-box;
@@ -635,5 +620,25 @@ button.text-editor-button.active{
     overflow: hidden;
 }
 
+.panel-left.mylinks{
+    width:220px;
+}
 
 
+@media only screen and (min-device-width : 1030px)   
+/* and (max-device-width : 1024px)  */
+{ /* STYLES GO HERE */
+    #app{
+        /*width: 70%;*/
+        margin: auto;
+        /*border-left: 5px ridge;
+        border-right: 5px ridge;*/
+    }
+    .parentWrap{
+        width: 90%;
+        margin: auto;
+    }
+    body{
+        background-color:#dee2e6;
+    }
+} 
