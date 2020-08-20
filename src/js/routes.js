@@ -56,6 +56,11 @@ var routes = [
     component: ReportsRoutePage,
   },
   {
+    name: 'Landing Page',
+    path: '/LandingPage/',
+    url: 'Landing/default.html',
+  },
+  {
     path: '/request-and-load/user/:userId/',
     async: function (routeTo, routeFrom, resolve, reject) {
       // Router instance

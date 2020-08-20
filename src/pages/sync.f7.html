@@ -293,6 +293,13 @@
         },
         checkSubscription2: function(){
           var self = this;
+          if(self.subscriptionID != null){
+            $(".syncButton").removeClass("display-none");
+            $(".paySubs").addClass("display-none");
+            $(".subscriptionStatus").html("Subscription Status" + '<span class="margin-left-half badge color-green">Active</span>');
+            $(".cancelSub").removeClass("display-none");
+            return;
+          }
           self.$app.preloader.show();
           return (
                 fetch(self.backendUrl + 'check-subscription', {

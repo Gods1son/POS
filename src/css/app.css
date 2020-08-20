@@ -51,6 +51,16 @@
     overflow: auto !important;
 }
 
+/*.page-content .navbar{
+    width: calc(100% + 20px);
+    margin-left: -10px;
+}
+
+.customList .searchbar{
+    width: calc(100% + 20px);
+    margin-left: -10px;
+}*/
+
 .quicklinks .item-inner:before{
     color:white !important;
 }
