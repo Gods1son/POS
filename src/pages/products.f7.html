@@ -1756,7 +1756,7 @@ export default {
                         var sorter = '<span class="sort" data-sort="name">Name</span><span class="sort" data-sort="cost">Cost</span>';
                         $(sorter).insertAfter($(".sortText"));
                         $(".sortText").removeClass("display-none");
-                        var mult = "<div class='margin-horizontal-half margin-top-half'><a class='button button-raised sellMultiple'>Sell Multiple Products</div>";
+                        var mult = "<div class='margin-top-half sellMultParent'><a class='button button-raised sellMultiple'>Sell Multiple Products</div>";
                         $(mult).insertBefore($("#product-list .list"));
                         $(".sellMultiple").off("click").on("click", function(){
                           self.openPopUpMultiple();

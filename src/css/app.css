@@ -634,6 +634,11 @@ button.text-editor-button.active{
     width:220px;
 }
 
+.sellMultParent{
+    margin-left: 5px !important;
+    margin-right: 5px !important;
+}
+
 
 @media only screen and (min-device-width : 1030px)   
 /* and (max-device-width : 1024px)  */
@@ -650,5 +655,24 @@ button.text-editor-button.active{
     }
     body{
         background-color:#dee2e6;
+    }
+    .myToolbar, .list.sortList, .sortTextPar, .dash, .dashText, .specWrap, .sellMultParent, .pagination{
+        padding: 0 15px !important;
+    }
+    .myCard{
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+    .filterDateParent{
+        padding: 0 25px !important;
+    }
+    .sellMultParent{
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+    .chartHolder{
+        height: 400px;
+        width: 400px;
+        margin: auto;
     }
 } 

@@ -41,7 +41,10 @@ window.$ = jQuery;
 
 Template7.registerHelper("money", function(val){
     var sym = localStorage.getItem("currency", val);
-    sym = sym == undefined ? "" : sym;
+    if(sym == undefined || sym == "undefined" || sym == nul || sym == "null"){
+      sym = "";
+    }
+    //sym = sym == undefined ? "" : sym;
     if(val < 0){
       var rev = 0 - val;
       var val2 = val + rev + rev;
