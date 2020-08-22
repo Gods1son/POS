@@ -60,7 +60,7 @@ Template7.registerHelper("convertDate", function(val){
     var myDate = new Date(val);
     return myDate.toLocaleString();
 })
-
+var openedPanel = false;
 setTimeout(function(){
 
   var app = new Framework7({
@@ -75,6 +75,11 @@ setTimeout(function(){
     },*/
     // App routes
     routes: routes,
+    data() {
+      return {
+        openedPanel: true
+      };
+    },
     methods: {
       alert: function() {
         app.dialog.alert('Hello World');
@@ -91,6 +96,17 @@ setTimeout(function(){
         //app.methods.alert();
         //self.$app.alert();
       },
+      pageAfterIn: function (event, page) {
+        var self = this;
+        $(".navbar .right .panel-toggle").on("click", function(){
+          var panel = app.panel.get('.panel-left');
+          if(panel.opened){
+            openedPanel = false;
+          }else{
+            openedPanel = true;
+          }
+        })
+      },
       pageBeforeIn: function (event, page) {
         // do something after page gets into the view
         var self = this;
@@ -105,7 +121,7 @@ setTimeout(function(){
         }else{
           if(!panel.opened){
             var width = $(window).width();
-            if(width >= 1024){
+            if(width >= 1024 && !openedPanel){
               panel.toggle(false);
             }
           }

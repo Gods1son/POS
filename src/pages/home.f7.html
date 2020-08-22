@@ -279,22 +279,38 @@ export default {
         },
         clearAllDB: function(){
           var self = this;
-          self.$app.preloader.show();
           try{
-              window.indexedDB.databases().then((r) => {
-                for (var i = 0; i < r.length; i++) window.indexedDB.deleteDatabase(r[i].name);
-            }).then(() => {
-              self.$app.preloader.hide();
-                self.showToast('All data cleared.', "center");
-            }).catch((e) => {
-              self.$app.preloader.show();
-              self.showToast(e, "center");
-            });
+            if(pdf != undefined){
+                try{
+                  self.$app.preloader.show();
+                  var allTables = ['products.db','product_ingredients.db','product_otherMaterials.db','sales.db','ingredients.db','settings.db','clients.db','dbAccount.db'];
+                  for(var i = 0; i < allTables.length; i++){
+                    window.sqlitePlugin.deleteDatabase(allTables[i], null, null);
+                  }
+                  self.$app.preloader.hide();
+                  self.showToast('All data cleared.', "center");
+                }catch(err){
+                  self.$app.preloader.hide();
+                  self.showToast("An error occured", "center");
+                }
+            }
           }catch(err){
-            self.$app.preloader.hide();
-            self.showToast(err, "center");
-          }
-          
+            self.$app.preloader.show();
+            try{
+                window.indexedDB.databases().then((r) => {
+                  for (var i = 0; i < r.length; i++) window.indexedDB.deleteDatabase(r[i].name);
+              }).then(() => {
+                self.$app.preloader.hide();
+                  self.showToast('All data cleared.', "center");
+              }).catch((e) => {
+                self.$app.preloader.hide();
+                self.showToast("An error occured", "center");
+              });
+            }catch(err){
+              self.$app.preloader.hide();
+              self.showToast(err, "center");
+            }
+          } 
         },
         getData: function(){
           var self = this;
