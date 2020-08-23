@@ -675,4 +675,10 @@ button.text-editor-button.active{
         width: 400px;
         margin: auto;
     }
+    .popup .page-content{
+        width: 80%;
+        margin: auto;
+        border-left: 0.5px solid #673ab7;
+        border-right: 0.5px solid #673ab7;
+    }
 } 

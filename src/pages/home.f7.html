@@ -250,16 +250,12 @@ export default {
           var self = this;
           //db = null;
           try{//id,name,unit_size,unit,cost_per_unit,status,created_date
-            if(pdf != undefined){
-              dbSettings = new PouchDB('settings.db', { adapter: 'cordova-sqlite' });
-              dbSettingsImages = new PouchDB('settingsImages.db', { adapter: 'cordova-sqlite' });
-                self.getData();
-              }
-          }catch(err){
             dbSettings = new PouchDB('settings.db');
             dbSettingsImages = new PouchDB('settingsImages.db');
               //self.syncDB();
               self.getData();
+          }catch(err){
+            
             }
         },
         syncDB: function(){
@@ -280,21 +276,6 @@ export default {
         clearAllDB: function(){
           var self = this;
           try{
-            if(pdf != undefined){
-                try{
-                  self.$app.preloader.show();
-                  var allTables = ['products.db','product_ingredients.db','product_otherMaterials.db','sales.db','ingredients.db','settings.db','clients.db','dbAccount.db'];
-                  for(var i = 0; i < allTables.length; i++){
-                    window.sqlitePlugin.deleteDatabase(allTables[i], null, null);
-                  }
-                  self.$app.preloader.hide();
-                  self.showToast('All data cleared.', "center");
-                }catch(err){
-                  self.$app.preloader.hide();
-                  self.showToast("An error occured", "center");
-                }
-            }
-          }catch(err){
             self.$app.preloader.show();
             try{
                 window.indexedDB.databases().then((r) => {
@@ -310,6 +291,8 @@ export default {
               self.$app.preloader.hide();
               self.showToast(err, "center");
             }
+          }catch(err){
+            
           } 
         },
         getData: function(){
@@ -419,7 +402,7 @@ export default {
           // do something after page gets into the view
           var self = this;
           //self.closePanel();
-          trackHomePage();
+          //trackHomePage();
 
           //self.getData();
       }

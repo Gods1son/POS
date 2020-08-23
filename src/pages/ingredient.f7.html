@@ -235,18 +235,6 @@ export default {
           var self = this;
           //db = null;
           try{//id,name,unit_size,unit,cost_per_unit,status,created_date
-            if(pdf != undefined){
-                db = new PouchDB('ingredients.db', { adapter: 'cordova-sqlite' });
-                dbSettings = new PouchDB('settings.db', { adapter: 'cordova-sqlite' });
-                db.createIndex({
-                  index: {
-                    fields: ['name', 'status']
-                  }
-                }).then(function (result) {
-                  self.getData();
-                })
-              }
-          }catch(err){
             db = new PouchDB('ingredients.db');
             dbSettings = new PouchDB('settings.db');
             db.createIndex({
@@ -256,13 +244,17 @@ export default {
                 }).then(function (result) {
                   self.getData();
                 })
-          }
-          var id = self.settingsID;
+                
+            var id = self.settingsID;
             dbSettings.get(id).then(function(doc) {
                   self.$setState({
                       settings: doc
                     })
               })
+          }catch(err){
+            
+          }
+          
         },
         permDeleteItem: function(list, id){
         var self = this;

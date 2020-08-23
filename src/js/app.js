@@ -17,11 +17,11 @@ import routes from './routes.js';
 
 import List from 'list.js';
 import PouchDB from 'pouchdb';
-import cordovaSqlitePlugin from 'pouchdb-adapter-cordova-sqlite';
+//import cordovaSqlitePlugin from 'pouchdb-adapter-cordova-sqlite';
 import pouchFind from 'pouchdb-find';
 //import pouchAuth from 'pouchdb-authentication';
 
-PouchDB.plugin(cordovaSqlitePlugin);
+//PouchDB.plugin(cordovaSqlitePlugin);
 PouchDB.plugin(pouchFind);
 //PouchDB.plugin(pouchAuth);
 window.PouchDB = PouchDB;
@@ -110,6 +110,7 @@ setTimeout(function(){
       pageBeforeIn: function (event, page) {
         // do something after page gets into the view
         var self = this;
+
         var page = event.el;
         var name = $$(page).data("name");
         var panel = app.panel.get('.panel-left');

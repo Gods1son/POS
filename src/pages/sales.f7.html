@@ -1874,53 +1874,7 @@ export default {
             product_otherMaterials: "++id,productID,name,cost,status,created_date",*/
             //sales: "++id,parentID,product_name,isParent,buyer_name,cost,quantity,tax,total_price,afterTax,amountPaid,isPaid,date_paid,created_date,status",
           try{//id,name,unit_size,unit,cost_per_unit,status,created_date
-            if(pdf != undefined){
-                dbProducts = new PouchDB('products.db', { adapter: 'cordova-sqlite' });
-                dbProdIngs = new PouchDB('product_ingredients.db', { adapter: 'cordova-sqlite' });
-                dbProdOthers = new PouchDB('product_otherMaterials.db', { adapter: 'cordova-sqlite' });
-                dbSales = new PouchDB('sales.db', { adapter: 'cordova-sqlite' });
-                dbIngs = new PouchDB('ingredients.db', { adapter: 'cordova-sqlite' });
-                dbSettings = new PouchDB('settings.db', { adapter: 'cordova-sqlite' });
-                dbClients = new PouchDB('clients.db', { adapter: 'cordova-sqlite' });
-                dbSettingsImages = new PouchDB('settingsImages.db', { adapter: 'cordova-sqlite' });
-                dbClients.createIndex({
-                  index: {
-                    fields: ['name', 'created_date']
-                  }
-                })
-                dbIngs.createIndex({
-                  index: {
-                    fields: ['name', 'status']
-                  }
-                })
-                dbProdIngs.createIndex({
-                  index: {
-                    fields: ['productID', 'ingredientID', 'status']
-                  }
-                })
-                dbProdOthers.createIndex({
-                  index: {
-                    fields: ['productID', 'name', 'status']
-                  }
-                })
-                
-                dbProducts.createIndex({
-                  index: {
-                    fields: ['name', 'status']
-                  }
-                })
-                dbSales.createIndex({
-                  index: {
-                    fields: ['created_date','parentID', 'product_name', 'isParent', 'buyer_name', 'status']
-                  }
-                }).then(function (result) {
-                  self.getData();
-                  self.getProducts();
-                  self.getClients();
-                })
-              }
-          }catch(err){
-                dbProducts = new PouchDB('products.db');
+            dbProducts = new PouchDB('products.db');
                 dbProdIngs = new PouchDB('product_ingredients.db');
                 dbProdOthers = new PouchDB('product_otherMaterials.db');
                 dbSales = new PouchDB('sales.db');
@@ -1963,13 +1917,17 @@ export default {
                   self.getProducts();
                   self.getClients();
                 })
-            }
-            var id = self.settingsID;
-            dbSettings.get(id).then(function(doc) {
+
+                var id = self.settingsID;
+                dbSettings.get(id).then(function(doc) {
                   self.$setState({
                       settings: doc
-                    })
-              })
+                      })
+                })
+          }catch(err){
+                
+            }
+           
         },
     loadImageLogo: function(item, arr){
       var self = this;

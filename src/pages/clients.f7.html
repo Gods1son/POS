@@ -336,30 +336,6 @@ export default {
           var self = this;
           //db = null;
           try{//id,name,unit_size,unit,cost_per_unit,status,created_date
-            if(pdf != undefined){
-                db = new PouchDB('clients.db', { adapter: 'cordova-sqlite' });
-                dbSales = new PouchDB('sales.db', { adapter: 'cordova-sqlite' });
-                dbSettings = new PouchDB('settings.db', { adapter: 'cordova-sqlite' });
-                dbSales.createIndex({
-                  index: {
-                    fields: ['created_date','parentID', 'product_name', 'isParent', 'buyer_name', 'status']
-                  }
-                })
-                db.createIndex({
-                  index: {
-                    fields: ['name', 'created_date']
-                  }
-                }).then(function (result) {
-                  var id = self.settingsID;
-                  dbSettings.get(id).then(function(doc) {
-                  self.$setState({
-                      settings: doc
-                    })
-                  })
-                  self.getData();
-                })
-              }
-          }catch(err){
             db = new PouchDB('clients.db');
             dbSales = new PouchDB('sales.db');
             dbSettings = new PouchDB('settings.db');
@@ -381,6 +357,8 @@ export default {
                   })
                   self.getData();
                 })
+          }catch(err){
+            
           }
         },
     formatMoney:function(val){             

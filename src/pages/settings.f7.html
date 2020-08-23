@@ -270,15 +270,11 @@
           var self = this;
           //db = null;
           try{//id,name,unit_size,unit,cost_per_unit,status,created_date
-            if(pdf != undefined){
-              dbSettings = new PouchDB('settings.db', { adapter: 'cordova-sqlite' });
-              dbSettingsImages = new PouchDB('settingsImages.db', { adapter: 'cordova-sqlite' });
-                self.getData();
-              }
-          }catch(err){
             dbSettings = new PouchDB('settings.db');
             dbSettingsImages = new PouchDB('settingsImages.db');
               self.getData();
+          }catch(err){
+            
             }
         },
         showToast: function(text, position){

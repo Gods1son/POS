@@ -595,18 +595,6 @@ export default {
           var self = this;
           //db = null;
           try{//name,amount_to_pay,amount_paid,date_paid,created_date,recurring,status
-            if(pdf != undefined){
-                dbExpenses = new PouchDB('expenses.db', { adapter: 'cordova-sqlite' });
-                dbSettings = new PouchDB('settings.db', { adapter: 'cordova-sqlite' });
-                dbExpenses.createIndex({
-                  index: {
-                    fields: ['created_date', 'name', 'status']
-                  }
-                }).then(function (result) {
-                  self.getData();
-                })
-              }
-          }catch(err){
             dbExpenses = new PouchDB('expenses.db');
             dbSettings = new PouchDB('settings.db');
             dbExpenses.createIndex({
@@ -616,13 +604,17 @@ export default {
                 }).then(function (result) {
                   self.getData();
                 })
-          }
-          var id = self.settingsID;
-            dbSettings.get(id).then(function(doc) {
+
+                var id = self.settingsID;
+              dbSettings.get(id).then(function(doc) {
                   self.$setState({
                       settings: doc
                     })
               })
+          }catch(err){
+            
+          }
+          
       },
     getData: function(){
       var self = this;
