@@ -132,6 +132,125 @@
   
   </div>
 
+  <!--pop up generate link for product-->
+  <div class="popup productLink popup-tablet-fullscreen">
+    <div class="view">
+      <div class="page">
+        <div class="navbar">
+          <div class="navbar-bg"></div>
+          <div class="navbar-inner">
+            <div class="title">Generate Product Link</div>
+            <div class="right">
+              <!-- Link to close popup -->
+              <a class="link" @click="closeEditProdLink"><i class="icon f7-icons">multiply</i>Close</a>
+            </div>
+          </div>
+        </div>
+        <div class="page-content">
+            <div class="list no-hairlines-md margin-top-half margin-bottom-half productLinkForm">
+              <ul>
+                <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-title">Company Name</div>
+                      <div class="item-input-wrap">
+                        <input type="text" class="compNameLink" placeholder="Company name" required validate/>
+                        <span class="input-clear-button"></span>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-title">Product Name</div>
+                      <div class="item-input-wrap">
+                        <input type="text" class="nameLink" placeholder="Product name" required validate/>
+                        <span class="input-clear-button"></span>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-title">Product Description</div>
+                      <div class="item-input-wrap">
+                        <!--<input type="text" class="desc_of_product" placeholder="Description of product"/>
+                        <span class="input-clear-button"></span>-->
+                        <div class="text-editor desc_of_productLink margin-top-half" data-placeholder="Description of product" 
+                          data-buttons='[["bold", "italic", "underline", "strikeThrough"], ["orderedList", "unorderedList"]]'>
+                          <div class="text-editor-content" contenteditable></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-title">Selling Price</div>
+                      <div class="item-input-wrap">
+                        <input type="text" class="selling_priceLink" placeholder="Selling price of product"/>
+                        <span class="input-clear-button"></span>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-title">Other notes</div>
+                      <div class="item-input-wrap">
+                        <textarea class="other_notesLink" placeholder="Any additional info you wish to add"></textarea>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <a href="#" class="col button button-outline button-raised mainButton" @click='generateLink'>Generate Link</a>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+        </div>
+      </div>
+    </div>
+  
+  </div>
+  <!--Pop -up-->
+
+  <!--pop up add new product-->
+  <div class="popup uploadProducts popup-tablet-fullscreen">
+    <div class="view">
+      <div class="page">
+        <div class="navbar">
+          <div class="navbar-bg"></div>
+          <div class="navbar-inner">
+            <div class="title">Upload Products</div>
+            <div class="right">
+              <!-- Link to close popup -->
+              <a class="link" @click="closePopUpExcel()"><i class="icon f7-icons">multiply</i>Close</a>
+            </div>
+          </div>
+        </div>
+        <div class="page-content">
+          <div class="block margin-half">
+            <div class="item-label">* Ensure you don't have duplicate products in Excel and on system.</div>
+            <div class="item-label">Expected column names are: <b>name</b>, <b>description</b>, <b>cost_price</b>, <b>selling_price</b></div>
+            <input type="file" id="fileUpload" accept=".xls,.xlsx" />
+            <a href="#" class="col button button-outline button-raised mainButton margin-top-half" @click='uploadFile'>Save Excel Data</a>
+            <div class="errorContent"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+  </div>
+
   <!--pop up add new product-->
   <div class="popup newProduct popup-tablet-fullscreen">
     <div class="view">
@@ -637,7 +756,8 @@
 //import Dexie from 'dexie';
 import * as moment from 'moment';
 import * as XLSX from 'xlsx';
-var selectedUserName = null, selectedUserID = null;
+import copy from 'copy-to-clipboard';
+var selectedUserName = null, selectedUserID = null, myActionSheet = null;
 /*var db = new Dexie("BizExpenseManagerDB");
           db.version(3).stores({
             ingredients: "++id,name,unit_size,unit,cost_per_unit,status,created_date",
@@ -662,6 +782,8 @@ export default {
         products: null,
         totalMat:0,
         currentProduct: null,
+        currentProductLink: null,
+        lastLink: null,
         totalMatIngredients:0,
         ings:null,
         allIngs:null,
@@ -672,7 +794,8 @@ export default {
         selectedProducts:[],
         settings: null,
         settingsID: 'settings',
-        clients:null
+        clients:null,
+        backendUrl: 'https://posbackend.herokuapp.com/',   //  'http://localhost:3000/'
       }
     },
   methods:{
@@ -767,14 +890,14 @@ export default {
       var self = this;
       var id = $(but).attr("data-id");
       //console.log(id);
-        var select = self.productIngs.find(function(e){ 
-              return e._id == id;
+        var select = self.productIngs.filter(function(e){ 
+              return e._id != id;
           });
  
           $(but).parents("li").eq(0).remove();
           self.$setState({
                 ings:self.ings,
-                productIngs:self.productIngs
+                productIngs:select
             }, function(){
               
               self.CalculateTotal();
@@ -879,6 +1002,42 @@ export default {
               })
           }, null);
     },
+    CopyLink: function(){
+      var self = this;
+      var saveLink = "https://mogulsheet.com/landing/page?id=" + self.lastLink.link;
+      copy(saveLink);
+      self.$app.dialog.alert("Link copied to clipboard");
+    },
+    createActionSheet: function(){
+      var self = this;
+      myActionSheet = self.$app.actions.create({
+          buttons: [
+            {
+              text: 'Share Product Link',
+              label: true,
+              bold: true,
+              color: 'blue'
+            },
+            {
+              text: 'Share Link',
+              onClick: function () {
+                self.CopyLink();
+              }
+            },
+            {
+              text: 'Edit Product Description',
+              onClick: function () {
+                self.openPopUpLinkServer(self.lastLink);
+              }
+            },
+            {
+              text: 'Cancel',
+              color: 'red',
+              close: true
+            },
+          ]
+        });
+    },
     openPopUpExcel: function(){
       var self = this;
       var popup = self.$app.popup.open('.uploadProducts', true);
@@ -916,6 +1075,152 @@ export default {
             }
         //})
         
+    },
+    openPopUpLink: function(id){
+        var self = this;
+        
+        //popup.once("opened", function(){
+          if(id != null || id != undefined){
+            var item = self.products.find(function(e){ 
+                  return e._id == id;
+              });
+                  self.$setState({
+                      currentProductLink:item
+                    });
+                    if(self.settings != null){
+                      if(self.settings.companyName != undefined || self.settings.companyName != null){
+                        $(".compNameLink").val(self.settings.companyName);
+                      }
+                    }
+                    $$("input.nameLink").val(item.name);
+                    var textEditor = self.$app.textEditor.get('.desc_of_productLink');
+                    var desc = item.desc == null ? "" : item.desc;
+                    textEditor.setValue(desc);
+                    $$("input.selling_priceLink").val(item.selling_price);
+                    var popup = self.$app.popup.open('.productLink', true);
+            } else{
+              var popup = self.$app.popup.open('.productLink', true);
+              self.$setState({
+                  currentProductLink:null
+              });
+            }
+        //})  
+    },
+    openPopUpLinkServer: function(link){
+        var self = this;
+        
+        //popup.once("opened", function(){
+          if(link.id != null || link.id != undefined){
+            var item = self.products.find(function(e){ 
+                  return e._id == link.id;
+              });
+                  self.$setState({
+                      currentProductLink:item
+                    });
+              self.$app.preloader.show();
+              return(
+                
+                fetch(self.backendUrl + 'returnPage', {
+                  method: 'post',
+                  headers: {
+                    'Content-type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                    id: link.link
+                  }),
+                }).then((response) => {
+                    return response.json();
+                }).then((result) => {
+                  self.$app.preloader.hide();
+                  $(".compNameLink").val(result.comp_name);
+                  $$("input.nameLink").val(result.product_name);
+                    var textEditor = self.$app.textEditor.get('.desc_of_productLink');
+                    var desc = result.product_description == null ? "" : result.product_description;
+                    textEditor.setValue(desc);
+                    $$("input.selling_priceLink").val(result.product_raw_selling_price);
+                    var popup = self.$app.popup.open('.productLink', true);
+                }).catch(() => {
+                  self.$app.preloader.hide();
+                  self.showToast("An error occured", "center");
+                })
+              )
+            } else{
+              var popup = self.$app.popup.open('.productLink', true);
+              self.$setState({
+                  currentProductLink:null
+              });
+            }
+        //})  
+    },
+    closeEditProdLink: function(){
+      var self = this;
+      $(".nameLink, .selling_priceLink, .other_notesLink, .compNameLink").val("");
+      var textEditor = self.$app.textEditor.get('.desc_of_productLink');
+      textEditor.setValue("");
+      self.$setState({
+          currentProductLink:null
+      });
+      var popup = self.$app.popup.close('.productLink', true);
+    },
+    generateLink: function(){
+      var self = this;
+      var err = self.$app.input.validateInputs(".productLinkForm");
+      var doc = {};
+      if(err){
+        doc.comp_name = $(".compNameLink").val();
+        doc.product_name = $(".nameLink").val();
+        var textEditor = self.$app.textEditor.get('.desc_of_productLink');
+        var desc = textEditor.getValue();
+        doc.product_description = desc;
+        doc.other_notes = $(".other_notesLink").val();
+        var salePrice = $(".selling_priceLink").val();
+        var sp = self.formatMoney(salePrice);
+        doc.product_selling_price = sp;
+        doc.product_raw_selling_price = salePrice;
+        if(self.currentProductLink.product_link_id != undefined){
+          doc._id = self.currentProductLink.product_link_id;
+        }
+        self.$app.preloader.show();
+        return(
+          fetch(self.backendUrl + 'addNewPage', {
+                  method: 'post',
+                  headers: {
+                    'Content-type': 'application/json',
+                  },
+                  body: JSON.stringify(doc),
+                }).then((response) => {
+                    return response.json();
+                }).then((result) => {
+                  self.$app.preloader.hide();
+                  if(result._id != null || result.id != null){
+                    var resultID = result._id == undefined ? result.id : result._id;
+                    dbProducts.get(self.currentProductLink._id).then(function(doc2) {
+                    // console.log(doc);
+                      doc2.product_link_id = resultID;
+                       dbProducts.put(doc2).then(() => {
+                         var newLink = {};
+                         newLink.link = doc2.product_link_id;
+                         newLink.id = self.currentProductLink._id;
+                         self.$setState({
+                           lastLink: newLink
+                         }, function(){
+                           self.closeEditProdLink();
+                           Promise.resolve(self.getData()).then(() => {
+                            self.CopyLink();
+                            //self.$app.dialog.alert(self.lastLink.link);
+                          }); 
+                           
+                         })
+                       });
+                    })
+                  }
+                  //console.log(result);
+                }).catch(() => {
+                    self.$app.preloader.hide();
+                })
+        )
+
+      }
     },
     openPopUpSellProduct: function(id){
         var self = this;
@@ -991,13 +1296,32 @@ export default {
         $("#products-list .sortList").append(html);
         $(".eachSaleParent .removeProduct").off("click").on("click", function(){
                   var id = $(this).attr("data-id");
-                  self.RemoveItemProduct(id);
                   $(this).parents(".eachSaleParent").eq(0).remove();
+                  Promise.resolve(self.RemoveItemProduct(id)).then(() => {
+                    self.CalculateTotalProduct();
+                  });  
                 })
                 $(".eachSaleParent input").off("keyup").on("keyup", function(){
                 self.CalculateTotalProduct();
             })
                 
+    },
+    RemoveItemProduct: function(id){
+      var self = this;
+      //var id = $(but).attr("data-id");
+      //console.log(id);
+        var select = self.selectedProducts.filter(function(e){ 
+              return e._id != id;
+          });
+ 
+          //$(but).parents("li").eq(0).remove();
+          self.$setState({
+                ings:self.ings,
+                selectedProducts:select
+            }, function(){
+              
+              //self.CalculateTotal();
+            });
     },
     getClients: function(){
         var self = this;
@@ -1478,6 +1802,7 @@ export default {
         $(".eachSaleParentOther .removeProduct").off("click").on("click", function(){
                   //var id = $(this).attr("data-itemid");
                   $(this).parents(".eachSaleParentOther").eq(0).remove();
+                  self.CalculateTotalProduct();
                 })
             $(".eachSaleParentOther input").off("keyup").on("keyup", function(){
                 self.CalculateTotalProduct();
@@ -1773,9 +2098,11 @@ export default {
                             var stat = row.status == 1 ? "display-none" : "";
                             html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName">Deleted</span></div>';
                             html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
+                            var page_link = row.product_link_id == undefined ? null : row.product_link_id;
+                            html += '<a class="button button-small button-raised linkProduct" data-link="' + page_link + '" data-id="' + row._id + '">Share Link</a>';
                             html += '<a class="button button-small button-raised sellProduct" data-id="' + row._id + '">Sell</a>';
                             html += '<a class="button button-small button-raised editProduct" data-id="' + row._id + '">Edit</a>';
-                            html += '<a class="button button-small button-raised addIngredients" data-id="' + row._id + '">Add/Edit Raw Materials</a>';
+                            html += '<a class="button button-small button-raised addIngredients" data-id="' + row._id + '">Raw Materials</a>';
                             html += '<a class="button button-small button-raised deleteProduct" data-id="' + row._id + '">';
                             html +=  row.status == 1 ? 'Delete' : 'Activate';
                             html += '</a>';
@@ -1822,6 +2149,11 @@ export default {
                               if($(this).hasClass("permDelButton")){
                                 self.permDeleteItem(productList, data);
                               }
+                              if($(this).hasClass("linkProduct")){
+                                var link = $(this).attr("data-link");
+                                self.shareableLink(link, data);
+                              }
+                              
                               //return false;
                           });
                         }else{
@@ -1831,6 +2163,23 @@ export default {
           }).catch(function(err){
             self.$app.preloader.hide();
           });
+    },
+    shareableLink: function(link, prodID){
+      var self = this;
+      console.log(link);
+      if(link == null || link == "null"){
+        self.openPopUpLink(prodID);
+      }else{
+        var dat = {};
+        dat.link = link;
+        dat.id = prodID;
+        self.$setState({
+          lastLink:dat
+        }, function(){
+          myActionSheet.open();
+        })
+      }
+      
     },
     getDataIngredients: function(idOfProd){
       var self = this;
@@ -2234,6 +2583,7 @@ export default {
       pageInit: function(e, page) {
         var self = this;
         registerUpload();
+        self.createActionSheet();
         var iconTooltip = self.$app.tooltip.create({
           targetEl: '.estimateExplain',
           text: '<b>Check if this is just an estimate,</b><br><b>no purchase is being made yet.</b>',
@@ -2348,6 +2698,21 @@ export default {
 
               var textEditorCustomButtons = self.$app.textEditor.create({
                   el: '.desc_of_product',
+                  buttons: [["bold", "italic", "underline", 'h1', 'h2', 'h3', 'orderedList', 'unorderedList']],
+                  on: {
+                    buttonClick: function (editor, button) {
+                        var act = $('button[data-button="' + button + '"]').hasClass("active");
+                        if(act){
+                          $('button[data-button="' + button + '"]').removeClass("active");
+                        }else{
+                          $('button[data-button="' + button + '"]').addClass("active");
+                        }
+                      }
+                    }
+                });
+
+                var textEditorCustomButtonsLink = self.$app.textEditor.create({
+                  el: '.desc_of_productLink',
                   buttons: [["bold", "italic", "underline", 'h1', 'h2', 'h3', 'orderedList', 'unorderedList']],
                   on: {
                     buttonClick: function (editor, button) {

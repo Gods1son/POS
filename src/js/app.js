@@ -67,7 +67,7 @@ setTimeout(function(){
     root: '#app', // App root element
     component: App, // App main component
   
-    name: 'BizExpenseManager', // App name
+    name: 'Mogul Sheet', // App name
     theme: 'auto', // Automatic theme detection
     /*view: {
       pushState: true,

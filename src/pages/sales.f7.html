@@ -867,6 +867,7 @@ export default {
         $(".eachSaleParentOther .removeProduct").off("click").on("click", function(){
                   //var id = $(this).attr("data-itemid");
                   $(this).parents(".eachSaleParentOther").eq(0).remove();
+                  self.CalculateTotalProduct();
                 })
             $(".eachSaleParentOther input").off("keyup").on("keyup", function(){
                 self.CalculateTotalProduct();
@@ -1681,8 +1682,10 @@ export default {
         $("#products-list .sortList").append(html);
         $(".eachSaleParent .removeProduct").off("click").on("click", function(){
                   var id = $(this).attr("data-id");
-                  self.RemoveItemProduct(id);
                   $(this).parents(".eachSaleParent").eq(0).remove();
+                  Promise.resolve(self.RemoveItemProduct(id)).then(() => {
+                    self.CalculateTotalProduct();
+                  }); 
                 })
                 $(".eachSaleParent input").off("keyup").on("keyup", function(){
                 self.CalculateTotalProduct();
