@@ -163,6 +163,28 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
+                      <div class="item-title">Company Email Address</div>
+                      <div class="item-input-wrap">
+                        <input type="email" class="email compEmailLink" placeholder="Company email address"/>
+                        <span class="input-clear-button"></span>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-title">Company Contact number</div>
+                      <div class="item-input-wrap">
+                        <input type="text" class="phone compPhoneLink" placeholder="Company contact number"/>
+                        <span class="input-clear-button"></span>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
                       <div class="item-title">Product Name</div>
                       <div class="item-input-wrap">
                         <input type="text" class="nameLink" placeholder="Product name" required validate/>
@@ -1015,17 +1037,18 @@ export default {
             {
               text: 'Share Product Link',
               label: true,
-              bold: true,
-              color: 'blue'
+              bold: true
             },
             {
-              text: 'Share Link',
+              text: 'Copy Link',
+              color: 'blue',
               onClick: function () {
                 self.CopyLink();
               }
             },
             {
               text: 'Edit Product Description',
+              color: 'blue',
               onClick: function () {
                 self.openPopUpLinkServer(self.lastLink);
               }
@@ -1088,8 +1111,15 @@ export default {
                       currentProductLink:item
                     });
                     if(self.settings != null){
-                      if(self.settings.companyName != undefined || self.settings.companyName != null){
+                      if(self.settings.companyName != undefined && self.settings.companyName != null){
                         $(".compNameLink").val(self.settings.companyName);
+                      }
+                      //compEmailLink
+                      if(self.settings.companyEmail != undefined && self.settings.companyEmail != null){
+                        $(".compEmailLink").val(self.settings.companyEmail);
+                      }
+                      if(self.settings.companyPhone != undefined && self.settings.companyPhone != null){
+                        $(".compPhoneLink").val(self.settings.companyPhone);
                       }
                     }
                     $$("input.nameLink").val(item.name);
@@ -1132,12 +1162,19 @@ export default {
                     return response.json();
                 }).then((result) => {
                   self.$app.preloader.hide();
+                  var emailComp = result.comp_email == undefined ? self.settings.companyEmail : result.comp_email;
+                  var phoneComp = result.comp_phone == undefined ? self.settings.companyPhone : result.comp_phone;
+                  emailComp = emailComp == undefined ? "" : emailComp;
+                  phoneComp = phoneComp == undefined ? "" : phoneComp;
                   $(".compNameLink").val(result.comp_name);
+                  $(".compEmailLink").val(emailComp);
+                  $(".compPhoneLink").val(phoneComp);
                   $$("input.nameLink").val(result.product_name);
                     var textEditor = self.$app.textEditor.get('.desc_of_productLink');
                     var desc = result.product_description == null ? "" : result.product_description;
                     textEditor.setValue(desc);
                     $$("input.selling_priceLink").val(result.product_raw_selling_price);
+                    $(".other_notesLink").val(result.other_notes);
                     var popup = self.$app.popup.open('.productLink', true);
                 }).catch(() => {
                   self.$app.preloader.hide();
@@ -1154,7 +1191,7 @@ export default {
     },
     closeEditProdLink: function(){
       var self = this;
-      $(".nameLink, .selling_priceLink, .other_notesLink, .compNameLink").val("");
+      $(".nameLink, .selling_priceLink, .other_notesLink, .compNameLink, .compEmailLink, .compPhoneLink").val("");
       var textEditor = self.$app.textEditor.get('.desc_of_productLink');
       textEditor.setValue("");
       self.$setState({
@@ -1169,6 +1206,10 @@ export default {
       if(err){
         doc.comp_name = $(".compNameLink").val();
         doc.product_name = $(".nameLink").val();
+        var comp_email = $(".compEmailLink").val();
+        doc.comp_email = comp_email;
+        var comp_phone = $(".compPhoneLink").val();
+        doc.comp_phone = comp_phone;
         var textEditor = self.$app.textEditor.get('.desc_of_productLink');
         var desc = textEditor.getValue();
         doc.product_description = desc;
@@ -1180,6 +1221,19 @@ export default {
         if(self.currentProductLink.product_link_id != undefined){
           doc._id = self.currentProductLink.product_link_id;
         }
+
+        if((self.settings.companyEmail != comp_email) || (self.settings.companyPhone != comp_phone)){
+            var docset = self.settings;
+            docset.companyEmail = comp_email;
+            docset.companyPhone = comp_phone;
+            self.$setState({
+                  settings: docset
+              })
+            dbSettings.put(docset).then((retDoc) => {
+              
+            }).catch(() => {})
+        }
+
         self.$app.preloader.show();
         return(
           fetch(self.backendUrl + 'addNewPage', {
@@ -2166,7 +2220,7 @@ export default {
     },
     shareableLink: function(link, prodID){
       var self = this;
-      console.log(link);
+      //console.log(link);
       if(link == null || link == "null"){
         self.openPopUpLink(prodID);
       }else{
@@ -2405,6 +2459,7 @@ export default {
                 })
 
                 var id = self.settingsID;
+                //dbSales.info().then((dta) => {console.log(dta);})
                 dbSettings.get(id).then(function(doc) {
               //console.log(doc);
                   self.$setState({
