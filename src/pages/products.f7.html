@@ -245,6 +245,59 @@
   </div>
   <!--Pop -up-->
 
+    <!--pop up add new product-->
+    <div class="popup restockHistory popup-tablet-fullscreen">
+      <div class="view">
+        <div class="page">
+          <div class="navbar">
+            <div class="navbar-bg"></div>
+            <div class="navbar-inner">
+              <div class="title">Product Restock History</div>
+              <div class="right">
+                <!-- Link to close popup -->
+                <a class="link" @click="closePopUpRestockHistory"><i class="icon f7-icons">multiply</i>Close</a>
+              </div>
+            </div>
+          </div>
+          <div class="page-content">
+            <div class="block no-margin-vertical no-margin-horizontal no-padding-vertical roundHolder no-padding-horizontal">
+              <div id="restock-list" class="customList">
+                <div class="text-align-center customListSub">
+                  <div class="searchbar searchbar-inline">
+                    <div class="searchbar-input-wrap">
+                      <input type="search" placeholder="Search" class="search">
+                      <i class="searchbar-icon"></i>
+                      <span class="input-clear-button"></span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="text-align-center">
+                  <!--<input class="search" placeholder="search">-->
+                  <!-- Additional "searchbar-inline" class -->
+                  
+        
+                  <div class="margin-vertical-half padding-vertical-half sortTextPar">
+                    
+                    <span class="sortText display-none">Sort By:</span>
+                    <!--<span class="sort" data-sort="name">Name</span>
+                    <span class="sort" data-sort="cost">Cost</span>-->
+                  </div>
+                </div>
+
+                <ul class="list sortList margin-vertical-half">
+            
+                </ul>
+
+              </div>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    
+    </div>
+
   <!--pop up add new product-->
   <div class="popup uploadProducts popup-tablet-fullscreen">
     <div class="view">
@@ -272,6 +325,95 @@
     </div>
   
   </div>
+
+  <!--pop up add new product-->
+  <div class="popup restockProduct popup-tablet-fullscreen">
+    <div class="view">
+      <div class="page">
+        <div class="navbar">
+          <div class="navbar-bg"></div>
+          <div class="navbar-inner">
+            <div class="title">Restock Product</div>
+            <div class="right">
+              <!-- Link to close popup -->
+              <a class="link" @click="closeRestockProduct"><i class="icon f7-icons">multiply</i>Close</a>
+            </div>
+          </div>
+        </div>
+        <div class="page-content">
+            <div class="list no-hairlines-md margin-top-half margin-bottom-half restockProductForm">
+              <ul>
+                <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-title">Product Name:</div>
+                      <div class="restockProductName block-title-medium"></div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-title">Current Stock:</div>
+                      <div class="currentStock block-title-medium"></div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-title">Restock Quantity</div>
+                      <div class="item-input-wrap">
+                        <input type="text" class="restock_quantity" placeholder="Quantity of product to restock" @keyup="stockInputRestock" @keypress="onlyDecimal"/>
+                        <span class="input-clear-button"></span>
+                      </div>
+
+                      <div class="item-title padding-top-half">
+                        <span>Stock is Unlimited</span>
+                        <label class="checkbox vertical-align-super padding-left-half">
+                          <!-- checkbox input -->
+                          <input type="checkbox" class="isUnlimitedRestock" @change="stockInputRestock">
+                          <!-- checkbox icon -->
+                          <i class="icon-checkbox"></i>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-title">Total Stock:</div>
+                      <div class="totalStock block-title-medium"></div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content item-input">
+                      <div class="item-inner">
+                        <div class="item-title">Date of Restocking</div>
+                      <div class="item-input-wrap">
+                          <input type="text" placeholder="Date of restocking" id="restock-calendar-modal" required validate data-error-message="Select date of purchase please!"/>
+                          <span class="input-clear-button"></span>
+                      </div>
+                      </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <a href="#" class="col button button-outline button-raised mainButton" @click='restockProductSave'>Restock Product</a>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+        </div>
+      </div>
+    </div>
+  
+  </div>
+  <!--Pop -up-->
 
   <!--pop up add new product-->
   <div class="popup newProduct popup-tablet-fullscreen">
@@ -334,6 +476,27 @@
                       <div class="item-input-wrap">
                         <input type="text" class="selling_price" placeholder="Selling price of product" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                         <span class="input-clear-button"></span>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-title">In Stock</div>
+                      <div class="item-input-wrap">
+                        <input type="text" class="stock_quantity" placeholder="Quantity of product in stock" @keyup="stockInput" @keypress="onlyDecimal"/>
+                        <span class="input-clear-button"></span>
+                      </div>
+
+                      <div class="item-title padding-top-half">
+                        <span>Stock is Unlimited</span>
+                        <label class="checkbox vertical-align-super padding-left-half">
+                          <!-- checkbox input -->
+                          <input type="checkbox" class="isUnlimited" @change="stockInput">
+                          <!-- checkbox icon -->
+                          <i class="icon-checkbox"></i>
+                        </label>
                       </div>
                     </div>
                   </div>
@@ -795,7 +958,7 @@ var selectedUserName = null, selectedUserID = null, myActionSheet = null;
             expenses_history: "++id,expID,name,amount_to_pay,amount_paid,date_paid,created_date,recurring,status"
           })*/
 var dbProducts = null, dbProdIngs = null, dbProdOthers = null, dbSales = null, dbIngs = null, dbSettings = null, dbClients = null;
-var dataToUpload = null, eachBatch = 50, uploaded = 0;
+var dbRestock = null, dataToUpload = null, eachBatch = 50, uploaded = 0;
 //var $$ = Dom7;
 export default {
   data: function () {
@@ -824,6 +987,180 @@ export default {
     calculateprofit: function(){
       var self = this;
         self.CalculateTotal();
+    },
+    openPopUpRestockHistory: function(){
+      var self = this;
+      self.$app.preloader.show();
+      dbRestock.find({
+          selector: {
+            _id: {$gt: 0}
+          },
+          sort: [{'_id': 'desc'}]
+        }).then(function(ar){
+          var arr = ar.docs;
+          self.$app.preloader.hide();
+          $("#restock-list .list").empty();
+          $("#restock-list .pagination").remove();
+          if(arr.length > 0){
+            $(".restockHistory").find(".sortTextPar, .header_title").removeClass("display-none");
+            var pagination = "<ul class='pagination padding-left-half margin-vertical-half'><ul>";
+            $(pagination).insertAfter($("#restock-list .list"));
+            $(".sort").remove();
+            var sorter = '<span class="sort" data-sort="name">Product Name</span><span class="sort" data-sort="restock_date">Restock date</span>';
+            $(sorter).insertAfter($(".restockHistory").find(".sortText"));
+            $(".restockHistory").find(".sortText").removeClass("display-none");
+          }
+          for(var i = 0; i < arr.length; i++){
+              var row = arr[i];
+              var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
+              html += '<div class="name cardName">' + row.productName + '</div>';
+              html += '<div class="name display-none">' + row.productName + '</div>';
+              html += '<div class="display-none restock_date">' + row.restock_date + '</div>';
+              html += '<div class=""><span class="labelName">Last Stock: </span><span class="">' + row.last_stock + '</span></div>';
+              html += '<div class=""><span class="labelName">Added Stock: </span><span class=""><b>' + row.new_stock + '</b></span></div>';
+              html += '<div class=""><span class="labelName">Total Stock: </span><span class="">' + row.total_stock + '</span></div>';
+              html += '<div class=""><span class="labelName">Restock Date: </span><span class="">' + moment.unix(row.restock_date).format("LLL") + '</span></div>';
+              html += '</div></div></li>';
+              //moment.unix(item.created_date).format("LLL");
+              
+              $("#restock-list .list").append(html);
+                            //return html;
+          }
+          var options = {
+                valueNames: ['name','restock_date'],
+                page: 10,
+                pagination: [{outerWindow:2}]
+            };
+
+            var restock = new List('restock-list', options);
+
+            $(".restockHistory").find(".sort").off("click").on("click", function(){
+              $(".restockHistory").find(".sort").find(".asc").remove();
+              $(".restockHistory").find(".sort").find(".desc").remove();
+                if($(this).hasClass("asc")){
+                  $(this).append("<i class='icon f7-icons asc text-color-red'>arrowtriangle_up_fill</i>");
+                }
+                if($(this).hasClass("desc")){
+                  $(this).append("<i class='icon f7-icons desc text-color-red'>arrowtriangle_down_fill</i>");
+                }
+            })
+        }).catch((err) => {
+          self.$app.preloader.hide();
+        })
+      var popup = self.$app.popup.open('.restockHistory', true);
+    },
+    closePopUpRestockHistory: function(){
+      var self = this;
+      var popup = self.$app.popup.close('.restockHistory', true);
+    },
+    restockProductSave: function(){
+      var self = this;
+      var err = self.$app.input.validateInputs(".restockProductForm");
+      if(err){
+          var stock = $(".restock_quantity").val();
+          var unlimited = $(".isUnlimitedRestock").is(":checked");
+          if((stock == "" && !unlimited) || (stock != "" && unlimited)){
+            self.$app.dialog.alert("Check stock as unlimited or enter stock quantity");
+            return;
+          }
+          var finalStock = stock != "" ? stock : "Unlimited";
+          var obj = {};
+          obj._id = moment().format("X");
+          obj.productID = self.currentProduct._id;
+          obj.productName = self.currentProduct.name;
+          obj.last_stock = $(".currentStock").text();
+          obj.total_stock = $(".totalStock").text();
+          obj.new_stock = finalStock;
+          obj.restock_date = moment($("#restock-calendar-modal").val()).format("X");
+          obj.created_date = moment().format("X");
+          dbRestock.put(obj).then((dat) => {
+            dbProducts.get(self.currentProduct._id).then((dat2) => {
+              dat2.stock = $(".totalStock").text();
+              dbProducts.put(dat2).then((dat3) => {
+                self.showToast("Restocking Saved", "center");
+                self.closeRestockProduct();
+                self.getData();
+              })
+            }).catch((err) => {
+              self.showToast("An error occured", "center");
+            })
+            
+          }).catch((err) => {
+            self.showToast("An error occured", "center");
+          })
+        }
+    },
+    openRestockProduct: function(id){
+      var self = this;
+      if(id != null || id != undefined){
+            var item = self.products.find(function(e){ 
+                  return e._id == id;
+              });
+              self.$setState({
+                currentProduct:item
+              }, function(){
+                $(".restockProductName").text(item.name);
+                var unlimited = item.stock == undefined ? "Unlimited" : item.stock
+                $(".currentStock, .totalStock").text(unlimited);
+                $(".isUnlimitedRestock").prop("checked", true);
+                var popup = self.$app.popup.open('.restockProduct', true);
+              });
+      }else{
+        self.$setState({
+                currentProduct:null
+              });
+      }
+      
+    },
+    closeRestockProduct: function(){
+      var self = this;
+      $(".restock_quantity").val("");
+      $(".totalStock").text("");
+      $(".isUnlimitedRestock").prop("checked", true);
+      $("#restock-calendar-modal").next("span").click();
+      self.$setState({
+          currentProduct:null
+      });
+      var popup = self.$app.popup.close('.restockProduct', true);
+    },
+    onlyDecimal: function(evt){
+      var charCode = (evt.which) ? evt.which : evt.keyCode;
+          if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)){
+            evt.preventDefault();
+          }
+    },
+    stockInput: function(evt){
+      var self = this;
+        var val = $(".stock_quantity").val();
+        if(val == ""){
+          $(".isUnlimited").prop("checked", true);
+        }else{
+          $(".isUnlimited").prop("checked", false);
+        }
+    },
+    stockInputRestock: function(evt){
+      var self = this;
+        var val = $(".restock_quantity").val();
+        var lastValue = val;
+        if(val == ""){
+          $(".isUnlimitedRestock").prop("checked", true);
+          $(".totalStock").text("Unlimited");
+          //lastValue = "";
+        }else{
+          $(".isUnlimitedRestock").prop("checked", false);
+          if($(".currentStock").text() == "Unlimited"){
+            $(".totalStock").text(val);
+          }else{
+            var currStock = parseFloat($(".currentStock").text());
+            if(!isNaN(currStock)){
+              var newStock = parseFloat(val);
+              var tot = currStock + newStock;
+              $(".totalStock").text(tot);
+            }else{
+              $(".totalStock").text(val);
+            }
+          }
+        }
     },
     calculateQuantity: function(){
         var cost = Number($(".cost_sell").val().trim());
@@ -1089,8 +1426,18 @@ export default {
                     textEditor.setValue(desc);
                     $("input.cost_price").val(item.cost_price);
                     $$("input.selling_price").val(item.selling_price);
+                    if(item.stock == undefined || item.stock == "" || item.stock == "Unlimited"){
+                      $(".isUnlimited").prop("checked", true);
+                      $(".stock_quantity").val("");
+                    }else{
+                      $(".isUnlimited").prop("checked", false);
+                      $(".stock_quantity").val(item.stock);
+                    }
+                    //$(".stock_quantity, .isUnlimited").prop("disabled", true);
                     var popup = self.$app.popup.open('.newProduct', true);
             } else{
+              $(".isUnlimited").prop("checked", true);
+              //$(".stock_quantity, .isUnlimited").prop("disabled", false);
               var popup = self.$app.popup.open('.newProduct', true);
               self.$setState({
                   currentProduct:null
@@ -1333,6 +1680,7 @@ export default {
         var html = '<li class="eachSaleParent eachProduct"><div class="card myCard"><div class="card-content padding-horizontal-half">';
           html += '<div><span class="labelName">Product Name: </span><div class="display-inline-flex"><input class="productName" type="text" placeholder="Product Name" value="';
           html +=  name + '"></div></div>';
+          html += '<input type="hidden" class="productID" value="' + select._id + '">';
           html += '<div class="row"><div class="col-50"><div class="item-content item-input no-padding-left"><div class="item-inner no-padding-right"><div class="labelName">Product Cost</div>';
           html += '<div class="item-input-wrap"><input class="productCost" type="text" placeholder="Product Cost" value="' + cost + '">';
           html +=  '<span class="input-clear-button"></span></div></div></div></div>';
@@ -1686,6 +2034,7 @@ export default {
       var isEstimate = $(".isEstimateMultiple").prop("checked") == true ? 1 : 0;
         $(".eachProduct").each(function(i, curr){
         var productName = $(curr).find(".productName").eq(0).val().trim();
+        var productID = $(curr).find(".productID").eq(0).val().trim();
         var price = Number($(curr).find(".productCost").eq(0).val().trim());
         var quant = Number($(curr).find(".productQuantity").eq(0).val().trim());
         var totalPric = Number($(curr).find(".totalproductprice").eq(0).val().trim());
@@ -1702,6 +2051,7 @@ export default {
           var costPlusTax = totalPric + tax;
           var obj = {
                 product_name: productName,  
+                productID: productID,
                 buyer_name: buyername,
                 selling_price: price,
                 discount: discount,
@@ -1911,7 +2261,8 @@ export default {
     },
     closeEditProdPopUp: function(){
       var self = this;
-      $$("input.name,input.selling_price,.cost_price").val("");
+      $$("input.name,input.selling_price,.cost_price, .stock_quantity").val("");
+      $(".isUnlimited").prop("checked", true);
       var textEditor = self.$app.textEditor.get('.desc_of_product');
       textEditor.setValue("");
       var popup = self.$app.popup.close('.newProduct', true);
@@ -1939,11 +2290,19 @@ export default {
       var err = self.$app.input.validateInputs(".productForm");
       //console.log(err);
       if(err){
+        var stock = $(".stock_quantity").val();
+        var unlimited = $(".isUnlimited").is(":checked");
+        if((stock == "" && !unlimited) || (stock != "" && unlimited)){
+          self.$app.dialog.alert("Check stock as unlimited or enter stock quantity");
+          return;
+        }
+        var finalStock = stock != "" ? stock : "Unlimited";
         var textEditor = self.$app.textEditor.get('.desc_of_product');
         var desc = textEditor.value;
         var obj = {
                 name: $$("input.name").val(),  
                 desc: desc,
+                stock: finalStock,
                 cost_price: $("input.cost_price").val(),
                 selling_price: $$("input.selling_price").val(), 
                 status:1,
@@ -1958,7 +2317,8 @@ export default {
           dbProducts.put(obj).then(function(id) {
                   //self.$app.dialog.alert("Item saved.");
                   self.showToast("Item saved.", "center");
-                  $$("input.name,input.selling_price,.cost_price").val("");
+                  $$("input.name,input.selling_price,.cost_price, .stock_quantity").val("");
+                  $(".isUnlimited").prop("checked", true);
                   var textEditor = self.$app.textEditor.get('.desc_of_product');
                   textEditor.setValue("");
                   self.getData();
@@ -2054,6 +2414,10 @@ export default {
     },
     saveProcessedPayement: function(theBuyerName, theBuyerID, isEstimate, fullyPaid, isPaidDate){
       var self = this;
+      var productId = 0;
+      if($("input.name_sell").val() == self.currentProduct.name){
+        productId = self.currentProduct._id;
+      }
       var obj = {
                 product_name: $$("input.name_sell").val(),  
                 buyer_name: theBuyerName,
@@ -2062,6 +2426,7 @@ export default {
                 tax: $$("input.taxes").val(),
                 parentID: 0,
                 isParent:0,
+                productID: productId,
                 isEstimate: isEstimate,
                 discount: $(".discount_sell").val(),
                 afterTax: $$("input.afterTax").val(),
@@ -2125,20 +2490,25 @@ export default {
                 totalMat:arr.length
               }, function(){
                 $("#product-list .list").empty();
-                $("#product-list .pagination").remove();
+                $("#product-list .pagination, .viewRestockHistoryParent").remove();
                 $(".sellMultiple").remove();
                       if(arr != null && arr.length > 0){
                         $(".sortTextPar").removeClass("display-none");
                         var pagination = "<ul class='pagination padding-left-half margin-vertical-half'><ul>";
                         $(pagination).insertAfter($("#product-list .list"));
                         $(".sort").remove();
-                        var sorter = '<span class="sort" data-sort="name">Name</span><span class="sort" data-sort="cost">Cost</span>';
+                        var sorter = '<span class="sort" data-sort="name">Name</span><span class="sort" data-sort="cost">Cost</span><span class="sort" data-sort="in-stock">In Stock</span>';
                         $(sorter).insertAfter($(".sortText"));
                         $(".sortText").removeClass("display-none");
-                        var mult = "<div class='margin-top-half sellMultParent'><a class='button button-raised sellMultiple'>Sell Multiple Products</div>";
+                        var mult = "<div class='margin-top-half viewRestockHistoryParent'><a class='button button-raised viewRestockHistory'>View Restock History</div>";
+                        mult += "<div class='margin-top-half sellMultParent'><a class='button button-raised sellMultiple'>Sell Multiple Products</div>";
+                          //
                         $(mult).insertBefore($("#product-list .list"));
                         $(".sellMultiple").off("click").on("click", function(){
                           self.openPopUpMultiple();
+                        })
+                        $(".viewRestockHistory").off("click").on("click", function(){
+                          self.openPopUpRestockHistory();
                         })
 
                         for(var i = 0; i < arr.length; i++){
@@ -2150,13 +2520,22 @@ export default {
                             }
                             html += '<div class=""><span class="labelName">Selling Price: </span><span class="valueName">' + self.formatMoney(row.selling_price) + '</span></div>';
                             var stat = row.status == 1 ? "display-none" : "";
+                            var stock = "Unlimited";
+                            var stockCount = 9999999;
+                            if(row.stock != undefined && row.stock != ""){
+                              stock = row.stock;
+                              stockCount = parseFloat(row.stock);
+                            }
+                            html += '<div class="in-stock display-none">' + stockCount + '</div>';
+                            html += '<div class=""><span class="labelName">In Stock: </span><span class="">' + stock + '</span></div>';
                             html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName">Deleted</span></div>';
                             html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
                             var page_link = row.product_link_id == undefined ? null : row.product_link_id;
-                            html += '<a class="button button-small button-raised linkProduct" data-link="' + page_link + '" data-id="' + row._id + '">Share Link</a>';
                             html += '<a class="button button-small button-raised sellProduct" data-id="' + row._id + '">Sell</a>';
                             html += '<a class="button button-small button-raised editProduct" data-id="' + row._id + '">Edit</a>';
+                            html += '<a class="button button-small button-raised restockProduct" data-id="' + row._id + '">Restock</a>';
                             html += '<a class="button button-small button-raised addIngredients" data-id="' + row._id + '">Raw Materials</a>';
+                            html += '<a class="button button-small button-raised linkProduct" data-link="' + page_link + '" data-id="' + row._id + '">Share Link</a>';
                             html += '<a class="button button-small button-raised deleteProduct" data-id="' + row._id + '">';
                             html +=  row.status == 1 ? 'Delete' : 'Activate';
                             html += '</a>';
@@ -2168,7 +2547,7 @@ export default {
                             //return html;
                         }
                         var options = {
-                            valueNames: ['id','cost','name'],
+                            valueNames: ['id','cost','name', 'in-stock'],
                             page: 10,
                             pagination: [{outerWindow:2}]
                         };
@@ -2190,6 +2569,9 @@ export default {
                               var data = $(this).attr("data-id");
                               if($(this).hasClass("sellProduct")){
                                 self.openPopUpSellProduct(data);
+                              }
+                              if($(this).hasClass("restockProduct")){
+                                self.openRestockProduct(data);
                               }
                               if($(this).hasClass("editProduct")){
                                 self.openPopUp(data);
@@ -2424,9 +2806,15 @@ export default {
                 dbIngs = new PouchDB('ingredients.db');
                 dbSettings = new PouchDB('settings.db');
                 dbClients = new PouchDB('clients.db');
-                dbClients.createIndex({
+                dbRestock = new PouchDB('restock.db');
+                dbRestock.createIndex({
                   index: {
                     fields: ['name', 'created_date']
+                  }
+                })
+                dbClients.createIndex({
+                  index: {
+                    fields: ['productID', 'restock_date', 'created_date']
                   }
                 })
                 dbIngs.createIndex({
@@ -2738,6 +3126,21 @@ export default {
 
               var calendarPurchase = self.$app.calendar.create({
                   inputEl: '#purchase-calendar-modal',
+                  timePicker: true,
+                  closeOnSelect: true,
+                  formatValue: function(values){
+                    //console.log(values[0]);
+                    var t = moment(values[0]).format('LLL');
+                    //console.log(moment(values[0]).format("X"));
+                    //console.log(t);
+                    return t;
+                  }
+                  //dateFormat: 'YYYY-MM-DD HH:MM'
+                  //dateFormat: { year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric' }
+              });
+
+              var calendarRestock = self.$app.calendar.create({
+                  inputEl: '#restock-calendar-modal',
                   timePicker: true,
                   closeOnSelect: true,
                   formatValue: function(values){

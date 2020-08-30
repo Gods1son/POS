@@ -181,6 +181,7 @@
                     <div class="item-inner">
                       <div class="item-title">Product Name</div>
                       <div class="item-input-wrap">
+                        <input type="hidden" id="productID_sell">
                         <input type="text" id="name_sell" class="name_sell" placeholder="Product name" required/>
                         <span class="input-clear-button"></span>
                       </div>
@@ -684,6 +685,7 @@ export default {
       var isEstimate = $(".isEstimateMultiple").prop("checked") == true ? 1 : 0;
         $(".eachProduct").each(function(i, curr){
         var productName = $(curr).find(".productName").eq(0).val().trim();
+        var productID = $(curr).find(".productID").eq(0).val().trim();
         var price = Number($(curr).find(".productCost").eq(0).val().trim());
         var quant = Number($(curr).find(".productQuantity").eq(0).val().trim());
         var totalPric = Number($(curr).find(".totalproductprice").eq(0).val().trim());
@@ -700,6 +702,7 @@ export default {
           var costPlusTax = totalPric + tax;
           var obj = {
                 product_name: productName,  
+                productID: productID,
                 buyer_name: buyername,
                 selling_price: price,
                 discount: discount,
@@ -1135,7 +1138,7 @@ export default {
         var self = this;
         $("#paid-calendar-modal").next("span").click();
         $("#purchase-calendar-modal").next("span").click();
-        $$("input.buyer_sell, input.amountpaid_sell, .quantity_sell, .total_sell").val("");
+        $$("input.buyer_sell, input.amountpaid_sell, .quantity_sell, .total_sell, #productID_sell").val("");
         var popup = self.$app.popup.close('.newSales', true);
     },
     updateDataSell: function(){
@@ -1241,6 +1244,7 @@ export default {
                 selling_price: $$("input.cost_sell").val(),
                 tax: taxes,
                 parentID: 0,
+                productID: $("#productID_sell").val(),
                 isEstimate: isEstimate,
                 discount: $(".discount_sell").val(),
                 afterTax: $$("input.afterTax").val(),
@@ -1360,6 +1364,8 @@ export default {
                 $$("input.name_sell").val(item.product_name);
                 $$("input.buyer_sell").val(item.buyer_name);
                 $$("input.cost_sell").val(item.selling_price);
+                var productID = item.productID == undefined ? "" : item.productID;
+                $("#productID_sell").val(productID);
                 var quantity = item.quantity == null ? 1 : item.quantity;
                   var total = item.total_price == null ? item.cost : item.total_price;
                   var taxes = item.tax;
@@ -1401,6 +1407,7 @@ export default {
                 $$("input.name_sell").val("");
                 $$("input.buyer_sell").val("");
                 $$("input.cost_sell").val("");
+                $("#productID_sell").val("");
                 var taxes = self.settings == null ? 0 : self.settings.taxes;
                 var taxesAmt = taxes == undefined ? 0 : taxes;
                 $(".quantity_sell").val("1");
@@ -1665,6 +1672,7 @@ export default {
         var html = '<li class="eachSaleParent eachProduct"><div class="card myCard"><div class="card-content padding-horizontal-half">';
           html += '<div><span class="labelName">Product Name: </span><div class="display-inline-flex"><input class="productName" type="text" placeholder="Product Name" value="';
           html +=  name + '"></div></div>';
+          html += '<input type="hidden" class="productID" value="' + select._id + '">';
           html += '<div class="row"><div class="col-50"><div class="item-content item-input no-padding-left"><div class="item-inner no-padding-right"><div class="labelName">Product Cost</div>';
           html += '<div class="item-input-wrap"><input class="productCost" type="text" placeholder="Product Cost" value="' + cost + '">';
           html +=  '<span class="input-clear-button"></span></div></div></div></div>';
@@ -2057,6 +2065,7 @@ export default {
                   value = value[0];
                   $("#name_sell").val(value.name);
                   $(".cost_sell").val(value.selling_price);
+                  $("#productID_sell").val(value._id);
                   var quant = Number($(".quantity_sell").val());
                     if(!isNaN(quant) || quant == 0){
                       var q = quant == 0 ? 1 : quant;
