@@ -1163,8 +1163,14 @@ export default {
         }
     },
     calculateQuantity: function(){
+        var self = this;
         var cost = Number($(".cost_sell").val().trim());
         var quant = Number($(".quantity_sell").val().trim());
+        if(self.currentProduct.stock != undefined && self.currentProduct.stock != "Unlimited"){
+          if(quant > self.currentProduct.stock){
+            self.showToast("This quantity is more than you have in stock", "center");
+          }
+        }
         if(!isNaN(cost) && !isNaN(quant)){
             var total = cost * quant;
             var discount = Number($(".discount_sell").val());
@@ -1681,6 +1687,7 @@ export default {
           html += '<div><span class="labelName">Product Name: </span><div class="display-inline-flex"><input class="productName" type="text" placeholder="Product Name" value="';
           html +=  name + '"></div></div>';
           html += '<input type="hidden" class="productID" value="' + select._id + '">';
+          html += '<input type="hidden" class="hiddenQuantity" value="' + select.stock + '">';
           html += '<div class="row"><div class="col-50"><div class="item-content item-input no-padding-left"><div class="item-inner no-padding-right"><div class="labelName">Product Cost</div>';
           html += '<div class="item-input-wrap"><input class="productCost" type="text" placeholder="Product Cost" value="' + cost + '">';
           html +=  '<span class="input-clear-button"></span></div></div></div></div>';
@@ -2163,9 +2170,13 @@ export default {
                 }else{
                     dbSales.bulkDocs(sbigData).then(function(lastKey) {
                         //console.log("Last allcost's id was: " + lastKey); // Will be 100000.
-                  })
+                        if(isEstimate1 == 0){
+                            self.subtractStockMultiple(sbigData);
+                          }
+                    })
                 }
                 self.showToast("Saved successfully", "center");
+                
                 self.closePopUpMultiple();
                 //self.$app.popup.close('.multipleSales', true);
                   
@@ -2176,6 +2187,36 @@ export default {
                });
 
             //saving clean data
+    },
+    subtractStockMultiple: function(bigData){
+      var self = this;
+      var prods = bigData.filter(x => x.productID != "0");
+      var prodsID = prods.map(x => x.productID);
+      dbProducts.find({
+              selector: {
+                _id: { $in: prodsID }
+              },
+              sort: [{'_id': 'desc'}]
+            }).then((arr) => {
+              var ar = arr.docs;
+              var saveBigData = [];
+              $.each(ar, function(ind, dat){
+                if(dat.stock != undefined && dat.stock != "Unlimited"){
+                      var floatStock = parseFloat(dat.stock);
+                      if(!isNaN(floatStock)){
+                        var quantitySold = prods.find(x => x.productID == dat._id).quantity;
+                        var remain = floatStock - quantitySold;
+                        if(!isNaN(remain)){
+                          dat.stock = remain;
+                          saveBigData.push(dat);
+                        }
+                      }
+                  }
+              })
+              if(saveBigData.length > 0){
+                dbProducts.bulkDocs(saveBigData);
+              }
+            })
     },
     AddNewProduct: function(select){
       var self = this;
@@ -2213,11 +2254,18 @@ export default {
             })
     },
     CalculateTotalProduct: function(){
+      var self = this;
       var totalCost = 0;
       $(".eachProduct").each(function(i, curr){
         var price = Number($(curr).find(".productCost").eq(0).val().trim());
         var quant = Number($(curr).find(".productQuantity").eq(0).val().trim());
         var discount = Number($(curr).find(".discount").eq(0).val().trim());
+        var hiddenQuant = Number($(curr).find(".hiddenQuantity").eq(0).val().trim());
+        if(!isNaN(hiddenQuant)){
+          if(quant > hiddenQuant){
+            self.showToast("The quantity you entered is more than you have in stock", "center");
+          }
+        }
         //$(curr).find(".totalproductprice")
         if(!isNaN(price) && !isNaN(quant)){
             var total = price * quant;
@@ -2299,6 +2347,9 @@ export default {
         var finalStock = stock != "" ? stock : "Unlimited";
         var textEditor = self.$app.textEditor.get('.desc_of_product');
         var desc = textEditor.value;
+
+        //add stocking to dbRestocking
+        var saveStock = {};
         var obj = {
                 name: $$("input.name").val(),  
                 desc: desc,
@@ -2311,9 +2362,30 @@ export default {
             if(self.currentProduct != null){
               obj._id = self.currentProduct._id;
               obj._rev = self.currentProduct._rev;
+              saveStock.last_stock = self.currentProduct.stock == undefined ? "Unlimited" : self.currentProduct.stock;
+              saveStock.total_stock = finalStock;
+              if(saveStock.last_stock != "Unlimited" && finalStock != "Unlimited"){
+                var stockFloat = parseFloat(saveStock.last_stock);
+                var finalFloat = parseFloat(finalStock);
+                saveStock.new_stock = finalFloat - stockFloat;
+              }else{
+                saveStock.new_stock = finalStock;
+              }
+
             }else{
               obj._id = moment().format("X");
+              saveStock.last_stock = 0;
+              saveStock.new_stock = finalStock;
+              saveStock.total_stock = finalStock;
             }
+            
+            saveStock._id = moment().format("X");
+            saveStock.productID = obj._id;
+            saveStock.productName = $("input.name").val();
+            saveStock.restock_date = moment().format("X");
+            saveStock.created_date = moment().format("X");
+            
+
           dbProducts.put(obj).then(function(id) {
                   //self.$app.dialog.alert("Item saved.");
                   self.showToast("Item saved.", "center");
@@ -2321,7 +2393,16 @@ export default {
                   $(".isUnlimited").prop("checked", true);
                   var textEditor = self.$app.textEditor.get('.desc_of_product');
                   textEditor.setValue("");
-                  self.getData();
+                  if((self.currentProduct == null) || (self.currentProduct.stock != finalStock)){
+                    dbRestock.put(saveStock).then((dat2) => {
+                      self.getData();
+                    }).catch((err) => {
+                      self.getData();
+                    })
+                  }else{
+                    self.getData();
+                  }
+                  
               })
           }
     },
@@ -2396,7 +2477,6 @@ export default {
         theBuyerName = selectedUserName;
         self.saveProcessedPayement(theBuyerName, theBuyerID, isEstimate, fullyPaid, isPaidDate);
       }else{
-        console.log("differ", chosenUser);
         var generatedID = moment().format("X");
         var obj = {
                 name: chosenUser,
@@ -2418,6 +2498,7 @@ export default {
       if($("input.name_sell").val() == self.currentProduct.name){
         productId = self.currentProduct._id;
       }
+      var quantitySold = $("input.quantity_sell").val();
       var obj = {
                 product_name: $$("input.name_sell").val(),  
                 buyer_name: theBuyerName,
@@ -2430,7 +2511,7 @@ export default {
                 isEstimate: isEstimate,
                 discount: $(".discount_sell").val(),
                 afterTax: $$("input.afterTax").val(),
-                quantity: $$("input.quantity_sell").val(),
+                quantity: quantitySold,
                 total_price: $$("input.total_sell").val(),
                 amountPaid:  $$("input.amountpaid_sell").val(),
                 isPaid: fullyPaid,
@@ -2449,6 +2530,24 @@ export default {
                   self.$app.popup.close('.sellProduct', true);
                   selectedUserName = null;
                   selectedUserID = null;
+                  if(productId != 0 && isEstimate == 0){
+                    dbProducts.get(productId).then((dat) => {
+                      if(dat.stock != undefined && dat.stock != "Unlimited"){
+                        var floatStock = parseFloat(dat.stock);
+                        if(!isNaN(floatStock)){
+                          var remain = floatStock - quantitySold;
+                          if(!isNaN(remain)){
+                            dat.stock = remain;
+                            return dbProducts.put(dat).then((dt) => {
+                              self.getData();
+                            })
+                          }
+                        }
+                      }
+                    }).catch((err) => {
+
+                    })
+                  }
               }).catch(function (error) {
                   //console.log(error);
                  self.showToast("An error occurred!", "center");
@@ -2775,6 +2874,7 @@ export default {
       var html = '<li class="extraCostRow"><div class="card myCard"><div class="card-content padding-horizontal-half">';
         html += '<div><span class="labelName">Enter Name: </span><div class="display-inline-flex"><input class="extraName" type="text" placeholder="Enter Name" ';
         html += '></div></div>';
+        html += '<input type="hidden" class="productID" value="0">';
         html += '<div class="margin-top-half"><span class="labelName">Enter Cost: </span><div class="display-inline-flex"><input class="eachCost" type="text" placeholder="Enter Cost" ';
         html += '></div></div>';
         html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
@@ -2854,7 +2954,6 @@ export default {
                       settings: doc
                     })
               })
-
           }catch(err){
                 
           }

@@ -208,6 +208,7 @@
                           <div class="item-inner">
                             <div class="item-title">Quantity</div>
                             <div class="item-input-wrap">
+                              <input type="hidden" class="hiddenQuantitySingle">
                               <input type="text" class="quantity_sell" @keyup="calculateQuantity" placeholder="Quantity" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                               <span class="input-clear-button"></span>
                             </div>
@@ -620,11 +621,18 @@ export default {
         }
     },
     CalculateTotalProduct: function(){
+      var self = this;
       var totalCost = 0;
       $(".eachProduct").each(function(i, curr){
         var price = Number($(curr).find(".productCost").eq(0).val().trim());
         var quant = Number($(curr).find(".productQuantity").eq(0).val().trim());
         var discount = Number($(curr).find(".discount").eq(0).val().trim());
+        var hiddenQuant = Number($(curr).find(".hiddenQuantity").eq(0).val().trim());
+        if(!isNaN(hiddenQuant)){
+          if(quant > hiddenQuant){
+            self.showToast("The quantity you entered is more than you have in stock", "center");
+          }
+        }
         //$(curr).find(".totalproductprice")
         if(!isNaN(price) && !isNaN(quant)){
             var total = price * quant;
@@ -827,6 +835,9 @@ export default {
                 }else{
                     dbSales.bulkDocs(sbigData).then(function(lastKey) {
                         //console.log("Last allcost's id was: " + lastKey); // Will be 100000.
+                        if(isEstimate1 == 0){
+                            self.subtractStockMultiple(sbigData);
+                          }
                   })
                 }
                 self.showToast("Saved successfully", "center");
@@ -840,6 +851,36 @@ export default {
                });
 
             //saving clean data
+    },
+    subtractStockMultiple: function(bigData){
+      var self = this;
+      var prods = bigData.filter(x => x.productID != "0");
+      var prodsID = prods.map(x => x.productID);
+      dbProducts.find({
+              selector: {
+                _id: { $in: prodsID }
+              },
+              sort: [{'_id': 'desc'}]
+            }).then((arr) => {
+              var ar = arr.docs;
+              var saveBigData = [];
+              $.each(ar, function(ind, dat){
+                if(dat.stock != undefined && dat.stock != "Unlimited"){
+                      var floatStock = parseFloat(dat.stock);
+                      if(!isNaN(floatStock)){
+                        var quantitySold = prods.find(x => x.productID == dat._id).quantity;
+                        var remain = floatStock - quantitySold;
+                        if(!isNaN(remain)){
+                          dat.stock = remain;
+                          saveBigData.push(dat);
+                        }
+                      }
+                  }
+              })
+              if(saveBigData.length > 0){
+                dbProducts.bulkDocs(saveBigData);
+              }
+            })
     },
     AddNewProduct: function(select){
       var self = this;
@@ -880,8 +921,15 @@ export default {
     
     },
     calculateQuantity: function(){
+      var self = this;
       var cost = Number($(".cost_sell").val().trim());
         var quant = Number($(".quantity_sell").val().trim());
+        var hiddenQuant = Number($(".hiddenQuantitySingle").val().trim());
+        if(!isNaN(hiddenQuant)){
+          if(quant > hiddenQuant){
+            self.showToast("The quantity you entered is more than you have in stock", "center");
+          }
+        }
         if(!isNaN(cost) && !isNaN(quant)){
             var total = cost * quant;
             var discount = Number($(".discount_sell").val());
@@ -1138,7 +1186,7 @@ export default {
         var self = this;
         $("#paid-calendar-modal").next("span").click();
         $("#purchase-calendar-modal").next("span").click();
-        $$("input.buyer_sell, input.amountpaid_sell, .quantity_sell, .total_sell, #productID_sell").val("");
+        $$("input.buyer_sell, input.amountpaid_sell, .hiddenQuantitySingle, .quantity_sell, .total_sell, #productID_sell").val("");
         var popup = self.$app.popup.close('.newSales', true);
     },
     updateDataSell: function(){
@@ -1203,7 +1251,7 @@ export default {
         if(self.currentSale == null){
           //selected name from dropdown
           if(chosenUser == selectedUserName){
-          console.log("same");
+          //console.log("same");
           theBuyerID = selectedUserID;
           theBuyerName = selectedUserName;
           self.saveProcessedPayement(theBuyerID, theBuyerName, taxes, isEstimate, fullyPaid, isPaidDate);
@@ -1236,6 +1284,8 @@ export default {
     },
     saveProcessedPayement: function(theBuyerid, theBuyername, taxes, isEstimate, fullyPaid, isPaidDate){
       var self = this;
+      var productId = $("#productID_sell").val();
+      var quantitySold = $$("input.quantity_sell").val();
       var obj = {
                 //id: Number(self.currentSale),
                 product_name: $$("input.name_sell").val(),  
@@ -1244,11 +1294,11 @@ export default {
                 selling_price: $$("input.cost_sell").val(),
                 tax: taxes,
                 parentID: 0,
-                productID: $("#productID_sell").val(),
+                productID: productId,
                 isEstimate: isEstimate,
                 discount: $(".discount_sell").val(),
                 afterTax: $$("input.afterTax").val(),
-                quantity: $$("input.quantity_sell").val(),
+                quantity: quantitySold,
                 total_price: $$("input.total_sell").val(),
                 amountPaid: $$("input.amountpaid_sell").val(),
                 isPaid: fullyPaid,
@@ -1266,10 +1316,32 @@ export default {
                     self.showToast("Record saved!", "center");
                     $("#paid-calendar-modal").next("span").click();
                     $("#purchase-calendar-modal").next("span").click();
-                    $$("input.buyer_sell, input.amountpaid_sell, #purchase-calendar-modal, #paid-calendar-modal, .quantity_sell, .total_sell, .discount_sell").val("");
+                    $$("input.buyer_sell, input.amountpaid_sell, .hiddenQuantitySingle, #purchase-calendar-modal, #paid-calendar-modal, .quantity_sell, .total_sell, .discount_sell").val("");
                     self.$app.popup.close('.newSales', true);
                     selectedUserID = null;
                     selectedUserName = null;
+
+                    
+                    if(productId != 0 && isEstimate == 0 && self.currentSale == null){
+                    dbProducts.get(productId).then((dat) => {
+                      if(dat.stock != undefined && dat.stock != "Unlimited"){
+                        var floatStock = parseFloat(dat.stock);
+                        if(!isNaN(floatStock)){
+                          var remain = floatStock - Number(quantitySold);
+                          if(!isNaN(remain)){
+                            dat.stock = remain;
+                            return dbProducts.put(dat).then((dt) => {
+                              //self.getData();
+                            })
+                          }
+                        }
+                      }
+                    }).catch((err) => {
+
+                    })
+                  }
+
+
                     self.getData();
                     self.$setState({
                             currentSale: null
@@ -1673,6 +1745,7 @@ export default {
           html += '<div><span class="labelName">Product Name: </span><div class="display-inline-flex"><input class="productName" type="text" placeholder="Product Name" value="';
           html +=  name + '"></div></div>';
           html += '<input type="hidden" class="productID" value="' + select._id + '">';
+          html += '<input type="hidden" class="hiddenQuantity" value="' + select.stock + '">';
           html += '<div class="row"><div class="col-50"><div class="item-content item-input no-padding-left"><div class="item-inner no-padding-right"><div class="labelName">Product Cost</div>';
           html += '<div class="item-input-wrap"><input class="productCost" type="text" placeholder="Product Cost" value="' + cost + '">';
           html +=  '<span class="input-clear-button"></span></div></div></div></div>';
@@ -2066,6 +2139,7 @@ export default {
                   $("#name_sell").val(value.name);
                   $(".cost_sell").val(value.selling_price);
                   $("#productID_sell").val(value._id);
+                  $(".hiddenQuantitySingle").val(value.stock);
                   var quant = Number($(".quantity_sell").val());
                     if(!isNaN(quant) || quant == 0){
                       var q = quant == 0 ? 1 : quant;
