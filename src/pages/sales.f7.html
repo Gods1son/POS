@@ -528,6 +528,7 @@ export default {
         products:null,
         sellToAnotherUser:null,
         currentMultipleSale: null,
+        selectedOldProducts: [],
         selectedProducts:[],
         settings: null,
         settingsID: 'settings',
@@ -807,11 +808,11 @@ export default {
                 objMaster._id = moment().format("X");
               }
             //db.transaction('rw', db.sales, () => {
-                
+               
                 dbSales.put(objMaster).then(function(res){
                     sbigData.forEach((element, index) => {
                     sbigData[index].parentID = res.id;
-                    sbigData[index]._id = index + moment().format("X");
+                    //sbigData[index]._id = index + moment().format("X");
                     sbigData[index].buyer_name = buyername1;
                     sbigData[index].buyer_id = theBuyerID1;
                     deleted = res.id; 
@@ -820,15 +821,20 @@ export default {
                 if(self.currentMultipleSale != null){
                   dbSales.find({
                       selector: {
-                        parentID: {$eq: deleted}
+                        $and: [
+                          { status: {$eq: 1} },
+                          {parentID: {$eq: deleted}}
+                        ]
                       }
                     }).then(function(ar){
                       var arr = ar.docs;
                             arr.forEach((element, index) => {
+                            arr[index].status = 0;  
                             arr[index]._deleted = true;
                         });
                         dbSales.bulkDocs(arr).then(function(){
                           dbSales.bulkDocs(sbigData);
+                          self.findDifferenceMultiple(self.selectedOldProducts, sbigData);
                         })
                     })
 
@@ -1126,7 +1132,8 @@ export default {
     deleteSale: function(list, id){
         var self = this;
         var checked = 0;
-        var text = "delete"
+        var text = "delete";
+        var oldSale = null, newSale = null;
         var toggle = self.$app.toggle.get(".showInactiveSales");
         if(toggle != undefined){
             if(toggle.checked){
@@ -1137,13 +1144,29 @@ export default {
         self.$app.dialog.confirm("Are you sure you want to " + text + " this sale?", "Mogul Sheet", function(){
               dbSales.get(id).then(function(doc) {
                    // console.log(doc);
-                    doc.status = checked
+                    oldSale = $.extend(true, {}, doc);
+                    doc.status = checked;
+                    newSale = $.extend(true, {}, doc);
                     return dbSales.put(doc);
                   }).then(function(){
-
+                
+                if(oldSale.isParent == 0){
+                  
+                  if(oldSale.productID != 0 && oldSale.productID != undefined){
+                        var prodArr = [];
+                        
+                        prodArr.push(oldSale.productID);
+                        self.findDifferenceInSales(prodArr, oldSale, newSale);
+                      }
+                }
+                
+                var oppCheck = checked == 1 ? 0 : 1;
                 dbSales.find({
                     selector: {
-                      parentID: {$eq: id}
+                      $and: [
+                        { status: {$eq: oppCheck}},
+                        {parentID: {$eq: id}}
+                      ]
                     }
                   }).then(function(ar){
                     var arr = ar.docs;
@@ -1152,7 +1175,21 @@ export default {
                       });
                       dbSales.bulkDocs(arr).then(function(){
                         //dbSales.bulkDocs(bigData);
+                        //is deleted
+                        var oldMaster = null, newMaster = null;
+                        if(checked == 0){
+                          oldMaster = arr;
+                          newMaster = [];
+                        }else if(checked == 1){
+                          newMaster = arr;
+                          oldMaster = [];
+                        }
+                        if(oldMaster != null && newMaster != null){
+                          self.findDifferenceMultiple(oldMaster, newMaster);
+                        }
                       })
+                    }).catch((err) => {
+                      
                     })
 
                 self.sales = self.sales.filter(function(e){ 
@@ -1321,7 +1358,15 @@ export default {
                     selectedUserID = null;
                     selectedUserName = null;
 
-                    
+                    //reduce stock for edit sales
+                    if(productId != 0 && self.currentSale != null){
+                      var prodArr = [];
+                      prodArr.push(productId);
+                      self.findDifferenceInSales(prodArr, self.currentSale, obj);
+                    }
+
+
+                    //reduce stock for new sale
                     if(productId != 0 && isEstimate == 0 && self.currentSale == null){
                     dbProducts.get(productId).then((dat) => {
                       if(dat.stock != undefined && dat.stock != "Unlimited"){
@@ -1422,12 +1467,137 @@ export default {
       
       //console.log(html);
     },
+    findDifferenceMultiple: function(oldMaster, newMaster){
+      var self = this;
+      var saveBigdata = [];
+      //check from old file
+      $.each(oldMaster, ((ind, val) => {
+        if(val.productID != undefined && val.productID != 0){
+          var findInNew = newMaster.find(x => x.productID == val.productID);
+          if(findInNew != null && findInNew != undefined){
+            var left = parseFloat(findInNew.quantity) - parseFloat(val.quantity);
+            var obj = {};
+            obj.productID = val.productID;
+            obj.stock = left;
+            saveBigdata.push(obj);
+          }else{
+            var obj = {};
+            obj.productID = val.productID;
+            obj.stock = 0 - parseFloat(val.quantity);
+            saveBigdata.push(obj);
+          }
+        }
+      }))
+
+      //check from new file
+      $.each(newMaster, ((ind, val) => {
+        if(val.productID != undefined && val.productID != 0){
+          var findInSaved = saveBigdata.find(x => x.productID == val.productID);
+          if(findInSaved == null || findInSaved == undefined){
+            //var left = parseFloat(findInNew.quantity) - parseFloat(val.quantity);
+            var obj = {};
+            obj.productID = val.productID;
+            obj.stock = parseFloat(val.quantity);
+            saveBigdata.push(obj);
+          }
+        }
+      }))
+
+      //product ids
+      var checkAllProducts = saveBigdata.map(x => x.productID);
+      var finalSaving = [];
+      //adjust products
+      dbProducts.find({
+          selector: {
+            _id: { $in: checkAllProducts }
+          },
+          sort: [{'_id': 'desc'}]
+        }).then((arr) => {
+          //adjust from db
+          var ar = arr.docs;
+          $.each(ar, function(ind, dat){
+                if(dat.stock != undefined && dat.stock != "Unlimited"){
+                  var finding = saveBigdata.find(x => x.productID == dat._id);
+                  if(finding != null){
+                    var sub = finding.stock;
+                    var left = parseFloat(dat.stock) - sub;
+                    if(!isNaN(left)){
+                      dat.stock = left;
+                      finalSaving.push(dat);
+                    }
+                    
+                  }
+                }
+            })
+            if(finalSaving.length > 0){
+              dbProducts.bulkDocs(finalSaving);
+            }
+        })
+    },
+    findDifferenceInSales: function(prodIDs, oldProd, newProd){
+      var self = this;
+      dbProducts.find({
+          selector: {
+            _id: { $in: prodIDs }
+          },
+          sort: [{'_id': 'desc'}]
+        }).then((arr) => {
+          var ar = arr.docs;
+          var saveBigData = [];
+          $.each(ar, function(ind, dat){
+                if(dat.stock != undefined && dat.stock != "Unlimited"){
+                  //it was an estimate
+                    if((oldProd.isEstimate != newProd.isEstimate)){
+                        var left = 0;
+                        if(oldProd.isEstimate == 1 && newProd.isEstimate == 0){
+                          left = parseFloat(dat.stock) - parseFloat(newProd.quantity);
+                          dat.stock = left;
+                        }else if(oldProd.isEstimate == 0 && newProd.isEstimate == 1){
+                          left = parseFloat(dat.stock) + parseFloat(oldProd.quantity);
+                          dat.stock = left;
+                        }
+                        saveBigData.push(dat);
+                        
+                        //the quantity has changed
+                    }else if(parseFloat(oldProd.quantity) != parseFloat(newProd.quantity)){
+                        var left = parseFloat(newProd.quantity) - parseFloat(oldProd.quantity);
+                        dat.stock = parseFloat(dat.stock) - left;
+                        saveBigData.push(dat);
+
+                        //deleted or activated
+                    }else if(oldProd.status != newProd.status){
+                      if(oldProd.status == 1 && newProd.status == 0){
+                        var left = parseFloat(oldProd.quantity);
+                        var subt = parseFloat(dat.stock) + left;
+                        if(!isNaN(subt)){
+                          dat.stock = subt;
+                          saveBigData.push(dat);
+                        }
+                      }else if(oldProd.status == 0 && newProd.status == 1){
+                        var left = parseFloat(oldProd.quantity);
+                        var subt = parseFloat(dat.stock) - left;
+                        if(!isNaN(subt)){
+                          dat.stock = subt;
+                          saveBigData.push(dat);
+                        }
+                      }
+
+                    }
+
+                  }
+              })
+              if(saveBigData.length > 0){
+                dbProducts.bulkDocs(saveBigData);
+              }
+
+        })
+    },
     openPopUpUpdateSellProduct: function(id){
         /*if(id == null){
             return;
         }*/
         var self = this;
-        
+        $(".hiddenQuantitySingle").val("");
         //popup.once("opened", function(){
           if(id != null || id != undefined){
             var item = self.sales.find(function(e){ 
@@ -1438,6 +1608,13 @@ export default {
                 $$("input.cost_sell").val(item.selling_price);
                 var productID = item.productID == undefined ? "" : item.productID;
                 $("#productID_sell").val(productID);
+                if(productID != ""){
+                  dbProducts.get(productID).then((dats) => {
+                    if(dats.stock != undefined){
+                      $(".hiddenQuantitySingle").val(dats.stock);
+                    }
+                  })
+                }
                 var quantity = item.quantity == null ? 1 : item.quantity;
                   var total = item.total_price == null ? item.cost : item.total_price;
                   var taxes = item.tax;
@@ -1618,23 +1795,31 @@ export default {
         //var collection = db.sales.where('parentID').equals(Number(id)).toArray(function(arr){
           dbSales.find({
           selector: {
-            parentID: {$eq: id}
+            $and: [
+                  { status: {$eq: 1} },
+                  {parentID: {$eq: id}}
+                ]
           }
         }).then(function(ar){
           var arr = ar.docs;
+          self.selectedOldProducts = [];
           //console.log(arr);
             self.$setState({
             currentMultipleSale: currChosen,
+            //selectedOldProducts: arr,
             selectedProducts: arr
           }, function(){
               for(var i = 0; i < arr.length; i++){
                 if(arr[i].isParent == 1){
+                  arr[i]._id = arr[i].productID;
+                  self.selectedOldProducts.push(arr[i]);
                   self.SelectItemMultipleProducts(arr[i]);
                 }
                 if(arr[i].isParent == 0){
                   self.AddNewProduct(arr[i]);
                 }
               }
+
               self.CalculateTotalProduct();
           })
         })
@@ -1708,12 +1893,12 @@ export default {
                       self.SelectItemMultipleProducts(selectedValues[i]);
                     }
                   }
-                  var deleted = self.selectedProducts.filter(function(x) {  // return elements in previousArray matching...
+                  /*var deleted = self.selectedProducts.filter(function(x) {  // return elements in previousArray matching...
                       return !selectedValues.includes(x);  // "this element doesn't exist in currentArray"
                   })
                   for(var i = 0; i < deleted.length; i++){
                     $(".eachSaleParent .removeProduct[data-id='" + deleted[i]._id + "']").click()
-                  }
+                  }*/
 
                   selectedValues = null;
                   //autocomplete.destroy();

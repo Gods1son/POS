@@ -590,8 +590,7 @@
                           obj[name][prod] = spendings;
                         }else{
                           var count = Number(val.quantity);
-                          console.log(obj[name][prod]);
-                          console.log(obj);
+                          
                           var oldCount = obj[name][prod][quantity];
                           var paid = Number(val.amountPaid); 
                           var oldPaid = obj[name][prod][paid];
@@ -630,7 +629,7 @@
                   var html = "<div class='block-title no-margin-vertical margin-bottom-half'>Cost and Amount Received</div>";
                   html += "<div class='card myCard'><table><thead><tr><th>Buyer's name</th><th>Product name <br> Quantity -> Amount Received</th><th>Sub Products</th></tr></thead>";
                   html += "<tbody>";
-                  console.log(obj);
+                  //console.log(obj);
                   for(var user in obj){
                     var sub = obj[user];
                     var keys = Object.keys(sub);
@@ -680,7 +679,6 @@
                   self.$app.preloader.hide();
                 }catch(err){
                   self.showToast("An error occured", "center");
-                  console.log(err);
                   self.$app.preloader.hide();
                 }
             }).catch(function(err){
@@ -795,17 +793,19 @@
               var dataLineTotal = [];
               //self.getparentChildren(arr);
               $.each(arr, function(ind, elem){
-                var pres = dataBar.find(v => v.x === elem.product_name);
+                var name = elem.product_name + '-' + elem.productID;
+                var pres = dataBar.find(v => v.x === name);
                 if(pres == undefined){
+                  
                   labels.push(elem.product_name);
                   var b = {};
                   var a = {};
                   var c = {};
-                  a.x = elem.product_name;
+                  a.x = name;
                   a.y = 1;
-                  b.x = elem.product_name;
+                  b.x = name;
                   b.y = Number(elem.afterTax);
-                  c.x = elem.product_name;
+                  c.x = name;
                   c.y = Number(elem.amountPaid);
                   dataBar.push(a);
                   dataLineTotal.push(b);
@@ -813,17 +813,19 @@
                 }else{
                   var curr = pres.y;
                   curr++;
-                  var presTotal = dataLineTotal.find(v => v.x === elem.product_name).y;
-                  var presPaid = dataLinePaid.find(v => v.x === elem.product_name).y;
+                  var name = elem.product_name + '-' + elem.productID;
+                  var presTotal = dataLineTotal.find(v => v.x === name).y;
+                  var presPaid = dataLinePaid.find(v => v.x === name).y;
                   var t = Number(elem.afterTax);
                   var p = Number(elem.amountPaid);
                   var fintotal = presTotal + t;
                   var finPaid = presPaid + p;
                   //var objIndexBar = dataBar.findIndex((obj => obj.x === elem.product_name));
                   //dataBar[objIndexBar].y = curr;
-                  var objIndexTotal = dataLineTotal.findIndex((obj => obj.x === elem.product_name));
+                  var name = elem.product_name + '-' + elem.productID;
+                  var objIndexTotal = dataLineTotal.findIndex((obj => obj.x === name));
                   dataLineTotal[objIndexTotal].y = fintotal;
-                  var objIndexPaid = dataLinePaid.findIndex((obj => obj.x === elem.product_name));
+                  var objIndexPaid = dataLinePaid.findIndex((obj => obj.x === name));
                   dataLinePaid[objIndexPaid].y = finPaid;
                 }
               })

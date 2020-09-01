@@ -1816,12 +1816,12 @@ export default {
                       self.SelectItemMultipleProducts(selectedValues[i]);
                     }
                   }
-                  var deleted = self.selectedProducts.filter(function(x) {  // return elements in previousArray matching...
+                  /*var deleted = self.selectedProducts.filter(function(x) {  // return elements in previousArray matching...
                       return !selectedValues.includes(x);  // "this element doesn't exist in currentArray"
                   })
                   for(var i = 0; i < deleted.length; i++){
                     $(".eachSaleParent .removeProduct[data-id='" + deleted[i]._id + "']").click()
-                  }
+                  }*/
 
                   selectedValues = null;
                   //autocomplete.destroy();
@@ -2149,7 +2149,7 @@ export default {
                     sbigData[index]._id = index + moment().format("X");
                     sbigData[index].buyer_name = buyername1;
                     sbigData[index].buyer_id = theBuyerID1;
-                    deleted = res.id; 
+                    //deleted = res.id; 
                   });
 
                 if(self.currentMultipleSale != null){

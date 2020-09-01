@@ -313,6 +313,7 @@ button.text-editor-button.active{
     margin-right: 5px;
     font-size: 0.8em;
     margin-top: 5px;
+    text-transform: none;
 }
 
 /*#myChart{
@@ -689,8 +690,8 @@ button.text-editor-button.active{
         margin-right: 0 !important;
     }
     .chartHolder{
-        height: 400px;
-        width: 400px;
+        height: 500px;
+        width: 500px;
         margin: auto;
     }
     .popup .page-content{

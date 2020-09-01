@@ -172,7 +172,7 @@
 
     <script>
     //import * as moment from 'moment';
-    var dbProducts = null, dbProdIngs = null, dbProdOthers = null, dbSales = null, dbIngs = null; 
+    var dbProducts = null, dbProdIngs = null, dbProdOthers = null, dbSales = null, dbIngs = null, dbRestock = null; 
     var dbSettings = null, dbClients = null, dbExpenses = null, dbAccount = null, failedSync = [];
     var stripe = Stripe('pk_test_51HF82MJnQa72fmbdN8n7SQ1gAJvWYNr9ymOusemg6yAl7YYT9pieujhdx9AAuJ3XPUVfJUg1rgzubCQHjKVMjiMp00L0IhDVPh');
     //import Cloudant from '@cloudant/cloudant';
@@ -1437,13 +1437,43 @@
                   self.$app.preloader.hide();
                   self.removeFailedSync("dbExpenses");
                   if(redirect){
-                    self.retryFailedSyncs();
+                    setTimeout(function(){ self.syncDBStocking(redirect); },1500);
                   }
 
                 }).on('error', function (err) {
                   // handle error
                   self.showToast("Error: " + err.error, "center");
                   self.addFailedSync("dbExpenses");
+                  self.$app.preloader.hide();
+                  if(redirect){
+                    setTimeout(function(){ self.syncDBStocking(redirect); },1500);
+                  }
+                })
+        },
+        syncDBStocking: function(redirect){
+          var self = this;
+          var name = self.username;
+          var dbRestockR = new PouchDB(self.cloudURL + 'dbrestock$' + name, { //dbclients$bababosscombaba
+                    auth: {
+                        username:  self.personalApiKey,
+                        password:  self.personalApiPwd  
+                    },
+                    skipSetup: true
+            });
+            self.$app.preloader.show();
+            dbRestock.sync(dbRestockR, self.opts).on('complete', function (info) {
+                  self.showToast("restocking data synced to server", "center");
+                  //remove from failed
+                  self.$app.preloader.hide();
+                  self.removeFailedSync("dbRestock");
+                  if(redirect){
+                    self.retryFailedSyncs();
+                  }
+
+                }).on('error', function (err) {
+                  // handle error
+                  self.showToast("Error: " + err.error, "center");
+                  self.addFailedSync("dbRestock");
                   self.$app.preloader.hide();
                   if(redirect){
                     self.retryFailedSyncs();
@@ -1600,6 +1630,12 @@
                 dbIngs = new PouchDB('ingredients.db');
                 dbSettings = new PouchDB('settings.db');
                 dbClients = new PouchDB('clients.db');
+                dbRestock = new PouchDB('restock.db');
+                dbRestock.createIndex({
+                  index: {
+                    fields: ['name', 'created_date']
+                  }
+                })
                 dbAccount = new PouchDB('dbAccount.db');
                 dbExpenses.createIndex({
                   index: {
