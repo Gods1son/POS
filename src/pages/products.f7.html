@@ -879,7 +879,7 @@
           <div class="display-inline-flex"><div class="totalAmountProduct">0</div></div>
         </div>
          
-        <ul class="list margin-top-half margin-bottom-half grouped"><li>
+        <ul class="list margin-top-half margin-bottom-half margin-horizontal-half grouped"><li>
         <div class="card myCard">
           <div class="card-content padding-horizontal-half" style="font-size: 1.15em;">
             <div><span class="labelName">Grouped Name: </span><div class="display-inline-flex">
@@ -1166,7 +1166,7 @@ export default {
         var self = this;
         var cost = Number($(".cost_sell").val().trim());
         var quant = Number($(".quantity_sell").val().trim());
-        if(self.currentProduct.stock != undefined && self.currentProduct.stock != "Unlimited"){
+        if(self.currentProduct.stock != undefined && self.currentProduct.stock != "undefined" && self.currentProduct.stock != "Unlimited"){
           if(quant > self.currentProduct.stock){
             self.showToast("This quantity is more than you have in stock", "center");
           }
@@ -1830,13 +1830,14 @@ export default {
               }
         });
         
+        var popup = self.$app.popup.open('.multipleSales', true);
         var taxes = self.settings == null ? 0 : self.settings.taxes;
         var taxesAmt = taxes == undefined ? 0 : taxes;
         $(".taxpercent").val(taxesAmt);
-        $("#datePaidMultiple").val(moment().format('LLL'));
-        $("#datePurchaseMultiple").val(moment().format('LLL'));
+        $(".multipleSales:visible").find("#datePaidMultiple").val(moment().format('LLL'));
+        $(".multipleSales:visible").find("#datePurchaseMultiple").val(moment().format('LLL'));
         //self.CalculateTotalProduct();
-        var popup = self.$app.popup.open('.multipleSales', true);
+        
     },
     openPopUpIngredients: function(id){
         var self = this;
@@ -2037,11 +2038,15 @@ export default {
       }else{
         fullyPaid = 0;
       }
-      isPaidDate = moment($("#datePaidMultiple").val()).format("X");//  Date.parse($("#paid-calendar-modal").val());
+      isPaidDate = moment($(".multipleSales:visible").find("#datePaidMultiple").val()).format("X");//  Date.parse($("#paid-calendar-modal").val());
       var isEstimate = $(".isEstimateMultiple").prop("checked") == true ? 1 : 0;
         $(".eachProduct").each(function(i, curr){
+        var productID = "0";
         var productName = $(curr).find(".productName").eq(0).val().trim();
-        var productID = $(curr).find(".productID").eq(0).val().trim();
+        if($(curr).find(".productID").length > 0){
+          productID = $(curr).find(".productID").eq(0).val();
+        }
+        
         var price = Number($(curr).find(".productCost").eq(0).val().trim());
         var quant = Number($(curr).find(".productQuantity").eq(0).val().trim());
         var totalPric = Number($(curr).find(".totalproductprice").eq(0).val().trim());
@@ -2201,7 +2206,7 @@ export default {
               var ar = arr.docs;
               var saveBigData = [];
               $.each(ar, function(ind, dat){
-                if(dat.stock != undefined && dat.stock != "Unlimited"){
+                if(dat.stock != undefined && dat.stock != "undefined" && dat.stock != "Unlimited"){
                       var floatStock = parseFloat(dat.stock);
                       if(!isNaN(floatStock)){
                         var quantitySold = prods.find(x => x.productID == dat._id).quantity;
@@ -2256,11 +2261,11 @@ export default {
     CalculateTotalProduct: function(){
       var self = this;
       var totalCost = 0;
-      $(".eachProduct").each(function(i, curr){
+      $(".eachProduct:visible").each(function(i, curr){
         var price = Number($(curr).find(".productCost").eq(0).val().trim());
         var quant = Number($(curr).find(".productQuantity").eq(0).val().trim());
         var discount = Number($(curr).find(".discount").eq(0).val().trim());
-        var hiddenQuant = Number($(curr).find(".hiddenQuantity").eq(0).val().trim());
+        var hiddenQuant = Number($(curr).find(".hiddenQuantity").eq(0).val());
         if(!isNaN(hiddenQuant)){
           if(quant > hiddenQuant){
             self.showToast("The quantity you entered is more than you have in stock", "center");
@@ -2532,7 +2537,7 @@ export default {
                   selectedUserID = null;
                   if(productId != 0 && isEstimate == 0){
                     dbProducts.get(productId).then((dat) => {
-                      if(dat.stock != undefined && dat.stock != "Unlimited"){
+                      if(dat.stock != undefined && dat.stock != "undefined" && dat.stock != "Unlimited"){
                         var floatStock = parseFloat(dat.stock);
                         if(!isNaN(floatStock)){
                           var remain = floatStock - quantitySold;
@@ -2599,8 +2604,8 @@ export default {
                         var sorter = '<span class="sort" data-sort="name">Name</span><span class="sort" data-sort="cost">Cost</span><span class="sort" data-sort="in-stock">In Stock</span>';
                         $(sorter).insertAfter($(".sortText"));
                         $(".sortText").removeClass("display-none");
-                        var mult = "<div class='margin-top-half viewRestockHistoryParent'><a class='button button-raised viewRestockHistory'>View Restock History</div>";
-                        mult += "<div class='margin-top-half sellMultParent'><a class='button button-raised sellMultiple'>Sell Multiple Products</div>";
+                        var mult = "<div class='margin-top-half viewRestockHistoryParent'><a class='button button-raised bg-color-blue viewRestockHistory'>View Restock History</div>";
+                        mult += "<div class='margin-top-half sellMultParent'><a class='button button-raised mainButton sellMultiple'>Sell Multiple Products</div>";
                           //
                         $(mult).insertBefore($("#product-list .list"));
                         $(".sellMultiple").off("click").on("click", function(){
@@ -2621,7 +2626,7 @@ export default {
                             var stat = row.status == 1 ? "display-none" : "";
                             var stock = "Unlimited";
                             var stockCount = 9999999;
-                            if(row.stock != undefined && row.stock != ""){
+                            if(row.stock != undefined){
                               stock = row.stock;
                               stockCount = parseFloat(row.stock);
                             }

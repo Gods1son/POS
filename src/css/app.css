@@ -283,7 +283,7 @@ button.text-editor-button.active{
     font-size: 1.2em;
     letter-spacing: 0px;
     text-transform: none;
-    color: #673ab7;
+    /*color: #673ab7;*/
     border: 1px solid;
     /*box-shadow: 0px 1px 3px 1px #673ab794;*/
 }
@@ -293,7 +293,8 @@ button.text-editor-button.active{
     font-size: 1.2em;
     letter-spacing: 0px;
     text-transform: none;
-    border: 1px solid;
+    color: white;
+    /*border: 1px solid;*/
     /*box-shadow: 0px 1px 3px 1px #673ab794;*/
 }
 

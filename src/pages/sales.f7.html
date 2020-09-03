@@ -182,7 +182,7 @@
                       <div class="item-title">Product Name</div>
                       <div class="item-input-wrap">
                         <input type="hidden" id="productID_sell">
-                        <input type="text" id="name_sell" class="name_sell" placeholder="Product name" required/>
+                        <input type="text" id="name_sell_sales" class="name_sell_sales" placeholder="Product name" required/>
                         <span class="input-clear-button"></span>
                       </div>
                     </div>
@@ -196,7 +196,7 @@
                           <div class="item-inner">
                             <div class="item-title">Selling Price</div>
                             <div class="item-input-wrap">
-                              <input type="text" class="cost_sell" @keyup="calculateQuantity" placeholder="selling price" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                              <input type="text" class="cost_sell_sales" @keyup="calculateQuantity" placeholder="selling price" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                               <span class="input-clear-button"></span>
                             </div>
                           </div>
@@ -209,7 +209,7 @@
                             <div class="item-title">Quantity</div>
                             <div class="item-input-wrap">
                               <input type="hidden" class="hiddenQuantitySingle">
-                              <input type="text" class="quantity_sell" @keyup="calculateQuantity" placeholder="Quantity" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                              <input type="text" class="quantity_sell_sales" @keyup="calculateQuantity" placeholder="Quantity" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                               <span class="input-clear-button"></span>
                             </div>
                           </div>
@@ -222,7 +222,7 @@
                     <div class="item-inner">
                       <div class="item-title">Discount</div>
                       <div class="item-input-wrap">
-                        <input type="text" class="discount_sell" @keyup="calculateQuantity" value="0" placeholder="Discount" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                        <input type="text" class="discount_sell_sales" @keyup="calculateQuantity" value="0" placeholder="Discount" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                         <span class="input-clear-button"></span>
                       </div>
                     </div>
@@ -233,7 +233,7 @@
                     <div class="item-inner">
                       <div class="item-title">Total Price</div>
                       <div class="item-input-wrap">
-                        <input type="text" class="total_sell" @keyup="calculateQuantity2" placeholder="Total Price" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                        <input type="text" class="total_sell_sales" @keyup="calculateQuantity2" placeholder="Total Price" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                         <span class="input-clear-button"></span>
                       </div>
                     </div>
@@ -272,7 +272,7 @@
                     <div class="item-inner">
                       <div class="item-title">Buyer's Name</div>
                       <div class="item-input-wrap">
-                        <input type="text" id="buyer_sell" class="buyer_sell" placeholder="Buyer name" required/>
+                        <input type="text" id="buyer_sell_sales" class="buyer_sell_sales" placeholder="Buyer name" required/>
                         <span class="input-clear-button"></span>
                       </div>
                     </div>
@@ -285,7 +285,7 @@
                         <div class="item-inner">
                           <div class="item-title">Amount Paid</div>
                           <div class="item-input-wrap">
-                            <input type="text" class="amountpaid_sell" placeholder="Amount customer paid" value="0" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                            <input type="text" class="amountpaid_sell_sales" placeholder="Amount customer paid" value="0" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                             <span class="input-clear-button"></span>
                           </div>
                         </div>
@@ -314,7 +314,7 @@
                       <div class="item-inner">
                         <div class="item-title">Date Buyer Paid</div>
                       <div class="item-input-wrap">
-                          <input type="text" placeholder="Date buyer paid" id="paid-calendar-modal"/>
+                          <input type="text" placeholder="Date buyer paid" id="paid-calendar-modal-sales"/>
                           <span class="input-clear-button"></span>
                       </div>
                       </div>
@@ -325,7 +325,7 @@
                       <div class="item-inner">
                         <div class="item-title">Date of Purchase</div>
                       <div class="item-input-wrap">
-                          <input type="text" placeholder="Date of purchase" id="purchase-calendar-modal" required validate data-error-message="Select date of purchase please!"/>
+                          <input type="text" placeholder="Date of purchase" id="purchase-calendar-modal-sales" required validate data-error-message="Select date of purchase please!"/>
                           <span class="input-clear-button"></span>
                       </div>
                       </div>
@@ -374,7 +374,7 @@
   <!--pop up-->
 
   <!--pop up for for multiple items-->
-  <div class="popup multipleSales popup-tablet-fullscreen">
+  <div class="popup multipleSales_sales popup-tablet-fullscreen">
     <div class="view">
       <div class="page">
         <div class="navbar">
@@ -392,13 +392,13 @@
         <div class="list margin-bottom-half no-margin-top">
           <div class="block-header text-color-black no-margin-bottom margin-top text-align-center">Select Products Below - select multiple</div>
           <div class="margin-horizontal-half">
-            <a class="col button button-outline button-raised" href="#" id="autocomplete-standalone-multiple">
+            <a class="col button button-outline button-raised" href="#" id="autocomplete-standalone-multiple-sales">
             <div class="item-title text-color-blue btn-blue">Add Products</div>
           </a>
         </div>
           <!--<ul>
             <li>
-              <a class="item-link item-content bg-color-orange myOrange" href="#" id="autocomplete-standalone-multiple">
+              <a class="item-link item-content bg-color-orange myOrange" href="#" id="autocomplete-standalone-multiple-sales">
                 <input type="hidden">
                 <div class="item-inner">
                   <div class="block-title item-title no-margin text-color-white">Add Products</div>
@@ -409,7 +409,7 @@
           </ul>-->
         </div>
 
-        <div id="products-list" class="customList">
+        <div id="products-list-sales" class="customList">
           <ul class="list sortList margin-top-half margin-bottom-half">
             
           </ul>
@@ -420,7 +420,7 @@
           <a class="button button-raised button-fill color-blue customcharges" @click="AddNewProduct(null)">Add Custom Products</a>
         </div>
 
-        <div id="productsOther-list" class="customList">
+        <div id="productsOther-list-sales" class="customList">
           <ul class="list sortList margin-top-half margin-bottom-half">
             
           </ul>
@@ -450,13 +450,13 @@
           <div class="display-inline-flex"><div class="totalAmountProduct">0</div></div>
         </div>
          
-        <ul class="list margin-top-half margin-bottom-half grouped"><li>
+        <ul class="list margin-top-half margin-bottom-half margin-horizontal-half grouped"><li>
         <div class="card myCard">
           <div class="card-content padding-horizontal-half" style="font-size: 1.15em;">
             <div><span class="labelName">Grouped Name: </span><div class="display-inline-flex">
-              <input class="groupProductNameMultiple" type="text" placeholder="Give Group Name" value=""></div></div>
+              <input class="groupProductNameMultiple_sales" type="text" placeholder="Give Group Name" value=""></div></div>
             <div><span class="labelName">Buyer's Name: </span><div class="display-inline-flex">
-              <input class="buyersNameMultiple" id="buyersNameMultiple" type="text" placeholder="Buyer's Name" value=""></div></div>
+              <input class="buyersNameMultiple_sales" id="buyersNameMultiple_sales" type="text" placeholder="Buyer's Name" value=""></div></div>
 
               <div>
                 <span class="labelName">It's an Estimate<i class="icon f7-icons icon-tooltip estimateExplain color-black">info_circle_fill</i></span>
@@ -475,7 +475,7 @@
               
               <div class="item-input" style="width: 100%;"> 
               <div class="item-input-wrap">   
-                <input id="datePaidMultiple" class="text-align-center" type="text" placeholder="Date of Payment" value="0">
+                <input id="datePaidMultiple_sales" class="text-align-center" type="text" placeholder="Date of Payment" value="0">
                 <span class="input-clear-button"></span>
               </div>
               </div>
@@ -484,7 +484,7 @@
             <div><span class="labelName">Date of Purchase: </span><div class="display-inline-flex" style="width:100%">
               <div class="item-input" style="width: 100%;"> 
                 <div class="item-input-wrap">   
-                  <input id="datePurchaseMultiple" class="text-align-center" type="text" placeholder="Date of Purchase" value="0">
+                  <input id="datePurchaseMultiple_sales" class="text-align-center" type="text" placeholder="Date of Purchase" value="0">
                   <span class="input-clear-button"></span>
                 </div>
                 </div>
@@ -493,7 +493,7 @@
         </div>
         </li></ul>
                 <div class="row padding-horizontal-half margin-bottom-half"><div class="col-100">
-                  <a class="col button button-outline button-raised mainButton" @click="saveMultipleProduct">Save All</a>
+                  <a class="col button button-outline button-raised mainButton" @click="saveMultipleProductSales">Save All</a>
                 </div>
               </div>
         </div>
@@ -624,11 +624,11 @@ export default {
     CalculateTotalProduct: function(){
       var self = this;
       var totalCost = 0;
-      $(".eachProduct").each(function(i, curr){
-        var price = Number($(curr).find(".productCost").eq(0).val().trim());
-        var quant = Number($(curr).find(".productQuantity").eq(0).val().trim());
+      $(".eachProduct_sales").each(function(i, curr){
+        var price = Number($(curr).find(".productCost_sales").eq(0).val().trim());
+        var quant = Number($(curr).find(".productQuantity_sales").eq(0).val().trim());
         var discount = Number($(curr).find(".discount").eq(0).val().trim());
-        var hiddenQuant = Number($(curr).find(".hiddenQuantity").eq(0).val().trim());
+        var hiddenQuant = Number($(curr).find(".hiddenQuantity").eq(0).val());
         if(!isNaN(hiddenQuant)){
           if(quant > hiddenQuant){
             self.showToast("The quantity you entered is more than you have in stock", "center");
@@ -644,7 +644,7 @@ export default {
       })
       
       //console.log(totalCost);
-      var tax = Number($(".multipleSales").find(".taxpercent").eq(0).val());
+      var tax = Number($(".multipleSales_sales").find(".taxpercent").eq(0).val());
       if(!isNaN(tax) || tax == 0){
         $(".totalAmountBeforeProfitProduct").text(totalCost.toFixed(2));
           var taxAmt = ((tax/100) * totalCost);
@@ -657,32 +657,32 @@ export default {
     calculateprofit: function(){
 
     },
-    saveMultipleProduct: function(){
+    saveMultipleProductSales: function(){
         var self = this;
         var error = false;
         var bigData = [];
         
       //validation
-      var grpName = $(".groupProductNameMultiple").val().trim();
-        var buyername = $(".buyersNameMultiple").val().trim();
-        var amountPaid = Number($(".amountPaidMultiple").val().trim());
-        var taxes = Number($(".taxpercent").val().trim());
+      var grpName = $(".groupProductNameMultiple_sales").val().trim();
+        var buyername = $(".buyersNameMultiple_sales").val().trim();
+        var amountPaid = Number($(".multipleSales_sales:visible").find(".amountPaidMultiple").val().trim());
+        var taxes = Number($(".multipleSales_sales:visible").find(".taxpercent").val().trim());
         if(isNaN(taxes)){
           error = true;
-          $(".taxpercent").parents("ul").eq(0).addClass("bg-color-red");
+          $(".multipleSales_sales:visible").find(".taxpercent").parents("ul").eq(0).addClass("bg-color-red");
         }else{
-          $(".taxpercent").parents("ul").eq(0).removeClass("bg-color-red");
+          $(".multipleSales_sales:visible").find(".taxpercent").parents("ul").eq(0).removeClass("bg-color-red");
         }
 
         if(buyername == "" || isNaN(amountPaid)){
-            $(".buyersNameMultiple").parents("li").eq(0).addClass("bg-color-red");
+            $(".buyersNameMultiple_sales").parents("li").eq(0).addClass("bg-color-red");
             error = true;
         }else{
-          $(".buyersNameMultiple").parents("li").eq(0).removeClass("bg-color-red");
+          $(".buyersNameMultiple_sales").parents("li").eq(0).removeClass("bg-color-red");
         }
 
-        var beforeTaxes = Number($(".totalAmountBeforeProfitProduct").text());
-          var afterTaxes = Number($(".totalAmountProduct").text());
+        var beforeTaxes = Number($(".multipleSales_sales:visible").find(".totalAmountBeforeProfitProduct").text());
+          var afterTaxes = Number($(".multipleSales_sales:visible").find(".totalAmountProduct").text());
           var fullyPaid = 0;
       var isPaidDate = null;
       if(amountPaid >= afterTaxes){
@@ -690,13 +690,16 @@ export default {
       }else{
         fullyPaid = 0;
       }
-      isPaidDate = moment($("#datePaidMultiple").val()).format("X");//  Date.parse($("#paid-calendar-modal").val());
-      var isEstimate = $(".isEstimateMultiple").prop("checked") == true ? 1 : 0;
-        $(".eachProduct").each(function(i, curr){
+      isPaidDate = moment($(".multipleSales_sales:visible").find("#datePaidMultiple_sales").val()).format("X");//  Date.parse($("#paid-calendar-modal-sales").val());
+      var isEstimate = $(".multipleSales_sales:visible").find(".isEstimateMultiple").prop("checked") == true ? 1 : 0;
+        $(".eachProduct_sales").each(function(i, curr){
+          var productID = "0";
         var productName = $(curr).find(".productName").eq(0).val().trim();
-        var productID = $(curr).find(".productID").eq(0).val().trim();
-        var price = Number($(curr).find(".productCost").eq(0).val().trim());
-        var quant = Number($(curr).find(".productQuantity").eq(0).val().trim());
+        if($(curr).find(".productID").length > 0){
+          productID = $(curr).find(".productID").eq(0).val();
+        }
+        var price = Number($(curr).find(".productCost_sales").eq(0).val().trim());
+        var quant = Number($(curr).find(".productQuantity_sales").eq(0).val().trim());
         var totalPric = Number($(curr).find(".totalproductprice").eq(0).val().trim());
         var discount = Number($(curr).find(".discount").eq(0).val().trim());
 
@@ -706,7 +709,7 @@ export default {
         }else{
           $(curr).removeClass("bg-color-red");
           // saving logic
-          var isParent = $(curr).hasClass("eachSaleParent") == true ? 1 : 0;
+          var isParent = $(curr).hasClass("eachSaleParent_sales") == true ? 1 : 0;
           var tax = (taxes/100) * totalPric;
           var costPlusTax = totalPric + tax;
           var obj = {
@@ -725,7 +728,7 @@ export default {
                 amountPaid:  0,
                 isPaid: fullyPaid,
                 date_paid: isPaidDate,
-                created_date: moment($("#datePurchaseMultiple").val()).format("X"), //Date.parse($("#purchase-calendar-modal").val()),
+                created_date: moment($(".multipleSales_sales").find("#datePurchaseMultiple_sales").val()).format("X"), //Date.parse($("#purchase-calendar-modal-sales").val()),
                 status:1
               };
             bigData.push(obj)
@@ -797,7 +800,7 @@ export default {
               amountPaid:  amountPaid1,
               isPaid: fullyPaid1,
               date_paid: isPaidDate1,
-              created_date: moment($("#datePurchaseMultiple").val()).format("X"), //Date.parse($("#purchase-calendar-modal").val()),
+              created_date: moment($(".multipleSales_sales:visible").find("#datePurchaseMultiple_sales").val()).format("X"), //Date.parse($("#purchase-calendar-modal-sales").val()),
               status:1
             };
             var deleted = "";
@@ -834,7 +837,24 @@ export default {
                         });
                         dbSales.bulkDocs(arr).then(function(){
                           dbSales.bulkDocs(sbigData);
-                          self.findDifferenceMultiple(self.selectedOldProducts, sbigData);
+
+                          //change estimate to sales
+                          if(self.currentMultipleSale.isEstimate == 1 && isEstimate1 == 0){
+                            var oldMastering = [];
+                            self.findDifferenceMultiple(oldMastering, sbigData);
+                          }
+
+                          //change sales to estimates
+                          if(self.currentMultipleSale.isEstimate == 0 && isEstimate1 == 1){
+                            var newMastering = [];
+                            self.findDifferenceMultiple(self.selectedOldProducts, newMastering);
+                          }
+
+                          //if they are not both estimates
+                          if(self.currentMultipleSale.isEstimate == 0 && isEstimate1 == 0){
+                            self.findDifferenceMultiple(self.selectedOldProducts, sbigData);
+                          }
+                          
                         })
                     })
 
@@ -848,7 +868,7 @@ export default {
                 }
                 self.showToast("Saved successfully", "center");
                 self.closePopUpMultiple();
-                //self.$app.popup.close('.multipleSales', true);
+                //self.$app.popup.close('.multipleSales_sales', true);
                   
               }).catch(err => {
                 // Transaction aborted. NOT WITHIN ZONE!
@@ -871,7 +891,7 @@ export default {
               var ar = arr.docs;
               var saveBigData = [];
               $.each(ar, function(ind, dat){
-                if(dat.stock != undefined && dat.stock != "Unlimited"){
+                if(dat.stock != undefined && dat.stock != "undefined" && dat.stock != "Unlimited"){
                       var floatStock = parseFloat(dat.stock);
                       if(!isNaN(floatStock)){
                         var quantitySold = prods.find(x => x.productID == dat._id).quantity;
@@ -896,14 +916,14 @@ export default {
       var totalPrice = select == null ? "" : select.total_price;
       var discount = select == null ? "0" : select.discount;
         //var cost = select.cost == undefined ? 0 : select.cost; 
-        var html = '<li class="eachSaleParentOther eachProduct"><div class="card myCard"><div class="card-content padding-horizontal-half">';
+        var html = '<li class="eachSaleParentOther_sales eachProduct_sales"><div class="card myCard"><div class="card-content padding-horizontal-half">';
           html += '<div><span class="labelName">Product Name: </span><div class="display-inline-flex"><input class="productName" type="text" placeholder="Product Name" value="';
           html +=  name + '"></div></div>';
           html += '<div class="row"><div class="col-50"><div class="item-content item-input no-padding-left"><div class="item-inner no-padding-right"><div class="labelName">Product Cost</div>';
-          html += '<div class="item-input-wrap"><input class="productCost" type="text" placeholder="Product Cost" value="' + cost + '">';
+          html += '<div class="item-input-wrap"><input class="productCost_sales" type="text" placeholder="Product Cost" value="' + cost + '">';
           html +=  '<span class="input-clear-button"></span></div></div></div></div>';
           html += '<div class="col-50"><div class="item-content item-input no-padding-left"><div class="item-inner no-padding-right"><div class="labelName">Quantity</div>';
-          html += '<div class="item-input-wrap"><input class="productQuantity" type="text" placeholder="Product Quantity" value="' + quantity + '">';
+          html += '<div class="item-input-wrap"><input class="productQuantity_sales" type="text" placeholder="Product Quantity" value="' + quantity + '">';
           html +=  '<span class="input-clear-button"></span></div></div></div></div></div>';
           html += '<div><span class="labelName">Discount: </span><div class="display-inline-flex"><input class="discount" type="text" placeholder="Discount" value="';
           html +=  discount + '"></div></div>';
@@ -913,13 +933,13 @@ export default {
           html += '<a class="button button-small button-raised removeProduct">Delete</a>';
         html += '</p></div></div>'
         html += '</li>';
-        $("#productsOther-list .sortList").append(html);
-        $(".eachSaleParentOther .removeProduct").off("click").on("click", function(){
+        $("#productsOther-list-sales .sortList").append(html);
+        $(".eachSaleParentOther_sales .removeProduct").off("click").on("click", function(){
                   //var id = $(this).attr("data-itemid");
-                  $(this).parents(".eachSaleParentOther").eq(0).remove();
+                  $(this).parents(".eachSaleParentOther_sales").eq(0).remove();
                   self.CalculateTotalProduct();
                 })
-            $(".eachSaleParentOther input").off("keyup").on("keyup", function(){
+            $(".eachSaleParentOther_sales input").off("keyup").on("keyup", function(){
                 self.CalculateTotalProduct();
             })
     },
@@ -928,8 +948,8 @@ export default {
     },
     calculateQuantity: function(){
       var self = this;
-      var cost = Number($(".cost_sell").val().trim());
-        var quant = Number($(".quantity_sell").val().trim());
+      var cost = Number($(".cost_sell_sales").val().trim());
+        var quant = Number($(".quantity_sell_sales").val().trim());
         var hiddenQuant = Number($(".hiddenQuantitySingle").val().trim());
         if(!isNaN(hiddenQuant)){
           if(quant > hiddenQuant){
@@ -938,9 +958,9 @@ export default {
         }
         if(!isNaN(cost) && !isNaN(quant)){
             var total = cost * quant;
-            var discount = Number($(".discount_sell").val());
+            var discount = Number($(".discount_sell_sales").val());
             total = total - discount;
-            $(".total_sell").val(total.toFixed(2));
+            $(".total_sell_sales").val(total.toFixed(2));
             var taxes = Number($(".taxes").val().trim());
             if(taxes != "" || taxes == 0){
               if(!isNaN(taxes)){
@@ -953,7 +973,7 @@ export default {
     },
     calculateQuantity2: function(){
       var self = this;
-      var total = Number($(".total_sell").val());
+      var total = Number($(".total_sell_sales").val());
             var taxes = Number($(".taxes").val().trim());
             //console.log("0 - " + taxes);
             if(taxes != "" || taxes == 0){
@@ -1221,9 +1241,9 @@ export default {
     },
     closeUpdatePopUp: function(){
         var self = this;
-        $("#paid-calendar-modal").next("span").click();
-        $("#purchase-calendar-modal").next("span").click();
-        $$("input.buyer_sell, input.amountpaid_sell, .hiddenQuantitySingle, .quantity_sell, .total_sell, #productID_sell").val("");
+        $("#paid-calendar-modal-sales").next("span").click();
+        $("#purchase-calendar-modal-sales").next("span").click();
+        $$("input.buyer_sell_sales, input.amountpaid_sell_sales, .hiddenQuantitySingle, .quantity_sell_sales, .total_sell_sales, #productID_sell").val("");
         var popup = self.$app.popup.close('.newSales', true);
     },
     updateDataSell: function(){
@@ -1236,29 +1256,29 @@ export default {
       var checked = 0;
       var isPaidDate = null;
       var isEstimate = $(".isEstimate").prop("checked");
-      if($("#purchase-calendar-modal").val().trim() == ""){
+      if($("#purchase-calendar-modal-sales").val().trim() == ""){
         self.showToast("Please pick date of purchase", "center");
         return;
       }
-      if($(".name_sell").val().trim() == ""){
+      if($(".name_sell_sales").val().trim() == ""){
         self.showToast("Please enter product name", "center");
         return;
       }
-      if($(".buyer_sell").val().trim() == ""){
+      if($(".buyer_sell_sales").val().trim() == ""){
         self.showToast("Please enter buyer's name", "center");
         return;
       }
-      if($(".cost_sell").val().trim() == ""){
+      if($(".cost_sell_sales").val().trim() == ""){
         self.showToast("Please enter selling price", "center");
         return;
       }
-      if(($("#paid-calendar-modal").val().trim() == "") && ($$("input.amountpaid_sell").val() != "0" && $$("input.amountpaid_sell").val().trim() != "")){
+      if(($("#paid-calendar-modal-sales").val().trim() == "") && ($$("input.amountpaid_sell_sales").val() != "0" && $$("input.amountpaid_sell_sales").val().trim() != "")){
           self.showToast("Please choose date buyer paid!", "center");
           return;
       }
-      if(($$("input.amountpaid_sell").val() == "0" || $$("input.amountpaid_sell").val().trim() == "") && isEstimate == false){
+      if(($$("input.amountpaid_sell_sales").val() == "0" || $$("input.amountpaid_sell_sales").val().trim() == "") && isEstimate == false){
           self.$app.dialog.confirm("Do you want to record the purchase without a payment made?", "Mogul Sheet", function(){
-            $$("input.amountpaid_sell").val(0);
+            $$("input.amountpaid_sell_sales").val(0);
             self.processPaymentUpdate();
           })
       }else{
@@ -1270,18 +1290,18 @@ export default {
     processPaymentUpdate: function(){
       var self = this;
       var cp = $$("input.afterTax").val();
-      var sp = $$("input.amountpaid_sell").val();
+      var sp = $$("input.amountpaid_sell_sales").val();
       var fullyPaid = 0;
       if(Number(sp) >= Number(cp)){
         fullyPaid = 1;
       }else{
           fullyPaid = 0;
       }
-      var isPaidDate = moment($("#paid-calendar-modal").val()).format("X");
+      var isPaidDate = moment($("#paid-calendar-modal-sales").val()).format("X");
       var isEstimate = $(".isEstimate").prop("checked") == true ? 1 : 0;
       var taxes = $$("input.taxes").val();
       taxes = taxes.trim() == "" ? 0 : Number(taxes.trim());
-      var chosenUser = $$("input.buyer_sell").val();
+      var chosenUser = $$("input.buyer_sell_sales").val();
       var theBuyerID = null;
       var theBuyerName = null;
       //new buyer
@@ -1322,25 +1342,25 @@ export default {
     saveProcessedPayement: function(theBuyerid, theBuyername, taxes, isEstimate, fullyPaid, isPaidDate){
       var self = this;
       var productId = $("#productID_sell").val();
-      var quantitySold = $$("input.quantity_sell").val();
+      var quantitySold = $$("input.quantity_sell_sales").val();
       var obj = {
                 //id: Number(self.currentSale),
-                product_name: $$("input.name_sell").val(),  
+                product_name: $$("input.name_sell_sales").val(),  
                 buyer_name: theBuyername,
                 buyer_id: theBuyerid,
-                selling_price: $$("input.cost_sell").val(),
+                selling_price: $$("input.cost_sell_sales").val(),
                 tax: taxes,
                 parentID: 0,
                 productID: productId,
                 isEstimate: isEstimate,
-                discount: $(".discount_sell").val(),
+                discount: $(".discount_sell_sales").val(),
                 afterTax: $$("input.afterTax").val(),
                 quantity: quantitySold,
-                total_price: $$("input.total_sell").val(),
-                amountPaid: $$("input.amountpaid_sell").val(),
+                total_price: $$("input.total_sell_sales").val(),
+                amountPaid: $$("input.amountpaid_sell_sales").val(),
                 isPaid: fullyPaid,
                 date_paid: isPaidDate,
-                created_date: moment($("#purchase-calendar-modal").val()).format("X"),
+                created_date: moment($("#purchase-calendar-modal-sales").val()).format("X"),
                 status:1
               };
               if(self.currentSale != null){
@@ -1351,9 +1371,9 @@ export default {
               }
             dbSales.put(obj).then(function(){
                     self.showToast("Record saved!", "center");
-                    $("#paid-calendar-modal").next("span").click();
-                    $("#purchase-calendar-modal").next("span").click();
-                    $$("input.buyer_sell, input.amountpaid_sell, .hiddenQuantitySingle, #purchase-calendar-modal, #paid-calendar-modal, .quantity_sell, .total_sell, .discount_sell").val("");
+                    $("#paid-calendar-modal-sales").next("span").click();
+                    $("#purchase-calendar-modal-sales").next("span").click();
+                    $$("input.buyer_sell_sales, input.amountpaid_sell_sales, .hiddenQuantitySingle, #purchase-calendar-modal-sales, #paid-calendar-modal-sales, .quantity_sell_sales, .total_sell_sales, .discount_sell_sales").val("");
                     self.$app.popup.close('.newSales', true);
                     selectedUserID = null;
                     selectedUserName = null;
@@ -1369,7 +1389,7 @@ export default {
                     //reduce stock for new sale
                     if(productId != 0 && isEstimate == 0 && self.currentSale == null){
                     dbProducts.get(productId).then((dat) => {
-                      if(dat.stock != undefined && dat.stock != "Unlimited"){
+                      if(dat.stock != undefined && dat.stock != "undefined" && dat.stock != "Unlimited"){
                         var floatStock = parseFloat(dat.stock);
                         if(!isNaN(floatStock)){
                           var remain = floatStock - Number(quantitySold);
@@ -1516,7 +1536,7 @@ export default {
           //adjust from db
           var ar = arr.docs;
           $.each(ar, function(ind, dat){
-                if(dat.stock != undefined && dat.stock != "Unlimited"){
+                if(dat.stock != undefined && dat.stock != "undefined" && dat.stock != "Unlimited"){
                   var finding = saveBigdata.find(x => x.productID == dat._id);
                   if(finding != null){
                     var sub = finding.stock;
@@ -1545,7 +1565,7 @@ export default {
           var ar = arr.docs;
           var saveBigData = [];
           $.each(ar, function(ind, dat){
-                if(dat.stock != undefined && dat.stock != "Unlimited"){
+                if(dat.stock != undefined && dat.stock != "undefined" && dat.stock != "Unlimited"){
                   //it was an estimate
                     if((oldProd.isEstimate != newProd.isEstimate)){
                         var left = 0;
@@ -1603,9 +1623,9 @@ export default {
             var item = self.sales.find(function(e){ 
                   return e._id == id;
               });
-                $$("input.name_sell").val(item.product_name);
-                $$("input.buyer_sell").val(item.buyer_name);
-                $$("input.cost_sell").val(item.selling_price);
+                $$("input.name_sell_sales").val(item.product_name);
+                $$("input.buyer_sell_sales").val(item.buyer_name);
+                $$("input.cost_sell_sales").val(item.selling_price);
                 var productID = item.productID == undefined ? "" : item.productID;
                 $("#productID_sell").val(productID);
                 if(productID != ""){
@@ -1623,49 +1643,49 @@ export default {
                   total = Number(total);
                   var discount = item.discount == null ? 0 : item.discount;
                   var afterTax = item.afterTax == undefined ? total : item.afterTax;
-                  $(".quantity_sell").val(quantity);
+                  $(".quantity_sell_sales").val(quantity);
                   $(".taxes").val(taxesAmt);
                   $(".afterTax").val(afterTax);
-                  $(".discount_sell").val(discount);
-                  $(".total_sell").val(total.toFixed(2));
+                  $(".discount_sell_sales").val(discount);
+                  $(".total_sell_sales").val(total.toFixed(2));
                   if(item.isEstimate != undefined && item.isEstimate != null){
                     var est = item.isEstimate == 1 ? true : false;
                     $(".isEstimate").prop("checked", est);
                   }else{
                     $(".isEstimate").prop("checked", false);
                   }
-                $$("input.amountpaid_sell").val(item.amountPaid);
+                $$("input.amountpaid_sell_sales").val(item.amountPaid);
                 if(item.created_date != ""){
                   var myDate = new Date(item.created_date);
                   //myDate = myDate.toLocaleString();
                   //myDate = moment(item.created_date);
                   myDate = moment.unix(item.created_date).format("LLL");
-                  $("#purchase-calendar-modal").val(myDate);
+                  $("#purchase-calendar-modal-sales").val(myDate);
                 }
                 if(item.date_paid != ""){
                   var myDate = new Date(item.date_paid);
                   //myDate = myDate.toLocaleString();
                   myDate = moment.unix(item.date_paid).format("LLL");
-                  $("#paid-calendar-modal").val(myDate);
+                  $("#paid-calendar-modal-sales").val(myDate);
                 }
                 var popup = self.$app.popup.open('.newSales', true);
                 self.$setState({
                     currentSale: item
                 });
             }else{
-                $$("input.name_sell").val("");
-                $$("input.buyer_sell").val("");
-                $$("input.cost_sell").val("");
+                $$("input.name_sell_sales").val("");
+                $$("input.buyer_sell_sales").val("");
+                $$("input.cost_sell_sales").val("");
                 $("#productID_sell").val("");
                 var taxes = self.settings == null ? 0 : self.settings.taxes;
                 var taxesAmt = taxes == undefined ? 0 : taxes;
-                $(".quantity_sell").val("1");
-                $(".discount_sell").val(0);
+                $(".quantity_sell_sales").val("1");
+                $(".discount_sell_sales").val(0);
                 $(".taxes").val(taxesAmt);
                 $(".afterTax").val("0");
-                $$("input.amountpaid_sell").val("");
-                $("#paid-calendar-modal").val(moment().format('LLL'));
-                $("#purchase-calendar-modal").val(moment().format('LLL'));
+                $$("input.amountpaid_sell_sales").val(0);
+                $("#paid-calendar-modal-sales").val(moment().format('LLL'));
+                $("#purchase-calendar-modal-sales").val(moment().format('LLL'));
                 var popup = self.$app.popup.open('.newSales', true);
                 self.$setState({
                     currentSale: null
@@ -1771,12 +1791,12 @@ export default {
           //console.log(ar);
             var taxesAmt = arr.tax;
             currChosen = arr;
-            $(".groupProductNameMultiple").val(arr.product_name);
+            $(".groupProductNameMultiple_sales").val(arr.product_name);
             if(self.sellToAnotherUser == null){
-              $(".buyersNameMultiple").val(arr.buyer_name);
+              $(".buyersNameMultiple_sales").val(arr.buyer_name);
               $(".amountPaidMultiple ").val(arr.amountPaid);
-              $("#datePaidMultiple").val(moment.unix(arr.date_paid).format("LLL"));
-              $("#datePurchaseMultiple").val(moment.unix(arr.created_date).format("LLL"));
+              $(".multipleSales_sales:visible").find("#datePaidMultiple_sales").val(moment.unix(arr.date_paid).format("LLL"));
+              $(".multipleSales_sales:visible").find("#datePurchaseMultiple_sales").val(moment.unix(arr.created_date).format("LLL"));
               if(arr.isEstimate != null && arr.isEstimate != undefined){
                 var est = arr.isEstimate == 1 ? true : false;
                 $(".isEstimateMultiple").prop("checked", est);
@@ -1784,10 +1804,10 @@ export default {
                 $(".isEstimateMultiple").prop("checked", false);
               }
             }else{
-              $(".buyersNameMultiple").val("");
+              $(".buyersNameMultiple_sales").val("");
               $(".amountPaidMultiple ").val(0);
-              $("#datePaidMultiple").val(moment().format("LLL"));
-              $("#datePurchaseMultiple").val(moment().format("LLL"));
+              $(".multipleSales_sales:visible").find("#datePaidMultiple_sales").val(moment().format("LLL"));
+              $(".multipleSales_sales:visible").find("#datePurchaseMultiple_sales").val(moment().format("LLL"));
               $(".isEstimateMultiple").prop("checked", false);
             }
             $(".taxpercent").val(taxesAmt);
@@ -1833,7 +1853,7 @@ export default {
       var selectedValues = null;
             var autocompleteStandaloneMultiple = self.$app.autocomplete.create({
               openIn: 'popup', //open in page
-              openerEl: '#autocomplete-standalone-multiple', //link that opens autocomplete
+              openerEl: '#autocomplete-standalone-multiple-sales', //link that opens autocomplete
               multiple: true, //allow multiple values
               navbarColorTheme: 'col bg-color-white text-color-black',
               preloader: true, //enable preloader
@@ -1906,14 +1926,14 @@ export default {
                 }
               }
         });
-        
+        var popup = self.$app.popup.open('.multipleSales_sales', true);
         var taxes = self.settings == null ? 0 : self.settings.taxes;
         var taxesAmt = taxes == undefined ? 0 : taxes;
         $(".taxpercent").val(taxesAmt);
-        $("#datePaidMultiple").val(moment().format('LLL'));
-        $("#datePurchaseMultiple").val(moment().format('LLL'));
+        $(".multipleSales_sales:visible").find("#datePaidMultiple_sales").val(moment().format('LLL'));
+        $(".multipleSales_sales:visible").find("#datePurchaseMultiple_sales").val(moment().format('LLL'));
         //self.CalculateTotalProduct();
-        var popup = self.$app.popup.open('.multipleSales', true);
+        
     },
     SelectItemMultipleProducts: function(select){//name,cost,status,created_date
       var self = this;
@@ -1926,16 +1946,16 @@ export default {
       var discount = select.discount == null ? 0 : select.discount;
       //var discount = 0;
       var totalPrice = select.total_price == null ? "" : select.total_price; 
-        var html = '<li class="eachSaleParent eachProduct"><div class="card myCard"><div class="card-content padding-horizontal-half">';
+        var html = '<li class="eachSaleParent_sales eachProduct_sales"><div class="card myCard"><div class="card-content padding-horizontal-half">';
           html += '<div><span class="labelName">Product Name: </span><div class="display-inline-flex"><input class="productName" type="text" placeholder="Product Name" value="';
           html +=  name + '"></div></div>';
           html += '<input type="hidden" class="productID" value="' + select._id + '">';
           html += '<input type="hidden" class="hiddenQuantity" value="' + select.stock + '">';
           html += '<div class="row"><div class="col-50"><div class="item-content item-input no-padding-left"><div class="item-inner no-padding-right"><div class="labelName">Product Cost</div>';
-          html += '<div class="item-input-wrap"><input class="productCost" type="text" placeholder="Product Cost" value="' + cost + '">';
+          html += '<div class="item-input-wrap"><input class="productCost_sales" type="text" placeholder="Product Cost" value="' + cost + '">';
           html +=  '<span class="input-clear-button"></span></div></div></div></div>';
           html += '<div class="col-50"><div class="item-content item-input no-padding-left"><div class="item-inner no-padding-right"><div class="labelName">Quantity</div>';
-          html += '<div class="item-input-wrap"><input class="productQuantity" type="text" placeholder="Product Quantity" value="' + quantity + '">';
+          html += '<div class="item-input-wrap"><input class="productQuantity_sales" type="text" placeholder="Product Quantity" value="' + quantity + '">';
           html +=  '<span class="input-clear-button"></span></div></div></div></div></div>';
           html += '<div><span class="labelName">Discount: </span><div class="display-inline-flex"><input class="discount" type="text" placeholder="Discount" value="';
           html +=  discount + '"></div></div>';
@@ -1945,15 +1965,15 @@ export default {
           html += '<a class="button button-small button-raised removeProduct" data-id="' + select._id + '">Delete</a>';
         html += '</p></div></div>'
         html += '</li>';
-        $("#products-list .sortList").append(html);
-        $(".eachSaleParent .removeProduct").off("click").on("click", function(){
+        $("#products-list-sales .sortList").append(html);
+        $(".eachSaleParent_sales .removeProduct").off("click").on("click", function(){
                   var id = $(this).attr("data-id");
-                  $(this).parents(".eachSaleParent").eq(0).remove();
+                  $(this).parents(".eachSaleParent_sales").eq(0).remove();
                   Promise.resolve(self.RemoveItemProduct(id)).then(() => {
                     self.CalculateTotalProduct();
                   }); 
                 })
-                $(".eachSaleParent input").off("keyup").on("keyup", function(){
+                $(".eachSaleParent_sales input").off("keyup").on("keyup", function(){
                 self.CalculateTotalProduct();
             })
                 
@@ -1977,19 +1997,19 @@ export default {
     },
     closePopUpMultiple:function(){
       var self = this;
-        var popup = self.$app.popup.close('.multipleSales', true);
+        var popup = self.$app.popup.close('.multipleSales_sales', true);
         popup.once("closed", function(){
-          $(".multipleSales .sortList li").remove();
-          $(".buyersNameMultiple").parents("li").eq(0).removeClass("bg-color-red");
+          $(".multipleSales_sales .sortList li").remove();
+          $(".buyersNameMultiple_sales").parents("li").eq(0).removeClass("bg-color-red");
           $(".totalAmountBeforeProfitProduct, .totalAmountProduct").text("0");
-          $(".amountPaidMultiple, .buyersNameMultiple, .groupProductNameMultiple").val("");
-          $("#datePaidMultiple").next("span").click();
-          $("#datePurchaseMultiple").next("span").click();
+          $(".amountPaidMultiple, .buyersNameMultiple_sales, .groupProductNameMultiple_sales").val("");
+          $(".multipleSales_sales:visible").find("#datePaidMultiple_sales").next("span").click();
+          $(".multipleSales_sales:visible").find("#datePurchaseMultiple_sales").next("span").click();
           selectedUserName = null;
           selectedUserID = null;
-          //$("#datePaidMultiple").val(moment().format('LLL'));
-          //$("#datePurchaseMultiple").val(moment().format('LLL'));
-          self.$app.autocomplete.destroy("#autocomplete-standalone-multiple");
+          //$("#datePaidMultiple_sales").val(moment().format('LLL'));
+          //$("#datePurchaseMultiple_sales").val(moment().format('LLL'));
+          self.$app.autocomplete.destroy("#autocomplete-standalone-multiple-sales");
             self.$setState({
                 selectedProducts:[],
                 sellToAnotherUser:null
@@ -2296,7 +2316,7 @@ export default {
           text: '<b>Check if this is just an estimate,</b><br><b>no purchase is being made yet.</b>',
         });
         var autocompleteDropdownAll = self.$app.autocomplete.create({
-          inputEl: '#name_sell',
+          inputEl: '#name_sell_sales',
           openIn: 'dropdown',
           valueProperty: '_id', //object's "value" property name
           textProperty: 'name_price', //object's "text" property name
@@ -2321,16 +2341,17 @@ export default {
                   //console.log(value);
                   if(value.length > 0){
                   value = value[0];
-                  $("#name_sell").val(value.name);
-                  $(".cost_sell").val(value.selling_price);
+                  $("#name_sell_sales").val(value.name);
+                  $(".cost_sell_sales").val(value.selling_price);
                   $("#productID_sell").val(value._id);
-                  $(".hiddenQuantitySingle").val(value.stock);
-                  var quant = Number($(".quantity_sell").val());
+                  var availableStock = value.stock == undefined ? "Unlimited" : value.stock;
+                  $(".hiddenQuantitySingle").val(availableStock);
+                  var quant = Number($(".quantity_sell_sales").val());
                     if(!isNaN(quant) || quant == 0){
                       var q = quant == 0 ? 1 : quant;
                       var tp = Number(value.selling_price) * q;
                       //tp = tp - discount;
-                      $(".total_sell").val(tp.toFixed(2));
+                      $(".total_sell_sales").val(tp.toFixed(2));
                       self.calculateQuantity();
                     }
                   }
@@ -2338,7 +2359,7 @@ export default {
               }
         });
         var autocompleteDropdownBuyer = self.$app.autocomplete.create({
-          inputEl: '#buyer_sell',//buyersNameMultiple
+          inputEl: '#buyer_sell_sales',//buyersNameMultiple_sales
           openIn: 'dropdown',
           valueProperty: '_id', //object's "value" property name
           textProperty: 'name', //object's "text" property name
@@ -2356,7 +2377,7 @@ export default {
                 change: function (value) {
                   if(value.length > 0){
                   value = value[0];
-                  $("#buyer_sell").val(value.name);
+                  $("#buyer_sell_sales").val(value.name);
                   selectedUserName = value.name;
                   selectedUserID = value._id;
                   }
@@ -2364,7 +2385,7 @@ export default {
               }
         });
         var autocompleteDropdownMultipleBuyer = self.$app.autocomplete.create({
-          inputEl: '#buyersNameMultiple',//buyersNameMultiple
+          inputEl: '#buyersNameMultiple_sales',//buyersNameMultiple_sales
           openIn: 'dropdown',
           valueProperty: '_id', //object's "value" property name
           textProperty: 'name', //object's "text" property name
@@ -2382,7 +2403,7 @@ export default {
                 change: function (value) {
                   if(value.length > 0){
                   value = value[0];
-                  $("#buyersNameMultiple").val(value.name);
+                  $("#buyersNameMultiple_sales").val(value.name);
                   selectedUserName = value.name;
                   selectedUserID = value._id;
                   }
@@ -2390,7 +2411,7 @@ export default {
               }
         });
         var calendar1 = self.$app.calendar.create({
-                  inputEl: '#datePaidMultiple',
+                  inputEl: '#datePaidMultiple_sales',
                   timePicker: true,
                   closeOnSelect: true,
                   formatValue: function(values){
@@ -2404,7 +2425,7 @@ export default {
               });
 
               var calendar2 = self.$app.calendar.create({
-                  inputEl: '#datePurchaseMultiple',
+                  inputEl: '#datePurchaseMultiple_sales',
                   timePicker: true,
                   closeOnSelect: true,
                   formatValue: function(values){
@@ -2418,7 +2439,7 @@ export default {
               });
 
         var calendar = self.$app.calendar.create({
-                  inputEl: '#paid-calendar-modal',
+                  inputEl: '#paid-calendar-modal-sales',
                   timePicker: true,
                   closeOnSelect: true,
                   formatValue: function(values){
@@ -2432,7 +2453,7 @@ export default {
               });
 
               var calendarPurchase = self.$app.calendar.create({
-                  inputEl: '#purchase-calendar-modal',
+                  inputEl: '#purchase-calendar-modal-sales',
                   timePicker: true,
                   closeOnSelect: true,
                   formatValue: function(values){
