@@ -169,9 +169,6 @@ setTimeout(function(){
   
   document.addEventListener("backbutton", onBackKeyDown, false);
   window.addEventListener("beforeunload", function(event) {
-    if($(".modal-in").length > 0){
-      app.dialog.close(true);
-    }
     event.returnValue = "Are you sure you want to leave?";
   });
 
