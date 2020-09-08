@@ -121,7 +121,7 @@
         <div class="page-content">
           <div class="block margin-half">
             <div class="item-label">* Ensure you don't have duplicate products in Excel and on system.</div>
-            <div class="item-label">Expected column names are: <b>name</b>, <b>description</b>, <b>cost_price</b>, <b>selling_price</b></div>
+            <div class="item-label">Expected column names are: <b>name</b>, <b>description</b>, <b>cost_price</b>, <b>selling_price</b>, <b>stock e.g 5</b></div>
             <input type="file" id="fileUpload" accept=".xls,.xlsx" />
             <a href="#" class="col button button-outline button-raised mainButton margin-top-half" @click='uploadFile'>Save Excel Data</a>
             <div class="errorContent"></div>
@@ -298,33 +298,6 @@
     
     </div>
 
-  <!--pop up add new product-->
-  <div class="popup uploadProducts popup-tablet-fullscreen">
-    <div class="view">
-      <div class="page">
-        <div class="navbar">
-          <div class="navbar-bg"></div>
-          <div class="navbar-inner">
-            <div class="title">Upload Products</div>
-            <div class="right">
-              <!-- Link to close popup -->
-              <a class="link" @click="closePopUpExcel()"><i class="icon f7-icons">multiply</i>Close</a>
-            </div>
-          </div>
-        </div>
-        <div class="page-content">
-          <div class="block margin-half">
-            <div class="item-label">* Ensure you don't have duplicate products in Excel and on system.</div>
-            <div class="item-label">Expected column names are: <b>name</b>, <b>description</b>, <b>cost_price</b>, <b>selling_price</b></div>
-            <input type="file" id="fileUpload" accept=".xls,.xlsx" />
-            <a href="#" class="col button button-outline button-raised mainButton margin-top-half" @click='uploadFile'>Save Excel Data</a>
-            <div class="errorContent"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  
-  </div>
 
   <!--pop up add new product-->
   <div class="popup restockProduct popup-tablet-fullscreen">
@@ -437,7 +410,7 @@
                     <div class="item-inner">
                       <div class="item-title">Product Name</div>
                       <div class="item-input-wrap">
-                        <input type="text" class="name" placeholder="Product name" required validate/>
+                        <input type="text" class="nameProduct" placeholder="Product name" required validate/>
                         <span class="input-clear-button"></span>
                       </div>
                     </div>
@@ -942,21 +915,7 @@
 import * as moment from 'moment';
 import * as XLSX from 'xlsx';
 import copy from 'copy-to-clipboard';
-var selectedUserName = null, selectedUserID = null, myActionSheet = null;
-/*var db = new Dexie("BizExpenseManagerDB");
-          db.version(3).stores({
-            ingredients: "++id,name,unit_size,unit,cost_per_unit,status,created_date",
-            products: "++id,name,cost,status,created_date",
-            product_ingredient: "++id,productID,ingredientID,unit_size,cost,status,created_date",
-            product_otherMaterials: "++id,productID,name,cost,status,created_date",
-            sales: "++id,parentID,product_name,isParent,buyer_name,cost,quantity,tax,total_price,afterTax,amountPaid,isPaid,date_paid,created_date,status",
-            expenses: "++id,name,amount_to_pay,amount_paid,date_paid,created_date,recurring,status",
-
-            ingredients_history: "++id,ingID,name,unit_size,unit,cost_per_unit,status,created_date",
-            products_history: "++id,prodID,name,cost,status,created_date",
-            sales_history: "++id,salesID,product_name,buyer_name,cost,amountPaid,isPaid,date_paid,created_date,status",
-            expenses_history: "++id,expID,name,amount_to_pay,amount_paid,date_paid,created_date,recurring,status"
-          })*/
+var selectedUserName = null, selectedUserID = null, myActionSheet = null, mogulsheetdb = null;
 var dbProducts = null, dbProdIngs = null, dbProdOthers = null, dbSales = null, dbIngs = null, dbSettings = null, dbClients = null;
 var dbRestock = null, dataToUpload = null, eachBatch = 50, uploaded = 0;
 //var $$ = Dom7;
@@ -991,9 +950,10 @@ export default {
     openPopUpRestockHistory: function(){
       var self = this;
       self.$app.preloader.show();
-      dbRestock.find({
+      mogulsheetdb.find({
           selector: {
-            _id: {$gt: 0}
+            restockID: {$gt: 0},
+            _id: {$gte: null}
           },
           sort: [{'_id': 'desc'}]
         }).then(function(ar){
@@ -1005,7 +965,7 @@ export default {
             $(".restockHistory").find(".sortTextPar, .header_title").removeClass("display-none");
             var pagination = "<ul class='pagination padding-left-half margin-vertical-half'><ul>";
             $(pagination).insertAfter($("#restock-list .list"));
-            $(".sort").remove();
+            $("#restock-list").find(".sort").remove();
             var sorter = '<span class="sort" data-sort="name">Product Name</span><span class="sort" data-sort="restock_date">Restock date</span>';
             $(sorter).insertAfter($(".restockHistory").find(".sortText"));
             $(".restockHistory").find(".sortText").removeClass("display-none");
@@ -1066,17 +1026,18 @@ export default {
           var finalStock = stock != "" ? stock : "Unlimited";
           var obj = {};
           obj._id = moment().format("X");
-          obj.productID = self.currentProduct._id;
+          obj.restockID = obj._id;
+          obj.productID_restockID = self.currentProduct._id;
           obj.productName = self.currentProduct.name;
           obj.last_stock = $(".currentStock").text();
           obj.total_stock = $(".totalStock").text();
           obj.new_stock = finalStock;
           obj.restock_date = moment($("#restock-calendar-modal").val()).format("X");
           obj.created_date = moment().format("X");
-          dbRestock.put(obj).then((dat) => {
-            dbProducts.get(self.currentProduct._id).then((dat2) => {
+          mogulsheetdb.put(obj).then((dat) => {
+            mogulsheetdb.get(self.currentProduct._id).then((dat2) => {
               dat2.stock = $(".totalStock").text();
-              dbProducts.put(dat2).then((dat3) => {
+              mogulsheetdb.put(dat2).then((dat3) => {
                 self.showToast("Restocking Saved", "center");
                 self.closeRestockProduct();
                 self.getData();
@@ -1309,10 +1270,10 @@ export default {
         var self = this;
         
         self.$app.dialog.confirm("Are you sure you want to permanently delete this?", "Mogul Sheet", function(){
-                  dbProducts.get(id).then(function(doc) {
+                  mogulsheetdb.get(id).then(function(doc) {
                    // console.log(doc);
                     doc.status = -1
-                    return dbProducts.put(doc);
+                    return mogulsheetdb.put(doc);
                   }).then(function(){
 
                   self.products = self.products.filter(function(e){ 
@@ -1344,10 +1305,10 @@ export default {
             }
         }
         self.$app.dialog.confirm("Are you sure you want to " + text + "?", "Mogul Sheet", function(){
-                  dbProducts.get(id).then(function(doc) {
+                  mogulsheetdb.get(id).then(function(doc) {
                    // console.log(doc);
                     doc.status = checked
-                    return dbProducts.put(doc);
+                    return mogulsheetdb.put(doc);
                   }).then(function(){
 
                   self.products = self.products.filter(function(e){ 
@@ -1426,7 +1387,7 @@ export default {
               self.$setState({
                       currentProduct:item
                     });
-                    $$("input.name").val(item.name);
+                    $$("input.nameProduct").val(item.name);
                     var textEditor = self.$app.textEditor.get('.desc_of_product');
                     var desc = item.desc == null ? "" : item.desc;
                     textEditor.setValue(desc);
@@ -1582,7 +1543,7 @@ export default {
             self.$setState({
                   settings: docset
               })
-            dbSettings.put(docset).then((retDoc) => {
+            mogulsheetdb.put(docset).then((retDoc) => {
               
             }).catch(() => {})
         }
@@ -1601,10 +1562,10 @@ export default {
                   self.$app.preloader.hide();
                   if(result._id != null || result.id != null){
                     var resultID = result._id == undefined ? result.id : result._id;
-                    dbProducts.get(self.currentProductLink._id).then(function(doc2) {
+                    mogulsheetdb.get(self.currentProductLink._id).then(function(doc2) {
                     // console.log(doc);
                       doc2.product_link_id = resultID;
-                       dbProducts.put(doc2).then(() => {
+                       mogulsheetdb.put(doc2).then(() => {
                          var newLink = {};
                          newLink.link = doc2.product_link_id;
                          newLink.id = self.currentProductLink._id;
@@ -1738,9 +1699,11 @@ export default {
         //var collection = db.products.where('status').equals(checked).toArray(function(arr){
         //var collection = db.ingredients.toArray(function(arr){
         //console.log(arr);
-        dbClients.find({
+        mogulsheetdb.find({
           selector: {
-            status: {$eq: checked}
+            status: {$eq: checked},
+            clientID: {$gt: 0},
+            _id: {$gte: null}
           }
         }).then(function(ar){
           var arr = ar.docs;
@@ -1919,18 +1882,22 @@ export default {
             if(id != null || id != undefined){
                 //var collection = db.product_ingredient.where('productID').equals(Number(id)).toArray(function(arr){
                   //console.log(arr);
-                  dbProdIngs.find({
+                  console.log("the prod id", id);
+                  mogulsheetdb.find({
                       selector: {
-                        productID: {$eq: id}
+                        productID_prodIngsID: {$eq: id},
+                        prodIngsID: {$gt: 0},
+                        status: {$gte: null},
+                        _id: {$gte: null}
                       }
                     }).then(function(ar){
                       var arr = ar.docs;
-                      //console.log(arr);
+                      console.log("product ings", arr);
                     $.each(arr, function( key, value ) {
                         //$(".ing-" + value.ingredientID).click();
                         //self.SelectItem(Number(value.ingredientID));
                         //console.log(value.ingredientID);
-                        var each = self.activeArr.find(x => x._id == value.ingredientID);
+                        var each = self.activeArr.find(x => x._id == value.ingredientIDFK);
                         if(each != undefined){
                           each.select_unit_size = value.unit_size;
                           each.select_cost = value.cost;
@@ -1951,13 +1918,16 @@ export default {
                 }).then(function(){
                 //var collection2 = db.product_otherMaterials.where('productID').equals(Number(id)).toArray(function(arr){
                   //console.log(arr);
-                  dbProdOthers.find({
+                  mogulsheetdb.find({
                       selector: {
-                        productID: {$eq: id}
+                        productID_prodIngsID: {$eq: id},
+                        prodOthersID: {$gt: 0},
+                        status: {$gte: null},
+                        _id: {$gte: null}
                       }
                     }).then(function(ar){
                     var arr = ar.docs;
-                    //console.log(arr);
+                    console.log("product ings other", arr);
                   $.each(arr, function( key, value ) {
                     if(value.name != "***Profit***"){
                       var html = '<li class="extraCostRow"><div class="card myCard"><div class="card-content padding-horizontal-half">';
@@ -2063,7 +2033,7 @@ export default {
           var costPlusTax = totalPric + tax;
           var obj = {
                 product_name: productName,  
-                productID: productID,
+                productID_saleID: productID,
                 buyer_name: buyername,
                 selling_price: price,
                 discount: discount,
@@ -2099,14 +2069,15 @@ export default {
               self.saveProcessedMultiplePayment(grpName, theBuyerName,theBuyerID,isEstimate,taxes,afterTaxes,beforeTaxes,amountPaid,fullyPaid,isPaidDate,bigData);
             }else{
               //console.log("differ", chosenUser);
-              var generatedID = moment().format("X");
+              var generatedID = "0" + moment().format("X");
               var objNew = {
                   name: buyername,
                   _id: generatedID,
+                  clientID: generatedID,
                   created_date: generatedID,
                   status:1
               }
-              dbClients.put(objNew).then(function(res) {
+              mogulsheetdb.put(objNew).then(function(res) {
                       //self.$app.dialog.alert("Item saved.");
                       self.showToast("New User Created.", "center");
                       self.saveProcessedMultiplePayment(grpName, buyername,generatedID,isEstimate,taxes,afterTaxes,beforeTaxes,amountPaid,fullyPaid,isPaidDate,bigData);
@@ -2142,38 +2113,45 @@ export default {
             var deleted = "";
             if(self.currentMultipleSale != null){
               objMaster._id = self.currentMultipleSale;
+              objMaster.saleID = objMaster._id;
             }else{
               objMaster._id = moment().format("X");
+              objMaster.saleID = objMaster._id;
             }
 
             //db.transaction('rw', db.sales, () => {
                 
-                dbSales.put(objMaster).then(function(res){
+                mogulsheetdb.put(objMaster).then(function(res){
                     sbigData.forEach((element, index) => {
                     sbigData[index].parentID = res.id;
-                    sbigData[index]._id = index + moment().format("X");
+                    var add = index.toString() + index.toString();
+                    sbigData[index]._id = add + moment().format("X");
+                    sbigData[index].saleID = sbigData[index]._id;
                     sbigData[index].buyer_name = buyername1;
                     sbigData[index].buyer_id = theBuyerID1;
                     //deleted = res.id; 
                   });
 
                 if(self.currentMultipleSale != null){
-                  dbSales.find({
+                  mogulsheetdb.find({
                       selector: {
-                        parentID: {$eq: deleted}
+                        parentID: {$eq: deleted},
+                        saleID: {$gt: 0},
+                        _id: {$gte: null}
                       }
                     }).then(function(ar){
                       var arr = ar.docs;
                             arr.forEach((element, index) => {
                             arr[index]._deleted = true;
                         });
-                        dbSales.bulkDocs(arr).then(function(){
-                          dbSales.bulkDocs(sbigData);
+                        mogulsheetdb.bulkDocs(arr).then(function(){
+                          mogulsheetdb.bulkDocs(sbigData);
                         })
                     })
 
                 }else{
-                    dbSales.bulkDocs(sbigData).then(function(lastKey) {
+                    console.log("bought prods", sbigData);
+                    mogulsheetdb.bulkDocs(sbigData).then(function(lastKey) {
                         //console.log("Last allcost's id was: " + lastKey); // Will be 100000.
                         if(isEstimate1 == 0){
                             self.subtractStockMultiple(sbigData);
@@ -2195,11 +2173,13 @@ export default {
     },
     subtractStockMultiple: function(bigData){
       var self = this;
-      var prods = bigData.filter(x => x.productID != "0");
-      var prodsID = prods.map(x => x.productID);
-      dbProducts.find({
+      var prods = bigData.filter(x => x.productID_saleID != "0");
+      var prodsID = prods.map(x => x.productID_saleID);
+      mogulsheetdb.find({
               selector: {
-                _id: { $in: prodsID }
+                _id: { $in: prodsID },
+                productID: {$gt: 0},
+                status: {$eq: 1}
               },
               sort: [{'_id': 'desc'}]
             }).then((arr) => {
@@ -2209,7 +2189,7 @@ export default {
                 if(dat.stock != undefined && dat.stock != "undefined" && dat.stock != "Unlimited"){
                       var floatStock = parseFloat(dat.stock);
                       if(!isNaN(floatStock)){
-                        var quantitySold = prods.find(x => x.productID == dat._id).quantity;
+                        var quantitySold = prods.find(x => x.productID_saleID == dat._id).quantity;
                         var remain = floatStock - quantitySold;
                         if(!isNaN(remain)){
                           dat.stock = remain;
@@ -2219,7 +2199,7 @@ export default {
                   }
               })
               if(saveBigData.length > 0){
-                dbProducts.bulkDocs(saveBigData);
+                mogulsheetdb.bulkDocs(saveBigData);
               }
             })
     },
@@ -2356,7 +2336,7 @@ export default {
         //add stocking to dbRestocking
         var saveStock = {};
         var obj = {
-                name: $$("input.name").val(),  
+                name: $(".nameProduct").val(),  
                 desc: desc,
                 stock: finalStock,
                 cost_price: $("input.cost_price").val(),
@@ -2367,6 +2347,7 @@ export default {
             if(self.currentProduct != null){
               obj._id = self.currentProduct._id;
               obj._rev = self.currentProduct._rev;
+              obj.productID = obj._id;
               saveStock.last_stock = self.currentProduct.stock == undefined ? "Unlimited" : self.currentProduct.stock;
               saveStock.total_stock = finalStock;
               if(saveStock.last_stock != "Unlimited" && finalStock != "Unlimited"){
@@ -2379,27 +2360,29 @@ export default {
 
             }else{
               obj._id = moment().format("X");
+              obj.productID = obj._id;
               saveStock.last_stock = 0;
               saveStock.new_stock = finalStock;
               saveStock.total_stock = finalStock;
             }
             
-            saveStock._id = moment().format("X");
-            saveStock.productID = obj._id;
-            saveStock.productName = $("input.name").val();
+            saveStock._id = 0 + moment().format("X");
+            saveStock.restockID = saveStock._id;
+            saveStock.productID_restockID = obj._id;
+            saveStock.productName = $(".nameProduct").val();
             saveStock.restock_date = moment().format("X");
             saveStock.created_date = moment().format("X");
             
 
-          dbProducts.put(obj).then(function(id) {
+          mogulsheetdb.put(obj).then(function(id) {
                   //self.$app.dialog.alert("Item saved.");
                   self.showToast("Item saved.", "center");
-                  $$("input.name,input.selling_price,.cost_price, .stock_quantity").val("");
+                  $$("input.nameProduct,input.selling_price,.cost_price, .stock_quantity").val("");
                   $(".isUnlimited").prop("checked", true);
                   var textEditor = self.$app.textEditor.get('.desc_of_product');
                   textEditor.setValue("");
                   if((self.currentProduct == null) || (self.currentProduct.stock != finalStock)){
-                    dbRestock.put(saveStock).then((dat2) => {
+                    mogulsheetdb.put(saveStock).then((dat2) => {
                       self.getData();
                     }).catch((err) => {
                       self.getData();
@@ -2482,14 +2465,15 @@ export default {
         theBuyerName = selectedUserName;
         self.saveProcessedPayement(theBuyerName, theBuyerID, isEstimate, fullyPaid, isPaidDate);
       }else{
-        var generatedID = moment().format("X");
+        var generatedID = "0" + moment().format("X");
         var obj = {
                 name: chosenUser,
                 _id: generatedID,
+                clientID: generatedID,
                 created_date: generatedID,
                 status:1
             }
-            dbClients.put(obj).then(function(res) {
+            mogulsheetdb.put(obj).then(function(res) {
                     //self.$app.dialog.alert("Item saved.");
                     self.showToast("New User Created.", "center");
                     self.saveProcessedPayement(chosenUser, generatedID, isEstimate, fullyPaid, isPaidDate);
@@ -2512,7 +2496,7 @@ export default {
                 tax: $$("input.taxes").val(),
                 parentID: 0,
                 isParent:0,
-                productID: productId,
+                productID_saleID: productId,
                 isEstimate: isEstimate,
                 discount: $(".discount_sell").val(),
                 afterTax: $$("input.afterTax").val(),
@@ -2523,10 +2507,11 @@ export default {
                 date_paid: isPaidDate,
                 created_date: moment($("#purchase-calendar-modal").val()).format("X"), //Date.parse($("#purchase-calendar-modal").val()),
                 status:1,
-                _id: moment().format("X")
+                _id: moment().format("X"),
+                saleID: moment().format("X")
               };
  
-            dbSales.put(obj).then(function(){
+            mogulsheetdb.put(obj).then(function(){
                   self.showToast("Record saved!","center");
                   $("#paid-calendar-modal").next("span").click();
                   $("#purchase-calendar-modal").next("span").click();
@@ -2536,14 +2521,14 @@ export default {
                   selectedUserName = null;
                   selectedUserID = null;
                   if(productId != 0 && isEstimate == 0){
-                    dbProducts.get(productId).then((dat) => {
+                    mogulsheetdb.get(productId).then((dat) => {
                       if(dat.stock != undefined && dat.stock != "undefined" && dat.stock != "Unlimited"){
                         var floatStock = parseFloat(dat.stock);
                         if(!isNaN(floatStock)){
                           var remain = floatStock - quantitySold;
                           if(!isNaN(remain)){
                             dat.stock = remain;
-                            return dbProducts.put(dat).then((dt) => {
+                            return mogulsheetdb.put(dat).then((dt) => {
                               self.getData();
                             })
                           }
@@ -2581,12 +2566,15 @@ export default {
         checked = toggle.checked == true ? 0 : 1;
       }
       self.$app.preloader.show();
-      dbProducts.find({
+      mogulsheetdb.find({
           selector: {
-            status: {$eq: checked}
+            status: {$eq: checked},
+            productID: {$gt: 0},
+            _id: {$gte: null}
           },
           sort: [{'_id': 'desc'}]
         }).then(function(ar){
+          console.log("products", ar);
           var arr = ar.docs;
           self.$app.preloader.hide();
           self.$setState({
@@ -2600,10 +2588,10 @@ export default {
                         $(".sortTextPar").removeClass("display-none");
                         var pagination = "<ul class='pagination padding-left-half margin-vertical-half'><ul>";
                         $(pagination).insertAfter($("#product-list .list"));
-                        $(".sort").remove();
+                        $("#product-list").find(".sort").remove();
                         var sorter = '<span class="sort" data-sort="name">Name</span><span class="sort" data-sort="cost">Cost</span><span class="sort" data-sort="in-stock">In Stock</span>';
-                        $(sorter).insertAfter($(".sortText"));
-                        $(".sortText").removeClass("display-none");
+                        $(sorter).insertAfter($("#product-list").find(".sortText"));
+                        $("#product-list").find(".sortText").removeClass("display-none");
                         var mult = "<div class='margin-top-half viewRestockHistoryParent'><a class='button button-raised bg-color-blue viewRestockHistory'>View Restock History</div>";
                         mult += "<div class='margin-top-half sellMultParent'><a class='button button-raised mainButton sellMultiple'>Sell Multiple Products</div>";
                           //
@@ -2729,13 +2717,18 @@ export default {
         checked = toggle.checked == true ? 0 : 1;
       }
 
-      dbIngs.allDocs({
-          include_docs: true
+      mogulsheetdb.find({
+          selector: {
+            status: {$gt: -1},
+            ingredientID: { $gt: 0 },
+            _id: {$gte: null}
+          },
+          sort: [{'_id': 'desc'}]
         }).then(function(ar){
-          //console.log(ar);
-          var arr = ar.rows;
-          var arr2 = arr.filter(x => (x.doc.status == 1 || x.doc.status == 0)).map(x => x.doc);
-          var activeArr = arr.filter(x => x.doc.status == 1).map(x => x.doc);
+          //console.log("prod ings", ar);
+          var arr = ar.docs;
+          var arr2 = arr.filter(x => (x.status == 1 || x.status == 0)).map(x => x);
+          var activeArr = arr.filter(x => x.status == 1).map(x => x);
         //var collection = db.ingredients.toArray(function(arr){
         //console.log(arr2);
           self.$setState({
@@ -2758,7 +2751,7 @@ export default {
         smallUpload = dataToUpload.slice(uploaded, picking + uploaded); 
         //upload small amount
 
-        dbProducts.bulkDocs(smallUpload).then(() => {
+        mogulsheetdb.bulkDocs(smallUpload).then(() => {
             //console.log("uploaded", uploaded, "picking", picking + uploaded);
             uploaded += picking;
             setTimeout(self.uploadFileBatches(), 1000);
@@ -2820,11 +2813,16 @@ export default {
                     obj.selling_price = 0;
                   }
 
+                  if(val.stock != undefined){
+                    obj.stock = val.stock;
+                  }
+
                   obj.status = 1;
                   obj.created_date = moment().format("X");
                   var ids = moment().format("X");
                   ids = Number(ids) - ind;
                   obj._id = ids.toString();
+                  obj.productID = obj._id;
                   toSave.push(obj);
                 }else{
                   rejected.push(val);
@@ -2837,14 +2835,6 @@ export default {
                 dataToUpload = toSave;
                 self.uploadFileBatches();
 
-                  /*console.log(" to save");
-                  console.log(toSave);
-                  dbProducts.bulkDocs(toSave).then(() => {
-                    self.showToast(toSave.length + " records were saved", "center");
-                  }).catch((err) => {
-                    self.$app.preloader.hide();
-                    self.showToast("error occured during saving", "center");
-                  })*/
                 }else if(toSave.length == totalLength){
                   self.showToast("No record was saved", "center");
                 }
@@ -2899,10 +2889,18 @@ export default {
     },
     startPouch: function(){
           var self = this;
-          /*products: "++id,name,cost,status,created_date",
-            product_ingredient: "++id,productID,ingredientID,unit_size,cost,status,created_date",
-            product_otherMaterials: "++id,productID,name,cost,status,created_date",*/
-            //sales: "++id,parentID,product_name,isParent,buyer_name,cost,quantity,tax,total_price,afterTax,amountPaid,isPaid,date_paid,created_date,status",
+          mogulsheetdb = self.$app.methods.startPouch();
+          var id = self.settingsID;
+            mogulsheetdb.get(id).then(function(doc) {
+                  self.$setState({
+                      settings: doc
+                    })
+              })
+              
+          self.getClients();
+          self.getData();
+         
+          /*
           try{//id,name,unit_size,unit,cost_per_unit,status,created_date
                 dbProducts = new PouchDB('products.db');
                 dbProdIngs = new PouchDB('product_ingredients.db');
@@ -2961,7 +2959,7 @@ export default {
               })
           }catch(err){
                 
-          }
+          }*/
           
         },
     SaveTotal: function(){
@@ -2983,13 +2981,14 @@ export default {
               return false;
           }else{
             var obj = {};
-            obj.productID = self.productToEditID;
-            obj.ingredientID = ingID;
+            obj.productID_prodIngsID = self.productToEditID;
+            obj.ingredientIDFK = ingID;
             obj.unit_size = Number(val);
             obj.cost = Number(cost);
             obj.status = 1;
             obj.created_date = moment().format("X");
             obj._id = index + moment().format("X");
+            obj.prodIngsID = obj._id;
             allCost.push(obj);
           }
       })
@@ -3004,23 +3003,27 @@ export default {
                   return false;
               }else{
                 var obj = {};
-                obj.productID = self.productToEditID;
+                obj.productID_prodIngsID = self.productToEditID;
                 obj.name = extraname;
                 obj.cost = Number(extracost);
                 obj.status = 1;
                 obj.created_date = moment().format("X");
-                obj._id = index + moment().format("X");
+                var add = index.toString() + index.toString();
+                obj._id = add + moment().format("X");
+                obj.prodOthersID = obj._id;
                 allExtraCost.push(obj);
               }
           })
       }
           if(passed){
                 var obj = {};
-                obj.productID = self.productToEditID;
+                obj.productID_prodIngsID = self.productToEditID;
                 obj.name = "***Profit***";
                 obj.cost = Number($(".profitvalue").val());
                 obj.status = 1;
                 obj.created_date = moment().format("X");
+                obj._id = "000" + moment().format("X");
+                obj.prodOthersID = obj._id;
                 allExtraCost.push(obj);
           }
           //record in db
@@ -3036,9 +3039,12 @@ export default {
                       .then(function (deleteCount) {
                             //console.log( "Deleted " + deleteCount + " objects");
                           });*/
-                          dbProdIngs.find({
+                          mogulsheetdb.find({
                             selector: {
-                              productID: {$eq: self.productToEditID}
+                              productID_prodIngsID: {$eq: self.productToEditID},
+                              status: {$gt: 0},
+                              prodIngsID: {$gt: 0},
+                              _id: {$gte: null}
                             }
                           }).then(function(ar){
                             var arr = ar.docs;
@@ -3046,14 +3052,17 @@ export default {
                                   arr[index]._deleted = true;
                               });
                               //console.log(arr);
-                              dbProdIngs.bulkDocs(arr).then(function(){
-                                dbProdIngs.bulkDocs(allCost);
+                              mogulsheetdb.bulkDocs(arr).then(function(){
+                                mogulsheetdb.bulkDocs(allCost);
                               })
                           
 
-                          dbProdOthers.find({
+                          mogulsheetdb.find({
                             selector: {
-                              productID: {$eq: self.productToEditID}
+                              productID_prodIngsID: {$eq: self.productToEditID},
+                              prodOthersID: {$gt: 0},
+                              status: {$eq: 1},
+                              _id: {$gte: null}
                             }
                           }).then(function(ar1){
                             //console.log(ar1);
@@ -3062,45 +3071,22 @@ export default {
                                   arr2[index]._deleted = true;
                               });
                               //console.log(arr2);
-                              dbProdOthers.bulkDocs(arr2).then(function(){
-                                dbProdOthers.bulkDocs(allExtraCost);
+                              mogulsheetdb.bulkDocs(arr2).then(function(){
+                                console.log("save other cost", allExtraCost);
+                                mogulsheetdb.bulkDocs(allExtraCost).then((res) => {
+                                  console.log("res of save other costs", res);
+                                }).catch((err) => {
+                                  console.log("res of save other costs err", err);
+                                })
                               })
                           })
 
-                          dbProducts.get(self.productToEditID).then(function(doc) {
+                          mogulsheetdb.get(self.productToEditID).then(function(doc) {
                           // console.log(doc);
                             doc.cost_price = total1;
                             doc.selling_price = total2;
-                            return dbProducts.put(doc);
+                            return mogulsheetdb.put(doc);
                           })
-
-                          /*db.product_otherMaterials.where("productID").equals(self.productToEditID).delete()
-                          .then(function (deleteCount) {
-                              //console.log( "Deleted " + deleteCount + " objects");
-                            });
-                              //console.log(allCost);
-                              db.product_ingredient.bulkAdd(allCost).then(function(lastKey) {
-                                      //console.log("Last allcost's id was: " + lastKey); // Will be 100000.
-                                  }).catch(Dexie.BulkError, function (e) {
-                                      passed = false;
-                                  });
-
-                                  //console.log(allExtraCost);
-                                  db.product_otherMaterials.bulkAdd(allExtraCost).then(function(lastKey) {
-                                     // console.log("Last extracost's id was: " + lastKey); // Will be 100000.
-                                  }).catch(Dexie.BulkError, function (e) {
-                                      passed = false;
-                                  });*/
-                                  
-                                /*db.products.update(self.productToEditID, {cost: totall}).then(function (updated) {
-                                  if (updated){
-                                    //console.log ("Product price " + self.productToEditID + " was changed to " + totall);
-                                  }else{
-                                    passed = false;
-                                    //console.log ("Nothing was updated - there were no friend with primary key: 2");
-                                  }
-                                    
-                                });*/
                       
                         //}).then(() => {
                             // Transaction committed. NOT WITHIN ZONE!

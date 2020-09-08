@@ -202,7 +202,7 @@
 <script>
 //import Dexie from 'dexie';
 import {fakeAlert} from '../js/myscript.js';
-var dbSettings = null, dbSettingsImages = null;
+var dbSettings = null, dbSettingsImages = null, mogulsheetdb = null;
 export default {
   data() {
         return {
@@ -248,15 +248,44 @@ export default {
         },
         startPouch: function(){
           var self = this;
+          mogulsheetdb = self.$app.methods.startPouch();
+          dbSettingsImages = new PouchDB('settingsImages.db');
+          self.getData();
           //db = null;
-          try{//id,name,unit_size,unit,cost_per_unit,status,created_date
-            dbSettings = new PouchDB('settings.db');
-            dbSettingsImages = new PouchDB('settingsImages.db');
+          
+          /*try{//id,name,unit_size,unit,cost_per_unit,status,created_date
+            mogulsheetdb = new PouchDB('mogulsheet.db');
+            mogulsheetdb.createIndex({
+              index: {
+                fields: ['ingredientID','name', 'status'],
+                name: 'ingredients',
+                ddoc: 'mydesigndoc',
+                type: 'json'
+              }
+            });
+
+            mogulsheetdb.createIndex({
+              index: {
+                fields: ['clientID', 'created_date','parentID', 'product_name', 'isParent', 'buyer_name', 'status'],
+                name: 'clients',
+                ddoc: 'mydesigndoc',
+                type: 'json'
+              }
+            });
+
+
+            mogulsheetdb.getIndexes().then(function (result) {
+              // yo, a result
+              console.log(result);
+            }).catch(function (err) {
+              // ouch, an error
+            });
+
               //self.syncDB();
-              self.getData();
+              //self.getData();
           }catch(err){
             
-            }
+            }*/
         },
         syncDB: function(){
           var self = this;
@@ -298,7 +327,7 @@ export default {
         getData: function(){
           var self = this;
           var id = self.settingsID;
-          dbSettings.get(id).then(function(doc) {
+          mogulsheetdb.get(id).then(function(doc) {
                 var comName = doc.companyName;
                 var curr = doc.currency;
                 if(comName != "" & comName != null){
@@ -357,20 +386,6 @@ export default {
       startDB: function(){
          //this.$app.methods.storage2();
           var self = this;
-         var db = new Dexie("BizExpenseManagerDB");
-          db.version(1).stores({
-            ingredients: "++id,name,unit_size,unit,cost_per_unit,status,created_date",
-            products: "++id,name,cost,status,created_date",
-            product_ingredient: "++id,productID,ingredientID,unit_size,cost,status,created_date",
-            product_otherMaterials: "++id,productID,name,cost,status,created_date",
-            sales: "++id,product_name,buyer_name,cost,amountPaid,isPaid,date_paid,created_date,status",
-            expenses: "++id,name,amount_to_pay,amount_paid,date_paid,created_date,recurring,status",
-
-            ingredients_history: "++id,ingID,name,unit_size,unit,cost_per_unit,status,created_date",
-            products_history: "++id,prodID,name,cost,status,created_date",
-            sales_history: "++id,salesID,product_name,buyer_name,cost,amountPaid,isPaid,date_paid,created_date,status",
-            expenses_history: "++id,expID,name,amount_to_pay,amount_paid,date_paid,created_date,recurring,status"
-          })
                 
           //self.$app.dialog.alert("DB Created");
       },
@@ -393,8 +408,16 @@ export default {
       },
       pageInit: function(e, page) {
         var self = this;
-        //self.closePanel();
         self.startPouch();
+        //mogulsheetdb = self.$app.methods.startPouch();
+        mogulsheetdb.getIndexes().then(function (result) {
+            // yo, a result
+            //return mogulsheetdb;
+          }).catch(function (err) {
+            // ouch, an error
+          });
+        //console.log("on home",  mogulsheetdb);
+        //self.startPouch();
         //self.startPouch();
         
       },

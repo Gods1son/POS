@@ -205,7 +205,7 @@
 import * as moment from 'moment';
 import * as XLSX from 'xlsx';
 var db = null, dbSettings = null;
-var dataToUpload = null, eachBatch = 50, uploaded = 0;
+var dataToUpload = null, eachBatch = 50, uploaded = 0, mogulsheetdb = null;
 export default {
   test: 5,
   data: function () {
@@ -233,7 +233,17 @@ export default {
     },
     startPouch: function(){
           var self = this;
+          mogulsheetdb = self.$app.methods.startPouch();
+          var id = self.settingsID;
+            mogulsheetdb.get(id).then(function(doc) {
+                  self.$setState({
+                      settings: doc
+                    })
+              })
+          self.getData();
           //db = null;
+          
+          /*
           try{//id,name,unit_size,unit,cost_per_unit,status,created_date
             db = new PouchDB('ingredients.db');
             dbSettings = new PouchDB('settings.db');
@@ -253,16 +263,16 @@ export default {
               })
           }catch(err){
             
-          }
+          }*/
           
         },
         permDeleteItem: function(list, id){
         var self = this;
         
         self.$app.dialog.confirm("Are you sure you want to permanently delete this?", "Mogul Sheet", function(){
-                  db.get(id).then(function(doc) {
+              mogulsheetdb.get(id).then(function(doc) {
                     doc.status = -1
-                    return db.put(doc);
+                    return mogulsheetdb.put(doc);
                   }).then(function(){
                     self.ings = self.ings.filter(function(e){ 
                       return e._id != id;
@@ -296,9 +306,9 @@ export default {
         }
         self.$app.dialog.confirm("Are you sure you want to " + text + "?", "Mogul Sheet", function(){
 
-                  db.get(id).then(function(doc) {
+              mogulsheetdb.get(id).then(function(doc) {
                     doc.status = checked
-                    return db.put(doc);
+                    return mogulsheetdb.put(doc);
                   }).then(function(){
                     self.ings = self.ings.filter(function(e){ 
                       return e._id != id;
@@ -382,6 +392,7 @@ export default {
                   var ids = moment().format("X");
                   ids = Number(ids) - ind;
                   obj._id = ids.toString();
+                  obj.ingredientID = obj._id;
                   toSave.push(obj);
                 }else{
                   rejected.push(val);
@@ -434,7 +445,7 @@ export default {
         smallUpload = dataToUpload.slice(uploaded, picking + uploaded); 
         //upload small amount
 
-          db.bulkDocs(smallUpload).then(() => {
+          mogulsheetdb.bulkDocs(smallUpload).then(() => {
             //console.log("uploaded", uploaded, "picking", picking + uploaded);
             uploaded += picking;
             setTimeout(self.uploadFileBatches(), 1000);
@@ -506,10 +517,12 @@ export default {
             if(self.currentIng != null){
               obj._id = self.currentIng._id;
               obj._rev = self.currentIng._rev;
+              obj.ingredientID = obj._id;
             }else{
               obj._id = moment().format("X");
+              obj.ingredientID = obj._id;
             }
-            db.put(obj).then(function(res) {
+            mogulsheetdb.put(obj).then(function(res) {
                     //self.$app.dialog.alert("Item saved.");
                     self.showToast("Item saved.", "center");
                     $$("input.name,input.unit_size,input.unit,input.cost_per_unit").val("");
@@ -540,12 +553,15 @@ export default {
         checked = toggle.checked == true ? 0 : 1;
       }
       self.$app.preloader.show();
-        db.find({
+        mogulsheetdb.find({
           selector: {
-            status: {$eq: checked}
+            status: {$eq: checked},
+            ingredientID: { $gt: 0 },
+            _id: {$gte: null}
           },
           sort: [{'_id': 'desc'}]
         }).then(function(ar){
+          console.log("ings", ar);
           var arr = ar.docs;
           self.$setState({
                 ings: arr,

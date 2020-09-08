@@ -25,6 +25,7 @@ import pouchFind from 'pouchdb-find';
 PouchDB.plugin(pouchFind);
 //PouchDB.plugin(pouchAuth);
 window.PouchDB = PouchDB;
+
 window.List = List;
 
 // Import main app component
@@ -60,7 +61,7 @@ Template7.registerHelper("convertDate", function(val){
     var myDate = new Date(val);
     return myDate.toLocaleString();
 })
-var openedPanel = false;
+var openedPanel = false, mogulsheetdb = null;
 setTimeout(function(){
 
   var app = new Framework7({
@@ -83,7 +84,122 @@ setTimeout(function(){
     methods: {
       alert: function() {
         app.dialog.alert('Hello World');
-      }
+      },
+      consoling: function(){
+        console.log("master page");
+      },
+      startPouch: function(){
+        //var self = this;
+        //db = null;
+        try{//id,name,unit_size,unit,cost_per_unit,status,created_date
+          mogulsheetdb = new PouchDB('mogulsheet.db');
+          mogulsheetdb.createIndex({
+            index: {
+              fields: ['_id','ingredientID', 'status'],
+              name: 'ingredients',
+              /*ddoc: 'mydesigndoc',
+              type: 'json'*/
+            }
+          });
+
+          mogulsheetdb.createIndex({
+            index: {
+              fields: ['_id','clientID', 'status'],
+              name: 'clients',
+              /*ddoc: 'mydesigndoc',
+              type: 'json'*/
+            }
+          });
+
+          mogulsheetdb.createIndex({
+            index: {
+              fields: ['_id','productID', 'status'],
+              name: 'products',
+              /*ddoc: 'mydesigndoc',
+              type: 'json'*/
+            }
+          });
+
+          mogulsheetdb.createIndex({
+            index: {
+              fields: ['_id','expenseID', 'status'],
+              name: 'expenses',
+              /*ddoc: 'mydesigndoc',
+              type: 'json'*/
+            }
+          });
+
+          mogulsheetdb.createIndex({
+            index: {
+              fields: ['_id', 'settingID'],
+              name: 'settings',
+              /*ddoc: 'mydesigndoc',
+              type: 'json'*/
+            }
+          });
+
+          mogulsheetdb.createIndex({
+            index: {
+              fields: ['_id','restockID'],
+              name: 'restock',
+              /*ddoc: 'mydesigndoc',
+              type: 'json'*/
+            }
+          });
+
+          mogulsheetdb.createIndex({
+            index: {
+              fields: ['_id','prodIngsID', 'productID', 'status'],
+              name: 'prodIngs',
+              /*ddoc: 'mydesigndoc',
+              type: 'json'*/
+            }
+          });
+
+          mogulsheetdb.createIndex({
+            index: {
+              fields: ['_id','prodOthersID', 'productID', 'status'],
+              name: 'prodOthers',
+              /*ddoc: 'mydesigndoc',
+              type: 'json'*/
+            }
+          });
+
+          mogulsheetdb.createIndex({
+            index: {
+              fields: ['_id','saleID', 'parentID', 'status'],
+              name: 'sales',
+              /*ddoc: 'mydesigndoc',
+              type: 'json'*/
+            }
+          });
+
+          mogulsheetdb.createIndex({
+            index: {
+              fields: ['_id','saleID', 'parentID', 'status', 'isEstimate', 'created_date'],
+              name: 'salesEstimate',
+              /*ddoc: 'mydesigndoc',
+              type: 'json'*/
+            }
+          });
+
+          mogulsheetdb.createIndex({
+            index: {
+              fields: ['_id', 'parentID', 'status', 'productID_saleID'],
+              name: 'productSales',
+              /*ddoc: 'mydesigndoc',
+              type: 'json'*/
+            }
+          });
+
+          return mogulsheetdb;
+
+            //self.syncDB();
+            //self.getData();
+        }catch(err){
+          
+          }
+      },
     },
     on: {
       init: function () {
@@ -92,7 +208,8 @@ setTimeout(function(){
         
       },
       pageInit: function () {
-        var self = this;
+        //var self = this;
+        app.methods.startPouch();
         //app.methods.alert();
         //self.$app.alert();
       },

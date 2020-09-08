@@ -299,7 +299,7 @@
                           <div class="item-input-wrap">
                             <label class="checkbox">
                               <!-- checkbox input -->
-                              <input type="checkbox" class="isEstimate">
+                              <input type="checkbox" class="isEstimateSales">
                               <!-- checkbox icon -->
                               <i class="icon-checkbox"></i>
                             </label>
@@ -463,7 +463,7 @@
                 <div class="display-inline-flex" style="vertical-align: bottom;margin-left: 10px;">
                   <div class="item-input-wrap" style="position: relative;">
                     <label class="checkbox" style="position: absolute;bottom: 4px;">
-                      <input type="checkbox" class="isEstimateMultiple">
+                      <input type="checkbox" class="isEstimateMultipleSales">
                       <i class="icon-checkbox"></i>
                     </label>
                   </div>
@@ -511,7 +511,7 @@
 import * as moment from 'moment';
 //import * as rasterizeHTML from 'rasterizehtml';
 import html2pdf from 'html2pdf.js';
-var selectedUserName = null, selectedUserID = null;
+var selectedUserName = null, selectedUserID = null, mogulsheetdb = null;
   var dbProducts = null, dbProdIngs = null, dbProdOthers = null, dbSales = null, dbIngs = null, dbSettings = null, dbClients = null, dbSettingsImages = null;
 //var $$ = Dom7;
 export default {
@@ -691,7 +691,7 @@ export default {
         fullyPaid = 0;
       }
       isPaidDate = moment($(".multipleSales_sales:visible").find("#datePaidMultiple_sales").val()).format("X");//  Date.parse($("#paid-calendar-modal-sales").val());
-      var isEstimate = $(".multipleSales_sales:visible").find(".isEstimateMultiple").prop("checked") == true ? 1 : 0;
+      var isEstimate = $(".multipleSales_sales:visible").find(".isEstimateMultipleSales").prop("checked") == true ? 1 : 0;
         $(".eachProduct_sales").each(function(i, curr){
           var productID = "0";
         var productName = $(curr).find(".productName").eq(0).val().trim();
@@ -714,7 +714,7 @@ export default {
           var costPlusTax = totalPric + tax;
           var obj = {
                 product_name: productName,  
-                productID: productID,
+                productID_saleID: productID,
                 buyer_name: buyername,
                 selling_price: price,
                 discount: discount,
@@ -754,14 +754,15 @@ export default {
               self.saveProcessedMultiplePayment(grpName,buyername,theBuyerID,isEstimate,taxes,afterTaxes,beforeTaxes,amountPaid,fullyPaid,isPaidDate,bigData);
             }else{
               //new user new sale
-              var generatedID = moment().format("X");
+              var generatedID = "0" + moment().format("X");
               var objNew = {
                     name: chosenUser,
                     _id: generatedID,
+                    clientID: generatedID,
                     created_date: generatedID,
                     status:1
                 }
-                dbClients.put(objNew).then(function(res) {
+                mogulsheetdb.put(objNew).then(function(res) {
                         //self.$app.dialog.alert("Item saved.");
                         self.showToast("New User Created.", "center");
                         self.saveProcessedMultiplePayment(grpName,chosenUser,generatedID,isEstimate,taxes,afterTaxes,beforeTaxes,amountPaid,fullyPaid,isPaidDate,bigData);
@@ -807,26 +808,32 @@ export default {
             if(self.currentMultipleSale != null && self.sellToAnotherUser == null){
                 objMaster._id = self.currentMultipleSale._id;
                 objMaster._rev = self.currentMultipleSale._rev;
+                objMaster.saleID = objMaster._id;
               }else{
                 objMaster._id = moment().format("X");
+                objMaster.saleID = objMaster._id;
               }
             //db.transaction('rw', db.sales, () => {
                
-                dbSales.put(objMaster).then(function(res){
+                mogulsheetdb.put(objMaster).then(function(res){
                     sbigData.forEach((element, index) => {
                     sbigData[index].parentID = res.id;
-                    //sbigData[index]._id = index + moment().format("X");
+                    var add = index.toString() + index.toString();
+                    //sbigData[index]._id = index * 2;
+                    sbigData[index]._id = add + moment().format("X");
                     sbigData[index].buyer_name = buyername1;
                     sbigData[index].buyer_id = theBuyerID1;
                     deleted = res.id; 
                   });
 
                 if(self.currentMultipleSale != null){
-                  dbSales.find({
+                  mogulsheetdb.find({
                       selector: {
                         $and: [
-                          { status: {$eq: 1} },
-                          {parentID: {$eq: deleted}}
+                            { status: {$eq: 1} },
+                            {parentID: {$eq: deleted}},
+                            {_id: {$gte: null}},
+                            {saleID: {$gt: 0}},
                         ]
                       }
                     }).then(function(ar){
@@ -835,11 +842,15 @@ export default {
                             arr[index].status = 0;  
                             arr[index]._deleted = true;
                         });
-                        dbSales.bulkDocs(arr).then(function(){
-                          dbSales.bulkDocs(sbigData);
+                        mogulsheetdb.bulkDocs(arr).then(function(){
+                          mogulsheetdb.bulkDocs(sbigData).then((saved) => {
+                            console.log("big save", saved);
+                          }).catch((err) => {
+                            console.log("big save error", err);
+                          })
 
                           //change estimate to sales
-                          if(self.currentMultipleSale.isEstimate == 1 && isEstimate1 == 0){
+                          if((self.currentMultipleSale.isEstimate == 1 && isEstimate1 == 0) || (self.sellToAnotherUser == 1)){
                             var oldMastering = [];
                             self.findDifferenceMultiple(oldMastering, sbigData);
                           }
@@ -859,11 +870,14 @@ export default {
                     })
 
                 }else{
-                    dbSales.bulkDocs(sbigData).then(function(lastKey) {
+                    mogulsheetdb.bulkDocs(sbigData).then(function(lastKey) {
+                      console.log("save multiple", lastKey);
                         //console.log("Last allcost's id was: " + lastKey); // Will be 100000.
                         if(isEstimate1 == 0){
                             self.subtractStockMultiple(sbigData);
                           }
+                  }).catch((err) => {
+                    console.log("error multiple save", err);
                   })
                 }
                 self.showToast("Saved successfully", "center");
@@ -880,11 +894,13 @@ export default {
     },
     subtractStockMultiple: function(bigData){
       var self = this;
-      var prods = bigData.filter(x => x.productID != "0");
-      var prodsID = prods.map(x => x.productID);
-      dbProducts.find({
+      var prods = bigData.filter(x => x.productID_saleID != "0");
+      var prodsID = prods.map(x => x.productID_saleID);
+      mogulsheetdb.find({
               selector: {
-                _id: { $in: prodsID }
+                _id: { $in: prodsID },
+                productID: {$gt: 0},
+                status: {$gt: 0}
               },
               sort: [{'_id': 'desc'}]
             }).then((arr) => {
@@ -894,7 +910,7 @@ export default {
                 if(dat.stock != undefined && dat.stock != "undefined" && dat.stock != "Unlimited"){
                       var floatStock = parseFloat(dat.stock);
                       if(!isNaN(floatStock)){
-                        var quantitySold = prods.find(x => x.productID == dat._id).quantity;
+                        var quantitySold = prods.find(x => x.productID_saleID == dat._id).quantity;
                         var remain = floatStock - quantitySold;
                         if(!isNaN(remain)){
                           dat.stock = remain;
@@ -904,7 +920,7 @@ export default {
                   }
               })
               if(saveBigData.length > 0){
-                dbProducts.bulkDocs(saveBigData);
+                mogulsheetdb.bulkDocs(saveBigData);
               }
             })
     },
@@ -1112,25 +1128,28 @@ export default {
         var self = this;
         
         self.$app.dialog.confirm("Are you sure you want to permanently delete this sale?", "Mogul Sheet", function(){
-              dbSales.get(id).then(function(doc) {
+              mogulsheetdb.get(id).then(function(doc) {
                    // console.log(doc);
                     doc.status = -1
-                    return dbSales.put(doc);
+                    return mogulsheetdb.put(doc);
                   }).then(function(){
                 self.sales = self.sales.filter(function(e){ 
                       return e._id != id;
                   });
 
-                  dbSales.find({
+                  mogulsheetdb.find({
                     selector: {
-                      parentID: {$eq: id}
+                      parentID: {$eq: id},
+                      saleID: {$gt: 0},
+                      status: {$gte: null},
+                      _id: {$gte: null}
                     }
                   }).then(function(ar){
                     var arr = ar.docs;
                           arr.forEach((element, index) => {
                           arr[index].status = -1;
                       });
-                      dbSales.bulkDocs(arr).then(function(){
+                      mogulsheetdb.bulkDocs(arr).then(function(){
                         //dbSales.bulkDocs(bigData);
                       })
                     })
@@ -1162,12 +1181,12 @@ export default {
             }
         }
         self.$app.dialog.confirm("Are you sure you want to " + text + " this sale?", "Mogul Sheet", function(){
-              dbSales.get(id).then(function(doc) {
+              mogulsheetdb.get(id).then(function(doc) {
                    // console.log(doc);
                     oldSale = $.extend(true, {}, doc);
                     doc.status = checked;
                     newSale = $.extend(true, {}, doc);
-                    return dbSales.put(doc);
+                    return mogulsheetdb.put(doc);
                   }).then(function(){
                 
                 if(oldSale.isParent == 0){
@@ -1181,11 +1200,13 @@ export default {
                 }
                 
                 var oppCheck = checked == 1 ? 0 : 1;
-                dbSales.find({
+                mogulsheetdb.find({
                     selector: {
                       $and: [
                         { status: {$eq: oppCheck}},
-                        {parentID: {$eq: id}}
+                        {parentID: {$eq: id}},
+                        {saleID: {$gt: 0}},
+                        {_id: {$gte: null}}
                       ]
                     }
                   }).then(function(ar){
@@ -1193,7 +1214,7 @@ export default {
                           arr.forEach((element, index) => {
                           arr[index].status = checked;
                       });
-                      dbSales.bulkDocs(arr).then(function(){
+                      mogulsheetdb.bulkDocs(arr).then(function(){
                         //dbSales.bulkDocs(bigData);
                         //is deleted
                         var oldMaster = null, newMaster = null;
@@ -1255,7 +1276,7 @@ export default {
       var self = this;
       var checked = 0;
       var isPaidDate = null;
-      var isEstimate = $(".isEstimate").prop("checked");
+      var isEstimate = $(".isEstimateSales").prop("checked");
       if($("#purchase-calendar-modal-sales").val().trim() == ""){
         self.showToast("Please pick date of purchase", "center");
         return;
@@ -1298,7 +1319,7 @@ export default {
           fullyPaid = 0;
       }
       var isPaidDate = moment($("#paid-calendar-modal-sales").val()).format("X");
-      var isEstimate = $(".isEstimate").prop("checked") == true ? 1 : 0;
+      var isEstimate = $(".isEstimateSales").prop("checked") == true ? 1 : 0;
       var taxes = $$("input.taxes-sales").val();
       taxes = taxes.trim() == "" ? 0 : Number(taxes.trim());
       var chosenUser = $$("input.buyer_sell_sales").val();
@@ -1314,14 +1335,15 @@ export default {
           self.saveProcessedPayement(theBuyerID, theBuyerName, taxes, isEstimate, fullyPaid, isPaidDate);
         }else{
           //new user new sale
-          var generatedID = moment().format("X");
+          var generatedID = "0" + moment().format("X");
           var objNew = {
                 name: chosenUser,
                 _id: generatedID,
+                clientID: generatedID,
                 created_date: generatedID,
                 status:1
             }
-            dbClients.put(objNew).then(function(res) {
+            mogulsheetdb.put(objNew).then(function(res) {
                     //self.$app.dialog.alert("Item saved.");
                     self.showToast("New User Created.", "center");
                     self.saveProcessedPayement(generatedID, chosenUser, taxes, isEstimate, fullyPaid, isPaidDate);
@@ -1351,7 +1373,7 @@ export default {
                 selling_price: $$("input.cost_sell_sales").val(),
                 tax: taxes,
                 parentID: 0,
-                productID: productId,
+                productID_saleID: productId,
                 isEstimate: isEstimate,
                 discount: $(".discount_sell_sales").val(),
                 afterTax: $$("input.afterTax").val(),
@@ -1365,11 +1387,13 @@ export default {
               };
               if(self.currentSale != null){
                 obj._id = self.currentSale._id;
+                obj.saleID = obj._id;
                 obj._rev = self.currentSale._rev;
               }else{
                 obj._id = moment().format("X");
+                obj.saleID = obj._id;
               }
-            dbSales.put(obj).then(function(){
+            mogulsheetdb.put(obj).then(function(){
                     self.showToast("Record saved!", "center");
                     $("#paid-calendar-modal-sales").next("span").click();
                     $("#purchase-calendar-modal-sales").next("span").click();
@@ -1388,14 +1412,14 @@ export default {
 
                     //reduce stock for new sale
                     if(productId != 0 && isEstimate == 0 && self.currentSale == null){
-                    dbProducts.get(productId).then((dat) => {
+                    mogulsheetdb.get(productId).then((dat) => {
                       if(dat.stock != undefined && dat.stock != "undefined" && dat.stock != "Unlimited"){
                         var floatStock = parseFloat(dat.stock);
                         if(!isNaN(floatStock)){
                           var remain = floatStock - Number(quantitySold);
                           if(!isNaN(remain)){
                             dat.stock = remain;
-                            return dbProducts.put(dat).then((dt) => {
+                            return mogulsheetdb.put(dat).then((dt) => {
                               //self.getData();
                             })
                           }
@@ -1414,7 +1438,7 @@ export default {
                  // });
                   
               }).catch(function (error) {
-                  //console.log(error);
+                 console.log("sell one product from sale", error);
                  self.$app.dialog.alert("An error occurred!", "Mogul Sheet");
               })
     },
@@ -1422,6 +1446,7 @@ export default {
       var self = this;
       var html = self.invoiceHtml;
       var item = self.invoiceItem;
+      self.$app.preloader.show();
       var options = {
                 documentSize: 'A4',
                 type: 'share',
@@ -1465,13 +1490,15 @@ export default {
               //console.log(item);
               if(item.isParent == 1){
                 //var collection = db.sales.where('parentID').equals(item.id).toArray(function(arr){
-                  dbSales.find({
+                  mogulsheetdb.find({
                     selector: {
-                      parentID: {$eq: item._id}
+                      parentID: {$eq: item._id},
+                      productID_saleID: {$gt: 0},
+                      status: {$gt: 0},
+                      _id: {$gte: null}
                     }
                   }).then(function(ar){
                     var arr = ar.docs;
-                  //console.log(arr);
                     children = ar;
                     //var html = self.formatPDF(item, arr);
                     self.loadImageLogo(item, arr);
@@ -1490,19 +1517,20 @@ export default {
     findDifferenceMultiple: function(oldMaster, newMaster){
       var self = this;
       var saveBigdata = [];
+      console.log("oldMaster", oldMaster, "new master", newMaster);
       //check from old file
       $.each(oldMaster, ((ind, val) => {
-        if(val.productID != undefined && val.productID != 0){
-          var findInNew = newMaster.find(x => x.productID == val.productID);
+        if(val.productID_saleID != undefined && val.productID_saleID != 0){
+          var findInNew = newMaster.find(x => x.productID_saleID == val.productID_saleID);
           if(findInNew != null && findInNew != undefined){
             var left = parseFloat(findInNew.quantity) - parseFloat(val.quantity);
             var obj = {};
-            obj.productID = val.productID;
+            obj._id = val.productID_saleID;
             obj.stock = left;
             saveBigdata.push(obj);
           }else{
             var obj = {};
-            obj.productID = val.productID;
+            obj._id = val.productID_saleID;
             obj.stock = 0 - parseFloat(val.quantity);
             saveBigdata.push(obj);
           }
@@ -1511,33 +1539,37 @@ export default {
 
       //check from new file
       $.each(newMaster, ((ind, val) => {
-        if(val.productID != undefined && val.productID != 0){
-          var findInSaved = saveBigdata.find(x => x.productID == val.productID);
+        if(val.productID_saleID != undefined && val.productID_saleID != 0){
+          var findInSaved = saveBigdata.find(x => x._id == val.productID_saleID);
           if(findInSaved == null || findInSaved == undefined){
             //var left = parseFloat(findInNew.quantity) - parseFloat(val.quantity);
             var obj = {};
-            obj.productID = val.productID;
+            obj._id = val.productID_saleID;
             obj.stock = parseFloat(val.quantity);
             saveBigdata.push(obj);
           }
         }
       }))
 
+      console.log("save big data", saveBigdata);
       //product ids
-      var checkAllProducts = saveBigdata.map(x => x.productID);
+      var checkAllProducts = saveBigdata.map(x => x._id);
       var finalSaving = [];
       //adjust products
-      dbProducts.find({
+      mogulsheetdb.find({
           selector: {
-            _id: { $in: checkAllProducts }
+            _id: { $in: checkAllProducts },
+            productID: {$gt: 0},
+            status: {$gt: 0}
           },
           sort: [{'_id': 'desc'}]
         }).then((arr) => {
           //adjust from db
           var ar = arr.docs;
+          console.log("all ids", ar, "save data", saveBigdata);
           $.each(ar, function(ind, dat){
                 if(dat.stock != undefined && dat.stock != "undefined" && dat.stock != "Unlimited"){
-                  var finding = saveBigdata.find(x => x.productID == dat._id);
+                  var finding = saveBigdata.find(x => x._id == dat._id);
                   if(finding != null){
                     var sub = finding.stock;
                     var left = parseFloat(dat.stock) - sub;
@@ -1549,16 +1581,23 @@ export default {
                   }
                 }
             })
+            console.log("finnal Saving", finalSaving);
             if(finalSaving.length > 0){
-              dbProducts.bulkDocs(finalSaving);
+              mogulsheetdb.bulkDocs(finalSaving).then((dat) => {
+                console.log("save sucessful", dat);
+              }).catch((err) => {
+                console.log("save err", err);
+              })
             }
         })
     },
     findDifferenceInSales: function(prodIDs, oldProd, newProd){
       var self = this;
-      dbProducts.find({
+      mogulsheetdb.find({
           selector: {
-            _id: { $in: prodIDs }
+            _id: { $in: prodIDs },
+            productID: {$gt: 0},
+            status: {$gt: 0}
           },
           sort: [{'_id': 'desc'}]
         }).then((arr) => {
@@ -1607,7 +1646,10 @@ export default {
                   }
               })
               if(saveBigData.length > 0){
-                dbProducts.bulkDocs(saveBigData);
+                mogulsheetdb.bulkDocs(saveBigData).then((dat) => {
+                }).catch((err) => {
+                  console.log("save error", err);
+                })
               }
 
         })
@@ -1626,10 +1668,10 @@ export default {
                 $$("input.name_sell_sales").val(item.product_name);
                 $$("input.buyer_sell_sales").val(item.buyer_name);
                 $$("input.cost_sell_sales").val(item.selling_price);
-                var productID = item.productID == undefined ? "" : item.productID;
+                var productID = item.productID_saleID == undefined ? "" : item.productID_saleID;
                 $("#productID_sell").val(productID);
                 if(productID != ""){
-                  dbProducts.get(productID).then((dats) => {
+                  mogulsheetdb.get(productID).then((dats) => {
                     if(dats.stock != undefined){
                       $(".hiddenQuantitySingle").val(dats.stock);
                     }
@@ -1650,9 +1692,9 @@ export default {
                   $(".total_sell_sales").val(total.toFixed(2));
                   if(item.isEstimate != undefined && item.isEstimate != null){
                     var est = item.isEstimate == 1 ? true : false;
-                    $(".isEstimate").prop("checked", est);
+                    $(".isEstimateSales").prop("checked", est);
                   }else{
-                    $(".isEstimate").prop("checked", false);
+                    $(".isEstimateSales").prop("checked", false);
                   }
                 $$("input.amountpaid_sell_sales").val(item.amountPaid);
                 if(item.created_date != ""){
@@ -1752,9 +1794,11 @@ export default {
         //var collection = db.products.where('status').equals(checked).toArray(function(arr){
         //var collection = db.ingredients.toArray(function(arr){
         //console.log(arr);
-        dbClients.find({
+        mogulsheetdb.find({
           selector: {
-            status: {$eq: checked}
+            status: {$eq: checked},
+            clientID: {$gt: 0},
+            status: {$gt: 0}
           }
         }).then(function(ar){
           var arr = ar.docs;
@@ -1769,9 +1813,11 @@ export default {
         //var collection = db.products.where('status').equals(checked).toArray(function(arr){
         //var collection = db.ingredients.toArray(function(arr){
         //console.log(arr);
-        dbProducts.find({
+        mogulsheetdb.find({
           selector: {
-            status: {$eq: checked}
+            status: {$eq: checked},
+            productID: {$gt: 0},
+            status: {$gt: 0}
           }
         }).then(function(ar){
           var arr = ar.docs;
@@ -1786,7 +1832,7 @@ export default {
         var currChosen = null;
         //console.log("multiple");
         //var collection2 = db.sales.where('id').equals(Number(id)).toArray(function(arr){
-          dbSales.get(id).then(function(arr){
+          mogulsheetdb.get(id).then(function(arr){
           //var arr = ar.docs;
           //console.log(ar);
             var taxesAmt = arr.tax;
@@ -1799,29 +1845,32 @@ export default {
               $(".multipleSales_sales:visible").find("#datePurchaseMultiple_sales").val(moment.unix(arr.created_date).format("LLL"));
               if(arr.isEstimate != null && arr.isEstimate != undefined){
                 var est = arr.isEstimate == 1 ? true : false;
-                $(".isEstimateMultiple").prop("checked", est);
+                $(".isEstimateMultipleSales").prop("checked", est);
               }else{
-                $(".isEstimateMultiple").prop("checked", false);
+                $(".isEstimateMultipleSales").prop("checked", false);
               }
             }else{
               $(".buyersNameMultiple_sales").val("");
               $(".amountPaidMultiple-sales ").val(0);
               $(".multipleSales_sales:visible").find("#datePaidMultiple_sales").val(moment().format("LLL"));
               $(".multipleSales_sales:visible").find("#datePurchaseMultiple_sales").val(moment().format("LLL"));
-              $(".isEstimateMultiple").prop("checked", false);
+              $(".isEstimateMultipleSales").prop("checked", false);
             }
             $(".taxpercent-sales").val(taxesAmt);
         })
         //var collection = db.sales.where('parentID').equals(Number(id)).toArray(function(arr){
-          dbSales.find({
+          mogulsheetdb.find({
           selector: {
             $and: [
                   { status: {$eq: 1} },
-                  {parentID: {$eq: id}}
+                  {parentID: {$eq: id}},
+                  {_id: {$gte: null}},
+                  {productID_saleID: {$gt: 0}},
                 ]
           }
         }).then(function(ar){
           var arr = ar.docs;
+          console.log("bought", ar);
           self.selectedOldProducts = [];
           //console.log(arr);
             self.$setState({
@@ -1944,12 +1993,13 @@ export default {
       var cost = select.selling_price == null ? "" : select.selling_price;
       var quantity = select.quantity == null ? 1 : select.quantity;
       var discount = select.discount == null ? 0 : select.discount;
+      var chosenID = select.productID_saleID == undefined ? select._id : select.productID_saleID;
       //var discount = 0;
       var totalPrice = select.total_price == null ? "" : select.total_price; 
         var html = '<li class="eachSaleParent_sales eachProduct_sales"><div class="card myCard"><div class="card-content padding-horizontal-half">';
           html += '<div><span class="labelName">Product Name: </span><div class="display-inline-flex"><input class="productName" type="text" placeholder="Product Name" value="';
           html +=  name + '"></div></div>';
-          html += '<input type="hidden" class="productID" value="' + select._id + '">';
+          html += '<input type="hidden" class="productID" value="' + chosenID + '">';
           html += '<input type="hidden" class="hiddenQuantity" value="' + select.stock + '">';
           html += '<div class="row"><div class="col-50"><div class="item-content item-input no-padding-left"><div class="item-inner no-padding-right"><div class="labelName">Product Cost</div>';
           html += '<div class="item-input-wrap"><input class="productCost_sales" type="text" placeholder="Product Cost" value="' + cost + '">';
@@ -2158,11 +2208,24 @@ export default {
     },
     startPouch: function(){
           var self = this;
+          mogulsheetdb = self.$app.methods.startPouch();
+          var id = self.settingsID;
+            mogulsheetdb.get(id).then(function(doc) {
+                  self.$setState({
+                      settings: doc
+                    })
+              })
+          dbSettingsImages = new PouchDB('settingsImages.db');
+          self.getData();
+          self.getProducts();
+          self.getClients();
           /*products: "++id,name,cost,status,created_date",
             product_ingredient: "++id,productID,ingredientID,unit_size,cost,status,created_date",
             product_otherMaterials: "++id,productID,name,cost,status,created_date",*/
             //sales: "++id,parentID,product_name,isParent,buyer_name,cost,quantity,tax,total_price,afterTax,amountPaid,isPaid,date_paid,created_date,status",
-          try{//id,name,unit_size,unit,cost_per_unit,status,created_date
+          
+          /*
+            try{//id,name,unit_size,unit,cost_per_unit,status,created_date
             dbProducts = new PouchDB('products.db');
                 dbProdIngs = new PouchDB('product_ingredients.db');
                 dbProdOthers = new PouchDB('product_otherMaterials.db');
@@ -2215,7 +2278,7 @@ export default {
                 })
           }catch(err){
                 
-            }
+            }*/
            
         },
     loadImageLogo: function(item, arr){
@@ -2275,11 +2338,12 @@ export default {
       }
       
       self.$app.preloader.show();
-          dbSales.find({
+          mogulsheetdb.find({
               selector: {
                 $and: [
                   { status: {$eq: checked} },
                   { parentID: { $lt: 1 } },
+                  { saleID: { $gt: 0 } },
                   condition,
                   {created_date: {$gt: true}}
                 ]
@@ -2528,12 +2592,13 @@ export default {
                   }else{
                     condition = { isEstimate: { $ne: 1 } };
                   }
-                dbSales.find({
+                mogulsheetdb.find({
                     selector: {
                       $and: [
                          {status: {$eq: checked}},
                          {created_date: { $gt: from }},
                          {created_date: { $lt: to }},
+                         {saleID: { $gt: 0 }},
                          condition,
                          {parentID: { $lt: 1 } }
                       ]

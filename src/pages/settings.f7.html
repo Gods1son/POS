@@ -126,7 +126,7 @@
   </template>
   <script>
       import currencies from '../js/currencies.js';
-      var dbSettings = null, dbSettingsImages = null;
+      var dbSettings = null, dbSettingsImages = null, mogulsheetdb = null;
     export default {
       data() {
         return {
@@ -193,7 +193,7 @@
           var self = this;
           var id = self.settingsID;
           self.$app.preloader.show();
-          dbSettings.get(id).then(function(doc) {
+          mogulsheetdb.get(id).then(function(doc) {
                    //console.log(doc);
                    self.$app.preloader.hide();
                    var comName = doc.companyName;
@@ -268,14 +268,17 @@
         },
         startPouch: function(){
           var self = this;
+          mogulsheetdb = self.$app.methods.startPouch();
+          dbSettingsImages = new PouchDB('settingsImages.db');
+          self.getData();
           //db = null;
-          try{//id,name,unit_size,unit,cost_per_unit,status,created_date
+         /* try{//id,name,unit_size,unit,cost_per_unit,status,created_date
             dbSettings = new PouchDB('settings.db');
             dbSettingsImages = new PouchDB('settingsImages.db');
               self.getData();
           }catch(err){
             
-            }
+            }*/
         },
         showToast: function(text, position){
         var self = this;
@@ -315,8 +318,8 @@
 
             if(self.settings == null){
               obj._id = self.settingsID;
-
-              dbSettings.put(obj).then(function(){
+              obj.settingID = obj._id;
+              mogulsheetdb.put(obj).then(function(){
                 saved = true;
                 self.uploadImages();
                 self.showToast("Information Saved!", "center");
@@ -325,12 +328,13 @@
                 self.showToast("An error occured, please try again!", "center");
               })
             }else{
-              //obj._id = self.settingsID;
-              dbSettings.get(self.settingsID).then(function(doc) {
+              var getid = self.settingsID;
+              mogulsheetdb.get(getid).then(function(doc) {
                    // console.log(doc);
                    obj._id = doc._id;
+                   obj.settingID = obj._id;
                     obj._rev = doc._rev;
-                    return dbSettings.put(obj);
+                    return mogulsheetdb.put(obj);
                   }).then(function(){
                     saved = true;
                     self.uploadImages();

@@ -244,21 +244,8 @@
 //import Dom7 from 'dom7';
 //import Dexie from 'dexie';
 import * as moment from 'moment';
-/*var db = new Dexie("BizExpenseManagerDB");
-          db.version(3).stores({
-            ingredients: "++id,name,unit_size,unit,cost_per_unit,status,created_date",
-            products: "++id,name,cost,status,created_date",
-            product_ingredient: "++id,productID,ingredientID,unit_size,cost,status,created_date",
-            product_otherMaterials: "++id,productID,name,cost,status,created_date",
-            sales: "++id,parentID,product_name,isParent,buyer_name,cost,quantity,tax,total_price,afterTax,amountPaid,isPaid,date_paid,created_date,status",
-            expenses: "++id,name,amount_to_pay,amount_paid,date_paid,created_date,recurring,status",
 
-            ingredients_history: "++id,ingID,name,unit_size,unit,cost_per_unit,status,created_date",
-            products_history: "++id,prodID,name,cost,status,created_date",
-            sales_history: "++id,salesID,product_name,buyer_name,cost,amountPaid,isPaid,date_paid,created_date,status",
-            expenses_history: "++id,expID,name,amount_to_pay,amount_paid,date_paid,created_date,recurring,status"
-          })*/
-var dbExpenses = null, dbSettings = null;
+var dbExpenses = null, dbSettings = null, mogulsheetdb = null;
 //var $$ = Dom7;
 export default {
   data: function () {
@@ -279,10 +266,10 @@ export default {
         var self = this;
         
         self.$app.dialog.confirm("Are you sure you want to permanently delete this expense?", "Mogul Sheet", function(){
-                dbExpenses.get(id).then(function(doc) {
+                mogulsheetdb.get(id).then(function(doc) {
                         // console.log(doc);
                           doc.status = -1
-                          return dbExpenses.put(doc);
+                          return mogulsheetdb.put(doc);
                         }).then(function(){
                 self.expenses = self.expenses.filter(function(e){ 
                       return e._id != id;
@@ -315,10 +302,10 @@ export default {
             }
         }
         self.$app.dialog.confirm("Are you sure you want to " + text + " this expense?", "Mogul Sheet", function(){
-                dbExpenses.get(id).then(function(doc) {
+          mogulsheetdb.get(id).then(function(doc) {
                         // console.log(doc);
                           doc.status = checked
-                          return dbExpenses.put(doc);
+                          return mogulsheetdb.put(doc);
                         }).then(function(){
                 self.expenses = self.expenses.filter(function(e){ 
                       return e._id != id;
@@ -466,10 +453,12 @@ export default {
             if(self.currentExpense != null){
               obj._id = self.currentExpense._id;
               obj._rev = self.currentExpense._rev;
+              obj.expenseID = obj._id;
             }else{
               obj._id = moment().format("X");
+              obj.expenseID = obj._id;
             }
-              dbExpenses.put(obj).then(function(res) {
+            mogulsheetdb.put(obj).then(function(res) {
                   //db.expenses.get(id).then(function(item) {
                     self.showToast("Item saved.", "center");
                     $("#paid-calendar-modal").next("span").click();
@@ -593,8 +582,17 @@ export default {
     },
     startPouch: function(){
           var self = this;
+          mogulsheetdb = self.$app.methods.startPouch();
+          var id = self.settingsID;
+            mogulsheetdb.get(id).then(function(doc) {
+                  self.$setState({
+                      settings: doc
+                    })
+              })
+          self.getData();
           //db = null;
-          try{//name,amount_to_pay,amount_paid,date_paid,created_date,recurring,status
+         
+         /* try{//name,amount_to_pay,amount_paid,date_paid,created_date,recurring,status
             dbExpenses = new PouchDB('expenses.db');
             dbSettings = new PouchDB('settings.db');
             dbExpenses.createIndex({
@@ -613,7 +611,7 @@ export default {
               })
           }catch(err){
             
-          }
+          }*/
           
       },
     getData: function(){
@@ -625,10 +623,12 @@ export default {
       }
       //console.log(checked);
       self.$app.preloader.show();
-      dbExpenses.find({
+      mogulsheetdb.find({
           selector: {
             $and: [
+                  { _id: {$gte: null} },
                   { status: {$eq: checked} },
+                  {expenseID: {$gt: 0}},
                   {created_date: {$gt: true}}
                 ]
           },
@@ -733,12 +733,14 @@ export default {
                 //console.log(to);
                 var checked = 1;
 
-                dbExpenses.find({
+                mogulsheetdb.find({
                     selector: {
                       $and: [
+                         {_id: {$gte: null}},
                          {status: {$eq: checked}},
                          {created_date: { $gt: from }},
-                         {created_date: { $lt: to }}
+                         {created_date: { $lt: to }},
+                         {expenseID: {$gt: 0}}
                       ]
                     },
                     sort: [{'_id': 'desc'}]

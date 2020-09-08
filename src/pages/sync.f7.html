@@ -174,6 +174,7 @@
     //import * as moment from 'moment';
     var dbProducts = null, dbProdIngs = null, dbProdOthers = null, dbSales = null, dbIngs = null, dbRestock = null; 
     var dbSettings = null, dbClients = null, dbExpenses = null, dbAccount = null, failedSync = [];
+    var mogulsheetdb;
     var stripe = Stripe('pk_test_51HF82MJnQa72fmbdN8n7SQ1gAJvWYNr9ymOusemg6yAl7YYT9pieujhdx9AAuJ3XPUVfJUg1rgzubCQHjKVMjiMp00L0IhDVPh');
     //import Cloudant from '@cloudant/cloudant';
     //var Cloudant = require('@cloudant/cloudant');
@@ -198,14 +199,14 @@
             settings: null,
             subscriptionID: null,
             priceId: '',
-            backendUrl: 'https://posbackend.herokuapp.com/',   //'http://localhost:3000/'
+            backendUrl: 'http://localhost:3000/' //  'https://mogulend.herokuapp.com/'  'https://posbackend.herokuapp.com/'
           }
         },
       methods:{
         openSubscribe: function(){
           var self = this;
           if(self.settings == null){
-              dbSettings.get("settings").then(function(doc) {
+              mogulsheetdb.get("settings").then(function(doc) {
               self.$setState({
                   settings: doc
                 }, function(){
@@ -384,7 +385,7 @@
             return;
           }
           if(self.settings == null || self.settings.stripeCustomerId == null){
-            dbSettings.get("settings").then(function(doc) {
+            mogulsheetdb.get("settings").then(function(doc) {
               self.$setState({
                   settings: doc
                 }, function(){
@@ -712,7 +713,7 @@
                   saveObj._id = "settings";
                   saveObj.stripeCustomerId = cusID;
                 }
-                dbSettings.put(saveObj).then((doc) => {
+                mogulsheetdb.put(saveObj).then((doc) => {
                   self.$setState({
                         settings:saveObj
                       }, function(){
@@ -754,7 +755,7 @@
                   saveObj.stripeCustomerId = customer.id;
                 }
 
-                dbSettings.put(saveObj).then((doc) => {
+                mogulsheetdb.put(saveObj).then((doc) => {
                   self.$setState({
                         settings:saveObj
                       }, function(){
@@ -822,7 +823,7 @@
            unique = unique.toLowerCase();
            unique = unique.replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, '-');
             //self.checkUsernameUnique(unique);
-            self.checkUsernameUnique(email);
+            self.finalRegister();
         },
         finalRegister: function() {
           var self = this;
@@ -830,17 +831,15 @@
           var username = $("#signUp").find("#username").val().trim();
            var pwd = $("#signUp").find("#password").val();
            var email = $("#signUp").find("#email").val().trim();
-           var unique = email + username;
+           var unique = email;
            unique = unique.toLowerCase();
            unique = unique.replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, '-');
            var data = {};
-            data.name = username;
-            data.username = email; //unique;
-            data.email = email;
+            data.username = unique;
             data.password = pwd;
-            data.confirmPassword = pwd;
+            data.user = username;
            $.ajax({
-              url: self.backendUrl + 'auth/register',
+              url: self.backendUrl + 'createUsername',
               headers: {
                   //'Authorization':'Basic xxxxxxxxxxxxx',
                   //'X-CSRF-TOKEN':'xxxxxxxxxxxxxxxxxxxx',
@@ -850,16 +849,31 @@
               dataType: 'json',
               data: JSON.stringify(data),
               success: function(data){
+                //console.log(data);
                 self.$app.preloader.hide();
-                var key = data.token;
-                var pwd2 = data.password;
-                var exp = data.expires;
-                var ob = data.userDBs;
-                var usDb = ob[Object.keys(ob)[0]];
-                //console.log(usDb);
-                var b = usDb.indexOf("$");
-                var coded = usDb.substr(b + 1);
 
+                if(data["ok"] == undefined){
+                  if(data["name"] != undefined){
+                    if(data["name"] == "conflict"){
+                      self.showToast("email has been registered before", "center");
+                      return;
+                    }else{
+                      self.showToast(data["name"], "center");
+                      return;
+                    }
+                  }
+                  return;
+                }else{
+                  if(data["ok"] != true){
+                    self.showToast("an error occured", "center");
+                    return;
+                  }
+                }
+                var key = data.key;
+                var pwd2 = data.password;
+                var exp = new Date(new Date().getTime() + 30 * 60000).getTime();
+                var coded = data.username;
+                //console.log(data);
                 self.$setState({
                   username: coded, //unique,
                   email: email,
@@ -876,8 +890,9 @@
                   })
               },
               error: function(err){
+                console.log(err);
                 self.$app.preloader.hide();
-                self.showToast(err.responseJSON.message, "center");
+                //self.showToast(err.responseJSON.message, "center");
               }
             });
         },
@@ -998,10 +1013,13 @@
             var self = this;
             self.$app.preloader.show();
             var data = {};
-            data.username = email;
+            var unique = email;
+           unique = unique.toLowerCase();
+           unique = unique.replace(/[^a-z0-9\s]/gi, '').replace(/[_\s]/g, '-');
+            data.username = unique;
             data.password = pd;
             $.ajax({
-              url: self.backendUrl + 'auth/login',
+              url: self.backendUrl + 'loginUsername',
               headers: {
                   //'Authorization':'Basic xxxxxxxxxxxxx',
                   //'X-CSRF-TOKEN':'xxxxxxxxxxxxxxxxxxxx',
@@ -1013,26 +1031,36 @@
               success: function(data){
                 self.$app.preloader.hide();
                 //console.log(data);
-                var ob = data.userDBs;
-                var usDb = ob[Object.keys(ob)[0]];
-                //console.log(usDb);
-                var b = usDb.indexOf("$");
-                var coded = usDb.substr(b + 1);
-                //console.log(coded);
-
-                var key = data.token;
-                var pwd = data.password;
-                var exp = data.expires;
-                var us = data.user_id;
+                if(data["ok"] == undefined){
+                  if(data["name"] != undefined){
+                    if(data["name"] == "conflict"){
+                      self.showToast("email has been registered before", "center");
+                      return;
+                    }else{
+                      self.showToast(data["name"], "center");
+                      return;
+                    }
+                  }
+                  return;
+                }else{
+                  if(data["ok"] != true){
+                    self.showToast("an error occured", "center");
+                    return;
+                  }
+                }
+                var key = data.key;
+                var pwd2 = data.password;
+                var exp = new Date(new Date().getTime() + 30 * 60000).getTime();
+                var coded = data.username;
                 self.$setState({
                   username: coded,
                   email: email,
                   password: pd,
                   personalApiKey: key,
-                  personalApiPwd: pwd,
+                  personalApiPwd: pwd2,
                   personalApiExpires: exp
                   }, function(){
-                      self.saveUserAccount(email, pd, coded, key, pwd, exp);
+                      self.saveUserAccount(email, pd, coded, key, pwd2, exp);
                       self.showSignIn();
                       $("#signIn").addClass("display-none");
                       $(".syncParentClick").removeClass("display-none");
@@ -1049,6 +1077,33 @@
             
         },
         logOut: function(){
+          var self = this;
+          self.showToast("Logged Out", "center");
+            $(".syncParentClick").addClass("display-none");
+              $("#passwordSign").val("");
+              self.showSignIn();
+              dbAccount.get("myAccount").then(function(doc) {
+              doc.signedIn = 0;
+              doc.apiKey = "";
+              doc.apiPwd = "";
+              doc.apiExp = 0;
+              doc._rev = doc._rev;
+              doc._id = doc._id;
+              return dbAccount.put(doc);
+            }).catch(function(err){
+              
+            });
+            mogulsheetdb.get("settings").then(function(doc) {
+                doc.stripeCustomerId = null;
+                return mogulsheetdb.put(doc);
+              }).then(function(doc2){
+                self.$setState({
+                  settings:doc2,
+                  subscriptionID: null
+                })
+              })
+        },
+        logOut1: function(){
             var self = this;
             self.$app.preloader.show();
             var data = {};
@@ -1082,9 +1137,9 @@
                   }).catch(function(err){
                     
                   });
-                  dbSettings.get("settings").then(function(doc) {
+                  mogulsheetdb.get("settings").then(function(doc) {
                       doc.stripeCustomerId = null;
-                      return dbSettings.put(doc);
+                      return mogulsheetdb.put(doc);
                     }).then(function(doc2){
                       self.$setState({
                         settings:doc2,
@@ -1526,7 +1581,34 @@
         syncData: function(){
             var self = this;
             trackStartSyncing();
-            self.syncDBProducts(true);
+            self.syncSingleData();
+            //self.syncDBProducts(true);
+        },
+        syncSingleData: function(){
+          var self = this;
+          var name = self.username;
+          self.$app.preloader.show();
+          //console.log(name);
+          var mogulsheetdbR = new PouchDB(self.cloudURL + name + '$db', { //dbclients$bababosscombaba
+                    auth: {
+                        username:  self.personalApiKey,
+                        password:  self.personalApiPwd  
+                    },
+                    skipSetup: true
+            });
+
+            mogulsheetdb.sync(mogulsheetdbR, self.opts).on('complete', function (info) {
+                  self.showToast("data synced to server", "center");
+                  //remove from failed
+                  //self.removeFailedSync("dbProducts");
+                  self.$app.preloader.hide();
+                }).on('error', function (err) {
+                  // handle error
+                  //console.log(err);
+                  self.showToast("Error: " + err.error + ". Continue syncing", "center");
+                  self.$app.preloader.hide();
+                  self.syncSingleData();
+                })
         },
         syncData2: function(){
             var self = this;
@@ -1582,7 +1664,7 @@
                     $("#emailSign").val(doc.email);
                     $("#passwordSign").val(doc.password);
                     $(".syncParentClick").addClass("display-none");
-                    self.deleteCurrentSession(doc.apiKey, doc.email);
+                    //self.deleteCurrentSession(doc.apiKey, doc.email);
                     return;
                    }
                    if(doc.signedIn == undefined || doc.signedIn == 0){
@@ -1617,11 +1699,23 @@
         },
         startPouch: function(){
           var self = this;
-          /*products: "++id,name,cost,status,created_date",
-            product_ingredient: "++id,productID,ingredientID,unit_size,cost,status,created_date",
-            product_otherMaterials: "++id,productID,name,cost,status,created_date",*/
-            //sales: "++id,parentID,product_name,isParent,buyer_name,cost,quantity,tax,total_price,afterTax,amountPaid,isPaid,date_paid,created_date,status",
-          try{//id,name,unit_size,unit,cost_per_unit,status,created_date
+          mogulsheetdb = self.$app.methods.startPouch();
+          var id = self.settingsID;
+            mogulsheetdb.get(id).then(function(doc) {
+                  self.$setState({
+                      settings: doc
+                    })
+              })
+          dbAccount = new PouchDB('dbAccount.db');
+          dbAccount.createIndex({
+                  index: {
+                    fields: ['username', 'email']
+                  }
+                })
+          self.getData();
+          
+          /*
+            try{//id,name,unit_size,unit,cost_per_unit,status,created_date
             dbProducts = new PouchDB('products.db');
                 dbProdIngs = new PouchDB('product_ingredients.db');
                 dbProdOthers = new PouchDB('product_otherMaterials.db');
@@ -1687,7 +1781,7 @@
                 })
           }catch(err){
                 
-            }
+            }*/
             
         },
         

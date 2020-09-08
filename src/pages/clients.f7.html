@@ -304,7 +304,7 @@
 <script>
 import * as moment from 'moment';
 import * as XLSX from 'xlsx';
-var db = null, dbSales = null, dbSettings = null, calendarBday = null;
+var db = null, dbSales = null, dbSettings = null, calendarBday = null, mogulsheetdb = null;
 var dataToUpload = null, eachBatch = 50, uploaded = 0;
 export default {
   test: 5,
@@ -334,8 +334,16 @@ export default {
     },
     startPouch: function(){
           var self = this;
+          mogulsheetdb = self.$app.methods.startPouch();
+          var id = self.settingsID;
+            mogulsheetdb.get(id).then(function(doc) {
+                  self.$setState({
+                      settings: doc
+                    })
+              })
+          self.getData();
           //db = null;
-          try{//id,name,unit_size,unit,cost_per_unit,status,created_date
+          /*try{//id,name,unit_size,unit,cost_per_unit,status,created_date
             db = new PouchDB('clients.db');
             dbSales = new PouchDB('sales.db');
             dbSettings = new PouchDB('settings.db');
@@ -359,7 +367,7 @@ export default {
                 })
           }catch(err){
             
-          }
+          }*/
         },
     formatMoney:function(val){             
       var self = this;           
@@ -385,10 +393,10 @@ export default {
                   });
                   item.status = checked;*/
                   //console.log(item);
-                  db.get(id).then(function(doc) {
+                  mogulsheetdb.get(id).then(function(doc) {
                    // console.log(doc);
                     doc.status = -1
-                    return db.put(doc);
+                    return mogulsheetdb.put(doc);
                   }).then(function(){
                     self.clients = self.clients.filter(function(e){ 
                       return e._id != id;
@@ -422,15 +430,10 @@ export default {
             }
         }
         self.$app.dialog.confirm("Are you sure you want to " + text + "?", "Mogul Sheet", function(){
-                  /*var item = self.ings.find(function(e){ 
-                      return e._id = id;
-                  });
-                  item.status = checked;*/
-                  //console.log(item);
-                  db.get(id).then(function(doc) {
+                  mogulsheetdb.get(id).then(function(doc) {
                    // console.log(doc);
                     doc.status = checked
-                    return db.put(doc);
+                    return mogulsheetdb.put(doc);
                   }).then(function(){
                     self.clients = self.clients.filter(function(e){ 
                       return e._id != id;
@@ -469,7 +472,7 @@ export default {
       if(toggle != undefined){
         checked = toggle.checked == true ? 0 : 1;
       }
-          dbSales.find({
+      mogulsheetdb.find({
               selector: {
                 $and: [
                   { status: {$eq: checked} },
@@ -592,7 +595,7 @@ export default {
         smallUpload = dataToUpload.slice(uploaded, picking + uploaded); 
         //upload small amount
 
-          db.bulkDocs(smallUpload).then(() => {
+          mogulsheetdb.bulkDocs(smallUpload).then(() => {
             //console.log("uploaded", uploaded, "picking", picking + uploaded);
             uploaded += picking;
             setTimeout(self.uploadFileBatches(), 1000);
@@ -666,6 +669,7 @@ export default {
                   var ids = moment().format("X");
                   ids = Number(ids) - ind;
                   obj._id = ids.toString();
+                  obj.clientID = obj._id;
                   toSave.push(obj);
                 }else{
                   rejected.push(val);
@@ -793,10 +797,12 @@ export default {
             if(self.currentClient != null){
               obj._id = self.currentClient._id;
               obj._rev = self.currentClient._rev;
+              obj.clientID = obj._id;
             }else{
               obj._id = moment().format("X");
+              obj.clientID = obj._id;
             }
-            db.put(obj).then(function(res) {
+            mogulsheetdb.put(obj).then(function(res) {
                     //self.$app.dialog.alert("Item saved.");
                     self.showToast("Client saved.", "center");
                     $(".clientname,.email,.address,.phone,.otherNotes, #client_bday").val("");
@@ -825,13 +831,16 @@ export default {
         checked = toggle.checked == true ? 0 : 1;
       }
       self.$app.preloader.show();
-        db.find({
+        mogulsheetdb.find({
           selector: {
-            status: {$eq: checked}
+            status: {$eq: checked},
+            clientID: {$gt: 0},
+            _id: {$gte: null}
           },
           sort: [{'_id': 'desc'}]
         }).then(function(ar){
           self.$app.preloader.hide();
+          console.log("clients", ar);
           var arr = ar.docs;
             //console.log(arr);
         //})
@@ -1020,7 +1029,7 @@ export default {
                   //console.log("from: " + from);
                   //console.log("to: " + to);
                   var id = $("#clientID").text();
-                dbSales.find({
+                  mogulsheetdb.find({
                     selector: {
                       $and: [
                          {status: {$eq: checked}},

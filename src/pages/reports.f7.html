@@ -78,7 +78,7 @@
     }
   }
 });*/
-  var db = null, dbSales = null, dbExpenses = null, myChart = null, dbProducts = null;
+  var db = null, dbSales = null, dbExpenses = null, myChart = null, dbProducts = null, mogulsheetdb = null;
   export default {
     // Lifecycle Hooks
     // Component Data
@@ -103,9 +103,11 @@
     getProfitStart: function(){
       var self = this;
       if(self.products == null){
-      dbProducts.find({
-          selector: {
-            status: {$eq: 1}
+      mogulsheetdb.find({
+        selector: {
+            status: {$eq: 1},
+            productID: {$gt: 0},
+            _id: {$gte: null}
           }
         }).then(function(ar){
           var arr = ar.docs;
@@ -117,6 +119,8 @@
                 //console.log(arr);
                 self.getProfit();
               })
+        }).catch((err) => {
+          console.log("profit start", err);
         })
       }else{
         self.getProfit();
@@ -124,6 +128,15 @@
     },
     startPouch: function(){
           var self = this;
+          mogulsheetdb = self.$app.methods.startPouch();
+          var id = self.settingsID;
+            mogulsheetdb.get(id).then(function(doc) {
+                  self.$setState({
+                      settings: doc
+                    })
+              })
+
+        /*
           //db = null;
           try{//id,name,unit_size,unit,cost_per_unit,status,created_date
             if(pdf != undefined){
@@ -181,7 +194,7 @@
                 }).then(function (result) {
                   //self.getData();
                 })
-          }
+          }*/
         },
       getparentChildren: function(arr){
         var self = this;
@@ -243,7 +256,7 @@
           dateFilterTo =  {created_date: { $lt: to }};
         }
         self.$app.preloader.show();
-        dbSales.find({
+        mogulsheetdb.find({
               selector: {
                 $or:[
                     {
@@ -254,7 +267,8 @@
                       dateFilterFrom,
                       dateFilterTo,
                       {isEstimate: { $ne: 1 }},
-                      { parentID: {$eq: 0} }
+                      { parentID: {$eq: 0} },
+                      { saleID: {$gt: 0} }
                     ]
                   },{
                     //group
@@ -264,7 +278,8 @@
                       dateFilterFrom,
                       dateFilterTo,
                       {isEstimate: { $ne: 1 }},
-                      { parentID: {$eq: 0} }
+                      { parentID: {$eq: 0} },
+                      { saleID: {$gt: 0} }
                     ]
                   }
                 ]
@@ -305,7 +320,7 @@
           dateFilterTo =  {created_date: { $lt: to }};
         }
         self.$app.preloader.show();
-        dbSales.find({
+        mogulsheetdb.find({
               selector: {
                 $or:[
                     {
@@ -316,7 +331,8 @@
                       dateFilterFrom,
                       dateFilterTo,
                       {isEstimate: { $ne: 1 }},
-                      { parentID: {$eq: 0} }
+                      { parentID: {$eq: 0} },
+                      { saleID: {$gt: 0} }
                     ]
                   },{
                     //group
@@ -326,7 +342,8 @@
                       dateFilterFrom,
                       dateFilterTo,
                       {isEstimate: { $ne: 1 }},
-                      { parentID: {$eq: 0} }
+                      { parentID: {$eq: 0} },
+                      { saleID: {$gt: 0} }
                     ]
                   }
                 ]
@@ -398,7 +415,7 @@
           dateFilterTo =  {created_date: { $lt: to }};
         }
         self.$app.preloader.show();
-        dbSales.find({
+        mogulsheetdb.find({
               selector: {
                 $or:[
                     {
@@ -409,7 +426,8 @@
                         {isEstimate: { $ne: 1 }},
                         dateFilterFrom,
                         dateFilterTo,
-                        { parentID: {$ne: 0} }
+                        { parentID: {$ne: 0} },
+                        { saleID: {$gt: 0} }
                       ]
                   },{
                     //single product
@@ -419,7 +437,8 @@
                       dateFilterFrom,
                       dateFilterTo,
                       {isEstimate: { $ne: 1 }},
-                      { parentID: {$eq: 0} }
+                      { parentID: {$eq: 0} },
+                      { saleID: {$gt: 0} }
                     ]
                   },{
                     //group
@@ -429,7 +448,8 @@
                       dateFilterFrom,
                       dateFilterTo,
                       {isEstimate: { $ne: 1 }},
-                      { parentID: {$eq: 0} }
+                      { parentID: {$eq: 0} },
+                      { saleID: {$gt: 0} }
                     ]
                   },{
                     //group member other
@@ -439,7 +459,8 @@
                       dateFilterFrom,
                       dateFilterTo,
                       {isEstimate: { $ne: 1 }},
-                      { parentID: {$ne: 0} }
+                      { parentID: {$ne: 0} },
+                      { productID_saleID: {$gt: 0} }
                     ]
                   }
                 ]
@@ -455,15 +476,19 @@
                   var owed = 0;
                   //var unique = arr.map(item => item.product_name).filter((value, index, self) => self.indexOf(value) === index);
                   $.each(arr2, function(ind, val){
-                    var prod = val.product_name;
+                    var prod = val.productID_saleID; // == undefined ? val.saleID : val.productID_saleID;
                     //single sale
                     if(val.isParent != 1 && val.parentID == 0){
-                      var findProd = self.products.find(x => x.name == prod);
-                      var cst = Number(findProd.cost_price) * Number(val.quantity);
-                      cost += cst;
-                      sold += Number(val.amountPaid);
-                      var owing = Number(val.afterTax) - Number(val.amountPaid);
-                      owed += owing;
+                      if(prod != undefined){
+                      var findProd = self.products.find(x => x.productID == prod);
+                      if(findProd != undefined){
+                          var cst = Number(findProd.cost_price) * Number(val.quantity);
+                          cost += cst;
+                          sold += Number(val.amountPaid);
+                          var owing = Number(val.afterTax) - Number(val.amountPaid);
+                          owed += owing;
+                        }
+                      }
                     }
                     //group sale
                     if(val.isParent == 1 && val.parentID == 0){
@@ -474,10 +499,12 @@
                       $.each(children, function(ind2, val2){
                         //singleProduct
                         if(val2.isParent == 1 && val2.parentID != 0){
-                          var prod2 = val2.product_name;
-                          var findProd = self.products.find(x => x.name == prod2);
-                          var cst = Number(findProd.cost_price) * Number(val2.quantity);
-                          cost += cst;
+                          var prod2 = val2.productID_saleID;
+                          if(prod2 != undefined){
+                            var findProd = self.products.find(x => x.productID == prod2);
+                            var cst = Number(findProd.cost_price) * Number(val2.quantity);
+                            cost += cst;
+                          }
                         }
                         //singleProductOther
                         if(val2.isParent == 0 && val2.parentID != 0){
@@ -501,6 +528,7 @@
                   $("#allTables").append(html);
                   self.$app.preloader.hide();
                 }catch(err){
+                  console.log("profit part 2", err);
                   self.showToast("An error occured", "center");
                   self.$app.preloader.hide();
                 }
@@ -520,7 +548,7 @@
           dateFilterTo =  {created_date: { $lt: to }};
         }
         self.$app.preloader.show();
-        dbSales.find({
+        mogulsheetdb.find({
               selector: {
                 $or:[
                     {
@@ -531,7 +559,8 @@
                         {isEstimate: { $ne: 1 }},
                         dateFilterFrom,
                         dateFilterTo,
-                        { parentID: {$ne: 0} }
+                        { parentID: {$ne: 0} },
+                        { saleID: {$gt: 0} }
                       ]
                   },{
                     //single product
@@ -541,7 +570,8 @@
                       dateFilterFrom,
                       dateFilterTo,
                       {isEstimate: { $ne: 1 }},
-                      { parentID: {$eq: 0} }
+                      { parentID: {$eq: 0} },
+                      { saleID: {$gt: 0} }
                     ]
                   },{
                     //group
@@ -551,7 +581,8 @@
                       dateFilterFrom,
                       dateFilterTo,
                       {isEstimate: { $ne: 1 }},
-                      { parentID: {$eq: 0} }
+                      { parentID: {$eq: 0} },
+                      { saleID: {$gt: 0} }
                     ]
                   },{
                     //group member other
@@ -561,7 +592,8 @@
                       dateFilterFrom,
                       dateFilterTo,
                       {isEstimate: { $ne: 1 }},
-                      { parentID: {$ne: 0} }
+                      { parentID: {$ne: 0} },
+                      {productID_saleID: {$gt: 0}}
                     ]
                   }
                 ]
@@ -581,7 +613,9 @@
                       if(obj[name] == undefined){
                         obj[name] = {};
                       }
-                      var prod = val.product_name;
+                      var idboth = val.productID_saleID == undefined ? val.saleID : val.productID_saleID;
+                      idboth = idboth == undefined ? "" : idboth;
+                      var prod = val.product_name + "-" + idboth;
                       if(val.isParent != 1 && val.parentID == 0){
                         if(obj[name][prod] == undefined){
                           var spendings = {};
@@ -653,7 +687,9 @@
                         }
                       }
                         //no children
-                        html += "<td>" + each + "<br>" + eachKey.quantity + " -> " + self.formatMoney(eachKey.paid) + "</td>";
+                        var lastInd = each.lastIndexOf("-");
+                        var eachUnique = each.substr(0, lastInd);
+                        html += "<td>" + eachUnique + "<br>" + eachKey.quantity + " -> " + self.formatMoney(eachKey.paid) + "</td>";
                         html += "<td></td></tr>";
                         start = false;
                       }else{
@@ -661,7 +697,9 @@
                         if(!start){
                         html += "<tr>";
                       }
-                        html += "<td>" + each + "<br>" + "1 -> " + eachKey["paid"] + "</td>";
+                      var lastInd = each.lastIndexOf("-");
+                        var eachUnique = each.substr(0, lastInd);
+                        html += "<td>" + eachUnique + "<br>" + "1 -> " + eachKey["paid"] + "</td>";
                         html += "<td>";
                           var eachChild = eachKey["children"];
                           for(var y = 0; y < eachChild.length; y++){
@@ -699,7 +737,7 @@
           dateFilterTo =  {created_date: { $lt: to }};
         }
         self.$app.preloader.show();
-        dbSales.find({
+        mogulsheetdb.find({
               selector: {
                 $or:[
                     {
@@ -709,7 +747,8 @@
                         {isEstimate: { $ne: 1 }},
                         dateFilterFrom,
                         dateFilterTo,
-                        { parentID: {$ne: 0} }
+                        { parentID: {$ne: 0} },
+                        { productID_saleID: {$gt: 0} }
                       ]
                   },{
                     $and: [
@@ -718,7 +757,8 @@
                       dateFilterFrom,
                       dateFilterTo,
                       {isEstimate: { $ne: 1 }},
-                      { parentID: {$eq: 0} }
+                      { parentID: {$eq: 0} },
+                      { saleID: {$gt: 0} }
                     ]
                   }
                 ]
