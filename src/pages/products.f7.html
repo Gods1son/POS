@@ -1138,14 +1138,10 @@ export default {
             total = total - discount;
             $(".total_sell").val(total.toFixed(2));
             var taxes = Number($(".taxes").val().trim());
-            //console.log("0 - " + taxes);
             if(taxes != "" || taxes == 0){
-              //console.log("1 - " + taxes);
               if(!isNaN(taxes)){
-                //console.log("2 - " + taxes);
                 var taxAmt = (taxes/100) * total;
                 var aftCost = total + taxAmt;
-                //console.log("3 - " + aftCost);
                 $(".afterTax").val(aftCost.toFixed(2));
               }
             }
@@ -1155,14 +1151,10 @@ export default {
       var self = this;
       var total = Number($(".total_sell").val());
             var taxes = Number($(".taxes").val().trim());
-            //console.log("0 - " + taxes);
             if(taxes != "" || taxes == 0){
-              //console.log("1 - " + taxes);
               if(!isNaN(taxes)){
-                //console.log("2 - " + taxes);
                 var taxAmt = (taxes/100) * total;
                 var aftCost = total + taxAmt;
-                //console.log("3 - " + aftCost);
                 $(".afterTax").val(aftCost.toFixed(2));
               }
             }else{
@@ -1181,22 +1173,12 @@ export default {
           
           if(!isNaN(cost)){
               totalCost += cost;
-              //console.log(totalCost);
           }else{
               $$(".totalAmount").text("please fix error");
               return;
           }
       })
       
-      //console.log(totalCost);
-      /*var cent = $(".profitpercent").eq(0).val();
-        if(cent != 0 && cent != "" && totalCost != ""){
-          cent = Number(cent);
-          var val = (cent/100) * totalCost;
-          $(".profitvalue").eq(0).val(val.toFixed(2));
-        }else{
-          $(".profitvalue").eq(0).val("0");
-        }*/
         $(".totalAmountBeforeProfit").text(totalCost.toFixed(2));
         var profitvalue = Number($(".profitvalue").eq(0).val());
         totalCost += profitvalue;
@@ -1208,14 +1190,12 @@ export default {
       var costperunit = $(but).attr("data-cost");
       var unit = $(but).attr("data-unit");
       var fig = (Number(costperunit)/Number(unit)) * Number(val);
-        //console.log(fig.toFixed(2));
         var td = $(but).parents("li").eq(0).find(".eachCost").eq(0).text(fig.toFixed(2));
         self.CalculateTotal();
     },
     RemoveItem: function(but){
       var self = this;
       var id = $(but).attr("data-id");
-      //console.log(id);
         var select = self.productIngs.filter(function(e){ 
               return e._id != id;
           });
@@ -1271,7 +1251,6 @@ export default {
         
         self.$app.dialog.confirm("Are you sure you want to permanently delete this?", "Mogul Sheet", function(){
                   mogulsheetdb.get(id).then(function(doc) {
-                   // console.log(doc);
                     doc.status = -1
                     return mogulsheetdb.put(doc);
                   }).then(function(){
@@ -1306,7 +1285,6 @@ export default {
         }
         self.$app.dialog.confirm("Are you sure you want to " + text + "?", "Mogul Sheet", function(){
                   mogulsheetdb.get(id).then(function(doc) {
-                   // console.log(doc);
                     doc.status = checked
                     return mogulsheetdb.put(doc);
                   }).then(function(){
@@ -1563,7 +1541,6 @@ export default {
                   if(result._id != null || result.id != null){
                     var resultID = result._id == undefined ? result.id : result._id;
                     mogulsheetdb.get(self.currentProductLink._id).then(function(doc2) {
-                    // console.log(doc);
                       doc2.product_link_id = resultID;
                        mogulsheetdb.put(doc2).then(() => {
                          var newLink = {};
@@ -1582,7 +1559,6 @@ export default {
                        });
                     })
                   }
-                  //console.log(result);
                 }).catch(() => {
                     self.$app.preloader.hide();
                 })
@@ -1678,8 +1654,7 @@ export default {
     },
     RemoveItemProduct: function(id){
       var self = this;
-      //var id = $(but).attr("data-id");
-      //console.log(id);
+      
         var select = self.selectedProducts.filter(function(e){ 
               return e._id != id;
           });
@@ -1696,9 +1671,7 @@ export default {
     getClients: function(){
         var self = this;
         var checked = 1;
-        //var collection = db.products.where('status').equals(checked).toArray(function(arr){
-        //var collection = db.ingredients.toArray(function(arr){
-        //console.log(arr);
+        
         mogulsheetdb.find({
           selector: {
             status: {$eq: checked},
@@ -1765,26 +1738,17 @@ export default {
                  selectedValues = value;
                 },
                 closed: function(){
-                  //console.log(selectedValues);
                   if(selectedValues == null || selectedValues.length == 0){
                     return;
                   }
                   for(var i = 0; i < selectedValues.length; i++){
-                    /*var select = self.products.find(function(e){ 
-                        return e.name == selectedValues[i].name;
-                    });*/
+
                     var found = self.selectedProducts.filter(x => x._id == selectedValues[i]._id).length;
                     if(found < 1){
                       self.selectedProducts.push(selectedValues[i]);
                       self.SelectItemMultipleProducts(selectedValues[i]);
                     }
                   }
-                  /*var deleted = self.selectedProducts.filter(function(x) {  // return elements in previousArray matching...
-                      return !selectedValues.includes(x);  // "this element doesn't exist in currentArray"
-                  })
-                  for(var i = 0; i < deleted.length; i++){
-                    $(".eachSaleParent .removeProduct[data-id='" + deleted[i]._id + "']").click()
-                  }*/
 
                   selectedValues = null;
                   //autocomplete.destroy();
@@ -1807,7 +1771,6 @@ export default {
         
         //popup.once("opened", function(){
             self.getDataIngredients(id);
-            //console.log(self.ings);
             var selectedValues = null;
             var autocompleteStandaloneMultiple = self.$app.autocomplete.create({
               openIn: 'popup', //open in page
@@ -1854,14 +1817,10 @@ export default {
                  
                 },
                 closed: function(){
-                  //console.log(selectedValues);
                   if(selectedValues == null || selectedValues.length == 0){
                     return;
                   }
                   for(var i = 0; i < selectedValues.length; i++){
-                    /*var select = self.ings.find(function(e){ 
-                        return e.name == selectedValues[i];
-                    });*/
                     var found = self.productIngs.filter(x => x._id == selectedValues[i]._id).length;
                     if(found < 1){
                       self.productIngs.push(selectedValues[i]);
@@ -1880,9 +1839,7 @@ export default {
             var savearray = [];
             var profit = 0;
             if(id != null || id != undefined){
-                //var collection = db.product_ingredient.where('productID').equals(Number(id)).toArray(function(arr){
-                  //console.log(arr);
-                  console.log("the prod id", id);
+
                   mogulsheetdb.find({
                       selector: {
                         productID_prodIngsID: {$eq: id},
@@ -1892,11 +1849,8 @@ export default {
                       }
                     }).then(function(ar){
                       var arr = ar.docs;
-                      console.log("product ings", arr);
                     $.each(arr, function( key, value ) {
-                        //$(".ing-" + value.ingredientID).click();
-                        //self.SelectItem(Number(value.ingredientID));
-                        //console.log(value.ingredientID);
+   
                         var each = self.activeArr.find(x => x._id == value.ingredientIDFK);
                         if(each != undefined){
                           each.select_unit_size = value.unit_size;
@@ -1904,7 +1858,7 @@ export default {
                           savearray.push(each);
                         }
                     })
-                    //console.log(savearray);
+
                     self.$setState({
                         productIngs:savearray
                         //ings: self.ings
@@ -1916,8 +1870,7 @@ export default {
                     });
                     //self.CalculateTotal();
                 }).then(function(){
-                //var collection2 = db.product_otherMaterials.where('productID').equals(Number(id)).toArray(function(arr){
-                  //console.log(arr);
+                
                   mogulsheetdb.find({
                       selector: {
                         productID_prodIngsID: {$eq: id},
@@ -1927,7 +1880,7 @@ export default {
                       }
                     }).then(function(ar){
                     var arr = ar.docs;
-                    console.log("product ings other", arr);
+
                   $.each(arr, function( key, value ) {
                     if(value.name != "***Profit***"){
                       var html = '<li class="extraCostRow"><div class="card myCard"><div class="card-content padding-horizontal-half">';
@@ -2057,10 +2010,9 @@ export default {
         // validation final
         if(error){
           self.showToast("Error is found in the forms!", "center");
-          //console.log("error");
         }else{
             // save into db
-            //console.log("clean");
+            
             var theBuyerID = "";
             var theBuyerName = "";
             if(buyername == selectedUserName){
@@ -2068,7 +2020,6 @@ export default {
               theBuyerID = selectedUserID;
               self.saveProcessedMultiplePayment(grpName, theBuyerName,theBuyerID,isEstimate,taxes,afterTaxes,beforeTaxes,amountPaid,fullyPaid,isPaidDate,bigData);
             }else{
-              //console.log("differ", chosenUser);
               var generatedID = "0" + moment().format("X");
               var objNew = {
                   name: buyername,
@@ -2150,9 +2101,9 @@ export default {
                     })
 
                 }else{
-                    console.log("bought prods", sbigData);
+                    
                     mogulsheetdb.bulkDocs(sbigData).then(function(lastKey) {
-                        //console.log("Last allcost's id was: " + lastKey); // Will be 100000.
+                        
                         if(isEstimate1 == 0){
                             self.subtractStockMultiple(sbigData);
                           }
@@ -2260,7 +2211,6 @@ export default {
         }
       })
       
-      //console.log(totalCost);
       var tax = Number($(".multipleSales").find(".taxpercent").eq(0).val());
       if(!isNaN(tax) || tax == 0){
         $(".totalAmountBeforeProfitProduct").text(totalCost.toFixed(2));
@@ -2321,7 +2271,7 @@ export default {
       var self = this;
       var elem = $$("input:required");
       var err = self.$app.input.validateInputs(".productForm");
-      //console.log(err);
+      
       if(err){
         var stock = $(".stock_quantity").val();
         var unlimited = $(".isUnlimited").is(":checked");
@@ -2458,9 +2408,8 @@ export default {
       var chosenUser = $("input.buyer_sell").val();
       var theBuyerID = "";
       var theBuyerName = "";
-      console.log("chosen", selectedUserName, selectedUserID, "typed", chosenUser);
+      
       if(chosenUser == selectedUserName){
-        console.log("same");
         theBuyerID = selectedUserID;
         theBuyerName = selectedUserName;
         self.saveProcessedPayement(theBuyerName, theBuyerID, isEstimate, fullyPaid, isPaidDate);
@@ -2539,7 +2488,6 @@ export default {
                     })
                   }
               }).catch(function (error) {
-                  //console.log(error);
                  self.showToast("An error occurred!", "center");
               })
     },
@@ -2574,7 +2522,6 @@ export default {
           },
           sort: [{'_id': 'desc'}]
         }).then(function(ar){
-          console.log("products", ar);
           var arr = ar.docs;
           self.$app.preloader.hide();
           self.$setState({
@@ -2694,7 +2641,6 @@ export default {
     },
     shareableLink: function(link, prodID){
       var self = this;
-      //console.log(link);
       if(link == null || link == "null"){
         self.openPopUpLink(prodID);
       }else{
@@ -2725,12 +2671,10 @@ export default {
           },
           sort: [{'_id': 'desc'}]
         }).then(function(ar){
-          //console.log("prod ings", ar);
           var arr = ar.docs;
           var arr2 = arr.filter(x => (x.status == 1 || x.status == 0)).map(x => x);
           var activeArr = arr.filter(x => x.status == 1).map(x => x);
-        //var collection = db.ingredients.toArray(function(arr){
-        //console.log(arr2);
+        
           self.$setState({
                 activeArr: activeArr,
                 ings: arr2,
@@ -2752,7 +2696,6 @@ export default {
         //upload small amount
 
         mogulsheetdb.bulkDocs(smallUpload).then(() => {
-            //console.log("uploaded", uploaded, "picking", picking + uploaded);
             uploaded += picking;
             setTimeout(self.uploadFileBatches(), 1000);
           }).catch((err) => {
@@ -2843,8 +2786,6 @@ export default {
                   var html = rejected.length + " rows were not saved. <br> Please ensure product name is not blank and the header of the product names column is called <b>name</b>. <br> Please delete the rows that were saved from your excel file to prevent duplicate records.<br>";
                   html += "Unsaved rows are: <br>" + errors;
                   $(".errorContent").html(html);
-                  //console.log(" rejected");
-                  //console.log(rejected);
                 }else if(rejected.length == totalLength){
                   self.showToast("No error was found", "center");
                 }
@@ -2950,9 +2891,7 @@ export default {
                 })
 
                 var id = self.settingsID;
-                //dbSales.info().then((dta) => {console.log(dta);})
                 dbSettings.get(id).then(function(doc) {
-              //console.log(doc);
                   self.$setState({
                       settings: doc
                     })
@@ -3028,17 +2967,9 @@ export default {
           }
           //record in db
           if(passed){
-                //console.log(allCost);
-                //console.log(allExtraCost);
                 var total1 = Number($(".totalAmountBeforeProfit").text());
                 var total2 = Number($(".totalAmount").text());
-                //console.log(totall);
-                //db.transaction('rw', db.product_ingredient, db.product_otherMaterials, db.products, () => {
-                  
-                      /*db.product_ingredient.where("productID").equals(self.productToEditID).delete()
-                      .then(function (deleteCount) {
-                            //console.log( "Deleted " + deleteCount + " objects");
-                          });*/
+
                           mogulsheetdb.find({
                             selector: {
                               productID_prodIngsID: {$eq: self.productToEditID},
@@ -3051,7 +2982,7 @@ export default {
                                   arr.forEach((element, index) => {
                                   arr[index]._deleted = true;
                               });
-                              //console.log(arr);
+
                               mogulsheetdb.bulkDocs(arr).then(function(){
                                 mogulsheetdb.bulkDocs(allCost);
                               })
@@ -3065,16 +2996,12 @@ export default {
                               _id: {$gte: null}
                             }
                           }).then(function(ar1){
-                            //console.log(ar1);
                             var arr2 = ar1.docs;
                                   arr2.forEach((element, index) => {
                                   arr2[index]._deleted = true;
                               });
-                              //console.log(arr2);
                               mogulsheetdb.bulkDocs(arr2).then(function(){
-                                console.log("save other cost", allExtraCost);
                                 mogulsheetdb.bulkDocs(allExtraCost).then((res) => {
-                                  console.log("res of save other costs", res);
                                 }).catch((err) => {
                                   console.log("res of save other costs err", err);
                                 })
@@ -3082,7 +3009,6 @@ export default {
                           })
 
                           mogulsheetdb.get(self.productToEditID).then(function(doc) {
-                          // console.log(doc);
                             doc.cost_price = total1;
                             doc.selling_price = total2;
                             return mogulsheetdb.put(doc);
@@ -3178,10 +3104,7 @@ export default {
                   timePicker: true,
                   closeOnSelect: true,
                   formatValue: function(values){
-                    //console.log(values[0]);
                     var t = moment(values[0]).format('LLL');
-                    //console.log(moment(values[0]).format("X"));
-                    //console.log(t);
                     return t;
                   }
                   //dateFormat: { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }
@@ -3192,10 +3115,7 @@ export default {
                   timePicker: true,
                   closeOnSelect: true,
                   formatValue: function(values){
-                    //console.log(values[0]);
                     var t = moment(values[0]).format('LLL');
-                    //console.log(moment(values[0]).format("X"));
-                    //console.log(t);
                     return t;
                   }
                   //dateFormat: { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }
@@ -3205,10 +3125,7 @@ export default {
                   timePicker: true,
                   closeOnSelect: true,
                   formatValue: function(values){
-                    //console.log(values[0]);
                     var t = moment(values[0]).format('LLL');
-                    //console.log(moment(values[0]).format("X"));
-                    //console.log(t);
                     return t;
                   }
                   //dateFormat: { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }
@@ -3219,10 +3136,7 @@ export default {
                   timePicker: true,
                   closeOnSelect: true,
                   formatValue: function(values){
-                    //console.log(values[0]);
                     var t = moment(values[0]).format('LLL');
-                    //console.log(moment(values[0]).format("X"));
-                    //console.log(t);
                     return t;
                   }
                   //dateFormat: 'YYYY-MM-DD HH:MM'
@@ -3234,10 +3148,7 @@ export default {
                   timePicker: true,
                   closeOnSelect: true,
                   formatValue: function(values){
-                    //console.log(values[0]);
                     var t = moment(values[0]).format('LLL');
-                    //console.log(moment(values[0]).format("X"));
-                    //console.log(t);
                     return t;
                   }
                   //dateFormat: 'YYYY-MM-DD HH:MM'
@@ -3298,7 +3209,6 @@ function registerUpload(){
 
 
 function trackProductsPage(){
-  //console.log("track products");
   try{
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({
@@ -3306,9 +3216,8 @@ function trackProductsPage(){
     'pagePath': 'https://www.mogulsheet.com/products',
     'pageTitle': 'Products' //some arbitrary name for the page/state
     });
-    //console.log("track products success");
   }catch(err){
-    //console.log("track products error");
+
   }
 }
 </script>

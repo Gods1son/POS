@@ -417,7 +417,13 @@
         self.$app.preloader.show();
         mogulsheetdb.find({
               selector: {
-                $or:[
+                $and: [
+                         {status: {$eq: 1}},
+                         dateFilterFrom,
+                         dateFilterTo,
+                         {isEstimate: {$ne: 1}}
+                      ]
+                /*$or:[
                     {
                       //group member
                       $and: [
@@ -463,7 +469,7 @@
                       { productID_saleID: {$gt: 0} }
                     ]
                   }
-                ]
+                ]*/
               },
               sort: [{'_id': 'desc'}]
             }).then(function(ar){
@@ -502,14 +508,16 @@
                           var prod2 = val2.productID_saleID;
                           if(prod2 != undefined){
                             var findProd = self.products.find(x => x.productID == prod2);
-                            var cst = Number(findProd.cost_price) * Number(val2.quantity);
-                            cost += cst;
+                            if(findProd != undefined){
+                              var cst = Number(findProd.cost_price) * Number(val2.quantity);
+                              cost += cst;
+                            }
                           }
                         }
                         //singleProductOther
                         if(val2.isParent == 0 && val2.parentID != 0){
                           var cst = Number(val2.afterTax);
-                          cost += cst;
+                          if(!isNaN(cst)) cost += cst;
                         }
                       })
                     }
@@ -550,7 +558,13 @@
         self.$app.preloader.show();
         mogulsheetdb.find({
               selector: {
-                $or:[
+                $and: [
+                         {status: {$eq: 1}},
+                         dateFilterFrom,
+                         dateFilterTo,
+                         {isEstimate: {$ne: 1}}
+                      ]
+                /*$or:[
                     {
                       //group member
                       $and: [
@@ -596,7 +610,7 @@
                       {productID_saleID: {$gt: 0}}
                     ]
                   }
-                ]
+                ]*/
               },
               sort: [{'_id': 'desc'}]
             }).then(function(ar){
@@ -606,6 +620,7 @@
                   var arr = ar.docs;
                   var arr2 = arr.filter(x => ((x.isParent != 1 && x.parentID == 0) || (x.isParent == 1 && x.parentID == 0)));
                   var obj = {};
+                  //console.log(arr2);
                   //var unique = arr.map(item => item.product_name).filter((value, index, self) => self.indexOf(value) === index);
                   $.each(arr2, function(ind, val){
                     try{
@@ -615,8 +630,10 @@
                       }
                       var idboth = val.productID_saleID == undefined ? val.saleID : val.productID_saleID;
                       idboth = idboth == undefined ? "" : idboth;
-                      var prod = val.product_name + "-" + idboth;
+                      var sID = val.saleID == undefined ? "" : val.saleID;
+                      var prod = val.product_name + "-" + idboth + sID;
                       if(val.isParent != 1 && val.parentID == 0){
+                        
                         if(obj[name][prod] == undefined){
                           var spendings = {};
                           spendings.quantity = Number(val.quantity);
@@ -653,7 +670,6 @@
                           obj[name][prod2]["paid"] = self.formatMoney(Number(val.amountPaid));
                           obj[name][prod2]["children"] = children;
                         }
-                        
                       }
                     }catch(err){
                       //continue;

@@ -388,20 +388,14 @@ export default {
         var self = this;
         
         self.$app.dialog.confirm("Are you sure you want to permanently delete this?", "Mogul Sheet", function(){
-                  /*var item = self.ings.find(function(e){ 
-                      return e._id = id;
-                  });
-                  item.status = checked;*/
-                  //console.log(item);
+                  
                   mogulsheetdb.get(id).then(function(doc) {
-                   // console.log(doc);
                     doc.status = -1
                     return mogulsheetdb.put(doc);
                   }).then(function(){
                     self.clients = self.clients.filter(function(e){ 
                       return e._id != id;
                   });
-                  //console.log(self.ings);
                   self.$setState({
                       clients:self.clients,
                       totalMat:self.clients.length
@@ -431,14 +425,14 @@ export default {
         }
         self.$app.dialog.confirm("Are you sure you want to " + text + "?", "Mogul Sheet", function(){
                   mogulsheetdb.get(id).then(function(doc) {
-                   // console.log(doc);
+
                     doc.status = checked
                     return mogulsheetdb.put(doc);
                   }).then(function(){
                     self.clients = self.clients.filter(function(e){ 
                       return e._id != id;
                   });
-                  //console.log(self.ings);
+
                   self.$setState({
                       clients:self.clients,
                       totalMat:self.clients.length
@@ -457,7 +451,7 @@ export default {
     },
     resetTable: function(){
         var self = this;
-        //console.log("empty");
+
         var id = $("#clientID").text();
         var name = $("#clientName").text();
         self.openPopUpClientSales(id, name);
@@ -466,7 +460,7 @@ export default {
       var self = this;
       $("#clientID").text(id);
       $("#clientName").text(name);
-      //console.log(name);
+
       var checked = 1;
         var toggle = self.$app.toggle.get(".showInactiveClientPurchases");
       if(toggle != undefined){
@@ -484,9 +478,7 @@ export default {
               sort: [{'_id': 'desc'}]
             }).then(function(ar){
               var arr = ar.docs;
-              //console.log(arr);
-            //var collection = db.ingredients.toArray(function(arr){
-            //console.log(arr);
+
               self.$setState({
                     totalMatUser:arr.length
                   }, function(){
@@ -596,7 +588,6 @@ export default {
         //upload small amount
 
           mogulsheetdb.bulkDocs(smallUpload).then(() => {
-            //console.log("uploaded", uploaded, "picking", picking + uploaded);
             uploaded += picking;
             setTimeout(self.uploadFileBatches(), 1000);
           }).catch((err) => {
@@ -682,14 +673,7 @@ export default {
                 dataToUpload = toSave;
                 self.uploadFileBatches();
                 
-                 /* console.log(" to save");
-                  console.log(toSave);
-                  db.bulkDocs(toSave).then(() => {
-                    self.showToast(toSave.length + " records were saved", "center");
-                  }).catch((err) => {
-                    self.$app.preloader.hide();
-                    self.showToast("error occured during saving", "center");
-                  })*/
+
                 }else if(toSave.length == totalLength){
                   self.showToast("No record was saved", "center");
                 }
@@ -698,8 +682,7 @@ export default {
                   var html = rejected.length + " rows were not saved. <br> Please ensure client name is not blank and the header of the product names column is called <b>name</b>. <br> Please delete the rows that were saved from your excel file to prevent duplicate records.<br>";
                   html += "Unsaved rows are: <br>" + errors;
                   $(".errorContent").html(html);
-                  //console.log(" rejected");
-                  //console.log(rejected);
+
                 }else if(rejected.length == totalLength){
                   self.showToast("No error was found", "center");
                 }
@@ -816,12 +799,10 @@ export default {
           var arr = [];
           var dt = $("#client_bday").val() == "" ? new Date() : new Date($("#client_bday").val());
           //var dt = new Date($("#client_bday").val());
-          console.log(dt);
           arr.push(dt);
           //arr.push(new Date());
           calendarBday.setValue(arr);
           //calendarDefault.update()
-          console.log($("#client_bday").val());
     },
     getData: function(){
       var self = this;
@@ -840,13 +821,8 @@ export default {
           sort: [{'_id': 'desc'}]
         }).then(function(ar){
           self.$app.preloader.hide();
-          console.log("clients", ar);
           var arr = ar.docs;
-            //console.log(arr);
-        //})
-        //var collection = db.ingredients.toArray(function(arr){
-        //console.log(arr);
-        //console.log("fretched - " + checked);
+
           self.$setState({
                 clients: arr,
                 totalMat:arr.length
@@ -924,7 +900,6 @@ export default {
                           $('#clients-list').off("click").on('click','.button', function () {
                               var data = $(this).attr("data-id");
                               var name = $(this).attr("data-name");
-                              //console.log(data);
                               if($(this).hasClass("editButton")){
                                 self.openPopUp(data);
                               }
@@ -958,11 +933,11 @@ export default {
         var self = this;
         registerUpload();
         $$(".showInactiveClients").on("change", function(){
-          //console.log("inactive change");
+
             self.getData();
         })
         $(".showInactiveClientPurchases").on("change", function(){
-          //console.log("inactive change");
+
           var name = $("#clientName").text();
           var id = $("#clientID").text();
             self.openPopUpClientSales(id, name);
@@ -985,7 +960,7 @@ export default {
             closeOnSelect: true
         });
         calendarModal.on("closed", function(){
-            //console.log(calendarModal.getValue());
+
             var days = calendarModal.getValue();
             if(days == undefined){
                 return;
@@ -993,13 +968,13 @@ export default {
             var from = null; var to = null;
             if(days.length == 1){
                 from = Date.parse(days[0]);
-                //console.log(moment(days[0]).format('LLL'));
+
                 from = moment(moment(days[0]).format('LLL')).format("X");
                 days.push(days[0]);
                 var date2 = days[1];
                 date2.setDate(date2.getDate() + 1);
                 to = Date.parse(date2);
-                //console.log(moment(date2).format('LLL'));
+
                 to = moment(moment(date2).format('LLL')).format("X");
             }
             else if(days.length > 1){
@@ -1015,19 +990,12 @@ export default {
               self.openPopUpClientSales(id, name);
             }
             if(from != null && to != null){
-                //console.log(from);
-                //console.log(to);
                 var checked = 1;
                 var toggle = self.$app.toggle.get(".showInactiveClientPurchases");
                 if(toggle != undefined){
                   checked = toggle.checked == true ? 0 : 1;
                 }
-                /*var collection = db.sales.where('created_date').between(from, to)
-                .filter(function (sale) {
-                    return ((sale.status === checked) && (sale.parentID < 1));
-                }).reverse().toArray(function(arr){*/
-                  //console.log("from: " + from);
-                  //console.log("to: " + to);
+
                   var id = $("#clientID").text();
                   mogulsheetdb.find({
                     selector: {
@@ -1041,7 +1009,6 @@ export default {
                     sort: [{'_id': 'desc'}]
                   }).then(function(ar){
                     //var collection = db.ingredients.toArray(function(arr){
-                    //console.log(arr);
                     var arr = ar.docs;
                     self.$setState({
                             totalMatUser:arr.length
@@ -1052,17 +1019,13 @@ export default {
                 });
             }
         })  
-        //console.log("test inactive init 2");
         self.startPouch();
       },
       pageReinit: function(e, page) {
         var self = this;
-        //console.log("test inactive reinit");
         $$(".showInactiveClients").on("change", function(){
-          //console.log("inactive change");
             self.getData();
         })
-        //console.log("test inactive reinit 2");
         self.getData();
       }
   }

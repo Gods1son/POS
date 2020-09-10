@@ -604,7 +604,7 @@ export default {
                         if(fullyPaid == 0){
                             self.$app.toggle.get(".product-" + id).toggle();
                         }
-                        //console.log(self.ings);
+
                         self.$setState({
                             sales:self.sales
                         }, function(){
@@ -643,7 +643,6 @@ export default {
         }
       })
       
-      //console.log(totalCost);
       var tax = Number($(".multipleSales_sales").find(".taxpercent-sales").eq(0).val());
       if(!isNaN(tax) || tax == 0){
         $(".totalAmountBeforeProfitProduct-sales").text(totalCost.toFixed(2));
@@ -738,7 +737,6 @@ export default {
         // validation final
         if(error){
           self.showToast("Error is found in the forms!", "center");
-          console.log("error");
         }else{
           // save into db
           var chosenUser = buyername;
@@ -748,7 +746,6 @@ export default {
             if(self.currentMultipleSale == null || self.sellToAnotherUser != null){
               //selected name from dropdown
               if(chosenUser == selectedUserName){
-              //console.log("same");
               theBuyerID = selectedUserID;
               theBuyerName = selectedUserName;
               self.saveProcessedMultiplePayment(grpName,buyername,theBuyerID,isEstimate,taxes,afterTaxes,beforeTaxes,amountPaid,fullyPaid,isPaidDate,bigData);
@@ -844,7 +841,7 @@ export default {
                         });
                         mogulsheetdb.bulkDocs(arr).then(function(){
                           mogulsheetdb.bulkDocs(sbigData).then((saved) => {
-                            console.log("big save", saved);
+
                           }).catch((err) => {
                             console.log("big save error", err);
                           })
@@ -871,8 +868,7 @@ export default {
 
                 }else{
                     mogulsheetdb.bulkDocs(sbigData).then(function(lastKey) {
-                      console.log("save multiple", lastKey);
-                        //console.log("Last allcost's id was: " + lastKey); // Will be 100000.
+
                         if(isEstimate1 == 0){
                             self.subtractStockMultiple(sbigData);
                           }
@@ -991,14 +987,11 @@ export default {
       var self = this;
       var total = Number($(".total_sell_sales").val());
             var taxes = Number($(".taxes-sales").val().trim());
-            //console.log("0 - " + taxes);
+            
             if(taxes != "" || taxes == 0){
-              //console.log("1 - " + taxes);
               if(!isNaN(taxes)){
-                //console.log("2 - " + taxes);
                 var taxAmt = (taxes/100) * total;
                 var aftCost = total + taxAmt;
-                //console.log("3 - " + aftCost);
                 $(".afterTax").val(aftCost.toFixed(2));
               }
             }else{
@@ -1129,7 +1122,6 @@ export default {
         
         self.$app.dialog.confirm("Are you sure you want to permanently delete this sale?", "Mogul Sheet", function(){
               mogulsheetdb.get(id).then(function(doc) {
-                   // console.log(doc);
                     doc.status = -1
                     return mogulsheetdb.put(doc);
                   }).then(function(){
@@ -1154,7 +1146,6 @@ export default {
                       })
                     })
                   self.showToast("Sale permanently deleted", "center");
-                  //console.log(self.ings);
                   self.$setState({
                       sales:self.sales
                   }, function(){
@@ -1182,7 +1173,6 @@ export default {
         }
         self.$app.dialog.confirm("Are you sure you want to " + text + " this sale?", "Mogul Sheet", function(){
               mogulsheetdb.get(id).then(function(doc) {
-                   // console.log(doc);
                     oldSale = $.extend(true, {}, doc);
                     doc.status = checked;
                     newSale = $.extend(true, {}, doc);
@@ -1191,10 +1181,10 @@ export default {
                 
                 if(oldSale.isParent == 0){
                   
-                  if(oldSale.productID != 0 && oldSale.productID != undefined){
+                  if(oldSale.productID_saleID != 0 && oldSale.productID_saleID != undefined){
                         var prodArr = [];
                         
-                        prodArr.push(oldSale.productID);
+                        prodArr.push(oldSale.productID_saleID);
                         self.findDifferenceInSales(prodArr, oldSale, newSale);
                       }
                 }
@@ -1238,7 +1228,6 @@ export default {
                   });
                   var act = checked == 0 ? "deleted!" : "activated!";
                   self.showToast("Sale " + act, "center");
-                  //console.log(self.ings);
                   self.$setState({
                       sales:self.sales
                   }, function(){
@@ -1329,7 +1318,6 @@ export default {
         if(self.currentSale == null){
           //selected name from dropdown
           if(chosenUser == selectedUserName){
-          //console.log("same");
           theBuyerID = selectedUserID;
           theBuyerName = selectedUserName;
           self.saveProcessedPayement(theBuyerID, theBuyerName, taxes, isEstimate, fullyPaid, isPaidDate);
@@ -1438,7 +1426,6 @@ export default {
                  // });
                   
               }).catch(function (error) {
-                 console.log("sell one product from sale", error);
                  self.$app.dialog.alert("An error occurred!", "Mogul Sheet");
               })
     },
@@ -1463,7 +1450,6 @@ export default {
               })
           }
         }catch(err){
-          //console.log(html);
           var opt = {
             margin:       0.3,
             filename:     item.buyer_name + "-" + item._id + '.pdf',
@@ -1487,7 +1473,6 @@ export default {
                   return e._id == id;
               });
               var children = [];
-              //console.log(item);
               if(item.isParent == 1){
                 //var collection = db.sales.where('parentID').equals(item.id).toArray(function(arr){
                   mogulsheetdb.find({
@@ -1505,19 +1490,15 @@ export default {
                     //self.showPDF(html, item);
                 })
               }else{
-                //console.log(children);
                 //var html = self.formatPDF(item, children);
                 self.loadImageLogo(item, children);
                 //self.showPDF(html, item);
               }
               
-      
-      //console.log(html);
     },
     findDifferenceMultiple: function(oldMaster, newMaster){
       var self = this;
       var saveBigdata = [];
-      console.log("oldMaster", oldMaster, "new master", newMaster);
       //check from old file
       $.each(oldMaster, ((ind, val) => {
         if(val.productID_saleID != undefined && val.productID_saleID != 0){
@@ -1551,7 +1532,6 @@ export default {
         }
       }))
 
-      console.log("save big data", saveBigdata);
       //product ids
       var checkAllProducts = saveBigdata.map(x => x._id);
       var finalSaving = [];
@@ -1566,7 +1546,6 @@ export default {
         }).then((arr) => {
           //adjust from db
           var ar = arr.docs;
-          console.log("all ids", ar, "save data", saveBigdata);
           $.each(ar, function(ind, dat){
                 if(dat.stock != undefined && dat.stock != "undefined" && dat.stock != "Unlimited"){
                   var finding = saveBigdata.find(x => x._id == dat._id);
@@ -1581,10 +1560,9 @@ export default {
                   }
                 }
             })
-            console.log("finnal Saving", finalSaving);
             if(finalSaving.length > 0){
               mogulsheetdb.bulkDocs(finalSaving).then((dat) => {
-                console.log("save sucessful", dat);
+
               }).catch((err) => {
                 console.log("save err", err);
               })
@@ -1765,7 +1743,6 @@ export default {
     },
     resetTable: function(){
         var self = this;
-        //console.log("empty");
         self.getData();
     },
     showCalendarPopup: function(){
@@ -1791,9 +1768,7 @@ export default {
     getClients: function(){
         var self = this;
         var checked = 1;
-        //var collection = db.products.where('status').equals(checked).toArray(function(arr){
-        //var collection = db.ingredients.toArray(function(arr){
-        //console.log(arr);
+
         mogulsheetdb.find({
           selector: {
             status: {$eq: checked},
@@ -1810,9 +1785,7 @@ export default {
     getProducts: function(){
         var self = this;
         var checked = 1;
-        //var collection = db.products.where('status').equals(checked).toArray(function(arr){
-        //var collection = db.ingredients.toArray(function(arr){
-        //console.log(arr);
+
         mogulsheetdb.find({
           selector: {
             status: {$eq: checked},
@@ -1830,11 +1803,9 @@ export default {
         var self = this;
         self.openPopUpMultiple();
         var currChosen = null;
-        //console.log("multiple");
-        //var collection2 = db.sales.where('id').equals(Number(id)).toArray(function(arr){
+
           mogulsheetdb.get(id).then(function(arr){
-          //var arr = ar.docs;
-          //console.log(ar);
+
             var taxesAmt = arr.tax;
             currChosen = arr;
             $(".groupProductNameMultiple_sales").val(arr.product_name);
@@ -1870,12 +1841,9 @@ export default {
           }
         }).then(function(ar){
           var arr = ar.docs;
-          console.log("bought", ar);
           self.selectedOldProducts = [];
-          //console.log(arr);
             self.$setState({
             currentMultipleSale: currChosen,
-            //selectedOldProducts: arr,
             selectedProducts: arr
           }, function(){
               for(var i = 0; i < arr.length; i++){
@@ -1948,26 +1916,17 @@ export default {
                  selectedValues = value;
                 },
                 closed: function(){
-                  //console.log(selectedValues);
                   if(selectedValues == null || selectedValues.length == 0){
                     return;
                   }
                   for(var i = 0; i < selectedValues.length; i++){
-                    /*var select = self.products.find(function(e){ 
-                        return e.name == selectedValues[i].name;
-                    });*/
+
                     var found = self.selectedProducts.filter(x => x._id == selectedValues[i]._id).length;
                     if(found < 1){
                       self.selectedProducts.push(selectedValues[i]);
                       self.SelectItemMultipleProducts(selectedValues[i]);
                     }
                   }
-                  /*var deleted = self.selectedProducts.filter(function(x) {  // return elements in previousArray matching...
-                      return !selectedValues.includes(x);  // "this element doesn't exist in currentArray"
-                  })
-                  for(var i = 0; i < deleted.length; i++){
-                    $(".eachSaleParent .removeProduct[data-id='" + deleted[i]._id + "']").click()
-                  }*/
 
                   selectedValues = null;
                   //autocomplete.destroy();
@@ -2030,8 +1989,7 @@ export default {
     },
     RemoveItemProduct: function(id){
       var self = this;
-      //var id = $(but).attr("data-id");
-      //console.log(id);
+
         var select = self.selectedProducts.filter(function(e){ 
               return e._id != id;
           });
@@ -2041,8 +1999,7 @@ export default {
                 ings:self.ings,
                 selectedProducts:select
             }, function(){
-              
-              //self.CalculateTotal();
+
             });
     },
     closePopUpMultiple:function(){
@@ -2153,7 +2110,7 @@ export default {
                       
                           $('#sales-list').off("click").on('click','.button', function () {
                               var data = $(this).attr("data-id");
-                              //console.log(data);
+                              
                               if($(this).hasClass("editSale")){
                                 var isAParent = $(this).attr("data-isparent");
                                 if(isAParent == "0"){
@@ -2352,8 +2309,7 @@ export default {
             }).then(function(ar){
               self.$app.preloader.hide();
               var arr = ar.docs;
-            //var collection = db.ingredients.toArray(function(arr){
-            //console.log(arr);
+
               self.$setState({
                     sales: arr,
                     totalMat:arr.length
@@ -2402,7 +2358,6 @@ export default {
           },
           on: {
                 change: function (value) {
-                  //console.log(value);
                   if(value.length > 0){
                   value = value[0];
                   $("#name_sell_sales").val(value.name);
@@ -2479,10 +2434,7 @@ export default {
                   timePicker: true,
                   closeOnSelect: true,
                   formatValue: function(values){
-                    //console.log(values[0]);
                     var t = moment(values[0]).format('LLL');
-                    //console.log(moment(values[0]).format("X"));
-                    //console.log(t);
                     return t;
                   }
                   //dateFormat: { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }
@@ -2493,10 +2445,7 @@ export default {
                   timePicker: true,
                   closeOnSelect: true,
                   formatValue: function(values){
-                    //console.log(values[0]);
                     var t = moment(values[0]).format('LLL');
-                    //console.log(moment(values[0]).format("X"));
-                    //console.log(t);
                     return t;
                   }
                   //dateFormat: { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }
@@ -2507,10 +2456,7 @@ export default {
                   timePicker: true,
                   closeOnSelect: true,
                   formatValue: function(values){
-                    //console.log(values[0]);
                     var t = moment(values[0]).format('LLL');
-                    //console.log(moment(values[0]).format("X"));
-                    //console.log(t);
                     return t;
                   }
                   //dateFormat: { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }
@@ -2521,16 +2467,12 @@ export default {
                   timePicker: true,
                   closeOnSelect: true,
                   formatValue: function(values){
-                    //console.log(values[0]);
                     var t = moment(values[0]).format('LLL');
-                    //console.log(moment(values[0]).format("X"));
-                    //console.log(t);
                     return t;
                   }
                   //dateFormat: { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }
               });
         $$(".showInactiveSales").on("change", function(){
-          //console.log("inactive change");
             self.getData();
         })
         
@@ -2543,7 +2485,6 @@ export default {
             footer: true
         });
         calendarModal.on("closed", function(){
-            //console.log(calendarModal.getValue());
             var days = calendarModal.getValue();
             if(days == undefined){
                 return;
@@ -2551,13 +2492,11 @@ export default {
             var from = null; var to = null;
             if(days.length == 1){
                 from = Date.parse(days[0]);
-                //console.log(moment(days[0]).format('LLL'));
                 from = moment(moment(days[0]).format('LLL')).format("X");
                 days.push(days[0]);
                 var date2 = days[1];
                 date2.setDate(date2.getDate() + 1);
                 to = Date.parse(date2);
-                //console.log(moment(date2).format('LLL'));
                 to = moment(moment(date2).format('LLL')).format("X");
             }
             else if(days.length > 1){
@@ -2571,19 +2510,12 @@ export default {
                 self.getData();
             }
             if(from != null && to != null){
-                //console.log(from);
-                //console.log(to);
                 var checked = 1;
                 var toggle = self.$app.toggle.get(".showInactiveSales");
                 if(toggle != undefined){
                   checked = toggle.checked == true ? 0 : 1;
                 }
-                /*var collection = db.sales.where('created_date').between(from, to)
-                .filter(function (sale) {
-                    return ((sale.status === checked) && (sale.parentID < 1));
-                }).reverse().toArray(function(arr){*/
-                  //console.log("from: " + from);
-                  //console.log("to: " + to);
+
                   var data = $(".switchEstimate").attr("data-estimate");
                   var sales_estimate = Number(data);
                   var condition = null;
@@ -2605,8 +2537,6 @@ export default {
                     },
                     sort: [{'_id': 'desc'}]
                   }).then(function(ar){
-                    //var collection = db.ingredients.toArray(function(arr){
-                    //console.log(arr);
                     var arr = ar.docs;
                     self.$setState({
                             sales: arr,
