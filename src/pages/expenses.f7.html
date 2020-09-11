@@ -103,7 +103,7 @@
                 <div class="item-content item-input1">
                     <div class="item-inner bg-color-white specWrap">
                     <div class="item-input-wrap">
-                        <input type="text" class="specSearch" placeholder="Filter expenses by date" id="demo-calendar-modal"/>
+                        <input type="text" class="specSearch" placeholder="Filter expenses by date" id="demo-calendar-modal-expense"/>
                         <span class="input-clear-button specClear" @click="resetTable"></span>
                     </div>
                     </div>
@@ -697,7 +697,7 @@ export default {
             self.getData();
         })
         var calendarModal = self.$app.calendar.create({
-            inputEl: '#demo-calendar-modal',
+            inputEl: '#demo-calendar-modal-expense',
             openIn: 'customModal',
             rangePicker: true,
             closeOnSelect: true,

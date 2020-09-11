@@ -65,6 +65,17 @@
     color:white !important;
 }
 
+.ContactUs{
+    bottom: 5px;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+}
+
+.ContactUs a{
+    color:white !important;
+}
+
 .navbar-inner .logoname{
     color: #673ab7 !important;
     font-weight: 700;

@@ -2320,17 +2320,9 @@ export default {
               self.$app.preloader.hide();
               self.showToast(err, "center");
             });
-      }
-  },
-  on: {
-    pageAfterIn: function(e, page) {
-        var self = this;
-        trackSalesPage();
       },
-      pageInit: function(e, page) {
+      preparePage: function(){
         var self = this;
-        //self.getProducts();
-        registerPagination();
         var iconTooltip = self.$app.tooltip.create({
           targetEl: '.estimateExplain',
           text: '<b>Check if this is just an estimate,</b><br><b>no purchase is being made yet.</b>',
@@ -2546,7 +2538,23 @@ export default {
                         });
                 });
             }
-        })        
+        }) 
+      }
+
+  },
+  on: {
+    pageAfterIn: function(e, page) {
+        var self = this;
+        //console.log("re-enter");
+        //self.preparePage();
+        trackSalesPage();
+      },
+      pageInit: function(e, page) {
+        var self = this;
+        self.preparePage();
+        //self.getProducts();
+        registerPagination();
+               
         //self.getData();
         self.startPouch();
       }

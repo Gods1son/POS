@@ -92,7 +92,7 @@ setTimeout(function(){
         //var self = this;
         //db = null;
         try{//id,name,unit_size,unit,cost_per_unit,status,created_date
-          mogulsheetdb = new PouchDB('mogulsheet.db');
+          mogulsheetdb = new PouchDB('mogulsheet.db', {auto_compaction: true});
           mogulsheetdb.createIndex({
             index: {
               fields: ['_id','ingredientID', 'status'],

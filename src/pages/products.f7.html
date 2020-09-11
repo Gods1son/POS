@@ -643,7 +643,7 @@
                       <div class="item-inner">
                         <div class="item-title">Date Buyer Paid</div>
                       <div class="item-input-wrap">
-                          <input type="text" placeholder="Date buyer paid" id="paid-calendar-modal"/>
+                          <input type="text" placeholder="Date buyer paid" id="paid-calendar-modal-prods"/>
                           <span class="input-clear-button"></span>
                       </div>
                       </div>
@@ -1592,7 +1592,7 @@ export default {
                 $(".taxes").val(taxesAmt);
                 $(".afterTax").val(afterTax.toFixed(2));
                 $(".total_sell").val(total.toFixed(2));
-                $("#paid-calendar-modal").val(moment().format('LLL'));
+                $("#paid-calendar-modal-prods").val(moment().format('LLL'));
                 $("#purchase-calendar-modal").val(moment().format('LLL'));
                 var popup = self.$app.popup.open('.sellProduct', true);
             } else{
@@ -1600,7 +1600,7 @@ export default {
               var taxesAmt = taxes == undefined ? 0 : taxes;
               $(".quantity_sell").val("1");
               $(".taxes").val(taxesAmt);
-              $("#paid-calendar-modal").val(moment().format('LLL'));
+              $("#paid-calendar-modal-prods").val(moment().format('LLL'));
               $("#purchase-calendar-modal").val(moment().format('LLL'));
               var popup = self.$app.popup.open('.sellProduct', true);
               self.$setState({
@@ -1961,7 +1961,7 @@ export default {
       }else{
         fullyPaid = 0;
       }
-      isPaidDate = moment($(".multipleSales:visible").find("#datePaidMultiple").val()).format("X");//  Date.parse($("#paid-calendar-modal").val());
+      isPaidDate = moment($(".multipleSales:visible").find("#datePaidMultiple").val()).format("X");//  Date.parse($("#paid-calendar-modal-prods").val());
       var isEstimate = $(".isEstimateMultiple").prop("checked") == true ? 1 : 0;
         $(".eachProduct").each(function(i, curr){
         var productID = "0";
@@ -2346,9 +2346,9 @@ export default {
     },
     resetSalePopUp: function(){
       var self = this;
-      $("#paid-calendar-modal").next("span").click();
+      $("#paid-calendar-modal-prods").next("span").click();
       $("#purchase-calendar-modal").next("span").click();
-      $$("input.buyer_sell, input.amountpaid_sell, #purchase-calendar-modal, #paid-calendar-modal, .quantity_sell, .total_sell").val("");
+      $$("input.buyer_sell, input.amountpaid_sell, #purchase-calendar-modal, #paid-calendar-modal-prods, .quantity_sell, .total_sell").val("");
       var popup = self.$app.popup.close('.sellProduct', true);
       selectedUserName = null;
       selectedUserID = null;
@@ -2379,7 +2379,7 @@ export default {
         self.showToast("Please enter buyer's name", "center");
         return;
       }
-      if(($("#paid-calendar-modal").val().trim() == "") && ($$("input.amountpaid_sell").val() != "0" && $$("input.amountpaid_sell").val().trim() != "")){
+      if(($("#paid-calendar-modal-prods").val().trim() == "") && ($$("input.amountpaid_sell").val() != "0" && $$("input.amountpaid_sell").val().trim() != "")){
           self.showToast("Please choose date buyer paid!", "center");
           return;
       }
@@ -2403,7 +2403,7 @@ export default {
       }else{
         fullyPaid = 0;
       }
-      isPaidDate = moment($("#paid-calendar-modal").val()).format("X");//  Date.parse($("#paid-calendar-modal").val());
+      isPaidDate = moment($("#paid-calendar-modal-prods").val()).format("X");//  Date.parse($("#paid-calendar-modal").val());
       var isEstimate = $(".isEstimate").prop("checked") == true ? 1 : 0; 
       var chosenUser = $("input.buyer_sell").val();
       var theBuyerID = "";
@@ -2462,9 +2462,9 @@ export default {
  
             mogulsheetdb.put(obj).then(function(){
                   self.showToast("Record saved!","center");
-                  $("#paid-calendar-modal").next("span").click();
+                  $("#paid-calendar-modal-prods").next("span").click();
                   $("#purchase-calendar-modal").next("span").click();
-                  $$("input.buyer_sell, input.amountpaid_sell, #purchase-calendar-modal, #paid-calendar-modal, .quantity_sell, .total_sell, .discount_sell").val("");
+                  $$("input.buyer_sell, input.amountpaid_sell, #purchase-calendar-modal, #paid-calendar-modal-prods, .quantity_sell, .total_sell, .discount_sell").val("");
                   $(".isEstimate").prop("checked", false);
                   self.$app.popup.close('.sellProduct', true);
                   selectedUserName = null;
@@ -3121,7 +3121,7 @@ export default {
                   //dateFormat: { month: 'numeric', day: 'numeric', year: 'numeric', hour: 'numeric', minute: 'numeric' }
               });
         var calendar = self.$app.calendar.create({
-                  inputEl: '#paid-calendar-modal',
+                  inputEl: '#paid-calendar-modal-prods',
                   timePicker: true,
                   closeOnSelect: true,
                   formatValue: function(values){

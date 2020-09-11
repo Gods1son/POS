@@ -166,7 +166,7 @@
                   <div class="item-content item-input1">
                       <div class="item-inner bg-color-white specWrap">
                       <div class="item-input-wrap">
-                          <input type="text" class="specSearch" placeholder="Filter purchases by date" id="demo-calendar-modal"/>
+                          <input type="text" class="specSearch" placeholder="Filter purchases by date" id="demo-calendar-modal-clients"/>
                           <span class="input-clear-button specClear" @click="resetTable"></span>
                       </div>
                       </div>
@@ -713,13 +713,14 @@ export default {
                     self.$setState({
                       currentClient: item
                     });
-                    $(".clientname").val(item.name);
-                    $(".email").val(item.email);
-                    $(".address").val(item.address);
-                    $(".phone").val(item.phone);
+                    
+                    $(".clientForm .clientname").val(item.name);
+                    $(".clientForm .email").val(item.email);
+                    $(".clientForm .address").val(item.address);
+                    $(".clientForm .phone").val(item.phone);
                     var n = item.otherNotes == undefined ? "" : item.otherNotes;
-                    $(".otherNotes").val(n);
-                    $("#client_bday").val();
+                    $(".clientForm .otherNotes").val(n);
+                    $(".clientForm #client_bday").val();
                     if(item.bday != null && item.bday != 0 && item.bday != ""){
                       $("#client_bday").val(moment.unix(item.bday).format("MMMM DD"));
                       self.updateCalendar();
@@ -728,7 +729,7 @@ export default {
                       var arr = [];
                       arr.push(new Date());
                       calendarBday.setValue(arr);
-                      $("#client_bday").val("");
+                      $(".clientForm #client_bday").val("");
                     }
                     
                     var popup = self.$app.popup.open('.newClient', true);
@@ -762,17 +763,17 @@ export default {
       var elem = $$("input:required");
       var bday = 0;
       if($("#client_bday").val() != ""){
-        bday = moment($("#client_bday").val()).format("X");
+        bday = moment($(".clientForm #client_bday").val()).format("X");
       }
       
       var err = self.$app.input.validateInputs(".clientForm");
       if(err){
         var obj = {
-                name: $(".clientname").val().trim(), 
-                email: $(".email").val().trim(), 
-                address: $(".address").val().trim(), 
-                phone: $(".phone").val().trim(), 
-                otherNotes: $(".otherNotes").val().trim(), 
+                name: $(".clientForm .clientname").val().trim(), 
+                email: $(".clientForm .email").val().trim(), 
+                address: $(".clientForm .address").val().trim(), 
+                phone: $(".clientForm .phone").val().trim(), 
+                otherNotes: $(".clientForm .otherNotes").val().trim(), 
                 status:1,
                 bday: bday,
                 created_date: moment().format("X")
@@ -785,6 +786,7 @@ export default {
               obj._id = moment().format("X");
               obj.clientID = obj._id;
             }
+
             mogulsheetdb.put(obj).then(function(res) {
                     //self.$app.dialog.alert("Item saved.");
                     self.showToast("Client saved.", "center");
@@ -952,7 +954,7 @@ export default {
         
         
         var calendarModal = self.$app.calendar.create({
-            inputEl: '#demo-calendar-modal',
+            inputEl: '#demo-calendar-modal-clients',
             openIn: 'customModal',
             rangePicker: true,
             header: true,
