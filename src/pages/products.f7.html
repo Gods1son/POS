@@ -122,7 +122,7 @@
           <div class="block margin-half">
             <div class="item-label">* Ensure you don't have duplicate products in Excel and on system.</div>
             <div class="item-label">Expected column names are: <b>name</b>, <b>description</b>, <b>cost_price</b>, <b>selling_price</b>, <b>stock e.g 5</b></div>
-            <input type="file" id="fileUpload" accept=".xls,.xlsx" />
+            <input type="file" id="fileUploadProducts" accept=".xls,.xlsx" />
             <a href="#" class="col button button-outline button-raised mainButton margin-top-half" @click='uploadFile'>Save Excel Data</a>
             <div class="errorContent"></div>
           </div>
@@ -612,7 +612,12 @@
                     <div class="col-50">
                       <div class="item-content item-input">
                         <div class="item-inner">
-                          <div class="item-title">Amount Paid</div>
+                          <div class="item-title" style="width: 100%;">
+                            <span>Amount Paid</span>
+                            <p class="display-inline-flex" style="float: right;margin: 0;">
+                                <a class="button button-small button-outline text-color-white button-green bg-color-green no-margin padding-horizontal-half" @click="recordPaidFully">Paid fully</a>
+                              </p>
+                          </div>
                           <div class="item-input-wrap">
                             <input type="text" class="amountpaid_sell" placeholder="Amount customer paid" value="0" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                             <span class="input-clear-button"></span>
@@ -872,7 +877,11 @@
               </div></div>
             
             <div><span class="labelName">Amount Paid: </span><div class="display-inline-flex">
-                <input class="amountPaidMultiple" type="text" placeholder="Amount Paid" value="0"></div></div>
+                <input class="amountPaidMultiple" type="text" placeholder="Amount Paid" value="0"></div>
+                <p class="display-inline-flex" style="margin: 0;">
+                  <a class="button button-small button-outline text-color-white button-green bg-color-green no-margin padding-horizontal-half" @click="recordPaidFullyMultiple">Paid fully</a>
+                </p>
+              </div>
             <div><span class="labelName">Date of Payment: </span><div class="display-inline-flex" style="width:100%">
                   
               <div class="item-input" style="width: 100%;"> 
@@ -946,6 +955,14 @@ export default {
     calculateprofit: function(){
       var self = this;
         self.CalculateTotal();
+    },
+    recordPaidFully: function(){
+      var tt = $(".afterTax").val();
+      $(".amountpaid_sell").val(tt);
+    },
+    recordPaidFullyMultiple: function(){
+      var tt = $(".totalAmountProduct").text();
+      $(".amountPaidMultiple").val(tt);
     },
     openPopUpRestockHistory: function(){
       var self = this;
@@ -2803,7 +2820,7 @@ export default {
       var self = this;
         selectedFile = null;
         //$(".errorContent").html("");
-        document.getElementById("fileUpload").value = "";
+        document.getElementById("fileUploadProducts").value = "";
     },
     AddNewCost: function(e){
       var self = this;
@@ -3195,9 +3212,9 @@ export default {
 
 var selectedFile = null;
 function registerUpload(){
-  //document.getElementById("fileUpload").addEventListener("change", handleFile);
+  //document.getElementById("fileUploadProducts").addEventListener("change", handleFile);
   document
-      .getElementById("fileUpload")
+      .getElementById("fileUploadProducts")
       .addEventListener("change", function(event) {
         selectedFile = event.target.files[0];
       });

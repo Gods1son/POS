@@ -312,6 +312,7 @@ export default {
               }).then(() => {
                 self.$app.preloader.hide();
                   self.showToast('All data cleared.', "center");
+                  $(".compName").empty();
               }).catch((e) => {
                 self.$app.preloader.hide();
                 self.showToast("An error occured", "center");

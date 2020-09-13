@@ -258,7 +258,7 @@
                           <div class="item-inner">
                             <div class="item-title">After Tax Price</div>
                             <div class="item-input-wrap">
-                              <input type="text" class="afterTax" placeholder="After Tax Price"/>
+                              <input type="text" class="afterTax_sales" placeholder="After Tax Price"/>
                               <span class="input-clear-button"></span>
                             </div>
                           </div>
@@ -283,7 +283,12 @@
                     <div class="col-50">
                       <div class="item-content item-input">
                         <div class="item-inner">
-                          <div class="item-title">Amount Paid</div>
+                          <div class="item-title" style="width: 100%;">
+                            <span>Amount Paid</span>
+                            <p class="display-inline-flex" style="float: right;margin: 0;">
+                                <a class="button button-small button-outline text-color-white button-green bg-color-green no-margin padding-horizontal-half" @click="recordPaidFullySales">Paid fully</a>
+                              </p>
+                          </div>
                           <div class="item-input-wrap">
                             <input type="text" class="amountpaid_sell_sales" placeholder="Amount customer paid" value="0" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                             <span class="input-clear-button"></span>
@@ -470,7 +475,11 @@
               </div></div>
 
             <div><span class="labelName">Amount Paid: </span><div class="display-inline-flex">
-                <input class="amountPaidMultiple-sales" type="text" placeholder="Amount Paid" value="0"></div></div>
+                <input class="amountPaidMultiple-sales" type="text" placeholder="Amount Paid" value="0"></div>
+                <p class="display-inline-flex" style="margin: 0;">
+                  <a class="button button-small button-outline text-color-white button-green bg-color-green no-margin padding-horizontal-half" @click="recordPaidFullyMultipleSales">Paid fully</a>
+                </p>
+              </div>
             <div><span class="labelName">Date of Payment: </span><div class="display-inline-flex" style="width:100%">
               
               <div class="item-input" style="width: 100%;"> 
@@ -540,6 +549,14 @@ export default {
       }
     },
   methods:{
+    recordPaidFullySales: function(){
+      var tt = $(".afterTax_sales").val();
+      $(".amountpaid_sell_sales").val(tt);
+    },
+    recordPaidFullyMultipleSales: function(){
+      var tt = $(".totalAmountProduct-sales").text();
+      $(".amountPaidMultiple-sales").val(tt);
+    },
     closePreviewInvoice: function(){
       var self = this;
       self.$setState({
@@ -978,7 +995,7 @@ export default {
               if(!isNaN(taxes)){
                 var taxAmt = (taxes/100) * total;
                 var aftCost = total + taxAmt;
-                $(".afterTax").val(aftCost.toFixed(2));
+                $(".afterTax_sales").val(aftCost.toFixed(2));
               }
             }
         }
@@ -992,10 +1009,10 @@ export default {
               if(!isNaN(taxes)){
                 var taxAmt = (taxes/100) * total;
                 var aftCost = total + taxAmt;
-                $(".afterTax").val(aftCost.toFixed(2));
+                $(".afterTax_sales").val(aftCost.toFixed(2));
               }
             }else{
-              $(".afterTax").val(total.toFixed(2)); 
+              $(".afterTax_sales").val(total.toFixed(2)); 
             }
     },
     moneyFormat: function(val){
@@ -1178,8 +1195,7 @@ export default {
                     newSale = $.extend(true, {}, doc);
                     return mogulsheetdb.put(doc);
                   }).then(function(){
-                
-                if(oldSale.isParent == 0){
+                if(oldSale.isParent == undefined || oldSale.isParent == 0){
                   
                   if(oldSale.productID_saleID != 0 && oldSale.productID_saleID != undefined){
                         var prodArr = [];
@@ -1299,7 +1315,7 @@ export default {
     },
     processPaymentUpdate: function(){
       var self = this;
-      var cp = $$("input.afterTax").val();
+      var cp = $$("input.afterTax_sales").val();
       var sp = $$("input.amountpaid_sell_sales").val();
       var fullyPaid = 0;
       if(Number(sp) >= Number(cp)){
@@ -1364,7 +1380,7 @@ export default {
                 productID_saleID: productId,
                 isEstimate: isEstimate,
                 discount: $(".discount_sell_sales").val(),
-                afterTax: $$("input.afterTax").val(),
+                afterTax: $$("input.afterTax_sales").val(),
                 quantity: quantitySold,
                 total_price: $$("input.total_sell_sales").val(),
                 amountPaid: $$("input.amountpaid_sell_sales").val(),
@@ -1606,6 +1622,7 @@ export default {
                       if(oldProd.status == 1 && newProd.status == 0){
                         var left = parseFloat(oldProd.quantity);
                         var subt = parseFloat(dat.stock) + left;
+                        console.log("diff", left, subt);
                         if(!isNaN(subt)){
                           dat.stock = subt;
                           saveBigData.push(dat);
@@ -1665,7 +1682,7 @@ export default {
                   var afterTax = item.afterTax == undefined ? total : item.afterTax;
                   $(".quantity_sell_sales").val(quantity);
                   $(".taxes-sales").val(taxesAmt);
-                  $(".afterTax").val(afterTax);
+                  $(".afterTax_sales").val(afterTax);
                   $(".discount_sell_sales").val(discount);
                   $(".total_sell_sales").val(total.toFixed(2));
                   if(item.isEstimate != undefined && item.isEstimate != null){
@@ -1702,7 +1719,7 @@ export default {
                 $(".quantity_sell_sales").val("1");
                 $(".discount_sell_sales").val(0);
                 $(".taxes-sales").val(taxesAmt);
-                $(".afterTax").val("0");
+                $(".afterTax_sales").val("0");
                 $$("input.amountpaid_sell_sales").val(0);
                 $("#paid-calendar-modal-sales").val(moment().format('LLL'));
                 $("#purchase-calendar-modal-sales").val(moment().format('LLL'));

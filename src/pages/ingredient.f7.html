@@ -112,7 +112,7 @@
           <div class="block margin-half">
             <div class="item-label">* Ensure you don't have duplicate raw materials in Excel and on system.</div>
             <div class="item-label">Expected column names are: <b>name</b>, <b>unit_size</b>, <b>unit</b>, <b>cost_per_unit</b></div>
-            <input type="file" id="fileUpload" accept=".xls,.xlsx" />
+            <input type="file" id="fileUploadMaterials" accept=".xls,.xlsx" />
             <a href="#" class="col button button-outline button-raised mainButton margin-top-half" @click='uploadFile'>Save Excel Data</a>
             <div class="errorContent"></div>
           </div>
@@ -465,7 +465,7 @@ export default {
       var self = this;
         selectedFile = null;
         //$(".errorContent").html("");
-        document.getElementById("fileUpload").value = "";
+        document.getElementById("fileUploadMaterials").value = "";
     },
     openPopUp: function(id){
         var self = this;
@@ -668,9 +668,9 @@ export default {
 
 var selectedFile = null;
 function registerUpload(){
-  //document.getElementById("fileUpload").addEventListener("change", handleFile);
+  //document.getElementById("fileUploadMaterials").addEventListener("change", handleFile);
   document
-      .getElementById("fileUpload")
+      .getElementById("fileUploadMaterials")
       .addEventListener("change", function(event) {
         selectedFile = event.target.files[0];
       });

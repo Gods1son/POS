@@ -94,6 +94,13 @@
                       </a>
                     </li>
                     <!--<li>
+                      <a class="link external item-content panel-close downloadData" target="_system">
+                        <div class="item-inner">
+                          <div class="item-title">Download Data</div>
+                        </div>
+                      </a>
+                    </li>-->
+                    <!--<li>
                       <a href="/form/" class="item-content item-link">
                         <div class="item-inner">
                           <div class="item-title">Form</div>
@@ -195,6 +202,7 @@
   </div>
 </template>
 <script>
+  import * as XLSX from 'xlsx';
   export default {
     data() {
       return {
@@ -224,7 +232,59 @@
         this.$f7.dialog.alert('Username: ' + this.username + '<br>Password: ' + this.password, () => {
           this.$f7.loginScreen.close();
         });
+      },
+      downloadData(){
+        var self = this;
+        console.log("download data");
+        
+        var mogulsheetdb = self.$app.methods.startPouch();
+          //var id = self.settingsID;
+          mogulsheetdb.find({
+          selector: {
+            status: {$eq: 1},
+            clientID: {$gt: 0},
+            _id: {$gte: null}
+          },
+          sort: [{'_id': 'desc'}]
+        }).then(function(ar){
+          var arr = ar.docs;
+          var clientsWS = XLSX.utils.json_to_sheet(arr);
+          
+          // A workbook is the name given to an Excel file
+          var wb = XLSX.utils.book_new(); // make Workbook of Excel
+
+          // add Worksheet to Workbook
+          // Workbook contains one or more worksheets
+          XLSX.utils.book_append_sheet(wb, clientsWS, 'clients'); // sheetAName is name of Worksheet
+          //XLSX.utils.book_append_sheet(wb, pokemonWS, 'pokemons')   
+          // export Excel file
+          /* write workbook (use type 'binary') */
+          self.writeFileQ(wb, "test.xlsx").then((suc) => {console.log(suc)}).catch((err) => { console.log(err) });
+        })
+      },
+      writeFileQ(workbook, filename) {
+          return new Promise((resolve, reject) => {
+              // the interface wasn't clearly documented, but this reasonable guess worked...
+              XLSX.writeFileAsync(filename, workbook, "o", (error, result) => {
+                  (error)? reject(error) : resolve(result);
+              })
+          })
       }
     },
+    on: {
+    pageAfterIn: function(e, page) {
+        var self = this;
+        //console.log("re-enter");
+        //self.preparePage();
+        //trackSalesPage();
+      },
+      pageInit: function(e, page) {
+        var self = this;
+        $(document).on("click", ".downloadData", function(e){
+            e.preventDefault();
+            //self.downloadData();
+        });
+      }
+    }
   }
 </script>

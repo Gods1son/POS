@@ -111,7 +111,7 @@
           <div class="block margin-half">
             <div class="item-label">* Ensure you don't have duplicate clients in Excel and on system.</div>
             <div class="item-label">Expected column names are: <b>name</b>, <b>email</b>, <b>phone</b>, <b>address</b>, <b>other_notes</b></div>
-            <input type="file" id="fileUpload" accept=".xls,.xlsx" />
+            <input type="file" id="fileUploadClients" accept=".xls,.xlsx" />
             <a href="#" class="col button button-outline button-raised mainButton margin-top-half" @click='uploadFile'>Save Excel Data</a>
             <div class="errorContent"></div>
           </div>
@@ -700,7 +700,7 @@ export default {
       var self = this;
         selectedFile = null;
         //$(".errorContent").html("");
-        document.getElementById("fileUpload").value = "";
+        document.getElementById("fileUploadClients").value = "";
     },
     openPopUp: function(id){
         var self = this;
@@ -1036,9 +1036,9 @@ export default {
 
 var selectedFile = null;
 function registerUpload(){
-  //document.getElementById("fileUpload").addEventListener("change", handleFile);
+  //document.getElementById("fileUploadClients").addEventListener("change", handleFile);
   document
-      .getElementById("fileUpload")
+      .getElementById("fileUploadClients")
       .addEventListener("change", function(event) {
         selectedFile = event.target.files[0];
       });
