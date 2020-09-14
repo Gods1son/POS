@@ -230,6 +230,16 @@
                   </div>
                 </li>
                 <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-title">Upload Images. Max 3</div>
+                      <div class="item-input-wrap">
+                        <input type="file" name="photos" id="myPhotosProducts" accept="image/x-png,image/gif,image/jpeg,image/jpg,image/png" @change="checkFilesProducts" multiple>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
                   <div class="item-content">
                     <div class="item-inner">
                       <a href="#" class="col button button-outline button-raised mainButton" @click='generateLink'>Generate Link</a>
@@ -926,7 +936,7 @@ import * as XLSX from 'xlsx';
 import copy from 'copy-to-clipboard';
 var selectedUserName = null, selectedUserID = null, myActionSheet = null, mogulsheetdb = null;
 var dbProducts = null, dbProdIngs = null, dbProdOthers = null, dbSales = null, dbIngs = null, dbSettings = null, dbClients = null;
-var dbRestock = null, dataToUpload = null, eachBatch = 50, uploaded = 0;
+var dbRestock = null, dataToUpload = null, eachBatch = 50, uploaded = 0, allImages = undefined;
 //var $$ = Dom7;
 export default {
   data: function () {
@@ -956,6 +966,77 @@ export default {
       var self = this;
         self.CalculateTotal();
     },
+    uploadImagesProducts: function(){
+       var self = this; 
+        var data = new FormData();
+        for(var i = 0; i < $('#myPhotosProducts')[0].files.length; i++){
+            var files = $('#myPhotosProducts')[0].files[i];
+            data.append("photos", files);
+        }
+        self.$app.preloader.show();
+            $.ajax({
+                url: self.backendUrl + 'uploadImages',
+                type: 'post',
+                data: data,
+                contentType: false,
+                processData: false,
+                success: function(response){
+                    if(response.success){
+                        var keys = Object.keys(response.images);
+                        var images = [];
+                        for(var i = 0; i < keys.length; i++){
+                          var obj = {};
+                            var key = keys[i];
+                            var val = response.images[keys[i]];
+                            obj[key] = val;
+                            images.push(obj);
+                        }
+
+                        if(keys.length > 0){
+                          self.$app.preloader.hide();
+                          self.generateLink2(images);
+                        }
+                    }else{
+                        self.showToast("An error uploading images", "center");
+                        self.$app.preloader.hide();
+                    }
+                },
+                error: function(err){
+                    self.showToast("An error uploading images", "center");
+                    self.$app.preloader.hide();
+                }
+            });
+    },
+    checkFilesProducts: function(e) {  
+      var self = this;
+      var maxLimit = 3;  
+      var id = e.target.id;
+
+      let list = new DataTransfer;
+      var cut = 0;
+      var pres = 0;
+      //$(".expenseWrapper").empty(); 
+      for(var i = 0; i < $('#' + id)[0].files.length; i++){
+          var files = $('#' + id)[0].files[i];
+          var size = files.size / 1024 / 1024;
+          if((size <= 2) && (i < maxLimit)){
+           /* var reader = new FileReader();
+            reader.onload = function(){
+              var html = "<div class='swiper-slide'>";
+              html += "<div class='holderSwiper'><img class='images' src='" + reader.result + "'></div>";
+              html += "<div><p><a class='button bg-color-red text-color-white deleteImage'>Delete Image</a></p></div></div>";
+              $(".expenseWrapper").append(html); 
+            };
+            reader.readAsDataURL(files);*/
+              list.items.add(files);
+          }else{
+              cut++;
+          }
+      }  
+      document.getElementById(id).files = list.files; 
+      var tense = cut == 1 ? " file was " : " files were "
+      if(cut > 0) alert(cut + tense + "removed because it's too large or you went above file limits");   
+  },
     recordPaidFully: function(){
       var tt = $(".afterTax").val();
       $(".amountpaid_sell").val(tt);
@@ -1456,6 +1537,7 @@ export default {
                   self.$setState({
                       currentProductLink:item
                     });
+
               self.$app.preloader.show();
               return(
                 
@@ -1470,6 +1552,8 @@ export default {
                 }).then((response) => {
                     return response.json();
                 }).then((result) => {
+                  allImages = undefined;
+                  allImages = result.images;
                   self.$app.preloader.hide();
                   var emailComp = result.comp_email == undefined ? self.settings.companyEmail : result.comp_email;
                   var phoneComp = result.comp_phone == undefined ? self.settings.companyPhone : result.comp_phone;
@@ -1503,12 +1587,21 @@ export default {
       $(".nameLink, .selling_priceLink, .other_notesLink, .compNameLink, .compEmailLink, .compPhoneLink").val("");
       var textEditor = self.$app.textEditor.get('.desc_of_productLink');
       textEditor.setValue("");
+      document.getElementById("myPhotosProducts").value = "";
       self.$setState({
           currentProductLink:null
       });
       var popup = self.$app.popup.close('.productLink', true);
     },
     generateLink: function(){
+      var self = this;
+      if($('#myPhotosProducts')[0].files.length < 1){
+        self.generateLink2(null);
+      }else{
+        self.uploadImagesProducts();
+      }
+    },
+    generateLink2: function(images){
       var self = this;
       var err = self.$app.input.validateInputs(".productLinkForm");
       var doc = {};
@@ -1527,10 +1620,26 @@ export default {
         var sp = self.formatMoney(salePrice);
         doc.product_selling_price = sp;
         doc.product_raw_selling_price = salePrice;
+        
         if(self.currentProductLink.product_link_id != undefined){
           doc._id = self.currentProductLink.product_link_id;
+          if(images != null){
+            if(allImages == undefined){
+              doc.images = images;
+            }else{
+              doc.images = allImages.concat(images);
+              allImages = doc.images;
+            }
+            
+          }
+        }else{
+          if(images != null){
+            doc.images = images;
+          }
         }
+      
 
+        if(self.settings != undefined){
         if((self.settings.companyEmail != comp_email) || (self.settings.companyPhone != comp_phone)){
             var docset = self.settings;
             docset.companyEmail = comp_email;
@@ -1542,6 +1651,7 @@ export default {
               
             }).catch(() => {})
         }
+      }
 
         self.$app.preloader.show();
         return(
@@ -2324,7 +2434,10 @@ export default {
               }else{
                 saveStock.new_stock = finalStock;
               }
-
+              if(self.currentProduct.product_link_id != undefined){
+                obj.product_link_id = self.currentProduct.product_link_id;
+              }
+              
             }else{
               obj._id = moment().format("X");
               obj.productID = obj._id;

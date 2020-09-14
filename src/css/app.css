@@ -670,6 +670,43 @@ button.text-editor-button.active{
     vertical-align: text-top;
 }
 
+/* A bit of demo styles */
+.demo-swiper .swiper-slide {
+    font-size: 25px;
+    font-weight: 300;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    background: #fff;
+    color: #000;
+  }
+  .demo-swiper .swiper-slide {
+    box-sizing: border-box;
+    /*border: 1px solid #ddd;*/
+    background: #fff;
+  }
+  .demo-swiper {
+    margin: 0px 0 35px;
+    font-size: 18px;
+    height: 70vh;
+  }
+
+  .swiper-pagination{
+      bottom: 0 !important;
+  }
+
+  .expenseWrapper .images{
+      width: 100%;
+      max-width: 100%;
+  }
+
+  .holderSwiper{
+      height: 80%;
+      overflow: auto;
+  }
+
+
 
 @media only screen and (min-device-width : 1030px)   
 /* and (max-device-width : 1024px)  */

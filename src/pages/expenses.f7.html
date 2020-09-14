@@ -137,6 +137,42 @@
 
   </div>
 
+   <!--pop up add new product-->
+   <div class="popup expenseImages popup-tablet-fullscreen">
+    <div class="view">
+      <div class="page">
+        <div class="navbar">
+          <div class="navbar-bg"></div>
+          <div class="navbar-inner">
+            <div class="title">View Expense Receipts</div>
+            <div class="right">
+              <!-- Link to close popup -->
+              <a class="link" @click="closeReceiptImages()"><i class="icon f7-icons">multiply</i>Close</a>
+            </div>
+          </div>
+        </div>
+        <div class="page-content">
+          <div class="block margin-half">
+            
+            <div>
+              <input type="file" name="photos" id="myPhotos" accept="image/x-png,image/gif,image/jpeg,image/jpg,image/png" @change="checkFiles" multiple>
+              <a class="button mainButton margin-vertical-half" @click="uploadImages">Upload Now</A>
+            </div>
+
+            <div class="swiper-container demo-swiper">
+              <div class="swiper-pagination"></div>
+              <div class="swiper-wrapper expenseWrapper">
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  
+  </div>
+
   <!--pop up-->
   <div class="popup newExpense popup-tablet-fullscreen">
     <div class="view">
@@ -258,10 +294,180 @@ export default {
         totalPaid: 0,
         totalDifference: 0,
         settings: null,
-        settingsID: 'settings'
+        settingsID: 'settings',
+        backendUrl: 'https://posbackend.herokuapp.com/',   //  'http://localhost:3000/'
       }
     },
   methods:{
+    b64toBlob: function(dataurl, filename) {
+            var arr = dataurl.split(','),
+            mime = arr[0].match(/:(.*?);/)[1],
+            bstr = atob(arr[1]), 
+            n = bstr.length, 
+            u8arr = new Uint8Array(n);
+            
+        while(n--){
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+        
+        return new File([u8arr], filename, {type:mime});
+    },
+    uploadImages: function(){
+          var self = this;
+            var data = new FormData();
+            self.$app.preloader.show();
+            for(var i = 0; i < $(".holderSwiper .images.new").length; i++){
+              var ImageURL = $(".holderSwiper .images.new").eq(i).attr("src");
+              var ImageName = $(".holderSwiper .images.new").eq(i).attr("data-name");
+              /*var block = ImageURL.split(";");
+              // Get the content type of the image
+              var contentType = block[0].split(":")[1];// In this case "image/gif"
+              // get the real base64 content of the file
+              var realData = block[1].split(",")[1];
+              // Convert it to a blob to upload*/
+              var blob = self.b64toBlob(ImageURL, ImageName);
+              data.append("photos", blob);
+            }
+            
+            //return;
+
+            $.ajax({
+                url: self.backendUrl + 'uploadImages',
+                type: 'post',
+                data: data,
+                contentType: false,
+                processData: false,
+                success: function(response){
+                  self.$app.preloader.hide();
+                    if(response.success){
+                        var keys = Object.keys(response.images);
+                        if(self.currentExpense.images == undefined) self.currentExpense.images = [];
+                        //var images = [];
+                        for(var i = 0; i < keys.length; i++){
+                            var obj = {};
+                            var key = keys[i];
+                            var val = response.images[keys[i]];
+                            obj[key] = val;
+                            self.currentExpense.images.push(obj);
+                        }
+                        if(keys.length > 0){
+                          self.$app.preloader.show();
+                          mogulsheetdb.put(self.currentExpense).then((dat) => {
+                            self.$app.preloader.hide();
+                            self.showToast("Image(s) uploaded", "center");
+                            self.getData();
+                          }).catch((err) => {
+                            self.$app.preloader.hide();
+                          })
+                        }
+                    }else{
+                        self.showToast("An error uploading images", "center");
+                    }
+                },
+                error: function(err){
+                  self.$app.preloader.hide();
+                  self.showToast("An error uploading images", "center");
+                }
+            });
+    },
+    setupReader: function(file) {
+      var self = this;
+        var name = file.name;
+        var reader = new FileReader();  
+        reader.onload = function(e) {  
+              var html = "<div class='swiper-slide'>";
+              html += "<div class='holderSwiper'><img class='images new' src='" + reader.result + "' data-name='" + name + "'></div>";
+              html += "<div><p><a class='button bg-color-red text-color-white deleteImage'>Delete Image</a></p></div></div>";
+              $(".expenseWrapper").append(html); 
+              self.reInitSwiper();
+        }
+        reader.readAsDataURL(file);
+    },
+    checkFiles: function(e) {  
+      var self = this;
+      var maxLimit = 3;  
+      var id = e.target.id;
+
+      let list = new DataTransfer;
+      var cut = 0;
+      var pres = 0;
+      //$(".expenseWrapper").empty(); 
+      for(var i = 0; i < $('#' + id)[0].files.length; i++){
+          var files = $('#' + id)[0].files[i];
+          var size = files.size / 1024 / 1024;
+          if((size <= 2) && (i < maxLimit)){
+            self.setupReader(files);
+           /* var reader = new FileReader();
+            reader.onload = function(){
+              var html = "<div class='swiper-slide'>";
+              html += "<div class='holderSwiper'><img class='images' src='" + reader.result + "'></div>";
+              html += "<div><p><a class='button bg-color-red text-color-white deleteImage'>Delete Image</a></p></div></div>";
+              $(".expenseWrapper").append(html); 
+            };
+            reader.readAsDataURL(files);*/
+              list.items.add(files);
+          }else{
+              cut++;
+          }
+      }  
+      document.getElementById(id).files = list.files; 
+      var tense = cut == 1 ? " file was " : " files were "
+      if(cut > 0) alert(cut + tense + "removed because it's too large or you went above file limits");   
+  },
+    openReceiptImages: function(id){
+      var self = this;
+      var item = self.expenses.find(function(e){ 
+          return e._id == id;
+      });
+
+      self.$setState({
+        currentExpense:item
+      });
+      var popup = self.$app.popup.open('.expenseImages', true);
+      if(item.images == undefined || item.images.length == 0){
+        return;
+      }
+      //var images = ["https://mogulsheetimages.s3.us-east-2.amazonaws.com/1600046526415-blob","https://mogulsheetimages.s3.us-east-2.amazonaws.com/1600046526421-blob"];
+     var images = item.images;
+      $(".expenseWrapper").empty(); 
+      for(var i = 0; i < images.length; i++){
+        var obj = images[i];
+        var imgName = Object.keys(obj)[0];
+        var imgSrc = Object.values(obj)[0];
+        var html = "<div class='swiper-slide'>";
+          html += "<div class='holderSwiper'><img class='images' src='" + imgSrc + "' data-name='" + imgName + "'></div>";
+        html += "<div><p><a class='button bg-color-red text-color-white deleteImage'>Delete Image</a></p></div></div>";
+        $(".expenseWrapper").append(html); 
+      }
+      self.reInitSwiper();
+    },
+    reInitSwiper: function(){
+      var self = this;
+      self.$app.swiper.destroy('.swiper-container');
+      var swiper = self.$app.swiper.create('.swiper-container', {
+        //data-pagination='{"el": ".swiper-pagination"}' data-space-between="10" data-slides-per-view="auto" data-centered-slides="true" 
+          speed: 400,
+          spaceBetween: 10,
+          centeredSlides: true,
+          pagination: {"el": ".swiper-pagination"}
+      });
+    },
+    closeReceiptImages: function(){
+      var self = this;
+      var popup = self.$app.popup.close('.expenseImages', true);
+      self.$app.swiper.destroy('.swiper-container');
+      $(".expenseWrapper, .swiper-pagination").empty();
+      document.getElementById("myPhotos").value = "";
+      self.$setState({
+        currentExpense:null
+      });
+    },
+    deleteImage1: function(event){
+      var self = this;
+      var but = event.target;
+      $(but).parents("swiper-slide").eq(0).remove();
+
+    },
     permdeleteExpense: function(list, id){
         var self = this;
         
@@ -454,6 +660,9 @@ export default {
               obj._id = self.currentExpense._id;
               obj._rev = self.currentExpense._rev;
               obj.expenseID = obj._id;
+              if(self.currentExpense.images != undefined){
+                obj.images = self.currentExpense.images;
+              }
             }else{
               obj._id = moment().format("X");
               obj.expenseID = obj._id;
@@ -528,9 +737,11 @@ export default {
                             html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName">Deleted</span></div>';
                             html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
                             html += '<a class="button button-small button-raised editExpense" data-id="' + row._id + '">View / Edit</a>';
+                            html += '<a class="button button-small button-raised receiptButton" data-id="' + row._id + '">Receipt</a>';
                             html += '<a class="button button-small button-raised deleteExpense" data-id="' + row._id + '">';
                             html +=  row.status == 1 ? 'Delete' : 'Activate'; 
                             html += '</a>';
+                            
                             if(row.status == 0){
                               html += '<a class="button button-small button-raised permDelButton" data-id="' + row._id + '">Delete</a>';
                             }
@@ -570,6 +781,10 @@ export default {
                               if($(this).hasClass("permDelButton")){
                                 self.permdeleteExpense(expense, data);
                               }
+                              if($(this).hasClass("receiptButton")){
+                                self.openReceiptImages(data);
+                              }
+                              //openReceiptImages
                               //return false;
                           });
                           self.calculateTotalMoneyExpense();
@@ -657,6 +872,11 @@ export default {
       pageInit: function(e, page) {
         var self = this;
         registerPagination();
+        $(document).on('click', '.swiper-slide a', function(e) {
+           var but = e.target;
+           $(but).parents(".swiper-slide").eq(0).remove();
+           self.reInitSwiper();
+        })
         var calendar = self.$app.calendar.create({
                 inputEl: '#paid-calendar-modal',
                 timePicker: true,
@@ -782,5 +1002,6 @@ function trackExpensesPage(){
   }catch(err){
     
   }
-}
+} 
+
 </script>
