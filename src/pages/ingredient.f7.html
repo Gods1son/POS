@@ -113,6 +113,7 @@
             <div class="item-label">* Ensure you don't have duplicate raw materials in Excel and on system.</div>
             <div class="item-label">Expected column names are: <b>name</b>, <b>unit_size</b>, <b>unit</b>, <b>cost_per_unit</b></div>
             <input type="file" id="fileUploadMaterials" accept=".xls,.xlsx" />
+            <a class="button filePicker" @click="ingPicker">Select File</a>
             <a href="#" class="col button button-outline button-raised mainButton margin-top-half" @click='uploadFile'>Save Excel Data</a>
             <div class="errorContent"></div>
           </div>
@@ -241,6 +242,13 @@ export default {
                     })
               })
           self.getData();
+          try{
+            if(chooser != undefined){
+              $("#fileUploadMaterials").addClass("display-none");
+            }
+          }catch(err){
+            $(".filePicker").addClass("display-none");
+          }
           //db = null;
           
           /*
@@ -339,6 +347,24 @@ export default {
       $(".errorContent").html("");
       var popup = self.$app.popup.close('.uploadIngredients', true);
       self.getData();
+    },
+    ingPicker: async function(){
+      var self = this;
+      try{
+        const file = await chooser.getFile();
+        var url = file.dataURI;
+        fetch(url)
+          .then((response) => {
+              return response.blob();
+            })
+            .then((result) => {
+              selectedFile = result;
+              self.uploadFile();
+            })
+      }catch(err){
+        alert(err);
+      }
+      
     },
     uploadFile: function(){
       var self = this;
@@ -561,7 +587,6 @@ export default {
           },
           sort: [{'_id': 'desc'}]
         }).then(function(ar){
-          console.log("ings", ar);
           var arr = ar.docs;
           self.$setState({
                 ings: arr,

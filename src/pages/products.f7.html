@@ -123,6 +123,7 @@
             <div class="item-label">* Ensure you don't have duplicate products in Excel and on system.</div>
             <div class="item-label">Expected column names are: <b>name</b>, <b>description</b>, <b>cost_price</b>, <b>selling_price</b>, <b>stock e.g 5</b></div>
             <input type="file" id="fileUploadProducts" accept=".xls,.xlsx" />
+            <a class="button filePicker" @click="productPicker">Select File</a>
             <a href="#" class="col button button-outline button-raised mainButton margin-top-half" @click='uploadFile'>Save Excel Data</a>
             <div class="errorContent"></div>
           </div>
@@ -2840,6 +2841,24 @@ export default {
         return;
       } 
     },
+    productPicker: async function(){
+      var self = this;
+      try{
+        const file = await chooser.getFile();
+        var url = file.dataURI;
+        fetch(url)
+          .then((response) => {
+              return response.blob();
+            })
+            .then((result) => {
+              selectedFile = result;
+              self.uploadFile();
+            })
+      }catch(err){
+        alert(err);
+      }
+      
+    },
     uploadFile: function(){
       var self = this;
       $(".errorContent").html("");
@@ -2970,7 +2989,13 @@ export default {
               
           self.getClients();
           self.getData();
-         
+          try{
+            if(chooser != undefined){
+              $("#fileUploadProducts").addClass("display-none");
+            }
+          }catch(err){
+            $(".filePicker").addClass("display-none");
+          }
           /*
           try{//id,name,unit_size,unit,cost_per_unit,status,created_date
                 dbProducts = new PouchDB('products.db');

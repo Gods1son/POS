@@ -93,12 +93,13 @@ setTimeout(function(){
         //db = null;
         try{//id,name,unit_size,unit,cost_per_unit,status,created_date
           mogulsheetdb = new PouchDB('mogulsheet.db', {auto_compaction: true});
+          var mogulsheetIndex = localStorage.getItem("mogulsheetIndex");
+
+        if(mogulsheetIndex == undefined){
           mogulsheetdb.createIndex({
             index: {
               fields: ['_id','ingredientID', 'status'],
               name: 'ingredients',
-              /*ddoc: 'mydesigndoc',
-              type: 'json'*/
             }
           });
 
@@ -106,8 +107,6 @@ setTimeout(function(){
             index: {
               fields: ['_id','clientID', 'status'],
               name: 'clients',
-              /*ddoc: 'mydesigndoc',
-              type: 'json'*/
             }
           });
 
@@ -115,8 +114,6 @@ setTimeout(function(){
             index: {
               fields: ['_id','productID', 'status'],
               name: 'products',
-              /*ddoc: 'mydesigndoc',
-              type: 'json'*/
             }
           });
 
@@ -124,8 +121,6 @@ setTimeout(function(){
             index: {
               fields: ['_id','expenseID', 'status'],
               name: 'expenses',
-              /*ddoc: 'mydesigndoc',
-              type: 'json'*/
             }
           });
 
@@ -133,8 +128,6 @@ setTimeout(function(){
             index: {
               fields: ['_id', 'settingID'],
               name: 'settings',
-              /*ddoc: 'mydesigndoc',
-              type: 'json'*/
             }
           });
 
@@ -142,8 +135,6 @@ setTimeout(function(){
             index: {
               fields: ['_id','restockID'],
               name: 'restock',
-              /*ddoc: 'mydesigndoc',
-              type: 'json'*/
             }
           });
 
@@ -151,8 +142,6 @@ setTimeout(function(){
             index: {
               fields: ['_id','prodIngsID', 'productID', 'status'],
               name: 'prodIngs',
-              /*ddoc: 'mydesigndoc',
-              type: 'json'*/
             }
           });
 
@@ -160,8 +149,6 @@ setTimeout(function(){
             index: {
               fields: ['_id','prodOthersID', 'productID', 'status'],
               name: 'prodOthers',
-              /*ddoc: 'mydesigndoc',
-              type: 'json'*/
             }
           });
 
@@ -169,8 +156,6 @@ setTimeout(function(){
             index: {
               fields: ['_id','saleID', 'parentID', 'status'],
               name: 'sales',
-              /*ddoc: 'mydesigndoc',
-              type: 'json'*/
             }
           });
 
@@ -178,8 +163,6 @@ setTimeout(function(){
             index: {
               fields: ['_id','saleID', 'parentID', 'status', 'isEstimate', 'created_date'],
               name: 'salesEstimate',
-              /*ddoc: 'mydesigndoc',
-              type: 'json'*/
             }
           });
 
@@ -187,11 +170,10 @@ setTimeout(function(){
             index: {
               fields: ['_id', 'parentID', 'status', 'productID_saleID'],
               name: 'productSales',
-              /*ddoc: 'mydesigndoc',
-              type: 'json'*/
             }
           });
-
+          localStorage.setItem("mogulsheetIndex", 1);
+        }
           return mogulsheetdb;
 
             //self.syncDB();

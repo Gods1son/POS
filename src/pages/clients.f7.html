@@ -112,6 +112,7 @@
             <div class="item-label">* Ensure you don't have duplicate clients in Excel and on system.</div>
             <div class="item-label">Expected column names are: <b>name</b>, <b>email</b>, <b>phone</b>, <b>address</b>, <b>other_notes</b></div>
             <input type="file" id="fileUploadClients" accept=".xls,.xlsx" />
+            <a class="button filePicker" @click="clientPicker">Select File</a>
             <a href="#" class="col button button-outline button-raised mainButton margin-top-half" @click='uploadFile'>Save Excel Data</a>
             <div class="errorContent"></div>
           </div>
@@ -342,6 +343,13 @@ export default {
                     })
               })
           self.getData();
+          try{
+            if(chooser != undefined){
+              $("#fileUploadClients").addClass("display-none");
+            }
+          }catch(err){
+            $(".filePicker").addClass("display-none");
+          }
           //db = null;
           /*try{//id,name,unit_size,unit,cost_per_unit,status,created_date
             db = new PouchDB('clients.db');
@@ -602,6 +610,24 @@ export default {
         return;
       } 
     },
+    clientPicker: async function(){
+      var self = this;
+      try{
+        const file = await chooser.getFile();
+        var url = file.dataURI;
+        fetch(url)
+          .then((response) => {
+              return response.blob();
+            })
+            .then((result) => {
+              selectedFile = result;
+              self.uploadFile();
+            })
+      }catch(err){
+        alert(err);
+      }
+      
+    },
     uploadFile: function(){
       var self = this;
       $(".errorContent").html("");
@@ -611,7 +637,6 @@ export default {
           var fileReader = new FileReader();
           fileReader.onload = function(event) {
             var data = event.target.result;
-
             var workbook = XLSX.read(data, {
               type: "binary"
             });
@@ -691,7 +716,7 @@ export default {
           };
           fileReader.readAsBinaryString(selectedFile);
         }catch(err){
-          self.showToast("error occured during saving", "center");
+          self.showToast(err + " error occured during saving", "center");
           self.$app.preloader.hide();
         }
       }
@@ -824,7 +849,6 @@ export default {
         }).then(function(ar){
           self.$app.preloader.hide();
           var arr = ar.docs;
-
           self.$setState({
                 clients: arr,
                 totalMat:arr.length
@@ -842,8 +866,10 @@ export default {
                         $("#clients-list").find(".sortText").removeClass("display-none");
                         for(var i = 0; i < self.clients.length; i++){
                             var row = self.clients[i];
+                            //var letter = row.name.split("")[0];
+                            //var nameChip = '<div class="chip bg-color-blue text-color-white" style="font-weight:600;margin-right:5px;"><div class="chip-label">' + letter + '</div></div>';
                             var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
-                            html += '<div class="name cardName">' + row.name + '</div><div class="id display-none">' + row._id + '</div>';
+                            html += '<div class="name cardName">'  + row.name + '</div><div class="id display-none">' + row._id + '</div>';
                             if(row.phone != "" && row.phone != undefined){
                               html += '<div class=""><span class="labelName">Contact number: </span><span class="valueName"><a class="external" target="_system" href="tel:' + row.phone + '"><i class="icon f7-icons phone">phone</i><span class="in-link">' + row.phone + '</span></a></span></div>';
                             }
@@ -1041,6 +1067,7 @@ function registerUpload(){
       .getElementById("fileUploadClients")
       .addEventListener("change", function(event) {
         selectedFile = event.target.files[0];
+        //console.log(selectedFile);
       });
 
       $(document).on('click', 'a.page', function() {
