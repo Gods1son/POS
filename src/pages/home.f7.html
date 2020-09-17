@@ -312,7 +312,9 @@ export default {
               }).then(() => {
                 self.$app.preloader.hide();
                   self.showToast('All data cleared.', "center");
+                  localStorage.clear();
                   $(".compName").empty();
+                  self.startPouch();
               }).catch((e) => {
                 self.$app.preloader.hide();
                 self.showToast("An error occured", "center");
