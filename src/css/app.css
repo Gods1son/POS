@@ -5,6 +5,11 @@
 .size-29 { font-size: 29px; text-transform: none; }
 .size-50 { font-size: 50px; text-transform: none; }
 
+*{
+    --main-color: #673ab7;
+    --panel-color: #c1aee4; /*#decff8*/
+}
+
 /* stripe */
 .StripeElement {
     box-sizing: border-box;
@@ -61,14 +66,33 @@
     margin-left: -10px;
 }*/
 
+.panel.mylinks, .panel.mylinks .page, .panel.mylinks .page-content, 
+.panel.mylinks .quicklinks, .panel.mylinks .navbar-bg{
+    background: var(--main-color);
+    color:white;
+}
+
 .quicklinks .item-inner:before{
-    color:white !important;
+    display:none !important;
+}
+
+.quicklinks.list ul{
+    background: var(--main-color);
+    color:white;
+}
+
+.quicklinks.list ul:before{
+    display: none !important;
+}
+
+.quicklinks.list .item-inner:after, .quicklinks ul:after{
+    display: none;
 }
 
 .ContactUs{
     bottom: 5px;
     position: absolute;
-    text-align: center;
+    left: calc(var(--f7-list-item-padding-horizontal) + var(--f7-safe-area-left));
     width: 100%;
 }
 
@@ -77,7 +101,7 @@
 }
 
 .navbar-inner .logoname{
-    color: #673ab7 !important;
+    color: var(--main-color) !important;
     font-weight: 700;
     font-size: 1.2em;
     padding-left: 3px !important;
@@ -100,10 +124,48 @@
     font-size: 0.9em;
 }
 
+.popover.my-popover{
+    width: auto;
+}
+
+.popover-inner a{
+    text-transform: none;
+    margin: -8px;
+    text-align: left;
+    color: black;
+}
+
+.popover-inner a:hover{
+    color: var(--f7-theme-color);;
+}
+
+.data-table{
+    padding: 0 20px !important;
+}
+
+.data-table table{
+    margin-top:10px;
+    
+}
+
+.data-table thead tr{
+    background: #2196f3 !important;
+}
+
+.data-table thead tr th{
+    font-weight: 700;
+    font-size: 1em;
+    color: white !important;
+}
+
 /*.logoName{
     font-size: 1.3em;
     font-weight: 500;
 }*/
+
+.panel-left.mylinks .item-link:hover .item-title{
+    font-weight: 700;
+}
 
 .text-editor{
     border: var(--f7-text-editor-border-width) solid var(--f7-text-editor-border-color) !important;
@@ -167,7 +229,7 @@ button.text-editor-button.active{
 }
 
 .parentWrap .myCard:hover{
-    background:#673ab7;
+    background:var(--main-color);
 }
     
 .parentWrap .myCard:hover .item-title{
@@ -181,12 +243,12 @@ button.text-editor-button.active{
 }
 
 /*.myCard:hover, .myCard:hover .card-footerMine, .myCard:hover .labelName{
-    background: #673ab7;
+    background: var(--main-color);
     color: white !important;
 }*/
 
 .fab a{
-    background: #673ab7;
+    background: var(--main-color);
 }
 
 .sortTextPar{
@@ -199,7 +261,7 @@ button.text-editor-button.active{
 }
 
 .myPurple{
-    color: #673ab7;
+    color: var(--main-color);
 }
 
 .page-content .button-outline{
@@ -207,8 +269,8 @@ button.text-editor-button.active{
 }
 
 .mainButton{
-    border: 1px solid #673ab7 !important;
-    background: #673ab7;
+    border: 1px solid var(--main-color) !important;
+    background: var(--main-color);
     color: white;
     text-transform: none;
     font-size: 1.1em;
@@ -294,9 +356,9 @@ button.text-editor-button.active{
     font-size: 1.2em;
     letter-spacing: 0px;
     text-transform: none;
-    /*color: #673ab7;*/
+    /*color: var(--main-color);*/
     border: 1px solid;
-    /*box-shadow: 0px 1px 3px 1px #673ab794;*/
+    /*box-shadow: 0px 1px 3px 1px var(--main-color)94;*/
 }
 
 .viewRestockHistory{
@@ -364,8 +426,8 @@ button.text-editor-button.active{
 }
 
 .switchEstimate{
-    border: 1px solid #673ab7 !important;
-    color: #673ab7 !important;
+    border: 1px solid var(--main-color) !important;
+    color: var(--main-color) !important;
     font-weight: 700;
 }
 
@@ -378,7 +440,7 @@ button.text-editor-button.active{
 }
 
 .settingsInput, .myCard input[type="text"], .item-input-wrap input[type="text"]:not(.specSearch){
-    border-bottom: 1.2px solid #673ab7 !important;
+    border-bottom: 1.2px solid var(--main-color) !important;
     padding: 2px 5px !important;
     margin-top: 2px !important;
 }
@@ -457,7 +519,7 @@ button.text-editor-button.active{
     border-radius: 2px !important;
 }
 
-.customList .sort{
+.customList .sort:not(th){
     border-radius: 3px;
     padding: 5px;
     box-shadow: 0px 0px 0px 1px;
@@ -465,6 +527,10 @@ button.text-editor-button.active{
     cursor: pointer;
     color: black;
     font-weight: 400;
+}
+
+.customList .sort{
+    cursor: pointer;
 }
 
 .sort .icon{
@@ -543,7 +609,7 @@ button.text-editor-button.active{
 }
 
 .specWrap{
-    border-radius: 20px;
+    border-radius: 5px;
     box-shadow: 0px 0px 1px 1px darkgrey;
     margin: 13px auto;
 }
@@ -724,7 +790,8 @@ button.text-editor-button.active{
     body{
         background-color:#dee2e6;
     }
-    .myToolbar, .list.sortList, .sortTextPar, .dash, .dashText, .specWrap, .viewRestockHistoryParent, .sellMultParent, .pagination{
+    /*.viewRestockHistoryParent, .sellMultParent,*/
+    .myToolbar, .list.sortList, .sortTextPar, .dash, .dashText, .specWrap, .pagination{
         padding: 0 15px !important;
     }
     .myCard{

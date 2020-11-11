@@ -86,6 +86,21 @@
               </span>
           </div>
         </div>
+        <div class="ings-table data-table margin-vertical-half">
+          <table>
+              <thead>
+                <tr>
+                  <th class="sort" data-sort="name"><i class="icon f7-icons">arrow_up_down</i> Name</th>
+                  <th>Unit Size</th>
+                  <th class="sort" data-sort="cost"><i class="icon f7-icons">arrow_up_down</i> Cost</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody class="list sortList">
+
+              </tbody>
+          </table>
+        </div>
         <ul class="list sortList margin-vertical-half">
           
         </ul>
@@ -224,13 +239,14 @@ export default {
         var self = this;
         self.$app.dialog.alert("hey");
     },
-    showToast: function(text, position){
+    showToast: function(text, position, icon = false){
         var self = this;
         self.$app.toast.create({
-                        text: text,
-                        position: position,
-                        closeTimeout: 2000,
-                        }).open();
+          icon: icon ? '<i class="f7-icons">checkmark_alt_circle</i>' : '',
+          text: text,
+          position: position,
+          closeTimeout: 2000,
+          }).open();
     },
     startPouch: function(){
           var self = this;
@@ -289,7 +305,7 @@ export default {
                       ings:self.ings,
                       totalMat:self.ings.length
                   }, function(){
-                      self.showToast("Material permanently deleted!", "center");
+                      self.showToast("Material permanently deleted!", "center", true);
                       list.remove("id", id);
                       if(self.ings.length == 0){
                         $(".sortTextPar").addClass("display-none");
@@ -325,7 +341,7 @@ export default {
                       ings:self.ings,
                       totalMat:self.ings.length
                   }, function(){
-                      self.showToast("Material " + text + "d!", "center");
+                      self.showToast("Material " + text + "d!", "center", true);
                       list.remove("id", id);
                       if(self.ings.length == 0){
                         $(".sortTextPar").addClass("display-none");
@@ -481,7 +497,7 @@ export default {
           })
       }else{
         self.$app.preloader.hide();
-        self.showToast(uploaded + " records were saved", "center");
+        self.showToast(uploaded + " records were saved", "center", true);
         dataToUpload = null;
         uploaded = 0;
         return;
@@ -550,7 +566,7 @@ export default {
             }
             mogulsheetdb.put(obj).then(function(res) {
                     //self.$app.dialog.alert("Item saved.");
-                    self.showToast("Item saved.", "center");
+                    self.showToast("Item saved.", "center", true);
                     $$("input.name,input.unit_size,input.unit,input.cost_per_unit").val("");
                     self.getData();
               })
@@ -597,34 +613,71 @@ export default {
                       $("#material-list .pagination").remove();
                       //$(".sort").removeClass("asc").removeClass("desc");
                       if(self.ings != null && self.ings.length > 0){
-                        $(".sortTextPar").removeClass("display-none");
+                        
                         var pagination = "<ul class='pagination padding-left-half margin-vertical-half'><ul>";
                         $(pagination).insertAfter($("#material-list .list"));
-                        $(".sort").remove();
+                        
+
+                        var isDesktop = self.$app.methods.isDesktop();
+                        if(isDesktop){
+                          $("#material-list ul.list").remove();
+                          for(var i = 0; i < self.ings.length; i++){
+                              var row = self.ings[i];
+                              var html = "<tr>";
+                                html += '<td class="id" style="display:none;">' + row._id + '</td>';
+                                html += "<td class='name'>" + row.name + "</td>";
+                                html += "<td>" + row.unit_size + " " + row.unit  + "</td>";
+                                html += "<td class='cost'>" + self.formatMoney(row.cost_per_unit)  + "</td>";
+                                
+                                var pops = '<a href="#" data-popover=".material-popover-' + i + '" class="popover-open"><i class="f7-icons">ellipsis_vertical</i></a>'
+                                pops += '<div class="popover my-popover material-popover material-popover-' + i + '" data-close-on-escape="true" data-backdrop="false">'; 
+                                pops += '<div class="popover-angle"></div><div class="popover-inner padding-half">';
+
+                                  pops += '<a class="button popover-close editButton" data-id="' + row._id + '">Edit</a>';
+                            
+                                  pops += '<a class="button popover-close deleteButton" data-id="' + row._id + '">';
+                                  pops += row.status == 1 ? 'Delete' : 'Activate';
+                                  pops += '</a>';
+                                  if(row.status == 0){
+                                    pops += '<a class="button popover-close permDelButton" data-id="' + row._id + '">Delete</a>';
+                                  }
+
+                                pops += '</div></div>';
+                                html += "<td>" + pops + "</td>";
+                              html += "</tr>";
+                              $("#material-list tbody.list").append(html);
+                          }
+
+                        }else{
+                          $("#material-list .data-table").remove();
+                          $(".sortTextPar").removeClass("display-none");
+                          $(".sort").remove();
                         var sorter = '<span class="sort" data-sort="name">Name</span><span class="sort" data-sort="cost">Cost</span>';
                         $(sorter).insertAfter($(".sortText"));
                         $(".sortText").removeClass("display-none");
-                        for(var i = 0; i < self.ings.length; i++){
-                            var row = self.ings[i];
-                            var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
-                            html += '<div class="name cardName">' + row.name + '</div><div class="id display-none">' + row._id + '</div><div class="cost display-none">' + row.cost_per_unit + '</div>';
-                            html += '<div class=""><span class="labelName">Cost/Unit Size: </span><span class="valueName">' + self.formatMoney(row.cost_per_unit) + " for " + row.unit_size + " " + row.unit + '</span></div>';
-                            var stat = row.status == 1 ? "display-none" : "";
-                            //html += '<div class=""><span class="labelName">Cost: </span><span class="valueName">' + self.formatMoney(row.cost_per_unit) + '</span></div>';
-                            html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName">Deleted</span></div>';
-                            html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
-                            html += '<a class="button button-small button-raised editButton" data-id="' + row._id + '">Edit</a>';
-                            html += '<a class="button button-small button-raised deleteButton" data-id="' + row._id + '">';
-                            html +=  row.status == 1 ? 'Delete' : 'Activate'; 
-                            html += '</a>';
-                            if(row.status == 0){
-                              html += '<a class="button button-small button-raised permDelButton" data-id="' + row._id + '">Delete</a>';
-                            }
-                            html += '</p></div></div>';
-                            html += '</li>';
-                            $("#material-list .list").append(html);
-                            //return html;
-                        }
+
+                          for(var i = 0; i < self.ings.length; i++){
+                              var row = self.ings[i];
+                              var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
+                              html += '<div class="name cardName">' + row.name + '</div><div class="id display-none">' + row._id + '</div><div class="cost display-none">' + row.cost_per_unit + '</div>';
+                              html += '<div class=""><span class="labelName">Cost/Unit Size: </span><span class="valueName">' + self.formatMoney(row.cost_per_unit) + " for " + row.unit_size + " " + row.unit + '</span></div>';
+                              var stat = row.status == 1 ? "display-none" : "";
+                              //html += '<div class=""><span class="labelName">Cost: </span><span class="valueName">' + self.formatMoney(row.cost_per_unit) + '</span></div>';
+                              html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName">Deleted</span></div>';
+                              html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
+                              html += '<a class="button button-small button-raised editButton" data-id="' + row._id + '">Edit</a>';
+                              html += '<a class="button button-small button-raised deleteButton" data-id="' + row._id + '">';
+                              html +=  row.status == 1 ? 'Delete' : 'Activate'; 
+                              html += '</a>';
+                              if(row.status == 0){
+                                html += '<a class="button button-small button-raised permDelButton" data-id="' + row._id + '">Delete</a>';
+                              }
+                              html += '</p></div></div>';
+                              html += '</li>';
+                              $("#material-list ul.list").append(html);
+                              //return html;
+                          }
+                      }
                         var options = {
                             valueNames: ['id','cost','name'],
                             page: 10,
@@ -634,8 +687,8 @@ export default {
                         var materialList = new List('material-list', options);
 
                         $(".sort").off("click").on("click", function(){
-                          $(".sort").find(".asc").remove();
-                          $(".sort").find(".desc").remove();
+                          $("#material-list").find(".sort").find(".asc").remove();
+                          $("#material-list").find(".sort").find(".desc").remove();
                             if($(this).hasClass("asc")){
                               $(this).append("<i class='icon f7-icons asc text-color-red'>arrowtriangle_up_fill</i>");
                             }
@@ -644,7 +697,7 @@ export default {
                             }
                         })
                         //materialList.reIndex();
-                          $('#material-list').off("click").on('click','.button', function () {
+                          $('#material-list, .material-popover').off("click").on('click','.button', function () {
                               var data = $(this).attr("data-id");
                               if($(this).hasClass("editButton")){
                                 self.openPopUp(data);
@@ -670,7 +723,7 @@ export default {
   on: {
     pageAfterIn: function(e, page) {
         var self = this;
-        trackIngPage();
+        //trackIngPage();
       },
       pageInit: function(e, page) {
         var self = this;

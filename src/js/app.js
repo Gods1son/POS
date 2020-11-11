@@ -61,7 +61,7 @@ Template7.registerHelper("convertDate", function(val){
     var myDate = new Date(val);
     return myDate.toLocaleString();
 })
-var openedPanel = false, mogulsheetdb = null;
+var openedPanel = false, mogulsheetdb = null, isDesktop = false;
 setTimeout(function(){
 
   var app = new Framework7({
@@ -70,15 +70,16 @@ setTimeout(function(){
   
     name: 'Mogul Sheet', // App name
     theme: 'auto', // Automatic theme detection
-    /*view: {
+    view: {
       pushState: true,
-      pushStateRoot: document.location.pathname.split("index.html")[0]
-    },*/
+      //pushStateRoot: document.location.pathname.split("index.html")[0]
+    },
     // App routes
     routes: routes,
     data() {
       return {
-        openedPanel: true
+        openedPanel: true,
+        isDesktop: false
       };
     },
     methods: {
@@ -87,6 +88,14 @@ setTimeout(function(){
       },
       consoling: function(){
         console.log("master page");
+      },
+      isDesktop: function(){
+        var width = $(window).width();
+        if(width >= 1024){
+            return true;
+        }else{
+          return false;
+        }
       },
       startPouch: function(){
         //var self = this;
@@ -209,7 +218,14 @@ setTimeout(function(){
       pageBeforeIn: function (event, page) {
         // do something after page gets into the view
         var self = this;
+        var width = $(window).width();
+        if(width >= 1024){
+            isDesktop = true;
+        }else{
+          isDesktop = false;
+        }
 
+        //console.log(isDesktop);
         var page = event.el;
         var name = $$(page).data("name");
         var panel = app.panel.get('.panel-left');

@@ -85,6 +85,21 @@
               </span>
           </div>
         </div>
+        <div class="clients-table data-table margin-vertical-half">
+          <table>
+              <thead>
+                <tr>
+                  <th class="sort" data-sort="name"><i class="icon f7-icons">arrow_up_down</i> Name</th>
+                  <th>Contact No.</th>
+                  <th>Email</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody class="list sortList">
+
+              </tbody>
+          </table>
+        </div>
         <ul class="list sortList margin-vertical-half">
           
         </ul>
@@ -189,6 +204,24 @@
                   </span>
                   </span>
               </div>
+            </div>
+            <div class="clientPurchases-table data-table margin-vertical-half">
+              <table>
+                  <thead>
+                    <tr>
+                      <th>Type</th>
+                      <th class="sort" data-sort="name"><i class="icon f7-icons">arrow_up_down</i> Product Name</th>
+                      <th>Quantity</th>
+                      <th class="sort" data-sort="cost"><i class="icon f7-icons">arrow_up_down</i> Total Cost</th>
+                      <th>Amount Paid</th>
+                      <th class="sort" data-sort="isPaid"><i class="icon f7-icons">arrow_up_down</i> Fully Paid</th>
+                      <th class="sort" data-sort="created_date"><i class="icon f7-icons">arrow_up_down</i> Date of Purchase</th>
+                    </tr>
+                  </thead>
+                  <tbody class="list sortList">
+    
+                  </tbody>
+              </table>
             </div>
             <ul class="list sortList margin-vertical-half">
               
@@ -325,13 +358,14 @@ export default {
       var self= this;
       self.$router.back();
     },
-    showToast: function(text, position){
+    showToast: function(text, position, icon = false){
         var self = this;
         self.$app.toast.create({
-                        text: text,
-                        position: position,
-                        closeTimeout: 2000,
-                        }).open();
+          icon: icon ? '<i class="f7-icons">checkmark_alt_circle</i>' : '',
+          text: text,
+          position: position,
+          closeTimeout: 2000,
+          }).open();
     },
     startPouch: function(){
           var self = this;
@@ -408,7 +442,7 @@ export default {
                       clients:self.clients,
                       totalMat:self.clients.length
                   }, function(){
-                      self.showToast("Client permanently deleted!", "center");
+                      self.showToast("Client permanently deleted!", "center", true);
                       list.remove("id", id);
                       if(self.clients.length == 0){
                         $(".sortTextPar").addClass("display-none");
@@ -445,7 +479,7 @@ export default {
                       clients:self.clients,
                       totalMat:self.clients.length
                   }, function(){
-                      self.showToast("Client " + text + "d!", "center");
+                      self.showToast("Client " + text + "d!", "center", true);
                       list.remove("id", id);
                       if(self.clients.length == 0){
                         $(".sortTextPar").addClass("display-none");
@@ -500,54 +534,87 @@ export default {
             $("#clientSales-list .list").empty();//id,product_name,buyer_name,cost,amountPaid,isPaid,date_paid,created_date,status
             $("#clientSales-list .pagination").remove();         
             if(arr != null && arr.length > 0){
-                        $(".clientSales").find(".sortTextPar").removeClass("display-none");
-                        var pagination = "<ul class='pagination padding-left-half margin-vertical-half'><ul>";
-                        $(pagination).insertAfter($("#clientSales-list .list"));
-                        $(".clientSales").find(".sort").remove();
-                        var sorter = '<span class="sort" data-sort="name">Name</span><span class="sort" data-sort="cost">Cost</span>';
-                        sorter += '<span class="sort" data-sort="isPaid">Fully Paid</span><span class="sort" data-sort="created_date">Purchase Date</span>';
-                        $(sorter).insertAfter($(".clientSales").find(".sortText"));
-                        $(".clientSales").find(".sortText").removeClass("display-none");
-                        for(var i = 0; i < arr.length; i++){
-                            var row = arr[i];
-                            var isParent = row.isParent == null ? 0 : row.isParent;
-                            var sellToOther = "";
-                            
-                            var quantity = row.quantity == null ? 1 : row.quantity;
-                            var taxes = row.tax == null ? 0 : row.tax;
-                            var total = row.total_price == null ? row.selling_price : row.total_price;
-                            var afterTax = row.afterTax == null ? total : row.afterTax;
-                            var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
-                            html += '<div class="name cardName">' + row.product_name + '</div><div class="id display-none">' + row._id + '</div><div class="cost display-none">' + row.selling_price + '</div>';
-                          //html += '<div class=""><span class="labelName">Buyer\'s name: </span><span class="valueName buyer">' + row.buyer_name + '</span></div><div class="isPaid display-none">' + row.isPaid + '</div>';
-                          var type = row.isEstimate == 1 ? "Estimate" : "Invoice";
-                            html += '<div class=""><span class="labelName">Type: </span><span class="valueName valueBold">' + type + '</span></div>';  
-                          html += '<div class=""><span class="labelName">Product Cost: </span><span class="valueName">' + self.formatMoney(row.selling_price) + '</span></div>';
+              var pagination = "<ul class='pagination padding-left-half margin-vertical-half'><ul>";
+                            $(pagination).insertAfter($("#clientSales-list .list"));
+                        var isDesktop = self.$app.methods.isDesktop();
+                        if(isDesktop){
+                          $("#clientSales-list ul.list").remove();
 
-                            html += '<div class=""><span class="labelName">Quantity: </span><span class="valueName">' + quantity + '</span></div>';
-                            if(row.discount != null && row.discount != 0){
-                              html += '<div class=""><span class="labelName">Discount: </span><span class="valueName">' + self.formatMoney(row.discount) + '</span></div>';
+                          for(var i = 0; i < arr.length; i++){
+                            var row = arr[i];
+                                var isParent = row.isParent == null ? 0 : row.isParent;
+                                var quantity = row.quantity == null ? 1 : row.quantity;
+                                var taxes = row.tax == null ? 0 : row.tax;
+                                var total = row.total_price == null ? row.selling_price : row.total_price;
+                                var afterTax = row.afterTax == null ? total : row.afterTax;
+                                var type = row.isEstimate == 1 ? "Estimate" : "Invoice";
+                                var paidInFull = row.isPaid == 1 ? '<span class="badge color-green paid padding-horizontal">Yes</span>' : '<span class="badge color-red paid padding-horizontal">No</span>';
+                            var html = "<tr>";
+                                html += '<td class="id" style="display:none;">' + row._id + '</td>';
+                                html += "<td>" + type + "</td>";
+                                html += "<td class='name'>" + row.product_name + "</td>";
+                                html += "<td>" + quantity + "</td>";
+                                html += "<td class='cost'>" + self.formatMoney(afterTax) + "</td>";
+                                html += "<td>" + self.formatMoney(row.amountPaid) + "</td>";
+                                html += "<td class='isPaid'>" + paidInFull + "</td>";
+                                html += "<td class='created_date'>" + moment.unix(row.created_date).format("LLL") + "</td>";
+                                
+                              html += "</tr>";
+                              $("#clientSales-list tbody.list").append(html);
+                          }
+                              
+                        }else{
+                          $("#clientSales-list .data-table").remove();
+                            $(".clientSales").find(".sortTextPar").removeClass("display-none");
+                            
+                            $(".clientSales").find(".sort").remove();
+                            var sorter = '<span class="sort" data-sort="name">Name</span><span class="sort" data-sort="cost">Cost</span>';
+                            sorter += '<span class="sort" data-sort="isPaid">Fully Paid</span><span class="sort" data-sort="created_date">Purchase Date</span>';
+                            $(sorter).insertAfter($(".clientSales").find(".sortText"));
+                            $(".clientSales").find(".sortText").removeClass("display-none");
+                            for(var i = 0; i < arr.length; i++){
+                                var row = arr[i];
+                                var isParent = row.isParent == null ? 0 : row.isParent;
+                                var sellToOther = "";
+                                
+                                var quantity = row.quantity == null ? 1 : row.quantity;
+                                var taxes = row.tax == null ? 0 : row.tax;
+                                var total = row.total_price == null ? row.selling_price : row.total_price;
+                                var afterTax = row.afterTax == null ? total : row.afterTax;
+                                var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
+                                html += '<div class="name cardName">' + row.product_name + '</div><div class="id display-none">' + row._id + '</div><div class="cost display-none">' + row.selling_price + '</div>';
+                              //html += '<div class=""><span class="labelName">Buyer\'s name: </span><span class="valueName buyer">' + row.buyer_name + '</span></div><div class="isPaid display-none">' + row.isPaid + '</div>';
+                              var type = row.isEstimate == 1 ? "Estimate" : "Invoice";
+                                html += '<div class=""><span class="labelName">Type: </span><span class="valueName valueBold">' + type + '</span></div>';  
+                              html += '<div class=""><span class="labelName">Product Cost: </span><span class="valueName">' + self.formatMoney(row.selling_price) + '</span></div>';
+
+                                html += '<div class=""><span class="labelName">Quantity: </span><span class="valueName">' + quantity + '</span></div>';
+                                if(row.discount != null && row.discount != 0){
+                                  html += '<div class=""><span class="labelName">Discount: </span><span class="valueName">' + self.formatMoney(row.discount) + '</span></div>';
+                                }
+                                html += '<div class=""><span class="labelName">Total Cost: </span><span class="valueName">' + self.formatMoney(total) + '</span></div>';
+                                if(taxes > 0){
+                                  html += '<div class=""><span class="labelName">Tax: </span><span class="valueName">' + taxes + '%</span></div>';
+                                  html += '<div class=""><span class="labelName">After Tax Cost: </span><span class="valueName">' + self.formatMoney(afterTax) + '</span></div>';
+                                }
+                                html += '<div class=""><span class="labelName">Amount Paid: </span><span class="valueName">' + self.formatMoney(row.amountPaid) + '</span></div>';
+                                var stat = row.status == 1 ? "display-none" : "";
+                                var hidden = row.isPaid == 1 ? "" : "display-none";
+                                var checkbox = row.isPaid == 1 ? '<span class="badge color-green paid padding-horizontal">Yes</span>' : '<span class="badge color-red paid padding-horizontal">No</span>';
+                                //var checkbox = row.isPaid == 1 ? '<i class="icon f7-icons text-color-green paid">checkmark_circle_fill</i>' : '<i class="icon f7-icons text-color-red paid">multiply_circle_fill</i>';
+                                html += '<div class=""><span class="labelName">Fully Paid: </span>' + checkbox + '</div>' + '<div class="display-none created_date">' + row.created_date + '</div>';
+                                html += '<div class="' + hidden + '"><span class="labelName">Date Fully Paid: </span><span class="valueName">' + moment.unix(row.date_paid).format("LLL") + '</span></div>';
+                                html += '<div class=""><span class="labelName">Purchase Date: </span><span class="valueName">' + moment.unix(row.created_date).format("LLL") + '</span></div>';
+                                html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName">Deleted</span></div>';
+                                html += '</div>'; 
+                                html += '</div>'
+                                html += '</li>';
+                                $("#clientSales-list ul.list").append(html);
+                                //return html;
                             }
-                            html += '<div class=""><span class="labelName">Total Cost: </span><span class="valueName">' + self.formatMoney(total) + '</span></div>';
-                            if(taxes > 0){
-                              html += '<div class=""><span class="labelName">Tax: </span><span class="valueName">' + taxes + '%</span></div>';
-                              html += '<div class=""><span class="labelName">After Tax Cost: </span><span class="valueName">' + self.formatMoney(afterTax) + '</span></div>';
-                            }
-                            html += '<div class=""><span class="labelName">Amount Paid: </span><span class="valueName">' + self.formatMoney(row.amountPaid) + '</span></div>';
-                            var stat = row.status == 1 ? "display-none" : "";
-                            var hidden = row.isPaid == 1 ? "" : "display-none";
-                            var checkbox = row.isPaid == 1 ? '<span class="badge color-green paid">Yes</span>' : '<span class="badge color-red paid">No</span>';
-                            //var checkbox = row.isPaid == 1 ? '<i class="icon f7-icons text-color-green paid">checkmark_circle_fill</i>' : '<i class="icon f7-icons text-color-red paid">multiply_circle_fill</i>';
-                            html += '<div class=""><span class="labelName">Fully Paid: </span>' + checkbox + '</div>' + '<div class="display-none created_date">' + row.created_date + '</div>';
-                            html += '<div class="' + hidden + '"><span class="labelName">Date Fully Paid: </span><span class="valueName">' + moment.unix(row.date_paid).format("LLL") + '</span></div>';
-                            html += '<div class=""><span class="labelName">Purchase Date: </span><span class="valueName">' + moment.unix(row.created_date).format("LLL") + '</span></div>';
-                            html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName">Deleted</span></div>';
-                            html += '</div>'; 
-                            html += '</div>'
-                            html += '</li>';
-                            $("#clientSales-list .list").append(html);
-                            //return html;
                         }
+
+                        
                         var options = {
                             valueNames: ['id','isPaid','buyer','created_date','cost','name'],
                             page: 10,
@@ -572,7 +639,7 @@ export default {
                           
                           $(".clientSales").find(".sortTextPar").addClass("display-none");
                         }
-                        var popup = self.$app.popup.open('.clientSales', true);
+                        var popup = self.$app.popup.open('.popup.clientSales', true);
     },
     openPopUpExcel: function(){
       var self = this;
@@ -604,7 +671,7 @@ export default {
           })
       }else{
         self.$app.preloader.hide();
-        self.showToast(uploaded + " records were saved", "center");
+        self.showToast(uploaded + " records were saved", "center", true);
         dataToUpload = null;
         uploaded = 0;
         return;
@@ -757,9 +824,9 @@ export default {
                       $(".clientForm #client_bday").val("");
                     }
                     
-                    var popup = self.$app.popup.open('.newClient', true);
+                    var popup = self.$app.popup.open('.popup.newClient', true);
             } else{
-              var popup = self.$app.popup.open('.newClient', true);
+              var popup = self.$app.popup.open('.popup.newClient', true);
               self.$setState({
                   currentClient:null
               });
@@ -814,7 +881,7 @@ export default {
 
             mogulsheetdb.put(obj).then(function(res) {
                     //self.$app.dialog.alert("Item saved.");
-                    self.showToast("Client saved.", "center");
+                    self.showToast("Client saved.", "center", true);
                     $(".clientname,.email,.address,.phone,.otherNotes, #client_bday").val("");
                     self.getData();
               })
@@ -857,55 +924,94 @@ export default {
                       $("#clients-list .pagination").remove();
                       //$(".sort").removeClass("asc").removeClass("desc");
                       if(self.clients != null && self.clients.length > 0){
-                        $("#clients-list").find(".sortTextPar").removeClass("display-none");
+                        
                         var pagination = "<ul class='pagination padding-left-half margin-vertical-half'><ul>";
                         $(pagination).insertAfter($("#clients-list .list"));
-                        $("#clients-list").find(".sort").remove();
-                        var sorter = '<span class="sort" data-sort="name">Name</span>';
-                        $(sorter).insertAfter($("#clients-list").find(".sortText"));
-                        $("#clients-list").find(".sortText").removeClass("display-none");
-                        for(var i = 0; i < self.clients.length; i++){
+
+                        var isDesktop = self.$app.methods.isDesktop();
+                        if(isDesktop){
+                          $("#clients-list .data-table").show();
+                          $("#clients-list ul.list").remove();
+                          for(var i = 0; i < self.clients.length; i++){
                             var row = self.clients[i];
-                            //var letter = row.name.split("")[0];
-                            //var nameChip = '<div class="chip bg-color-blue text-color-white" style="font-weight:600;margin-right:5px;"><div class="chip-label">' + letter + '</div></div>';
-                            var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
-                            html += '<div class="name cardName">'  + row.name + '</div><div class="id display-none">' + row._id + '</div>';
-                            if(row.phone != "" && row.phone != undefined){
-                              html += '<div class=""><span class="labelName">Contact number: </span><span class="valueName"><a class="external" target="_system" href="tel:' + row.phone + '"><i class="icon f7-icons phone">phone</i><span class="in-link">' + row.phone + '</span></a></span></div>';
-                            }
-                            if(row.email != "" && row.email != undefined){
-                              html += '<div class=""><span class="labelName">Email: </span><span class="valueName"><a class="external" target="_system" href="mailto:' + row.email + '"><i class="icon f7-icons envelope">envelope</i><span class="in-link">' + row.email + '</span></a></span></div>';
-                            }
-                            if(row.address != "" && row.address != undefined){
-                              html += '<div class="display-flex"><div class="labelName">Address: </div><div class="valueName margin-left-half">' + row.address.split("\n").join("<br>") + '</div></div>';
-                            }
+                              var html = "<tr>";
+                                html += '<td class="id" style="display:none;">' + row._id + '</td>';
+                                html += "<td class='name'>" + row.name + "</td>";
+                                html += "<td>" + ((row.phone != "" && row.phone != undefined) ? '<a class="external" target="_system" href="tel:' + row.phone + '"><span class="in-link">' + row.phone + '</span></a>' : "--") + "</td>";
+                                html += "<td>" + ((row.email != "" && row.email != undefined) ? '<a class="external" target="_system" href="mailto:' + row.email + '"><span class="in-link">' + row.email + '</span></a>' : "--") + "</td>";
+                                
+                                var pops = '<a href="#" data-popover=".clients-popover-' + i + '" class="popover-open"><i class="f7-icons">ellipsis_vertical</i></a>'
+                                pops += '<div class="popover my-popover clients-popover clients-popover-' + i + '" data-close-on-escape="true" data-backdrop="false">'; 
+                                pops += '<div class="popover-angle"></div><div class="popover-inner padding-half">';
+                                
+                                  var page_link = row.product_link_id == undefined ? null : row.product_link_id;
 
-                            if(row.bday != null && row.bday != 0 && row.bday != undefined){
-                              html += '<div class="display-flex"><div class="labelName">Birthday: </div><div class="valueName margin-left-half">' + moment.unix(row.bday).format("MMMM Do") + '</div></div>';
-                            }
-
-                            if(row.otherNotes != "" && row.otherNotes != undefined){
-                              html += '<div class="display-flex"><div class="labelName">Notes: </div><div class="valueName margin-left-half">' + row.otherNotes.split("\n").join("<br>")  + '</div></div>';
-                            }
-
+                                  pops += '<a class="button popover-close editButton" data-id="' + row._id + '">Edit</a>';
+                                  pops += '<a class="button popover-close viewPurchases" data-id="' + row._id + '" data-name="' + row.name + '">View Purchases</a>';
                             
-                            var stat = row.status == 1 ? "display-none" : "";
-                            //html += '<div class=""><span class="labelName">Cost: </span><span class="valueName">' + self.formatMoney(row.cost_per_unit) + '</span></div>';
-                            html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName">Deleted</span></div>';
-                            html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
-                            html += '<a class="button button-small button-raised editButton" data-id="' + row._id + '">Edit</a>';
-                            html += '<a class="button button-small button-raised viewPurchases" data-id="' + row._id + '" data-name="' + row.name + '">View Purchases</a>';
-                            html += '<a class="button button-small button-raised deleteButton" data-id="' + row._id + '">';
-                            html +=  row.status == 1 ? 'Delete' : 'Activate'; 
-                            html += '</a>';
-                            if(row.status == 0){
-                              html += '<a class="button button-small button-raised permDelButton" data-id="' + row._id + '">Delete</a>';
+                                  pops += '<a class="button popover-close deleteButton" data-id="' + row._id + '">';
+                                  pops += row.status == 1 ? 'Delete' : 'Activate';
+                                  pops += '</a>';
+                                  if(row.status == 0){
+                                    pops += '<a class="button popover-close permDelButton" data-id="' + row._id + '">Delete</a>';
+                                  }
+
+                                pops += '</div></div>';
+                                html += "<td>" + pops + "</td>";
+                              html += "</tr>";
+                              $("#clients-list tbody.list").append(html);
+                          }
+                        }else{
+                                $("#clients-list").find(".sortTextPar").removeClass("display-none");
+                              $("#clients-list").find(".sort").remove();
+                              var sorter = '<span class="sort" data-sort="name">Name</span>';
+                              $(sorter).insertAfter($("#clients-list").find(".sortText"));
+                              $("#clients-list").find(".sortText").removeClass("display-none");
+                              $("#clients-list .data-table").remove();
+                              for(var i = 0; i < self.clients.length; i++){
+                                var row = self.clients[i];
+                                //var letter = row.name.split("")[0];
+                                //var nameChip = '<div class="chip bg-color-blue text-color-white" style="font-weight:600;margin-right:5px;"><div class="chip-label">' + letter + '</div></div>';
+                                var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
+                                html += '<div class="name cardName">'  + row.name + '</div><div class="id display-none">' + row._id + '</div>';
+                                if(row.phone != "" && row.phone != undefined){
+                                  html += '<div class=""><span class="labelName">Contact number: </span><span class="valueName"><a class="external" target="_system" href="tel:' + row.phone + '"><i class="icon f7-icons phone">phone</i><span class="in-link">' + row.phone + '</span></a></span></div>';
+                                }
+                                if(row.email != "" && row.email != undefined){
+                                  html += '<div class=""><span class="labelName">Email: </span><span class="valueName"><a class="external" target="_system" href="mailto:' + row.email + '"><i class="icon f7-icons envelope">envelope</i><span class="in-link">' + row.email + '</span></a></span></div>';
+                                }
+                                if(row.address != "" && row.address != undefined){
+                                  html += '<div class="display-flex"><div class="labelName">Address: </div><div class="valueName margin-left-half">' + row.address.split("\n").join("<br>") + '</div></div>';
+                                }
+
+                                if(row.bday != null && row.bday != 0 && row.bday != undefined){
+                                  html += '<div class="display-flex"><div class="labelName">Birthday: </div><div class="valueName margin-left-half">' + moment.unix(row.bday).format("MMMM Do") + '</div></div>';
+                                }
+
+                                if(row.otherNotes != "" && row.otherNotes != undefined){
+                                  html += '<div class="display-flex"><div class="labelName">Notes: </div><div class="valueName margin-left-half">' + row.otherNotes.split("\n").join("<br>")  + '</div></div>';
+                                }
+
+                                
+                                var stat = row.status == 1 ? "display-none" : "";
+                                //html += '<div class=""><span class="labelName">Cost: </span><span class="valueName">' + self.formatMoney(row.cost_per_unit) + '</span></div>';
+                                html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName">Deleted</span></div>';
+                                html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
+                                html += '<a class="button button-small button-raised editButton" data-id="' + row._id + '">Edit</a>';
+                                html += '<a class="button button-small button-raised viewPurchases" data-id="' + row._id + '" data-name="' + row.name + '">View Purchases</a>';
+                                html += '<a class="button button-small button-raised deleteButton" data-id="' + row._id + '">';
+                                html +=  row.status == 1 ? 'Delete' : 'Activate'; 
+                                html += '</a>';
+                                if(row.status == 0){
+                                  html += '<a class="button button-small button-raised permDelButton" data-id="' + row._id + '">Delete</a>';
+                                }
+                                html += '</p></div></div>';
+                                html += '</li>';
+                                $("#clients-list ul.list").append(html);
+                                //return html;
                             }
-                            html += '</p></div></div>';
-                            html += '</li>';
-                            $("#clients-list .list").append(html);
-                            //return html;
                         }
+                        
                         var options = {
                             valueNames: ['id','name'],
                             page: 10,
@@ -925,7 +1031,7 @@ export default {
                             }
                         })
                         //materialList.reIndex();
-                          $('#clients-list').off("click").on('click','.button', function () {
+                          $('#clients-list, .clients-popover').off("click").on('click','.button', function () {
                               var data = $(this).attr("data-id");
                               var name = $(this).attr("data-name");
                               if($(this).hasClass("editButton")){
@@ -955,7 +1061,7 @@ export default {
   on: {
     pageAfterIn: function(e, page) {
         var self = this;
-        trackClientsPage();
+        //trackClientsPage();
       },
       pageInit: function(e, page) {
         var self = this;

@@ -128,6 +128,25 @@
             </div>
           </div>
 
+
+          <div class="expenses-table data-table margin-vertical-half">
+            <table>
+                <thead>
+                  <tr>
+                    <th class="sort" data-sort="name"><i class="icon f7-icons">arrow_up_down</i> Name</th>
+                    <th class="sort" data-sort="cost"><i class="icon f7-icons">arrow_up_down</i> Amount to Pay</th>
+                    <th>Amount Paid</th>
+                    <th class="sort" data-sort="paidAll"><i class="icon f7-icons">arrow_up_down</i> Fully Paid</th>
+                    <th>Recurring</th>
+                    <th class="sort" data-sort="created_date"><i class="icon f7-icons">arrow_up_down</i> Date of Purchase</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody class="list sortList">
+  
+                </tbody>
+            </table>
+          </div>
           <ul class="list sortList margin-vertical-half">
             
           </ul>
@@ -354,7 +373,7 @@ export default {
                           self.$app.preloader.show();
                           mogulsheetdb.put(self.currentExpense).then((dat) => {
                             self.$app.preloader.hide();
-                            self.showToast("Image(s) uploaded", "center");
+                            self.showToast("Image(s) uploaded", "center", true);
                             self.getData();
                           }).catch((err) => {
                             self.$app.preloader.hide();
@@ -481,13 +500,13 @@ export default {
                       return e._id != id;
                   });
 
-                  self.showToast("Expense permanently deleted", "center");
+                  self.showToast("Expense permanently deleted", "center", true);
                   //console.log(self.ings);
                   self.$setState({
                       expenses:self.expenses,
                       totalMat:self.expenses.length
                   }, function(){
-                      self.showToast("Expense permanently deleted!", "center");
+                      self.showToast("Expense permanently deleted!", "center", true);
                       list.remove("id", id);
                       self.setDataTable();
                     self.calculateTotalMoneyExpense();
@@ -517,13 +536,13 @@ export default {
                       return e._id != id;
                   });
                   var act = checked == 0 ? "deleted!" : "activated!";
-                  self.showToast("Expense " + act, "center");
+                  self.showToast("Expense " + act, "center", true);
                   //console.log(self.ings);
                   self.$setState({
                       expenses:self.expenses,
                       totalMat:self.expenses.length
                   }, function(){
-                      self.showToast("Expense " + text + "d!", "center");
+                      self.showToast("Expense " + text + "d!", "center", true);
                       list.remove("id", id);
                       self.setDataTable();
                     self.calculateTotalMoneyExpense();
@@ -562,10 +581,10 @@ export default {
                       myDate = moment.unix(item.date_paid).format("LLL");
                       $("#paid-calendar-modal").val(myDate);
                     }
-                    var popup = self.$app.popup.open('.newExpense', true);
+                    var popup = self.$app.popup.open('.popup.newExpense', true);
             } else{
               $("#expense-calendar-modal").val(moment().format('LLL'));
-              var popup = self.$app.popup.open('.newExpense', true);
+              var popup = self.$app.popup.open('.popup.newExpense', true);
               self.$setState({
                   currentExpense:null
               });
@@ -669,7 +688,7 @@ export default {
             }
             mogulsheetdb.put(obj).then(function(res) {
                   //db.expenses.get(id).then(function(item) {
-                    self.showToast("Item saved.", "center");
+                    self.showToast("Item saved.", "center", true);
                     $("#paid-calendar-modal").next("span").click();
                     $("#expense-calendar-modal").next("span").click();
                     $$("input.name,input.amount_to_pay,input.amount_paid, #expense-calendar-modal, #paid-calendar-modal").val("");
@@ -684,13 +703,14 @@ export default {
               self.showToast("Please fill all required fields", "center");
           }
     },
-    showToast: function(text, position){
+    showToast: function(text, position, icon = false){
         var self = this;
         self.$app.toast.create({
-                        text: text,
-                        position: position,
-                        closeTimeout: 2000,
-                        }).open();
+          icon: icon ? '<i class="f7-icons">checkmark_alt_circle</i>' : '',
+          text: text,
+          position: position,
+          closeTimeout: 2000,
+          }).open();
     },
     formatMoney:function(val){             
       var self = this;          
@@ -711,89 +731,134 @@ export default {
       var self = this;
             $("#expenses-list .list").empty();
             $("#expenses-list .pagination").remove();         
-                      if(self.expenses != null && self.expenses.length > 0){
-                        $(".sortTextPar").removeClass("display-none");
-                        var pagination = "<ul class='pagination padding-left-half margin-vertical-half'><ul>";
-                        $(pagination).insertAfter($("#expenses-list .list"));
-                        $(".sort").remove();//id,name,amount_to_pay,amount_paid,date_paid,created_date,recurring,status
-                        var sorter = '<span class="sort" data-sort="name">Name</span><span class="sort" data-sort="cost">Expense Cost</span>';
-                        sorter += '<span class="sort" data-sort="paidAll">Fully Paid</span><span class="sort" data-sort="created_date">Created Date</span>';
-                        $(sorter).insertAfter($(".sortText"));
-                        $(".sortText").removeClass("display-none");
-                        for(var i = 0; i < self.expenses.length; i++){
-                            var row = self.expenses[i];
-                            var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
-                            html += '<div class="name cardName">' + row.name + '</div><div class="id display-none">' + row._id + '</div><div class="cost display-none">' + row.amount_to_pay + '</div>';
-                            html += '<div class=""><span class="labelName">Amount to be paid: </span><span class="valueName">' + self.formatMoney(row.amount_to_pay) + '</span></div>';
-                            html += '<div class=""><span class="labelName">Amount Paid: </span><span class="valueName">' + self.formatMoney(row.amount_paid) + '</span></div>';
-                            var stat = row.status == 1 ? "display-none" : "";
-                            var hidden = row.amount_paid >= row.amount_to_pay ? "" : "display-none";
-                            var paidAll = row.amount_paid >= row.amount_to_pay ? 1 : 0;
-                            var checkbox = row.recurring == 1 ? '' : 'display-none';
-                            html += '<div class="paidAll display-none">' + paidAll + '</div>'
-                            html += '<div class="' + checkbox + '"><span class="labelName">Recurring Payment: </span><span class="badge color-green">Yes</span></div>' + '<div class="display-none created_date">' + row.created_date + '</div>';
-                            html += '<div class="' + hidden + '"><span class="labelName">Date Fully Paid: </span><span class="valueName">' + moment.unix(row.date_paid).format("LLL") + '</span></div>';
-                            html += '<div class=""><span class="labelName">Created Date: </span><span class="valueName">' + moment.unix(row.created_date).format("LLL") + '</span></div>';
-                            html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName">Deleted</span></div>';
-                            html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
-                            html += '<a class="button button-small button-raised editExpense" data-id="' + row._id + '">View / Edit</a>';
-                            html += '<a class="button button-small button-raised receiptButton" data-id="' + row._id + '">Receipt</a>';
-                            html += '<a class="button button-small button-raised deleteExpense" data-id="' + row._id + '">';
-                            html +=  row.status == 1 ? 'Delete' : 'Activate'; 
-                            html += '</a>';
-                            
-                            if(row.status == 0){
-                              html += '<a class="button button-small button-raised permDelButton" data-id="' + row._id + '">Delete</a>';
-                            }
-                            html += '</p></div></div>';
-                            html += '</li>';
-                            $("#expenses-list .list").append(html);
-                            //return html;
-                        }
-                        var options = {
-                            valueNames: ['id','cost','paidAll','name','created_date'],
-                            page: 10,
-                            pagination: [{outerWindow:2}]
-                        };
+              if(self.expenses != null && self.expenses.length > 0){
+                var pagination = "<ul class='pagination padding-left-half margin-vertical-half'><ul>";
+                $(pagination).insertAfter($("#expenses-list .list"));
 
-                        var expense = new List('expenses-list', options);
+                var isDesktop = self.$app.methods.isDesktop();
+                if(isDesktop){
+                  $("#expenses-list ul.list").remove();
+                  for(var i = 0; i < self.expenses.length; i++){
+                    var row = self.expenses[i];
+                    var stat = row.status == 1 ? "display-none" : "";
+                    var hidden = row.amount_paid >= row.amount_to_pay ? "" : "display-none";
+                    var paidAll = parseFloat(row.amount_paid) >= parseFloat(row.amount_to_pay) ? '<span class="badge color-green paid padding-horizontal">Yes</span>' : '<span class="badge color-red paid padding-horizontal">No</span>';
+                    var recurr = row.recurring == 1 ? '<span class="badge color-green paid padding-horizontal">Yes</span>' : '--';
+                    var html = "<tr>";
+                        html += '<td class="id" style="display:none;">' + row._id + '</td>';
+                        html += "<td class='name'>" + row.name + "</td>";
+                        html += "<td class='cost'>" + self.formatMoney(row.amount_to_pay) + "</td>";
+                        html += "<td>" + self.formatMoney(row.amount_paid) + "</td>";
+                        html += "<td class='paidAll'>" + paidAll + "</td>";
+                        html += "<td>" + recurr + "</td>";
+                        html += "<td class='created_date'>" + moment.unix(row.created_date).format("LLL") + "</td>";
+                        
+                        var pops = '<a href="#" data-popover=".expenses-popover-' + i + '" class="popover-open"><i class="f7-icons">ellipsis_vertical</i></a>'
+                        pops += '<div class="popover my-popover expenses-popover expenses-popover-' + i + '" data-close-on-escape="true" data-backdrop="false">'; 
+                        pops += '<div class="popover-angle"></div><div class="popover-inner padding-half">';
 
-                        $(".sort").off("click").on("click", function(){
-                          $(".sort").find(".asc").remove();
-                          $(".sort").find(".desc").remove();
-                            if($(this).hasClass("asc")){
-                              $(this).append("<i class='icon f7-icons asc text-color-red'>arrowtriangle_up_fill</i>");
-                            }
-                            if($(this).hasClass("desc")){
-                              $(this).append("<i class='icon f7-icons desc text-color-red'>arrowtriangle_down_fill</i>");
-                            }
-                        })
-                      
-                          $('#expenses-list').off("click").on('click','.button', function () {
-                              var data = $(this).attr("data-id");
-                              //console.log(data);
-                              if($(this).hasClass("editExpense")){
-                                self.openPopUp(data);
-                              }
-                              if($(this).hasClass("deleteExpense")){
-                                self.deleteExpense(expense, data);
-                              }
-                              if($(this).hasClass("permDelButton")){
-                                self.permdeleteExpense(expense, data);
-                              }
-                              if($(this).hasClass("receiptButton")){
-                                self.openReceiptImages(data);
-                              }
-                              //openReceiptImages
-                              //return false;
-                          });
-                          self.calculateTotalMoneyExpense();
-                        }else{
-                          //var html = "<li><div class='card myCard'><div class='card-content text-align-center'>No result found</div></div></li>";
-                          //$("#expenses-list .list").append(html);
-                          self.calculateTotalMoneyExpense();
-                          $(".sortTextPar").addClass("display-none");
+                          pops += '<a class="button popover-close editExpense" data-id="' + row._id + '">View / Edit</a>';
+                          pops += '<a class="button popover-close receiptButton" data-id="' + row._id + '">Add Receipt</a>';
+                          pops += '<a class="button popover-close deleteExpense" data-id="' + row._id + '">';
+                          pops += row.status == 1 ? 'Delete' : 'Activate';
+                          pops += '</a>';
+                          if(row.status == 0){
+                            pops += '<a class="button popover-close permDelButton" data-id="' + row._id + '">Delete</a>';
+                          }
+
+                        pops += '</div></div>';
+                        html += "<td>" + pops + "</td>";
+
+                      html += "</tr>";
+                      $("#expenses-list tbody.list").append(html);
+
+                  }
+                }else{
+                  $("#expenses-list .data-table").remove();                  
+                  $("#expenses-list").find(".sortTextPar").removeClass("display-none");
+                
+                $("#expenses-list").find(".sort").remove();//id,name,amount_to_pay,amount_paid,date_paid,created_date,recurring,status
+                var sorter = '<span class="sort" data-sort="name">Name</span><span class="sort" data-sort="cost">Expense Cost</span>';
+                sorter += '<span class="sort" data-sort="paidAll">Fully Paid</span><span class="sort" data-sort="created_date">Created Date</span>';
+                $(sorter).insertAfter($(".sortText"));
+                    $(".expenses-list").find(".sortText").removeClass("display-none");
+                    for(var i = 0; i < self.expenses.length; i++){
+                        var row = self.expenses[i];
+                        var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
+                        html += '<div class="name cardName">' + row.name + '</div><div class="id display-none">' + row._id + '</div><div class="cost display-none">' + row.amount_to_pay + '</div>';
+                        html += '<div class=""><span class="labelName">Amount to be paid: </span><span class="valueName">' + self.formatMoney(row.amount_to_pay) + '</span></div>';
+                        html += '<div class=""><span class="labelName">Amount Paid: </span><span class="valueName">' + self.formatMoney(row.amount_paid) + '</span></div>';
+                        var stat = row.status == 1 ? "display-none" : "";
+                        var hidden = row.amount_paid >= row.amount_to_pay ? "" : "display-none";
+                        var paidAll = row.amount_paid >= row.amount_to_pay ? 1 : 0;
+                        var checkbox = row.recurring == 1 ? '' : 'display-none';
+                        html += '<div class="paidAll display-none">' + paidAll + '</div>'
+                        html += '<div class="' + checkbox + '"><span class="labelName">Recurring Payment: </span><span class="badge color-green">Yes</span></div>' + '<div class="display-none created_date">' + row.created_date + '</div>';
+                        html += '<div class="' + hidden + '"><span class="labelName">Date Fully Paid: </span><span class="valueName">' + moment.unix(row.date_paid).format("LLL") + '</span></div>';
+                        html += '<div class=""><span class="labelName">Created Date: </span><span class="valueName">' + moment.unix(row.created_date).format("LLL") + '</span></div>';
+                        html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName">Deleted</span></div>';
+                        html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
+                        html += '<a class="button button-small button-raised editExpense" data-id="' + row._id + '">View / Edit</a>';
+                        html += '<a class="button button-small button-raised receiptButton" data-id="' + row._id + '">Receipt</a>';
+                        html += '<a class="button button-small button-raised deleteExpense" data-id="' + row._id + '">';
+                        html +=  row.status == 1 ? 'Delete' : 'Activate'; 
+                        html += '</a>';
+                        
+                        if(row.status == 0){
+                          html += '<a class="button button-small button-raised permDelButton" data-id="' + row._id + '">Delete</a>';
                         }
+                        html += '</p></div></div>';
+                        html += '</li>';
+                        $("#expenses-list ul.list").append(html);
+                        //return html;
+                    }
+                }
+              
+                
+                var options = {
+                    valueNames: ['id','cost','paidAll','name','created_date'],
+                    page: 10,
+                    pagination: [{outerWindow:2}]
+                };
+
+                var expense = new List('expenses-list', options);
+
+                $(".sort").off("click").on("click", function(){
+                  $("#expenses-list").find(".sort").find(".asc").remove();
+                  $("#expenses-list").find(".sort").find(".desc").remove();
+                    if($(this).hasClass("asc")){
+                      $(this).append("<i class='icon f7-icons asc text-color-red'>arrowtriangle_up_fill</i>");
+                    }
+                    if($(this).hasClass("desc")){
+                      $(this).append("<i class='icon f7-icons desc text-color-red'>arrowtriangle_down_fill</i>");
+                    }
+                })
+              
+                  $('#expenses-list, .expenses-popover').off("click").on('click','.button', function () {
+                      var data = $(this).attr("data-id");
+                      //console.log(data);
+                      if($(this).hasClass("editExpense")){
+                        self.openPopUp(data);
+                      }
+                      if($(this).hasClass("deleteExpense")){
+                        self.deleteExpense(expense, data);
+                      }
+                      if($(this).hasClass("permDelButton")){
+                        self.permdeleteExpense(expense, data);
+                      }
+                      if($(this).hasClass("receiptButton")){
+                        self.openReceiptImages(data);
+                      }
+                      //openReceiptImages
+                      //return false;
+                  });
+                  self.calculateTotalMoneyExpense();
+                }else{
+                  //var html = "<li><div class='card myCard'><div class='card-content text-align-center'>No result found</div></div></li>";
+                  //$("#expenses-list .list").append(html);
+                  self.calculateTotalMoneyExpense();
+                  $(".sortTextPar").addClass("display-none");
+                }
     },
     startPouch: function(){
           var self = this;
@@ -867,7 +932,7 @@ export default {
   on: {
     pageAfterIn: function(e, page) {
         var self = this;
-        trackExpensesPage();
+        //trackExpensesPage();
       },
       pageInit: function(e, page) {
         var self = this;

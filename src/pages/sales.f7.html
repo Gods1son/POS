@@ -150,6 +150,27 @@
             </div>
           </div>
           <div class="block header_title text-align-center no-margin-vertical block-title-medium display-none">Sales</div>
+          
+          <div class="sales-table data-table margin-vertical-half">
+            <table>
+                <thead>
+                  <tr>
+                    <th class="sort" data-sort="name"><i class="icon f7-icons">arrow_up_down</i> Product Name</th>
+                    <th>Buyer's Name</th>
+                    <th>Quantity</th>
+                    <th class="sort" data-sort="cost"><i class="icon f7-icons">arrow_up_down</i> Total Cost</th>
+                    <th>Amount Paid</th>
+                    <th class="sort" data-sort="isPaid"><i class="icon f7-icons">arrow_up_down</i> Fully Paid</th>
+                    <th class="sort" data-sort="created_date"><i class="icon f7-icons">arrow_up_down</i> Date of Purchase</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody class="list sortList">
+  
+                </tbody>
+            </table>
+          </div>
+          
           <ul class="list sortList margin-vertical-half">
             
           </ul>
@@ -617,7 +638,7 @@ export default {
                                     self.sales[i].date_paid = newDate;
                                 }  
                         });
-                        self.showToast("Payment updated!", "center");
+                        self.showToast("Payment updated!", "center", true);
                         if(fullyPaid == 0){
                             self.$app.toggle.get(".product-" + id).toggle();
                         }
@@ -778,7 +799,7 @@ export default {
                 }
                 mogulsheetdb.put(objNew).then(function(res) {
                         //self.$app.dialog.alert("Item saved.");
-                        self.showToast("New User Created.", "center");
+                        self.showToast("New User Created.", "center", true);
                         self.saveProcessedMultiplePayment(grpName,chosenUser,generatedID,isEstimate,taxes,afterTaxes,beforeTaxes,amountPaid,fullyPaid,isPaidDate,bigData);
                   })
               }
@@ -893,7 +914,7 @@ export default {
                     console.log("error multiple save", err);
                   })
                 }
-                self.showToast("Saved successfully", "center");
+                self.showToast("Saved successfully", "center", true);
                 self.closePopUpMultiple();
                 //self.$app.popup.close('.multipleSales_sales', true);
                   
@@ -1124,7 +1145,7 @@ export default {
             
             html += '<div style="text-align:left;clear:both;border-top: 1px solid darkgray;border-bottom: 1px solid darkgray;">' + tagline  + signature + '<h5 style="margin-bottom:5px; margin-top:5px;">' + today + '</h5></div>';
             html += '</div>';
-            if(self.settings.terms_condition != undefined && self.settings.terms_condition != ""){
+            if(self.settings != null && self.settings.terms_condition != undefined && self.settings.terms_condition != ""){
               html += "<div style='text-align:center;margin-top:10px;'>";
               html += "<div>Terms and Conditions</div>";
               html += "<div>" + self.settings.terms_condition + "</div>";
@@ -1162,11 +1183,11 @@ export default {
                         //dbSales.bulkDocs(bigData);
                       })
                     })
-                  self.showToast("Sale permanently deleted", "center");
+                  self.showToast("Sale permanently deleted", "center", true);
                   self.$setState({
                       sales:self.sales
                   }, function(){
-                      self.showToast("Sale permanently deleted!", "center");
+                      self.showToast("Sale permanently deleted!", "center", true);
                       list.remove("id", id);
                       self.setDataTable();
                       self.calculateTotalMoney();
@@ -1243,11 +1264,11 @@ export default {
                       return e._id != id;
                   });
                   var act = checked == 0 ? "deleted!" : "activated!";
-                  self.showToast("Sale " + act, "center");
+                  self.showToast("Sale " + act, "center", true);
                   self.$setState({
                       sales:self.sales
                   }, function(){
-                      self.showToast("Sale " + text + "d!", "center");
+                      self.showToast("Sale " + text + "d!", "center", true);
                       list.remove("id", id);
                       self.setDataTable();
                       self.calculateTotalMoney();
@@ -1257,13 +1278,14 @@ export default {
             })
         });
     },
-    showToast: function(text, position){
+    showToast: function(text, position, icon = false){
         var self = this;
         self.$app.toast.create({
-                        text: text,
-                        position: position,
-                        closeTimeout: 2000,
-                        }).open();
+          icon: icon ? '<i class="f7-icons">checkmark_alt_circle</i>' : '',
+          text: text,
+          position: position,
+          closeTimeout: 2000,
+          }).open();
     },
     closeUpdatePopUp: function(){
         var self = this;
@@ -1349,7 +1371,7 @@ export default {
             }
             mogulsheetdb.put(objNew).then(function(res) {
                     //self.$app.dialog.alert("Item saved.");
-                    self.showToast("New User Created.", "center");
+                    self.showToast("New User Created.", "center", true);
                     self.saveProcessedPayement(generatedID, chosenUser, taxes, isEstimate, fullyPaid, isPaidDate);
               })
           }
@@ -1398,7 +1420,7 @@ export default {
                 obj.saleID = obj._id;
               }
             mogulsheetdb.put(obj).then(function(){
-                    self.showToast("Record saved!", "center");
+                    self.showToast("Record saved!", "center", true);
                     $("#paid-calendar-modal-sales").next("span").click();
                     $("#purchase-calendar-modal-sales").next("span").click();
                     $$("input.buyer_sell_sales, input.amountpaid_sell_sales, .hiddenQuantitySingle, #purchase-calendar-modal-sales, #paid-calendar-modal-sales, .quantity_sell_sales, .total_sell_sales, .discount_sell_sales").val("");
@@ -2046,10 +2068,63 @@ export default {
             $("#sales-list .list").empty();//id,product_name,buyer_name,cost,amountPaid,isPaid,date_paid,created_date,status
             $("#sales-list .pagination").remove();         
             if(self.sales != null && self.sales.length > 0){
-                        $(".sortTextPar, .header_title").removeClass("display-none");
-                        var pagination = "<ul class='pagination padding-left-half margin-vertical-half'><ul>";
-                        $(pagination).insertAfter($("#sales-list .list"));
-                        $(".sort").remove();
+
+              var pagination = "<ul class='pagination padding-left-half margin-vertical-half'><ul>";
+              $(pagination).insertAfter($("#sales-list .list"));
+
+              var isDesktop = self.$app.methods.isDesktop();
+              if(isDesktop){
+                $("#sales-list ul.list").remove();
+
+                  for(var i = 0; i < self.sales.length; i++){
+                    var row = self.sales[i];
+                        var isParent = row.isParent == null ? 0 : row.isParent;
+                        var sellToOther = "";
+                            if(isParent == 1){
+                              sellToOther = '<a class="button popover-close sellToOthers" data-id="' + row._id + '" data-isparent="' + isParent + '">Sell To Others</a>';
+                            }
+                        var quantity = row.quantity == null ? 1 : row.quantity;
+                        var taxes = row.tax == null ? 0 : row.tax;
+                        var total = row.total_price == null ? row.selling_price : row.total_price;
+                        var afterTax = row.afterTax == null ? total : row.afterTax;
+                        var type = row.isEstimate == 1 ? "Estimate" : "Invoice";
+                        var paidInFull = row.isPaid == 1 ? '<span class="badge color-green paid padding-horizontal">Yes</span>' : '<span class="badge color-red paid padding-horizontal">No</span>';
+                    var html = "<tr>";
+                        html += '<td class="id" style="display:none;">' + row._id + '</td>';
+                        html += "<td class='name'>" + row.product_name + "</td>";
+                        html += "<td>" + row.buyer_name + "</td>";
+                        html += "<td>" + quantity + "</td>";
+                        html += "<td class='cost'>" + self.formatMoney(afterTax) + "</td>";
+                        html += "<td>" + self.formatMoney(row.amountPaid) + "</td>";
+                        html += "<td class='isPaid'>" + paidInFull + "</td>";
+                        html += "<td class='created_date'>" + moment.unix(row.created_date).format("LLL") + "</td>";
+                        
+                        var pops = '<a href="#" data-popover=".sales-popover-' + i + '" class="popover-open"><i class="f7-icons">ellipsis_vertical</i></a>'
+                                pops += '<div class="popover my-popover sales-popover sales-popover-' + i + '" data-close-on-escape="true" data-backdrop="false">'; 
+                                pops += '<div class="popover-angle"></div><div class="popover-inner padding-half">';
+                                  pops += '<a class="button popover-close invoice" data-id="' + row._id + '">Invoice</a>';
+                                  pops += sellToOther;
+                                  pops += '<a class="button popover-close editSale" data-id="' + row._id + '" data-isparent="' + isParent + '">View / Edit</a>';
+                                  pops += '<a class="button popover-close deleteSale" data-id="' + row._id + '">';
+                                  pops += row.status == 1 ? 'Delete' : 'Activate';
+                                  pops += '</a>';
+                                  if(row.status == 0){
+                                    pops += '<a class="button popover-close permDelButton" data-id="' + row._id + '">Delete</a>';
+                                  }
+
+                                pops += '</div></div>';
+                                html += "<td>" + pops + "</td>";
+
+                      html += "</tr>";
+                      $("#sales-list tbody.list").append(html);
+                  }
+
+              }else{
+                $("#sales-list .data-table").remove();
+
+                $("#sales-list").find(".sortTextPar, .header_title").removeClass("display-none");
+                        
+                        $("#sales-list").find(".sort").remove();
                         var sorter = '<span class="sort" data-sort="name">Name</span><span class="sort" data-sort="cost">Cost</span>';
                         sorter += '<span class="sort" data-sort="isPaid">Fully Paid</span><span class="sort" data-sort="created_date">Purchase Date</span>';
                         $(sorter).insertAfter($(".sortText"));
@@ -2085,7 +2160,7 @@ export default {
                             html += '<div class=""><span class="labelName">Amount Paid: </span><span class="valueName">' + self.formatMoney(row.amountPaid) + '</span></div>';
                             var stat = row.status == 1 ? "display-none" : "";
                             var hidden = row.isPaid == 1 ? "" : "display-none";
-                            var checkbox = row.isPaid == 1 ? '<span class="badge color-green paid">Yes</span>' : '<span class="badge color-red paid">No</span>';
+                            var checkbox = row.isPaid == 1 ? '<span class="badge color-green paid padding-horizontal">Yes</span>' : '<span class="badge color-red paid padding-horizontal">No</span>';
                             //var checkbox = row.isPaid == 1 ? '<i class="icon f7-icons text-color-green paid">checkmark_circle_fill</i>' : '<i class="icon f7-icons text-color-red paid">multiply_circle_fill</i>';
                             html += '<div class=""><span class="labelName">Fully Paid: </span>' + checkbox + '</div>' + '<div class="display-none created_date">' + row.created_date + '</div>';
                             html += '<div class="' + hidden + '"><span class="labelName">Date Fully Paid: </span><span class="valueName">' + moment.unix(row.date_paid).format("LLL") + '</span></div>';
@@ -2106,6 +2181,9 @@ export default {
                             $("#sales-list .list").append(html);
                             //return html;
                         }
+              }
+
+                        
                         var options = {
                             valueNames: ['id','isPaid','buyer','created_date','cost','name'],
                             page: 10,
@@ -2115,8 +2193,8 @@ export default {
                         var sales = new List('sales-list', options);
 
                         $(".sort").off("click").on("click", function(){
-                          $(".sort").find(".asc").remove();
-                          $(".sort").find(".desc").remove();
+                          $("#sales-list").find(".sort").find(".asc").remove();
+                          $("#sales-list").find(".sort").find(".desc").remove();
                             if($(this).hasClass("asc")){
                               $(this).append("<i class='icon f7-icons asc text-color-red'>arrowtriangle_up_fill</i>");
                             }
@@ -2125,7 +2203,7 @@ export default {
                             }
                         })
                       
-                          $('#sales-list').off("click").on('click','.button', function () {
+                          $('#sales-list, .sales-popover').off("click").on('click','.button', function () {
                               var data = $(this).attr("data-id");
                               
                               if($(this).hasClass("editSale")){
@@ -2564,7 +2642,7 @@ export default {
         var self = this;
         //console.log("re-enter");
         //self.preparePage();
-        trackSalesPage();
+        //trackSalesPage();
       },
       pageInit: function(e, page) {
         var self = this;

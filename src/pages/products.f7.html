@@ -95,8 +95,27 @@
               </span>
           </div>
         </div>
-          <ul class="list sortList margin-vertical-half">
+          <!--<ul class="list sortList margin-vertical-half">
             
+          </ul>-->
+          <div class="product-table data-table margin-vertical-half">
+            <table>
+                <thead>
+                  <tr>
+                    <th class="sort" data-sort="name"><i class="icon f7-icons">arrow_up_down</i> Name</th>
+                    <th>Description</th>
+                    <th class="sort" data-sort="cost"><i class="icon f7-icons">arrow_up_down</i> Selling Price</th>
+                    <th class="sort" data-sort="in-stock"><i class="icon f7-icons">arrow_up_down</i> Stock</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody class="list sortList">
+
+                </tbody>
+            </table>
+          </div>
+          <ul class="list sortList margin-vertical-half">
+          
           </ul>
           <!--<ul class="pagination"></ul>-->
         </div>
@@ -294,6 +313,23 @@
                     <!--<span class="sort" data-sort="name">Name</span>
                     <span class="sort" data-sort="cost">Cost</span>-->
                   </div>
+                </div>
+
+                <div class="restock-table data-table margin-vertical-half">
+                  <table>
+                      <thead>
+                        <tr>
+                          <th class="sort" data-sort="name"><i class="icon f7-icons">arrow_up_down</i> Product Name</th>
+                          <th>Last Stock</th>
+                          <th class="sort" data-sort="cost">New Stock</th>
+                          <th>Total Stock</th>
+                          <th class="sort" data-sort="restock_date"><i class="icon f7-icons">arrow_up_down</i> Stock Date</th>
+                        </tr>
+                      </thead>
+                      <tbody class="list sortList">
+        
+                      </tbody>
+                  </table>
                 </div>
 
                 <ul class="list sortList margin-vertical-half">
@@ -1061,56 +1097,80 @@ export default {
           $("#restock-list .list").empty();
           $("#restock-list .pagination").remove();
           if(arr.length > 0){
-            $(".restockHistory").find(".sortTextPar, .header_title").removeClass("display-none");
             var pagination = "<ul class='pagination padding-left-half margin-vertical-half'><ul>";
             $(pagination).insertAfter($("#restock-list .list"));
-            $("#restock-list").find(".sort").remove();
-            var sorter = '<span class="sort" data-sort="name">Product Name</span><span class="sort" data-sort="restock_date">Restock date</span>';
-            $(sorter).insertAfter($(".restockHistory").find(".sortText"));
-            $(".restockHistory").find(".sortText").removeClass("display-none");
-          }
-          for(var i = 0; i < arr.length; i++){
-              var row = arr[i];
-              var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
-              html += '<div class="name cardName">' + row.productName + '</div>';
-              html += '<div class="name display-none">' + row.productName + '</div>';
-              html += '<div class="display-none restock_date">' + row.restock_date + '</div>';
-              html += '<div class=""><span class="labelName">Last Stock: </span><span class="">' + row.last_stock + '</span></div>';
-              html += '<div class=""><span class="labelName">Added Stock: </span><span class=""><b>' + row.new_stock + '</b></span></div>';
-              html += '<div class=""><span class="labelName">Total Stock: </span><span class="">' + row.total_stock + '</span></div>';
-              html += '<div class=""><span class="labelName">Restock Date: </span><span class="">' + moment.unix(row.restock_date).format("LLL") + '</span></div>';
-              html += '</div></div></li>';
-              //moment.unix(item.created_date).format("LLL");
+
+            var isDesktop = self.$app.methods.isDesktop();
+            if(isDesktop){
+              $("#restock-list ul.list").remove();
+              for(var i = 0; i < arr.length; i++){
+                    var row = arr[i];
+                    var html = "<tr>";
+                      html += '<td class="id" style="display:none;">' + row._id + '</td>';
+                      html += "<td class='name'>" + row.productName + "</td>";
+                      html += "<td>" + row.last_stock + "</td>";
+                      html += "<td>" + row.new_stock + "</td>";
+                      html += "<td>" + row.total_stock + "</td>";
+                      html += "<td class='restock_date'>" + moment.unix(row.restock_date).format("LLL") + "</td>";
+                      
+                    html += "</tr>";
+                    $("#restock-list tbody.list").append(html);
+                }
+            }else{
+              $("#restock-list .data-table").remove();
+              $(".restockHistory").find(".sortTextPar, .header_title").removeClass("display-none"); 
+              $("#restock-list").find(".sort").remove();
+              var sorter = '<span class="sort" data-sort="name">Product Name</span><span class="sort" data-sort="restock_date">Restock date</span>';
+              $(sorter).insertAfter($(".restockHistory").find(".sortText"));
+              $(".restockHistory").find(".sortText").removeClass("display-none");
               
-              $("#restock-list .list").append(html);
-                            //return html;
+              for(var i = 0; i < arr.length; i++){
+                    var row = arr[i];
+                    var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
+                    html += '<div class="name cardName">' + row.productName + '</div>';
+                    html += '<div class="name display-none">' + row.productName + '</div>';
+                    html += '<div class="display-none restock_date">' + row.restock_date + '</div>';
+                    html += '<div class=""><span class="labelName">Last Stock: </span><span class="">' + row.last_stock + '</span></div>';
+                    html += '<div class=""><span class="labelName">Added Stock: </span><span class=""><b>' + row.new_stock + '</b></span></div>';
+                    html += '<div class=""><span class="labelName">Total Stock: </span><span class="">' + row.total_stock + '</span></div>';
+                    html += '<div class=""><span class="labelName">Restock Date: </span><span class="">' + moment.unix(row.restock_date).format("LLL") + '</span></div>';
+                    html += '</div></div></li>';
+                    //moment.unix(item.created_date).format("LLL");
+                    
+                    $("#restock-list ul.list").append(html);
+                                  //return html;
+                }
+            }
+
+              var options = {
+                  valueNames: ['name','restock_date'],
+                  page: 10,
+                  pagination: [{outerWindow:2}]
+              };
+
+              var restock = new List('restock-list', options);
+
+              $(".restockHistory").find(".sort").off("click").on("click", function(){
+                $(".restockHistory").find(".sort").find(".asc").remove();
+                $(".restockHistory").find(".sort").find(".desc").remove();
+                  if($(this).hasClass("asc")){
+                    $(this).append("<i class='icon f7-icons asc text-color-red'>arrowtriangle_up_fill</i>");
+                  }
+                  if($(this).hasClass("desc")){
+                    $(this).append("<i class='icon f7-icons desc text-color-red'>arrowtriangle_down_fill</i>");
+                  }
+              })          
           }
-          var options = {
-                valueNames: ['name','restock_date'],
-                page: 10,
-                pagination: [{outerWindow:2}]
-            };
-
-            var restock = new List('restock-list', options);
-
-            $(".restockHistory").find(".sort").off("click").on("click", function(){
-              $(".restockHistory").find(".sort").find(".asc").remove();
-              $(".restockHistory").find(".sort").find(".desc").remove();
-                if($(this).hasClass("asc")){
-                  $(this).append("<i class='icon f7-icons asc text-color-red'>arrowtriangle_up_fill</i>");
-                }
-                if($(this).hasClass("desc")){
-                  $(this).append("<i class='icon f7-icons desc text-color-red'>arrowtriangle_down_fill</i>");
-                }
-            })
+          
+          
         }).catch((err) => {
           self.$app.preloader.hide();
         })
-      var popup = self.$app.popup.open('.restockHistory', true);
+      var popup = self.$app.popup.open('.popup.restockHistory', true);
     },
     closePopUpRestockHistory: function(){
       var self = this;
-      var popup = self.$app.popup.close('.restockHistory', true);
+      var popup = self.$app.popup.close('.popup.restockHistory', true);
     },
     restockProductSave: function(){
       var self = this;
@@ -1137,7 +1197,7 @@ export default {
             mogulsheetdb.get(self.currentProduct._id).then((dat2) => {
               dat2.stock = $(".totalStock").text();
               mogulsheetdb.put(dat2).then((dat3) => {
-                self.showToast("Restocking Saved", "center");
+                self.showToast("Restocking Saved", "center", true);
                 self.closeRestockProduct();
                 self.getData();
               })
@@ -1163,7 +1223,7 @@ export default {
                 var unlimited = item.stock == undefined ? "Unlimited" : item.stock
                 $(".currentStock, .totalStock").text(unlimited);
                 $(".isUnlimitedRestock").prop("checked", true);
-                var popup = self.$app.popup.open('.restockProduct', true);
+                var popup = self.$app.popup.open('.popup.restockProduct', true);
               });
       }else{
         self.$setState({
@@ -1337,13 +1397,14 @@ export default {
                   self.typingvalue(this);
                 })
     },
-    showToast: function(text, position){
+    showToast: function(text, position, icon = false){
         var self = this;
         self.$app.toast.create({
-                        text: text,
-                        position: position,
-                        closeTimeout: 2000,
-                        }).open();
+              icon: icon ? '<i class="f7-icons">checkmark_alt_circle</i>' : '',
+              text: text,
+              position: position,
+              closeTimeout: 2000,
+          }).open();
     },
     permDeleteItem: function(list, id){
         var self = this;
@@ -1361,7 +1422,7 @@ export default {
                       products:self.products,
                       totalMat:self.products.length
                   },function(){
-                      self.showToast("Product permanently deleted!", "center");
+                      self.showToast("Product permanently deleted!", "center", true);
                       list.remove("id", id);
                       if(self.products.length == 0){
                         $(".sortTextPar").addClass("display-none");
@@ -1395,7 +1456,7 @@ export default {
                       products:self.products,
                       totalMat:self.products.length
                   },function(){
-                      self.showToast("Product " + text + "d!", "center");
+                      self.showToast("Product " + text + "d!", "center", true);
                       list.remove("id", id);
                       if(self.products.length == 0){
                         $(".sortTextPar").addClass("display-none");
@@ -1478,11 +1539,11 @@ export default {
                       $(".stock_quantity").val(item.stock);
                     }
                     //$(".stock_quantity, .isUnlimited").prop("disabled", true);
-                    var popup = self.$app.popup.open('.newProduct', true);
+                    var popup = self.$app.popup.open('.popup.newProduct', true);
             } else{
               $(".isUnlimited").prop("checked", true);
               //$(".stock_quantity, .isUnlimited").prop("disabled", false);
-              var popup = self.$app.popup.open('.newProduct', true);
+              var popup = self.$app.popup.open('.popup.newProduct', true);
               self.$setState({
                   currentProduct:null
               });
@@ -1722,7 +1783,7 @@ export default {
                 $(".total_sell").val(total.toFixed(2));
                 $("#paid-calendar-modal-prods").val(moment().format('LLL'));
                 $("#purchase-calendar-modal").val(moment().format('LLL'));
-                var popup = self.$app.popup.open('.sellProduct', true);
+                var popup = self.$app.popup.open('.popup.sellProduct', true);
             } else{
               var taxes = self.settings == null ? 0 : self.settings.taxes;
               var taxesAmt = taxes == undefined ? 0 : taxes;
@@ -1730,7 +1791,7 @@ export default {
               $(".taxes").val(taxesAmt);
               $("#paid-calendar-modal-prods").val(moment().format('LLL'));
               $("#purchase-calendar-modal").val(moment().format('LLL'));
-              var popup = self.$app.popup.open('.sellProduct', true);
+              var popup = self.$app.popup.open('.popup.sellProduct', true);
               self.$setState({
                   currentProduct:null
               });
@@ -1885,7 +1946,7 @@ export default {
               }
         });
         
-        var popup = self.$app.popup.open('.multipleSales', true);
+        var popup = self.$app.popup.open('.popup.multipleSales', true);
         var taxes = self.settings == null ? 0 : self.settings.taxes;
         var taxesAmt = taxes == undefined ? 0 : taxes;
         $(".taxpercent").val(taxesAmt);
@@ -2137,7 +2198,7 @@ export default {
 
         // validation final
         if(error){
-          self.showToast("Error is found in the forms!", "center");
+          self.showToast("Error is found in the forms!", "center", false);
         }else{
             // save into db
             
@@ -2158,7 +2219,7 @@ export default {
               }
               mogulsheetdb.put(objNew).then(function(res) {
                       //self.$app.dialog.alert("Item saved.");
-                      self.showToast("New User Created.", "center");
+                      self.showToast("New User Created.", "center", true);
                       self.saveProcessedMultiplePayment(grpName, buyername,generatedID,isEstimate,taxes,afterTaxes,beforeTaxes,amountPaid,fullyPaid,isPaidDate,bigData);
                 })
             }
@@ -2237,7 +2298,7 @@ export default {
                           }
                     })
                 }
-                self.showToast("Saved successfully", "center");
+                self.showToast("Saved successfully", "center", true);
                 
                 self.closePopUpMultiple();
                 //self.$app.popup.close('.multipleSales', true);
@@ -2327,7 +2388,7 @@ export default {
         var hiddenQuant = Number($(curr).find(".hiddenQuantity").eq(0).val());
         if(!isNaN(hiddenQuant)){
           if(quant > hiddenQuant){
-            self.showToast("The quantity you entered is more than you have in stock", "center");
+            self.showToast("The quantity you entered is more than you have in stock", "center", false);
           }
         }
         //$(curr).find(".totalproductprice")
@@ -2457,7 +2518,7 @@ export default {
 
           mogulsheetdb.put(obj).then(function(id) {
                   //self.$app.dialog.alert("Item saved.");
-                  self.showToast("Item saved.", "center");
+                  self.showToast("Item saved.", "center", true);
                   $$("input.nameProduct,input.selling_price,.cost_price, .stock_quantity").val("");
                   $(".isUnlimited").prop("checked", true);
                   var textEditor = self.$app.textEditor.get('.desc_of_product');
@@ -2495,23 +2556,23 @@ export default {
       }*/
       var isEstimate = $(".isEstimate").prop("checked");
       if($("#purchase-calendar-modal").val().trim() == ""){
-        self.showToast("Please pick date of purchase", "center");
+        self.showToast("Please pick date of purchase", "center", false);
         return;
       }
       if($(".name_sell").val().trim() == ""){
-        self.showToast("Please enter product name", "center");
+        self.showToast("Please enter product name", "center", false);
         return;
       }
       if($(".cost_sell").val().trim() == ""){
-        self.showToast("Please enter selling price", "center");
+        self.showToast("Please enter selling price", "center", false);
         return;
       }
       if($(".buyer_sell").val().trim() == ""){
-        self.showToast("Please enter buyer's name", "center");
+        self.showToast("Please enter buyer's name", "center", false);
         return;
       }
       if(($("#paid-calendar-modal-prods").val().trim() == "") && ($$("input.amountpaid_sell").val() != "0" && $$("input.amountpaid_sell").val().trim() != "")){
-          self.showToast("Please choose date buyer paid!", "center");
+          self.showToast("Please choose date buyer paid!", "center", false);
           return;
       }
       if(($$("input.amountpaid_sell").val() == "0" || $$("input.amountpaid_sell").val().trim() == "") && isEstimate == false){
@@ -2555,7 +2616,7 @@ export default {
             }
             mogulsheetdb.put(obj).then(function(res) {
                     //self.$app.dialog.alert("Item saved.");
-                    self.showToast("New User Created.", "center");
+                    self.showToast("New User Created.", "center", true);
                     self.saveProcessedPayement(chosenUser, generatedID, isEstimate, fullyPaid, isPaidDate);
               })
         }
@@ -2592,7 +2653,7 @@ export default {
               };
  
             mogulsheetdb.put(obj).then(function(){
-                  self.showToast("Record saved!","center");
+                  self.showToast("Record saved!","center", true);
                   $("#paid-calendar-modal-prods").next("span").click();
                   $("#purchase-calendar-modal").next("span").click();
                   $$("input.buyer_sell, input.amountpaid_sell, #purchase-calendar-modal, #paid-calendar-modal-prods, .quantity_sell, .total_sell, .discount_sell").val("");
@@ -2662,24 +2723,80 @@ export default {
                 $("#product-list .list").empty();
                 $("#product-list .pagination, .viewRestockHistoryParent").remove();
                 $(".sellMultiple").remove();
+                //var desktop = true;
                       if(arr != null && arr.length > 0){
-                        $(".sortTextPar").removeClass("display-none");
                         var pagination = "<ul class='pagination padding-left-half margin-vertical-half'><ul>";
                         $(pagination).insertAfter($("#product-list .list"));
-                        $("#product-list").find(".sort").remove();
-                        var sorter = '<span class="sort" data-sort="name">Name</span><span class="sort" data-sort="cost">Cost</span><span class="sort" data-sort="in-stock">In Stock</span>';
-                        $(sorter).insertAfter($("#product-list").find(".sortText"));
-                        $("#product-list").find(".sortText").removeClass("display-none");
+                        
                         var mult = "<div class='margin-top-half viewRestockHistoryParent'><a class='button button-raised bg-color-blue viewRestockHistory'>View Restock History</div>";
                         mult += "<div class='margin-top-half sellMultParent'><a class='button button-raised mainButton sellMultiple'>Sell Multiple Products</div>";
                           //
-                        $(mult).insertBefore($("#product-list .list"));
+                        var isDesktop = self.$app.methods.isDesktop();
+                        //console.log("Product Screen", isDesktop);
+                        if(isDesktop){
+                          //$("#product-list .data-table").show();
+                          $(mult).insertBefore($("#product-list table"));
+                        }else{
+                         // $("#product-list .data-table").hide();
+                          $(mult).insertBefore($("#product-list ul.list"));
+                        }
+                        
                         $(".sellMultiple").off("click").on("click", function(){
                           self.openPopUpMultiple();
                         })
                         $(".viewRestockHistory").off("click").on("click", function(){
                           self.openPopUpRestockHistory();
                         })
+
+                        
+                        if(isDesktop){
+                          $("#product-list ul.list").remove();
+
+                          for(var i = 0; i < arr.length; i++){
+                            var row = arr[i];
+                              var html = "<tr>";
+                                html += '<td class="id" style="display:none;">' + row._id + '</td>';
+                                html += "<td class='name'>" + row.name + "</td>";
+                                html += "<td>" + (row.desc != undefined && row.desc != "" ? row.desc : "--")+ "</td>";
+                                html += "<td class='cost'>" + self.formatMoney(row.selling_price) + "</td>";
+                                var stock = "Unlimited";
+                                var stockCount = 9999999;
+                                if(row.stock != undefined){
+                                  stock = row.stock;
+                                  stockCount = parseFloat(row.stock);
+                                }
+                                html += "<td class='in-stock'>" + stock + "</td>";
+                                
+                                var pops = '<a href="#" data-popover=".products-popover-' + i + '" class="popover-open"><i class="f7-icons">ellipsis_vertical</i></a>'
+                                pops += '<div class="popover my-popover products-popover products-popover-' + i + '" data-close-on-escape="true" data-backdrop="false">'; 
+                                pops += '<div class="popover-angle"></div><div class="popover-inner padding-half">';
+                                
+                                  var page_link = row.product_link_id == undefined ? null : row.product_link_id;
+
+                                  pops += '<a class="button popover-close sellProduct" data-id="' + row._id + '">Sell</a>';
+                                  pops += '<a class="button popover-close editProduct" data-id="' + row._id + '">Edit</a>';
+                                  pops += '<a class="button popover-close restockProduct" data-id="' + row._id + '">Restock</a>';
+                                  pops += '<a class="button popover-close addIngredients" data-id="' + row._id + '">Raw Materials</a>';
+                                  pops += '<a class="button popover-close linkProduct" data-link="' + page_link + '" data-id="' + row._id + '">Share Link</a>';
+                                  pops += '<a class="button popover-close deleteProduct" data-id="' + row._id + '">';
+                                  pops += row.status == 1 ? 'Delete' : 'Activate';
+                                  pops += '</a>';
+                                  if(row.status == 0){
+                                    pops += '<a class="button popover-close permDelButton" data-id="' + row._id + '">Delete</a>';
+                                  }
+
+                                pops += '</div></div>';
+                                html += "<td>" + pops + "</td>";
+                              html += "</tr>";
+                              $("#product-list tbody.list").append(html);
+                          }
+                        }else{
+                          $("#product-list .data-table").remove();
+                          $(".sortTextPar").removeClass("display-none");
+                          $("#product-list").find(".sortText").removeClass("display-none");
+                          $("#product-list").find(".sort").not("th").remove();
+                          var sorter = '<span class="sort" data-sort="name">Name</span><span class="sort" data-sort="cost">Cost</span><span class="sort" data-sort="in-stock">In Stock</span>';
+                          $(sorter).insertAfter($("#product-list").find(".sortText"));
 
                         for(var i = 0; i < arr.length; i++){
                             var row = arr[i];
@@ -2713,9 +2830,10 @@ export default {
                               html += '<a class="button button-small button-raised permDelButton" data-id="' + row._id + '">Delete</a>';
                             }
                             html += '</p></div></div></li>';
-                            $("#product-list .list").append(html);
+                            $("#product-list ul.list").append(html);
                             //return html;
                         }
+                      }
                         var options = {
                             valueNames: ['id','cost','name', 'in-stock'],
                             page: 10,
@@ -2735,7 +2853,7 @@ export default {
                             }
                         })
                       
-                          $('#product-list').off("click").on('click','.button', function () {
+                          $('#product-list, .products-popover').off("click").on('click','.button', function () {
                               var data = $(this).attr("data-id");
                               if($(this).hasClass("sellProduct")){
                                 self.openPopUpSellProduct(data);
@@ -2835,7 +2953,7 @@ export default {
           })
       }else{
         self.$app.preloader.hide();
-        self.showToast(uploaded + " records were saved", "center");
+        self.showToast(uploaded + " records were saved", "center", true);
         dataToUpload = null;
         uploaded = 0;
         return;
@@ -3171,7 +3289,7 @@ export default {
                       
                         //}).then(() => {
                             // Transaction committed. NOT WITHIN ZONE!
-                            self.showToast("Saved successfully", "center");
+                            self.showToast("Saved successfully", "center", true);
                             self.closePopUp();
                             //self.$app.popup.close('.ProductIngredients', true);
                         }).catch(err => {
@@ -3192,7 +3310,7 @@ export default {
   on: {
     pageAfterIn: function(e, page) {
         var self = this;
-        trackProductsPage();
+        //trackProductsPage();
       },
       pageInit: function(e, page) {
         var self = this;
