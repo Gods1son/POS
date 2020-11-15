@@ -139,9 +139,9 @@
     color: var(--f7-theme-color);;
 }
 
-.data-table{
+/*.data-table{
     padding: 0 20px !important;
-}
+}*/
 
 .data-table table{
     margin-top:10px;
@@ -149,7 +149,7 @@
 }
 
 .data-table thead tr{
-    background: #2196f3 !important;
+    background: grey !important;
 }
 
 .data-table thead tr th{
@@ -508,15 +508,33 @@ button.text-editor-button.active{
     margin-top: 2px !important;
 }
 
+.customList .searchbar-input-wrap{
+    width: 99%;
+    margin: auto;
+}
+
 .searchbar-input-wrap input, .darkSearch{
-    padding: 10px 0 !important;
+    padding: 5px 0 !important;
     font-size: 1.1em !important;
     text-align: center !important;
-    background: lightgray !important;
-    color: black !important;
-    font-weight: 600 !important;
-    border: none !important;
-    border-radius: 2px !important;
+    background: white !important;
+    color: #000!important;
+    font-weight: 600!important;
+    border: 1.5px solid var(--main-color)!important;
+    border-radius: 15px!important;
+    margin-top: 5px;
+}
+
+.searchbar-input-wrap .searchbar-icon:after{
+    color:black !important;
+}
+
+.searchbar-input-wrap .input-clear-button:after{
+    color:red !important;
+}
+
+.searchbar-input-wrap input::placeholder, .darkSearch::placeholder{
+    color:black !important;
 }
 
 .customList .sort:not(th){
@@ -536,6 +554,11 @@ button.text-editor-button.active{
 .sort .icon{
     font-size: 1.2em;
     margin-left: 2px;
+}
+
+.data-table tbody tr:hover{
+    background: #dbccf5 !important; /*var(--main-color);
+    color: white !important;*/
 }
 
 .buttonSpan{
@@ -791,7 +814,8 @@ button.text-editor-button.active{
         background-color:#dee2e6;
     }
     /*.viewRestockHistoryParent, .sellMultParent,*/
-    .myToolbar, .list.sortList, .sortTextPar, .dash, .dashText, .specWrap, .pagination{
+    .myToolbar, .list.sortList, .sortTextPar, .dash, .dashText, 
+    .viewRestockHistoryParent, .sellMultParent, .specWrap, .pagination{
         padding: 0 15px !important;
     }
     .myCard{

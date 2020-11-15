@@ -1582,6 +1582,7 @@
         syncData: function(){
             var self = this;
             //trackStartSyncing();
+            self.$app.methods.sendAnalytics("started syncing");
             self.syncSingleData();
             //self.syncDBProducts(true);
         },

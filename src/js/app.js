@@ -40,6 +40,7 @@ import jQuery from 'jquery';
 window.jQuery = jQuery;
 window.$ = jQuery;
 
+
 Template7.registerHelper("money", function(val){
     var sym = localStorage.getItem("currency", val);
     if(sym == undefined || sym == "undefined" || sym == null || sym == "null"){
@@ -96,6 +97,33 @@ setTimeout(function(){
         }else{
           return false;
         }
+      },
+      generateClientID: function(){
+        var navigator_info = window.navigator;
+        var screen_info = window.screen;
+        var uid = navigator_info.mimeTypes.length;
+        uid += navigator_info.userAgent.replace(/\D+/g, '');
+        uid += navigator_info.plugins.length;
+        uid += screen_info.height || '';
+        uid += screen_info.width || '';
+        uid += screen_info.pixelDepth || '';
+        uid = uid.substr(0,25);
+        return uid;
+        //console.log("uniqueid : ", uid);
+      },
+      sendAnalytics: function(page){
+        try{
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({
+            'event': 'Pageview',
+            'pagePath': window.location.href,
+            'pageTitle': page, //some arbitrary name for the page/state
+            'userId' : app.methods.generateClientID()
+            });
+            //console.log(window.dataLayer);
+          }catch(err){
+            
+          }
       },
       startPouch: function(){
         //var self = this;
@@ -196,7 +224,7 @@ setTimeout(function(){
       init: function () {
         var self = this;
         //console.log('App initialized');
-        
+        app.methods.generateClientID();
       },
       pageInit: function () {
         //var self = this;
@@ -235,6 +263,7 @@ setTimeout(function(){
             panel.toggle(false);
           }
         }else{
+          app.methods.sendAnalytics(name);
           if(!panel.opened){
             var width = $(window).width();
             if(width >= 1024 && !openedPanel){
