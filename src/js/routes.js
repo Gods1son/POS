@@ -112,7 +112,7 @@ var routes = [
   },
   {
     path: '(.*)',
-    component: NotFoundPage,
+    component: HomePage,
   },
 ];
 

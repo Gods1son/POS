@@ -73,7 +73,8 @@ setTimeout(function(){
     theme: 'auto', // Automatic theme detection
     view: {
       pushState: true,
-      //pushStateRoot: document.location.pathname.split("index.html")[0]
+      //pushStateRoot: document.location.pathname.split("index.html")[0],
+      pushStateSeparator: "#" 
     },
     // App routes
     routes: routes,
