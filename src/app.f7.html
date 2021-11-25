@@ -24,75 +24,82 @@
           <div class="navbar">
             <div class="navbar-bg"></div>
             <div class="navbar-inner">
-              <div class="title padding-vertical-half text-color-white">Mogul Sheet</div>
+              <div class="title padding-vertical-half margin-left padding-left-half">Omni</div>
             </div>
           </div>
           <div class="page-content">
-             <div class="list margin-vertical quicklinks">
-                  <ul>
-                    <li>
-                      <a href="/" class="item-content item-link panel-close">
+             <div class="list-none margin-vertical quicklinks">
+                  <div>
+                    <!--<div class="home">
+                      <a href="/" data-reload-all="true" class="item-content item-link panel-close">
                         <div class="item-inner">
                           <div class="item-title"><i class="icon f7-icons text-color-blue1 margin-right-half">house</i>Home</div>
                         </div>
                       </a>
-                    </li>
-                    <li>
-                      <a href="/ingredient/" class="item-content item-link panel-close">
+                    </div>-->
+                    <div class="ingredient">
+                      <a href="/ingredient/" data-reload-all="true" class="item-content item-link panel-close">
                         <div class="item-inner">
                           <div class="item-title"><i class="icon f7-icons text-color-blue1 margin-right-half">layers_alt</i>Raw Materials</div>
                         </div>
                       </a>
-                    </li>
-                    <li>
-                      <a href="/products/" class="item-content item-link panel-close">
+                    </div>
+                    <div class="products">
+                      <a href="/products/" data-reload-all="true" class="item-content item-link panel-close">
                         <div class="item-inner">
                           <div class="item-title"><i class="icon f7-icons text-color-blue1 margin-right-half">cube_box</i>Products</div>
                         </div>
                       </a>
-                    </li>
-                    <li>
-                      <a href="/sales/" class="item-content item-link panel-close">
+                    </div>
+                    <div class="sales">
+                      <a href="/sales/" data-reload-all="true" class="item-content item-link panel-close">
                         <div class="item-inner">
                           <div class="item-title"><i class="icon f7-icons text-color-blue1 margin-right-half">tag</i>Sales / Estimates</div>
                         </div>
                       </a>
-                    </li>
-                    <li>
-                      <a href="/expenses/" class="item-content item-link panel-close">
+                    </div>
+                    <div class="expenses">
+                      <a href="/expenses/" data-reload-all="true" class="item-content item-link panel-close">
                         <div class="item-inner">
                           <div class="item-title"><i class="icon f7-icons text-color-blue1 margin-right-half">purchased</i>Expenses</div>
                         </div>
                       </a>
-                    </li>
-                    <li>
-                      <a href="/clients/" class="item-content item-link panel-close">
+                    </div>
+                    <div class="customers">
+                      <a href="/customers/" data-reload-all="true" class="item-content item-link panel-close">
                         <div class="item-inner">
-                          <div class="item-title"><i class="icon f7-icons text-color-blue1 margin-right-half">person_2</i>Clients</div>
+                          <div class="item-title"><i class="icon f7-icons text-color-blue1 margin-right-half">person_2</i>Customers</div>
                         </div>
                       </a>
-                    </li>
-                    <li>
-                      <a href="/reports/" class="item-content item-link panel-close">
+                    </div>
+                    <div class="reports">
+                      <a href="/reports/" data-reload-all="true" class="item-content item-link panel-close">
                         <div class="item-inner">
                           <div class="item-title"><i class="icon f7-icons text-color-blue1 margin-right-half">chart_bar</i>Reports</div>
                         </div>
                       </a>
-                    </li>
-                    <li>
-                      <a href="/sync/" class="item-content item-link panel-close">
+                    </div>
+                   <!--<li>
+                      <a href="/sync/" data-reload-all="true" class="item-content item-link panel-close">
                         <div class="item-inner">
                           <div class="item-title"><i class="icon f7-icons text-color-blue1 margin-right-half">cloud_upload</i>Login / Sync</div>
                         </div>
                       </a>
-                    </li>
-                    <li>
-                      <a href="/settings/" class="item-content item-link panel-close">
+                    </li>-->
+                    <div class="settings">
+                      <a href="/settings/" data-reload-all="true" class="item-content item-link panel-close">
                         <div class="item-inner">
                           <div class="item-title"><i class="icon f7-icons text-color-blue1 margin-right-half">gear_alt</i>Settings</div>
                         </div>
                       </a>
-                    </li>
+                    </div>
+                    <div>
+                      <a @click="SignOut()" class="item-content item-link panel-close">
+                        <div class="item-inner">
+                          <div class="item-title"><i class="icon f7-icons text-color-blue1 margin-right-half">cloud_upload</i>Log Out</div>
+                        </div>
+                      </a>
+                    </div>
                     <!--<li>
                       <a class="link external item-content panel-close downloadData" target="_system">
                         <div class="item-inner">
@@ -107,9 +114,12 @@
                         </div>
                       </a>
                     </li>-->
-                  </ul>
+                  </div>
              </div>
-             <div class="ContactUs"><a class="external" target="_system" href="mailto:mogulsheet@gmail.com"><i class="icon f7-icons envelope">envelope</i><span class="in-link">Contact Us</span></a></div>
+             <div class="ContactUs margin-left">
+              <div>Omni v1.0</div>
+               <!--<a class="external" target="_system" href="mailto:mogulsheet@gmail.com"><i class="icon f7-icons envelope">envelope</i><span class="in-link">Contact Us</span></a>-->
+              </div>
           </div>
         </div>
       </div>
@@ -232,6 +242,10 @@
         this.$f7.dialog.alert('Username: ' + this.username + '<br>Password: ' + this.password, () => {
           this.$f7.loginScreen.close();
         });
+      },
+      SignOut(){
+        var self = this;
+        self.$app.methods.signOutGlobal();
       },
       downloadData(){
         var self = this;

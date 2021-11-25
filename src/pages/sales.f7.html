@@ -23,11 +23,11 @@
       <!--fab-->
       <div class="fab-backdrop"></div>
     <div class="fab fab-extended fab-right-bottom">
-      <a href="#">
+      <!--<a href="#">
         <i class="icon f7-icons">plus</i>
         <i class="icon f7-icons">multiply</i>
-        <div class="fab-text">Sale</div>
-      </a>
+        <div class="fab-text">Sell</div>
+      </a>-->
         
         <div class="fab-buttons fab-buttons-top">
           <a href="#" class="fab-label-button" @click="openPopUpUpdateSellProduct(null)">
@@ -56,48 +56,44 @@
           </div>
 
           <div class="no-margin-vertical padding-horizontal-half">
-                <a href="#" class="no-padding text-color-blue">
-                  <div class="item-inner padding-vertical-half">
-                    <div class="dashText">Snapshot</div>
-                  </div></a>
                 <div class="">
                   <div class="block no-margin-vertical no-padding">
                     <div class="row no-gap dash">
               
-                        <div class="col-50 medium-33 small-50 xsmall-100">
+                        <div class="col-50 medium-50 small-50 xsmall-100">
                           <div class="card card-outline">
                             <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">Total {{js "this.totalMat > 1 ? 'Sales' : 'Sale'"}}</div>
                             <div class="card-content">{{totalMat}}</div>
                           </div>
                         </div>
-              
-                        <div class="col-50 medium-33 small-50 xsmall-100">
-                          <div class="card card-outline">
-                            <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">Total Amount of Sales</div>
-                            <div class="card-content">{{money totalMoney}}</div>
-                          </div>
-                        </div>
-              
-                        <div class="col-50 medium-33 small-50 xsmall-100">
-                          <div class="card card-outline">
-                            <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">Total Amount Received</div>
-                            <div class="card-content">{{money totalPaid}}</div>
-                          </div>
-                        </div>
-              
-                        <div class="col-50 medium-33 small-50 xsmall-100">
+
+                        <div class="col-50 medium-50 small-50 xsmall-100">
                           <div class="card card-outline">
                             <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">Sales Not Fully Paid</div>
                             <div class="card-content">{{totalUnpaid}}</div>
                           </div>
                         </div>
               
-                        <div class="col-100 medium-66">
+                        <div class="col-50 medium-50 small-50 xsmall-100">
+                          <div class="card card-outline">
+                            <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">Total Amount of Sales</div>
+                            <div class="card-content">{{totalMoney}}</div>
+                          </div>
+                        </div>
+              
+                        <div class="col-50 medium-50 small-50 xsmall-100">
+                          <div class="card card-outline">
+                            <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">Total Amount Received</div>
+                            <div class="card-content">{{totalPaid}}</div>
+                          </div>
+                        </div>
+              
+                        <!--<div class="col-100 medium-66">
                           <div class="card card-outline">
                             <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">(Amount Received minus Total sales)</div>
                             <div class="card-content">{{money totalDifference}}</div>
                           </div>
-                        </div>
+                        </div>-->
               
                     </div>
                   </div>
@@ -117,28 +113,32 @@
             </div>
           </div>
 
-          <div class="block no-margin-vertical padding-horizontal-half filterDateParent">  
-            <div class="no-hairlines-md no-margin-bottom margin-top-half">
-                <div class="item-content item-input1">
-                    <div class="item-inner bg-color-white specWrap">
-                    <div class="item-input-wrap">
-                        <input type="text" class="specSearch" placeholder="Filter sales by date" id="demo-calendar-modal"/>
-                        <span class="input-clear-button specClear" @click="resetTable"></span>
-                    </div>
-                    </div>
-                </div>
-            </div>
-          </div>
           <div class="row margin-top-half myToolbar">
-            <div class="col-50 no-padding-vertical">
+            <div class="col-33 no-padding-vertical">
               <span class="display-inline-flex">
               <!--<span class="margin-left-half">You have {{totalMat}} {{js "this.totalMat > 1 ? 'sales' : 'sale'"}}</span>-->
                 <span class="margin-horizontal-half">Show</span>
                 <span><a class="button button-small button-raised switchEstimate" data-estimate="0" @click="switchEstimate">Estimates</a></span>
              </span>
             </div>
-            <div class="col-50 no-padding-vertical text-align-right">
-              <span class="display-inline-flex margin-right-half">
+
+            <div class="col-33 no-padding-vertical">
+              <div class="block no-margin-vertical filterDateParent">  
+                <div class="no-hairlines-md no-margin-bottom margin-top-half">
+                    <div class="item-content item-input1">
+                        <div class="item-inner bg-color-white specWrap">
+                        <div class="item-input-wrap">
+                            <input type="text" class="specSearch" placeholder="Date filter" id="demo-calendar-modal"/>
+                            <span class="input-clear-button specClear" @click="resetTable"></span>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-33 no-padding-vertical text-align-right">
+              <span class="display-inline-flex margin-right-half display-none">
                 <span class="item-title float-right">Show Deleted</span>
                 <span class="item-after float-right margin-left-half">
                     <label class="toggle toggle-init color-red showInactiveSales">
@@ -149,7 +149,7 @@
                 </span>
             </div>
           </div>
-          <div class="block header_title text-align-center no-margin-vertical block-title-medium display-none">Sales</div>
+          <div class="block header_title text-align-center no-margin-vertical block-title-medium margin-top display-none"></div>
           
           <div class="sales-table data-table margin-vertical-half">
             <table>
@@ -190,7 +190,7 @@
             <div class="title">Add/Edit Product Sale</div>
             <div class="right">
               <!-- Link to close popup -->
-              <a class="link" @click="closeUpdatePopUp"><i class="icon f7-icons">multiply</i>Close</a>
+              <a class="link" @click="closeUpdatePopUp"><i class="icon f7-icons">multiply</i></a>
             </div>
           </div>
         </div>
@@ -198,16 +198,34 @@
             <div class="list no-hairlines-md margin-top-half margin-bottom-half">
               <ul>
                 <li>
-                  <div class="item-content item-input">
-                    <div class="item-inner">
-                      <div class="item-title">Product Name</div>
-                      <div class="item-input-wrap">
-                        <input type="hidden" id="productID_sell">
-                        <input type="text" id="name_sell_sales" class="name_sell_sales" placeholder="Product name" required/>
-                        <span class="input-clear-button"></span>
+                  <div class="row">
+                    <div class="col-50">
+                      <div class="item-content item-input">
+                        <div class="item-inner">
+                          <div class="item-title">Product Name</div>
+                          <div class="item-input-wrap">
+                            <input type="hidden" id="productID_sell">
+                            <input type="text" id="name_sell_sales" class="name_sell_sales" placeholder="Product name" required/>
+                            <span class="input-clear-button"></span>
+                          </div>
+                        </div>
                       </div>
                     </div>
+
+                    <div class="col-50">
+                      <div class="item-content item-input">
+                        <div class="item-inner">
+                          <div class="item-title">Selling Price</div>
+                          <div class="item-input-wrap">
+                            <input type="number" class="cost_sell_sales" @keyup="calculateQuantity" placeholder="selling price" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                            <span class="input-clear-button"></span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
                   </div>
+
                 </li>
 
                 <li>
@@ -215,9 +233,10 @@
                       <div class="col-50">
                         <div class="item-content item-input">
                           <div class="item-inner">
-                            <div class="item-title">Selling Price</div>
+                            <div class="item-title">Quantity</div>
                             <div class="item-input-wrap">
-                              <input type="text" class="cost_sell_sales" @keyup="calculateQuantity" placeholder="selling price" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                              <input type="hidden" class="hiddenQuantitySingle">
+                              <input type="number" class="quantity_sell_sales" @keyup="calculateQuantity" placeholder="Quantity" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                               <span class="input-clear-button"></span>
                             </div>
                           </div>
@@ -227,10 +246,9 @@
                       <div class="col-50">
                         <div class="item-content item-input">
                           <div class="item-inner">
-                            <div class="item-title">Quantity</div>
+                            <div class="item-title">Discount</div>
                             <div class="item-input-wrap">
-                              <input type="hidden" class="hiddenQuantitySingle">
-                              <input type="text" class="quantity_sell_sales" @keyup="calculateQuantity" placeholder="Quantity" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                              <input type="number" class="discount_sell_sales" @keyup="calculateQuantity" value="0" placeholder="Discount" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                               <span class="input-clear-button"></span>
                             </div>
                           </div>
@@ -238,23 +256,13 @@
                       </div>
                   </div>
                 </li>
-                <li>
-                  <div class="item-content item-input">
-                    <div class="item-inner">
-                      <div class="item-title">Discount</div>
-                      <div class="item-input-wrap">
-                        <input type="text" class="discount_sell_sales" @keyup="calculateQuantity" value="0" placeholder="Discount" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
-                        <span class="input-clear-button"></span>
-                      </div>
-                    </div>
-                  </div>
-                </li>
+                
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
                       <div class="item-title">Total Price</div>
                       <div class="item-input-wrap">
-                        <input type="text" class="total_sell_sales" @keyup="calculateQuantity2" placeholder="Total Price" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                        <input type="number" class="total_sell_sales" @keyup="calculateQuantity2" placeholder="Total Price" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                         <span class="input-clear-button"></span>
                       </div>
                     </div>
@@ -267,7 +275,7 @@
                           <div class="item-inner">
                             <div class="item-title">Taxes in %</div>
                             <div class="item-input-wrap">
-                              <input type="text" class="taxes-sales" @keyup="calculateQuantity" placeholder="Taxes in %" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                              <input type="number" class="taxes-sales" @keyup="calculateQuantity" placeholder="Taxes in %" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                               <span class="input-clear-button"></span>
                             </div>
                           </div>
@@ -311,7 +319,7 @@
                               </p>
                           </div>
                           <div class="item-input-wrap">
-                            <input type="text" class="amountpaid_sell_sales" placeholder="Amount customer paid" value="0" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                            <input type="number" class="amountpaid_sell_sales" placeholder="Amount customer paid" value="0" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                             <span class="input-clear-button"></span>
                           </div>
                         </div>
@@ -321,7 +329,7 @@
                     <div class="col-50">
                       <div class="item-content item-input">
                         <div class="item-inner">
-                          <div class="item-title">It's an Estimate<i class="icon f7-icons icon-tooltip estimateExplain color-black">info_circle_fill</i></div>
+                          <div class="item-title">This is an Estimate<i class="icon f7-icons icon-tooltip estimateExplain color-black">info_circle_fill</i></div>
                           <div class="item-input-wrap">
                             <label class="checkbox">
                               <!-- checkbox input -->
@@ -336,27 +344,34 @@
                 </div>
                 </li>
                 <li>
-                  <div class="item-content item-input">
-                      <div class="item-inner">
-                        <div class="item-title">Date Buyer Paid</div>
-                      <div class="item-input-wrap">
-                          <input type="text" placeholder="Date buyer paid" id="paid-calendar-modal-sales"/>
-                          <span class="input-clear-button"></span>
-                      </div>
-                      </div>
+                  <div class="row">
+                    <div class="col-50">
+                      <div class="item-content item-input">
+                        <div class="item-inner">
+                          <div class="item-title">Date Buyer Paid</div>
+                        <div class="item-input-wrap">
+                            <input type="text" placeholder="Date buyer paid" id="paid-calendar-modal-sales"/>
+                            <span class="input-clear-button"></span>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+
+                    <div class="col-50">
+                      <div class="item-content item-input">
+                        <div class="item-inner">
+                          <div class="item-title">Date of Purchase</div>
+                        <div class="item-input-wrap">
+                            <input type="text" placeholder="Date of purchase" id="purchase-calendar-modal-sales" required validate data-error-message="Select date of purchase please!"/>
+                            <span class="input-clear-button"></span>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
                   </div>
+                  
                 </li>
-                <li>
-                  <div class="item-content item-input">
-                      <div class="item-inner">
-                        <div class="item-title">Date of Purchase</div>
-                      <div class="item-input-wrap">
-                          <input type="text" placeholder="Date of purchase" id="purchase-calendar-modal-sales" required validate data-error-message="Select date of purchase please!"/>
-                          <span class="input-clear-button"></span>
-                      </div>
-                      </div>
-                  </div>
-                </li>
+                
                 <li>
                   <div class="item-content">
                     <div class="item-inner">
@@ -383,14 +398,94 @@
             <div class="title">Preview Invoice</div>
             <div class="right">
               <!-- Link to close popup -->
-              <a class="link" @click="closePreviewInvoice()"><i class="icon f7-icons">multiply</i>Close</a>
+              <a class="link" @click="closePreviewInvoice()"><i class="icon f7-icons">multiply</i></a>
             </div>
           </div>
         </div>
         <div class="page-content">
-          <div class="block margin-vertical-half" style="height: 100%;">
-              <a class="button button-small button-raised mainButton" @click="showPDF">Download Invoice</a>
-              <iframe id="showInvoice"></iframe>
+          <div class="no-padding-left margin-vertical-half" style="height: 100%;">
+            <p class="display-flex justify-content-center padding-horizontal">
+              <a class="button button-small mainButton margin-right-half shareLinkButton" @click="shareInvoiceLink">Share Invoice Link</a>
+              <a class="button button-small mainButton downloadInvoiceButton" @click="showPDF">Download Invoice</a>
+            </p>
+            
+              <div id="showInvoice">
+
+                <!--header-->
+                <div class="padding-horizontal-half padding-vertical border-bottom">
+                  <div class="row padding-vertical">
+                      <div class="col-100 medium-50">
+                          <div class="display-flex">
+                                <img src="/static/icons/favicon.png" class="brandLogoReceipt" />
+                              <div class="display-flex flex-direction-column">
+                                  <h2 class="margin-left-half no-margin-bottom brandNameReciept">
+
+                                  </h2>
+                                      <div class="margin-left-half text-muted taglineReceipt"></div>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="col-100 medium-50 text-align-right">
+                          <div id="addressLabel" class="margin-top text-muted small">
+      
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <!--header-->
+
+              <!--details section-->
+              <div class="container-fluid">
+                <div class="row margin-top invoiceHeader">
+                    <div class="col-100 medium-40 no-padding-left">
+                        <div class="text-muted">BILL TO</div>
+                        <div id="buyerName"></div>
+                    </div>
+    
+                    <div class="col-100 medium-60 mt-3 mt-md-0 text-md-right docDetails px-0 px-md-3">
+    
+                    </div>
+                </div>
+    
+                <!--<div class="d-none downloadButton">
+                    <button class="btn btn-success" onclick="downloadPDF()">Download</button>
+                </div>-->
+    
+            </div>
+            <!--details section-->
+
+            <!--Table-->
+            <div class="container-fluid padding-vertical no-padding-horizontal">
+              <table id="invoiceTable" class="width-100">
+                  <thead class="bg-main-color text-color-white">
+                      <tr>
+                          <th>Name</th>
+                          <th>Quantity</th>
+                          <th class="hideOnMobile">Rate</th>
+                          <th class="hideOnMobile">Discount</th>
+                          <th>Amount</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                  </tbody>
+              </table>
+  
+  
+              <div class="display-flex justify-content-end">
+                  <table id="invoiceTableSum">
+                      <tbody>
+                      </tbody>
+                  </table>
+              </div>
+  
+  
+              <div id="signatureHolder">
+  
+              </div>
+          </div>
+          <!--Table-->
+
+              </div>
             </div>
         </div>
       </div>
@@ -409,30 +504,17 @@
             <div class="title">Multiple Product Sales</div>
             <div class="right">
               <!-- Link to close popup -->
-              <a class="link" @click="closePopUpMultiple"><i class="icon f7-icons">multiply</i>Close</a>
+              <a class="link" @click="closePopUpMultiple"><i class="icon f7-icons">multiply</i></a>
             </div>
           </div>
         </div>
         <div class="page-content">
-            
-        <div class="list margin-bottom-half no-margin-top">
-          <div class="block-header text-color-black no-margin-bottom margin-top text-align-center">Select Products Below - select multiple</div>
-          <div class="margin-horizontal-half">
-            <a class="col button button-outline button-raised" href="#" id="autocomplete-standalone-multiple-sales">
-            <div class="item-title text-color-blue btn-blue">Add Products</div>
-          </a>
+
+        <div class="list margin-bottom-half margin-top">
+          <div class="row justify-content-center">
+            <a class="col-50 button tealBgButton" href="#" id="autocomplete-standalone-multiple-sales">
+              <div class="item-title text-color-white">Select Products</div></a>
         </div>
-          <!--<ul>
-            <li>
-              <a class="item-link item-content bg-color-orange myOrange" href="#" id="autocomplete-standalone-multiple-sales">
-                <input type="hidden">
-                <div class="item-inner">
-                  <div class="block-title item-title no-margin text-color-white">Add Products</div>
-                  <div class="item-after"></div>
-                </div>
-              </a>
-            </li>
-          </ul>-->
         </div>
 
         <div id="products-list-sales" class="customList">
@@ -442,8 +524,8 @@
           <!--<ul class="pagination"></ul>-->
         </div>
 
-        <div class="margin-horizontal-half">
-          <a class="button button-raised button-fill color-blue customcharges" @click="AddNewProduct(null)">Add Custom Products</a>
+        <div class="row justify-content-center">
+          <a class="col-50 button customcharges tealColorButton" @click="AddNewProduct(null)">Add Other Charges</a>
         </div>
 
         <div id="productsOther-list-sales" class="customList">
@@ -454,76 +536,85 @@
         </div>
 
         <ul class="list sortList margin-top-half margin-bottom-half">
-          <div class="card myCard">
-            <div class="card-content padding-horizontal-half">
-              <div><span class="labelName">Taxes in %:</span>
-                <div class="display-inline-flex">
-                  <input class="taxpercent-sales" type="text" placeholder="0 to 100" @keyup="CalculateTotalProduct" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" value="0">
-                </div></div>
+          <div class="bigLabel">
+            <span class="labelName margin-right-half">Taxes in %:</span>
+            <div class="display-inline-flex">
+              <input class="taxpercent-sales" type="text" placeholder="0 to 100" @keyup="CalculateTotalProduct" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" value="0">
             </div>
           </div>
+
       </ul>
-      <div class="row padding-horizontal-half"><div class="col-100">
+      <div class="row padding-horizontal-half display-none"><div class="col-100">
         <a class="col button button-outline button-raised mainButton calculateTotalButton" @click="CalculateTotalProduct">Calculate</a>
       </div>
     </div>
         <div class="margin-top-half bigLabel margin-horizontal-half">
-          <span class="labelName">Cost before Tax: </span>
+          <span class="labelName margin-right-half">Price before tax: </span>
           <div class="display-inline-flex"><div class="totalAmountBeforeProfitProduct-sales">0</div></div>
         </div>
         <div class="margin-top-half bigLabel margin-horizontal-half">
-          <span class="labelName">Cost after Tax: </span>
+          <span class="labelName margin-right-half">Price after tax: </span>
           <div class="display-inline-flex"><div class="totalAmountProduct-sales">0</div></div>
         </div>
          
         <ul class="list margin-top-half margin-bottom-half margin-horizontal-half grouped"><li>
         <div class="card myCard">
-          <div class="card-content padding-horizontal-half" style="font-size: 1.15em;">
-            <div><span class="labelName">Grouped Name: </span><div class="display-inline-flex">
-              <input class="groupProductNameMultiple_sales" type="text" placeholder="Give Group Name" value=""></div></div>
-            <div><span class="labelName">Buyer's Name: </span><div class="display-inline-flex">
-              <input class="buyersNameMultiple_sales" id="buyersNameMultiple_sales" type="text" placeholder="Buyer's Name" value=""></div></div>
+          <div class="card-content padding-horizontal padding-vertical">
 
-              <div>
-                <span class="labelName">It's an Estimate<i class="icon f7-icons icon-tooltip estimateExplain color-black">info_circle_fill</i></span>
-                <div class="display-inline-flex" style="vertical-align: bottom;margin-left: 10px;">
-                  <div class="item-input-wrap" style="position: relative;">
-                    <label class="checkbox" style="position: absolute;bottom: 4px;">
-                      <input type="checkbox" class="isEstimateMultipleSales">
-                      <i class="icon-checkbox"></i>
-                    </label>
+            <div class="row">
+              <div class="col-50">
+                <div class="labelName">Product Combo</div>
+              <input class="groupProductNameMultiple_sales" type="text" placeholder="e.g shirt & pants" value="">
+            </div>
+
+            <div class="col-50">
+              <div class="labelName">Buyer's Name: </div>
+              <input class="buyersNameMultiple_sales" id="buyersNameMultiple_sales" type="text" placeholder="Buyer's Name" value="">
+            </div>
+          </div>
+
+              <div class="row margin-top-half">
+                <div class="col-50">
+                  <div class="row">
+                    <div class="col-33 labelName">Amount Paid</div>
+                        <div class="col-66">
+                          <a class="button button-small text-color-white button-green bg-color-green" @click="recordPaidFullyMultipleSales">Paid fully</a>
+                        </div>
+                    </div>
+                  <input class="amountPaidMultiple-sales" type="text" placeholder="Amount Paid" value="0">
+                </div> 
+
+                <div class="col-50">
+                    <div class="labelName">This is an estimate<i class="icon f7-icons icon-tooltip estimateExplain color-black">info_circle_fill</i></div>
+                    <div>
+                      <div class="item-input-wrap" style="position: relative;">
+                        <label class="checkbox" style="position: absolute;bottom: 4px;">
+                          <input type="checkbox" class="isEstimateMultipleSales">
+                          <i class="icon-checkbox"></i>
+                        </label>
+                      </div>
                   </div>
-              </div></div>
+                </div>
+            </div>
 
-            <div><span class="labelName">Amount Paid: </span><div class="display-inline-flex">
-                <input class="amountPaidMultiple-sales" type="text" placeholder="Amount Paid" value="0"></div>
-                <p class="display-inline-flex" style="margin: 0;">
-                  <a class="button button-small button-outline text-color-white button-green bg-color-green no-margin padding-horizontal-half" @click="recordPaidFullyMultipleSales">Paid fully</a>
-                </p>
-              </div>
-            <div><span class="labelName">Date of Payment: </span><div class="display-inline-flex" style="width:100%">
-              
-              <div class="item-input" style="width: 100%;"> 
-              <div class="item-input-wrap">   
+            <div class="row margin-top-half">
+              <div class="col-50">
+                <div class="labelName">Date of Payment: </div>
                 <input id="datePaidMultiple_sales" class="text-align-center" type="text" placeholder="Date of Payment" value="0">
-                <span class="input-clear-button"></span>
-              </div>
               </div>
 
-                </div></div>
-            <div><span class="labelName">Date of Purchase: </span><div class="display-inline-flex" style="width:100%">
-              <div class="item-input" style="width: 100%;"> 
-                <div class="item-input-wrap">   
-                  <input id="datePurchaseMultiple_sales" class="text-align-center" type="text" placeholder="Date of Purchase" value="0">
-                  <span class="input-clear-button"></span>
-                </div>
-                </div>
-                  </div></div>
+              <div class="col-50">
+                <div class="labelName">Date of Purchase </div>
+                <input id="datePurchaseMultiple_sales" class="text-align-center" type="text" placeholder="Date of Purchase" value="0">
+              </div>
+              
+            </div>
+
           </div>
         </div>
         </li></ul>
                 <div class="row padding-horizontal-half margin-bottom-half"><div class="col-100">
-                  <a class="col button button-outline button-raised mainButton" @click="saveMultipleProductSales">Save All</a>
+                  <a class="col button mainButton margin-bottom-half" @click="saveMultipleProductSales">Save/Update Product Sale</a>
                 </div>
               </div>
         </div>
@@ -539,6 +630,7 @@
 //import Dom7 from 'dom7';
 //import Dexie from 'dexie';
 import * as moment from 'moment';
+import copy from 'copy-to-clipboard';
 //import * as rasterizeHTML from 'rasterizehtml';
 import html2pdf from 'html2pdf.js';
 var selectedUserName = null, selectedUserID = null, mogulsheetdb = null;
@@ -584,12 +676,13 @@ export default {
           invoiceHtml: null,
           invoiceItem: null
       });
-      $("#showInvoice").html("");
+
       var popup = self.$app.popup.close('.viewInvoice', true);
     },
-    openPreviewInvoice: function(){
+    openPreviewInvoice: function(doc){
       var self = this;
       var popup = self.$app.popup.open('.viewInvoice', true);
+      self.formatPDF(doc.parent, doc.children);
     },
     switchEstimate: function(){
       var self = this;
@@ -612,11 +705,11 @@ export default {
             self.$app.dialog.prompt("How much did the buyer pay?", function(value){
                 var val = Number(value);
                 if(isNaN(val)){
-                    self.$app.dialog.alert("Please enter valid amount", "Mogul Sheet");
+                    self.$app.dialog.alert("Please enter valid amount", "Omni");
                     return;
                 }else{
                     if(val == "0"){
-                        self.$app.dialog.alert("Please enter amount greater than 0", "Mogul Sheet");
+                        self.$app.dialog.alert("Please enter amount greater than 0", "Omni");
                         self.$app.toggle.get(".product-" + id).toggle();
                         return;
                     }
@@ -720,20 +813,20 @@ export default {
 
         var beforeTaxes = Number($(".multipleSales_sales:visible").find(".totalAmountBeforeProfitProduct-sales").text());
           var afterTaxes = Number($(".multipleSales_sales:visible").find(".totalAmountProduct-sales").text());
-          var fullyPaid = 0;
+          var fullyPaid = false;
       var isPaidDate = null;
       if(amountPaid >= afterTaxes){
-        fullyPaid = 1;
+        fullyPaid = true;
       }else{
-        fullyPaid = 0;
+        fullyPaid = false;
       }
-      isPaidDate = moment($(".multipleSales_sales:visible").find("#datePaidMultiple_sales").val()).format("X");//  Date.parse($("#paid-calendar-modal-sales").val());
-      var isEstimate = $(".multipleSales_sales:visible").find(".isEstimateMultipleSales").prop("checked") == true ? 1 : 0;
+      isPaidDate = moment($(".multipleSales_sales:visible").find("#datePaidMultiple_sales").val()).format();//  Date.parse($("#paid-calendar-modal-sales").val());
+      var isEstimate = $(".multipleSales_sales:visible").find(".isEstimateMultipleSales").prop("checked");
         $(".eachProduct_sales").each(function(i, curr){
-          var productID = "0";
+          var productID = null;
         var productName = $(curr).find(".productName").eq(0).val().trim();
         if($(curr).find(".productID").length > 0){
-          productID = $(curr).find(".productID").eq(0).val();
+          productID = parseInt($(curr).find(".productID").eq(0).val());
         }
         var price = Number($(curr).find(".productCost_sales").eq(0).val().trim());
         var quant = Number($(curr).find(".productQuantity_sales").eq(0).val().trim());
@@ -746,27 +839,27 @@ export default {
         }else{
           $(curr).removeClass("bg-color-red");
           // saving logic
-          var isParent = $(curr).hasClass("eachSaleParent_sales") == true ? 1 : 0;
+          var isParent = $(curr).hasClass("eachSaleParent_sales") == true;
           var tax = (taxes/100) * totalPric;
           var costPlusTax = totalPric + tax;
           var obj = {
-                product_name: productName,  
-                productID_saleID: productID,
-                buyer_name: buyername,
-                selling_price: price,
+                productName: productName,  
+                productId: productID,
+                //buyer_name: buyername,
+                sellingPrice: price,
                 discount: discount,
                 isEstimate: isEstimate,
-                tax: taxes,
+                taxes: taxes,
                 parentID: 0,
                 isParent: isParent,
-                afterTax: costPlusTax,
+                afterTaxPrice: costPlusTax,
                 quantity: quant,
-                total_price: totalPric,
+                totalPrice: totalPric,
                 amountPaid:  0,
                 isPaid: fullyPaid,
-                date_paid: isPaidDate,
-                created_date: moment($(".multipleSales_sales").find("#datePurchaseMultiple_sales").val()).format("X"), //Date.parse($("#purchase-calendar-modal-sales").val()),
-                status:1
+                datePaid: isPaidDate,
+                createdDate: moment($(".multipleSales_sales").find("#datePurchaseMultiple_sales").val()).format(), //Date.parse($("#purchase-calendar-modal-sales").val()),
+                status:true
               };
             bigData.push(obj)
         }
@@ -789,26 +882,23 @@ export default {
               self.saveProcessedMultiplePayment(grpName,buyername,theBuyerID,isEstimate,taxes,afterTaxes,beforeTaxes,amountPaid,fullyPaid,isPaidDate,bigData);
             }else{
               //new user new sale
-              var generatedID = "0" + moment().format("X");
-              var objNew = {
-                    name: chosenUser,
-                    _id: generatedID,
-                    clientID: generatedID,
-                    created_date: generatedID,
-                    status:1
-                }
-                mogulsheetdb.put(objNew).then(function(res) {
-                        //self.$app.dialog.alert("Item saved.");
-                        self.showToast("New User Created.", "center", true);
-                        self.saveProcessedMultiplePayment(grpName,chosenUser,generatedID,isEstimate,taxes,afterTaxes,beforeTaxes,amountPaid,fullyPaid,isPaidDate,bigData);
-                  })
+              var obj = {
+                name: chosenUser
+            }
+                $.when(self.$app.methods.postDataAPI("clients/SaveClient", obj, true)).then(function( data, textStatus, jqXHR ) {
+                  self.$app.preloader.hide();
+                    if(data != null){
+                      self.showToast("New User Created.", "center", true);
+                      self.saveProcessedMultiplePayment(grpName,chosenUser,data,isEstimate,taxes,afterTaxes,beforeTaxes,amountPaid,fullyPaid,isPaidDate,bigData);
+                    }
+                });
               }
           }else{
             //editing old sale
             if(selectedUserName != null && selectedUserID != null && selectedUserName == chosenUser){
               self.saveProcessedMultiplePayment(grpName,selectedUserName,selectedUserID,isEstimate,taxes,afterTaxes,beforeTaxes,amountPaid,fullyPaid,isPaidDate,bigData);
             }else{
-              var buyerid = self.currentMultipleSale.buyer_id == undefined ? null : self.currentMultipleSale.buyer_id;
+              var buyerid = self.currentMultipleSale.clientId == undefined ? null : self.currentMultipleSale.clientId;
               self.saveProcessedMultiplePayment(grpName,chosenUser,buyerid,isEstimate,taxes,afterTaxes,beforeTaxes,amountPaid,fullyPaid,isPaidDate,bigData);
             }
           }
@@ -821,47 +911,73 @@ export default {
       grpName1 = grpName1 == "" ? buyername1 + " group purchase" : grpName1;
           
           var objMaster = {
-              product_name: grpName1,  
-              buyer_name: buyername1,
-              buyer_id: theBuyerID1,
-              selling_price: beforeTaxes1,
+              productName: grpName1,  
+              //buyer_name: buyername1,
+              clientId: theBuyerID1,
+              sellingPrice: beforeTaxes1,
               discount: 0,
               isEstimate: isEstimate1,
-              tax: taxes1,
+              taxes: taxes1,
               parentID: 0,
-              isParent:1,
-              afterTax: afterTaxes1,
+              isParent:true,
+              afterTaxPrice: afterTaxes1,
               quantity: 1,
-              total_price: beforeTaxes1,
+              totalPrice: beforeTaxes1,
               amountPaid:  amountPaid1,
               isPaid: fullyPaid1,
-              date_paid: isPaidDate1,
-              created_date: moment($(".multipleSales_sales:visible").find("#datePurchaseMultiple_sales").val()).format("X"), //Date.parse($("#purchase-calendar-modal-sales").val()),
-              status:1
+              datePaid: isPaidDate1,
+              createdDate: moment($(".multipleSales_sales:visible").find("#datePurchaseMultiple_sales").val()).format(), //Date.parse($("#purchase-calendar-modal-sales").val()),
+              status:true
             };
             var deleted = "";
             if(self.currentMultipleSale != null && self.sellToAnotherUser == null){
-                objMaster._id = self.currentMultipleSale._id;
-                objMaster._rev = self.currentMultipleSale._rev;
-                objMaster.saleID = objMaster._id;
-              }else{
-                objMaster._id = moment().format("X");
-                objMaster.saleID = objMaster._id;
+                objMaster.id = self.currentMultipleSale.id;
               }
             //db.transaction('rw', db.sales, () => {
-               
-                mogulsheetdb.put(objMaster).then(function(res){
+              self.$app.preloader.show();
+              var objToSave = {};
+              objToSave.oldParent = self.currentMultipleSale;
+              objToSave.parent = objMaster;
+              objToSave.children = sbigData;
+
+              $.when(self.$app.methods.postDataAPI("sales/SaveSalesListDeleteFirst", objToSave, true)).then(function( dataid, textStatus, jqXHR ) {
+                self.$app.preloader.hide();
+                self.showToast("Product sale updated", "center", true);
+                      self.closePopUpMultiple();
+                      return;
+              }).catch((err) => {
+                self.$app.preloader.hide();
+                self.showToast("An error occurred", "center");
+              })
+
+
+              /*$.when(self.$app.methods.postDataAPI("sales/SaveSalesMaster", objMaster, true)).then(function( dataid, textStatus, jqXHR ) {
                     sbigData.forEach((element, index) => {
-                    sbigData[index].parentID = res.id;
-                    var add = index.toString() + index.toString();
-                    //sbigData[index]._id = index * 2;
-                    sbigData[index]._id = add + moment().format("X");
-                    sbigData[index].buyer_name = buyername1;
-                    sbigData[index].buyer_id = theBuyerID1;
-                    deleted = res.id; 
+                      sbigData[index].parentID = dataid;
+                      sbigData[index].clientId = theBuyerID1; 
                   });
 
                 if(self.currentMultipleSale != null){
+                  var toSaveObj = {};
+                  toSaveObj.parent = self.currentMultipleSale;
+                  toSaveObj.children = sbigData;
+                  var method = "SaveSalesListDeleteFirst";
+                  $.when(self.$app.methods.postDataAPI("sales/" + method, toSaveObj, true)).then(function( dataid, textStatus, jqXHR ) {
+                      self.showToast("Product sale updated", "center", true);
+                      self.closePopUpMultiple();
+                      return;
+                      //self.closePopUpMultiple();
+                    }).catch(err => {
+                    // Transaction aborted. NOT WITHIN ZONE!
+                    //console.error (e);
+                      self.showToast("An error occurred", "center");
+                  });
+
+                  self.showToast("Product sale updated", "center", true);
+                  self.closePopUpMultiple();
+
+
+                  //remove from here
                   mogulsheetdb.find({
                       selector: {
                         $and: [
@@ -903,8 +1019,11 @@ export default {
                           
                         })
                     })
-
-                }else{
+                    //remove to here
+                }
+                
+                //remove from
+                else{
                     mogulsheetdb.bulkDocs(sbigData).then(function(lastKey) {
 
                         if(isEstimate1 == 0){
@@ -914,15 +1033,17 @@ export default {
                     console.log("error multiple save", err);
                   })
                 }
-                self.showToast("Saved successfully", "center", true);
-                self.closePopUpMultiple();
+                //self.showToast("Saved successfully", "center", true);
+                //self.closePopUpMultiple();
                 //self.$app.popup.close('.multipleSales_sales', true);
+                //remove to here
                   
               }).catch(err => {
                 // Transaction aborted. NOT WITHIN ZONE!
                 //console.error (e);
-                  self.showToast(err, "center");
-               });
+                  self.$app.preloader.hide();
+                  self.showToast("An error occurred", "center");
+               });*/
 
             //saving clean data
     },
@@ -960,13 +1081,13 @@ export default {
     },
     AddNewProduct: function(select){
       var self = this;
-      var name = select == null ? "" : select.product_name;
-      var cost = select == null ? "" : select.selling_price;
+      var name = select == null ? "" : select.productName;
+      var cost = select == null ? "" : select.sellingPrice;
       var quantity = select == null ? 1 : select.quantity;
-      var totalPrice = select == null ? "" : select.total_price;
+      var totalPrice = select == null ? "" : select.totalPrice;
       var discount = select == null ? "0" : select.discount;
         //var cost = select.cost == undefined ? 0 : select.cost; 
-        var html = '<li class="eachSaleParentOther_sales eachProduct_sales"><div class="card myCard"><div class="card-content padding-horizontal-half">';
+       /* var html = '<li class="eachSaleParentOther_sales eachProduct_sales"><div class="card myCard"><div class="card-content padding-horizontal-half">';
           html += '<div><span class="labelName">Product Name: </span><div class="display-inline-flex"><input class="productName" type="text" placeholder="Product Name" value="';
           html +=  name + '"></div></div>';
           html += '<div class="row"><div class="col-50"><div class="item-content item-input no-padding-left"><div class="item-inner no-padding-right"><div class="labelName">Product Cost</div>';
@@ -982,7 +1103,15 @@ export default {
         html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
           html += '<a class="button button-small button-raised removeProduct">Delete</a>';
         html += '</p></div></div>'
-        html += '</li>';
+        html += '</li>';*/
+
+        var html = '<li class="eachSaleParentOther_sales eachProduct_sales margin-vertical"><div class="card myCard"><div class="card-content padding-horizontal padding-vertical">';
+          html += '<div class="row"><div class="col-50"><div class="labelName">Name</div><input class="productName" type="text" placeholder="e.g delivery" value="';
+          html +=  name + '"></div><div class="col-50"><div class="labelName">Amount</div><input class="productCost_sales" type="text" placeholder="Amount" value="' + cost + '"></div></div>';
+          html += '<div class="row margin-top-half"><div class="col-50"></div><div class="col-50"><a class="button button-small removeProduct">Remove Charge</a></div></div>';
+          html += '<input type="hidden" class="discount" value="' + discount + '"><input type="hidden" class="productQuantity_sales" value="' + quantity + '"><input type="hidden" class="totalproductprice-sales" value="'+ totalPrice + '">';
+          html += "</div></div></li>"; 
+
         $("#productsOther-list-sales .sortList").append(html);
         $(".eachSaleParentOther_sales .removeProduct").off("click").on("click", function(){
                   //var id = $(this).attr("data-itemid");
@@ -1049,80 +1178,129 @@ export default {
       var ret = sym + val.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
       return ret;
     },
-    formatPDF: function(sales, children, logoImage, signImage){//product_name,buyer_name,cost,amountPaid,isPaid,date_paid,created_date
+    formatPDF: function(sales, children){//product_name,buyer_name,cost,amountPaid,isPaid,date_paid,created_date
       var self = this;
-      var Companyname = self.settings == null ? "" : self.settings.companyName;
-      var Comaddress = self.settings == null ? "" : self.settings.companyAddress.split("\n").join("<br>");
-      var buyer = sales.buyer_name;
-      var productName = sales.product_name;
-      var curr = self.settings == null ? "" : self.settings.currency;
+      $(".shareLinkButton").attr("data-id", sales.id);
+      var settings = self.$app.data.settings;
+      var Companyname = settings == null ? "" : settings.name;
+      var Comaddress = (settings != null && settings.address != null) ? settings.address.split("\n").join("<br>") : "";
+      var buyer = sales.clientName;
+      var productName = sales.productName;
+      var curr = settings == null ? "" : settings.currency;
       var quant = sales.quantity == null ? 1 : sales.quantity;
       var discount = sales.discount == null ? 0 : sales.discount;
-      discount = self.moneyFormat(discount);
-      var cost = self.moneyFormat(sales.selling_price);
-      var totalPrice = sales.total_price == null ? sales.selling_price : sales.total_price;
+      discount = discount;
+      var cost = sales.sellingPrice;
+      var totalPrice = sales.totalPrice;
       //var totalPrice = self.moneyFormat(tPrice);
-      var totalPaid = self.moneyFormat(sales.amountPaid);
-      var afterTax = sales.afterTax == null ? totalPrice : sales.afterTax;
+      var totalPaid = sales.amountPaid;
+      var afterTax = sales.afterTaxPrice == null ? totalPrice : sales.afterTaxPrice;
       var outstanding = (Number(afterTax) - Number(sales.amountPaid));
-      var tax = sales.tax == null ? 0 : sales.tax;
-      var purchaseDate = moment.unix(sales.created_date).format("LLL");
-      var paymentDate =  sales.date_paid == "" ? "" : moment.unix(sales.date_paid).format("LLL");
+      var taxAmount = sales.afterTaxPrice - sales.totalPrice;
+      var tax = sales.taxes == null ? 0 : sales.taxes;
+      var purchaseDate = moment(sales.createdDate).format("LLL");
+      var paymentDate =  (sales.datePaid == "" || sales.datePaid == null) ? "" : moment(sales.datePaid).format("LLL");
       var today = moment().format("LLL");
-      var isEstimate = sales.isEstimate == 1 ? true : false;
-      var invoiceLabel = isEstimate == true ? "Estimate" : "Invoice";
+      var isEstimate = sales.isEstimate;
+      var totalDiscount = 0;
+      var invoiceLabel = isEstimate == true ? "Estimate" : (sales.isPaid ? "Receipt" : "Invoice");
+      $(".downloadInvoiceButton").text("Download " + invoiceLabel);
+      //var invoiceLabel = isEstimate == true ? "Estimate" : "Invoice";
+
+      /*new pdf*/
+
+
       var logo = "";
-        if(logoImage != null){
-          var attachments = logoImage._attachments.logoImage.data;
-          var type = logoImage._attachments.logoImage.content_type;
-          logo = "<div style='text-align: left;width:50%;float: left;'><img src='" + "data:"+ type + ";base64," + attachments + "' style='max-width:100px'/></div>";
+        if(settings != null && settings.logo != null){
+          var logoLink = settings.logo;
+          $(".brandLogoReceipt").attr("src", logoLink);
         }
+
+        $(".brandNameReciept").text(Companyname);
+        $("#addressLabel").html(Comaddress);
+        $("#invoiceLabel").text(invoiceLabel.toUpperCase());
+        $("#addressLabel").html(Comaddress);
+        $("#buyerName").text(buyer);
+        $(".taglineReceipt").text(settings?.tagline);
+
+        var docDetails = "<div>";
+        docDetails += "<div class='eachLine'><div class='margin-right'><h2 class='text-color-green receiptLabel no-margin-top margin-bottom-half'>" + invoiceLabel + "</h2></div ><div></div></div>";
+        docDetails += "<div class='eachLine'><div class='invoiceLabel margin-right'>" + invoiceLabel + " No" + "</div><div>" + sales.id + "</div></div>";
+        docDetails += "<div class='eachLine'><div class='invoiceLabel margin-right'>" + invoiceLabel + " Date" + "</div><div>" + purchaseDate + "</div></div>";
+        if (sales.isEstimate == false) {
+            docDetails += "<div class='eachLine'><div class='invoiceLabel margin-right'>" + "Payment Date" + "</div><div>" + paymentDate + "</div></div>";
+            docDetails += "<div class='eachLine'><div class='invoiceLabel margin-right' style='font-size:1.1em'>Amount Due</div><div style='font-size:1.1em'>" + self.formatMoney(outstanding) + "</div></div>";
+        }
+        docDetails += "</div>";
+        $(".docDetails").html(docDetails);
+
       //try{
         //if(pdf != undefined){
-            var html =  '<html><head><style>table td{padding: 5px;} thead tr{background: lightblue; color:black;} thead th{padding: 5px;} tbody tr:nth-child(even) {background-color: #f2f2f2;}</style></head><body>';
-            html += '<div>' + logo + '<div style="text-align:right; width:50%; float:right;">';
-            html += '<h2 style="margin-bottom:5px; margin-top:5px;">' + Companyname + '</h2><div>' + Comaddress + '</div></div></div>';
-            html += '<div style="text-align:left;clear:both;"><h4 style="margin-bottom:5px; margin-top:5px;">' + invoiceLabel + ' No: ' + sales._id + '</h4><h4 style="margin-bottom:5px; margin-top:5px;">' + invoiceLabel + ' To: ';
-            html += buyer + '</h4></div>';
-            html += '<div style="text-align:center;font-size:1.7em;font-weight:600;width:100%;">' + invoiceLabel + '</div>';
-            html += '<table style="width:100%;"><thead><tr><th style="width: 30%;text-align: left;">Product Name</th>';
-            html += '<th style="width: 5%;text-align: center;">Quantity</th><th style="width: 20%;text-align: right;">Unit Price</th><th style="width: 15%;text-align: right;">Discount</th><th style="width: 20%;text-align: right;">Total Price</th>';
-            html += '</tr></thead><tbody>';
+              var html = "";
+
               if(children.length > 0){
                   for(var i = 0; i < children.length; i++){
                     var each = children[i];
-                    html += '<tr><td>' + each.product_name + '</td><td style="text-align:center">' + each.quantity + '</td>';
-                    html += '<td style="text-align: right;">' + self.moneyFormat(each.selling_price) + '</td>';
-                    html += '<td style="text-align: right;">' + self.moneyFormat(each.discount) + '</td>';
-                    html += '<td style="text-align: right;">' + self.moneyFormat(each.total_price) + '</td></tr>';
+                    html += '<tr><td>' + each.productName + '</td><td>' + each.quantity + '</td>';
+                    html += '<td class="hideOnMobile">' + self.formatMoney(each.sellingPrice) + '</td>';
+                    html += '<td class="hideOnMobile">' + self.formatMoney(each.discount) + '</td>';
+                    html += '<td>' + self.formatMoney(each.totalPrice) + '</td></tr>';
+                    totalDiscount += Number(each.discount);
                   }
               }else{
-                  html += '<tr><td>' + productName + '</td><td style="text-align:center">' + quant + '</td>';
-                  html += '<td style="text-align: right;">' + cost + '</td>';
-                  html += '<td style="text-align: right;">' + discount + '</td>';
-                  html += '<td style="text-align: right;">' + totalPrice + '</td></tr>';
+                  html += '<tr><td>' + productName + '</td><td>' + quant + '</td>';
+                  html += '<td class="hideOnMobile">' + self.formatMoney(cost) + '</td>';
+                  html += '<td class="hideOnMobile">' + self.formatMoney(discount) + '</td>';
+                  html += '<td>' + self.formatMoney(totalPrice) + '</td></tr>';
+                  totalDiscount += Number(discount);
               }
+
+              $("#invoiceTable tbody").html(html);
             
             
-            html += '</tbody></table>';
-            html += '<table style="float:right"><tbody>';
-            if(tax != 0 || afterTax != totalPrice){
+            html = "";
+            
+            /*if(tax != 0 || afterTax != totalPrice){
               html += '<tr><td><span style="font-weight:600">Price Before Tax: </span></td><td><span>' + self.formatMoney(totalPrice) + '</span></td></tr>';
               html += '<tr><td><span style="font-weight:600">Tax: </span></td><td><span>' + tax + '%</span></td></tr>';
               html += '<tr><td><span style="font-weight:600">Price After Tax: </span></td><td><span>' + self.formatMoney(afterTax) + '</span></td></tr>';
             }else{
               html += '<tr><td><span style="font-weight:600">Total Price: </span></td><td><span>' + self.formatMoney(totalPrice) + '</span></td></tr>';
+            }*/
+
+            if (tax != 0 || afterTax != totalPrice) {
+                html += '<tr><td><span class="">Subtotal</span></td><td class="totalRight"><span>' + self.formatMoney(totalPrice) + '</span></td></tr>';
+                html += '<tr><td><span class="">Discount</span></td><td class="totalRight"><span class="">' + self.formatMoney(totalDiscount) + '</span></td></tr>';
+                html += '<tr><td><span class="text-muted">Tax ' + tax + '%</span></td><td class="totalRight"><span class="text-muted">' + self.formatMoney(taxAmount) + '</span></td></tr>';
+                html += '<tr class="text-color-green"><td><span>Total </span></td><td class="totalRight"><span class="font-weight-bold">' + self.formatMoney(afterTax) + '</span></td></tr>';
+            } else {
+                html += '<tr class="text-color-green"><td><span>Total </span></td><td class="totalRight"><span class="font-weight-bold">' + self.formatMoney(afterTax) + '</span></td></tr>';
+            }
+
+            if (sales.amountPaid != null) {
+                html += '<tr><td><span class="">Paid</span></td><td class="totalRight"><span class="">' + self.formatMoney(sales.amountPaid) + '</span></td></tr>';
             }
             
-            html += '<tr><td><span style="font-weight:600">Amount Paid: </span></td><td><span>' + totalPaid + '</span></td></tr>';
-            html += '<tr><td><span style="font-weight:600">Outstanding: </span></td><td><span>' + self.moneyFormat(outstanding) + '</span></td></tr>';
-            html += '<tr><td><span style="font-weight:600"">Purchase Date: </span></td><td><span>' + purchaseDate + '</span></td></tr>';
-            html += '<tr><td><span style="font-weight:600"">Payment Date: </span></td><td><span>' + paymentDate + '</span></td></tr>';
-            html += '</tbody></table>';
+            /*if(sales.isEstimate == false){
+              html += '<tr><td><span style="font-weight:600">Amount Paid: </span></td><td><span>' + self.moneyFormat(totalPaid) + '</span></td></tr>';
+              html += '<tr><td><span style="font-weight:600">Outstanding: </span></td><td><span>' + self.moneyFormat(outstanding) + '</span></td></tr>';
+              html += '<tr><td><span style="font-weight:600"">Purchase Date: </span></td><td><span>' + purchaseDate + '</span></td></tr>';
+              html += '<tr><td><span style="font-weight:600"">Payment Date: </span></td><td><span>' + paymentDate + '</span></td></tr>';
+            }*/
+
+            $("#invoiceTableSum tbody").html(html);
+            var widthAbove = $("#invoiceTable thead th").eq($("#invoiceTable thead th").length - 2).outerWidth();
+            $("#invoiceTableSum tbody td").eq(0).css("width", widthAbove + "px");
+            var widthAbove2 = $("#invoiceTable thead th").eq($("#invoiceTable thead th").length - 1).outerWidth();
+            $("#invoiceTableSum tbody td").eq(1).css("width", widthAbove2 + "px");
+            
+            
+            
+            
             var tagline = "";
-            if(self.settings != null){
-              if(self.settings.tagline != null && self.settings.tagline != undefined && self.settings.tagline != ""){
-                var lines = self.settings.tagline.split("\n");
+            /*if(self.$app.settings != null){
+              if(settings != null && settings.tagline != null && settings.tagline != undefined && settings.tagline != ""){
+                var lines = settings.tagline.split("\n");
                 tagline += "<div style='margin-bottom:5px; margin-top:5px;font-weight:500;font-size:0.8em;'>";
                 for(var v = 0; v < lines.length; v++){
                   tagline += "<div>" + lines[v] + "</div>";
@@ -1134,31 +1312,41 @@ export default {
               }
             }else{
               tagline = "<div><span style='margin-bottom:5px; margin-top:5px;font-weight:500;font-size:0.8em;'>Thank you!</span></div>";
-            }
+            }*/
             //var tagline = self.settings.tagline == "" ? "<h3 style='margin-bottom:5px; margin-top:5px;'>Thank you!</h3>" : "<h4 style='margin-bottom:5px; margin-top:5px;'>" + self.settings.tagline.split("\n").join("<br>") + "</h4>";
             var signature = "";
-            if(signImage != null){
-              var attachments = signImage._attachments.signatureImage.data;
-              var type = signImage._attachments.signatureImage.content_type;
-              signature = "<img src='" + "data:"+ type + ";base64," + attachments + "' style='max-width:100px'/>";
+            if(settings != null && settings.signature != null){
+              var signatureLink = settings.signature;
+              signature = "<img src='" + signatureLink + "' style='max-width:100px'/>";
             }
+
+            var mainColor = "#673ab7";
+            if(settings != null && settings.primaryColor != null){
+              mainColor = settings.primaryColor;
+            }
+            $("#invoiceTable thead").css("background", mainColor);
+            $(".brandNameReciept").css("color", mainColor);
+
+            html = "";
+            html += '<div class="margin-top">' + tagline + signature + '<h6 class="my-2">' + today + '</h6></div>';
             
-            html += '<div style="text-align:left;clear:both;border-top: 1px solid darkgray;border-bottom: 1px solid darkgray;">' + tagline  + signature + '<h5 style="margin-bottom:5px; margin-top:5px;">' + today + '</h5></div>';
+            //html += '<div style="text-align:left;clear:both;border-top: 1px solid darkgray;border-bottom: 1px solid darkgray;">' + tagline  + signature + '<h5 style="margin-bottom:5px; margin-top:5px;">' + today + '</h5></div>';
             html += '</div>';
-            if(self.settings != null && self.settings.terms_condition != undefined && self.settings.terms_condition != ""){
+            if(settings != null && settings.termsConditions != undefined && settings.termsConditions != ""){
               html += "<div style='text-align:center;margin-top:10px;'>";
               html += "<div>Terms and Conditions</div>";
-              html += "<div>" + self.settings.terms_condition + "</div>";
+              html += "<div>" + settings.termsConditions + "</div>";
               html += "</div>";
             }
-            html += '</body></html>';
-            return html;
+
+            $("#signatureHolder").html(html);
+            $(".downloadButton").removeClass("d-none");
       
     },
     permDeleteSale: function(list, id){
         var self = this;
         
-        self.$app.dialog.confirm("Are you sure you want to permanently delete this sale?", "Mogul Sheet", function(){
+        self.$app.dialog.confirm("Are you sure you want to permanently delete this sale?", "Omni", function(){
               mogulsheetdb.get(id).then(function(doc) {
                     doc.status = -1
                     return mogulsheetdb.put(doc);
@@ -1199,18 +1387,41 @@ export default {
     },
     deleteSale: function(list, id){
         var self = this;
-        var checked = 0;
+        var checked = false;
         var text = "delete";
-        var oldSale = null, newSale = null;
+        /*var oldSale = null, newSale = null;
         var toggle = self.$app.toggle.get(".showInactiveSales");
         if(toggle != undefined){
             if(toggle.checked){
                 text = "activate";
                 checked = 1;
             }
-        }
-        self.$app.dialog.confirm("Are you sure you want to " + text + " this sale?", "Mogul Sheet", function(){
-              mogulsheetdb.get(id).then(function(doc) {
+        }*/
+        self.$app.dialog.confirm("Are you sure you want to " + text + " this sale?", function(){
+          self.$app.preloader.show();
+          $.when(self.$app.methods.getDataAPI("sales/DeleteSales?id=" + id)).then(function( data, textStatus, jqXHR ) {
+            self.$app.preloader.hide();
+            if(data != null){
+              self.sales = self.sales.filter(function(e){ 
+                      return e.id != id;
+                  });
+                  self.$setState({
+                      sales:self.sales
+                  }, function(){
+                      self.showToast("Sale " + "deleted!", "center", true);
+                      list.remove("id", id);
+                      self.setDataTable();
+                      self.calculateTotalMoney();
+                  });
+            }
+          
+          }).catch((err) => {
+            self.$app.preloader.hide();
+            self.showToast("An error occurred", "center");
+          })
+          
+          
+         /* mogulsheetdb.get(id).then(function(doc) {
                     oldSale = $.extend(true, {}, doc);
                     doc.status = checked;
                     newSale = $.extend(true, {}, doc);
@@ -1261,7 +1472,7 @@ export default {
                     })
 
                 self.sales = self.sales.filter(function(e){ 
-                      return e._id != id;
+                      return e.id != id;
                   });
                   var act = checked == 0 ? "deleted!" : "activated!";
                   self.showToast("Sale " + act, "center", true);
@@ -1275,7 +1486,7 @@ export default {
                   });
             }).catch(function(){
               self.showToast("An error occured, please try again", "center");
-            })
+            })*/
         });
     },
     showToast: function(text, position, icon = false){
@@ -1325,7 +1536,7 @@ export default {
           return;
       }
       if(($$("input.amountpaid_sell_sales").val() == "0" || $$("input.amountpaid_sell_sales").val().trim() == "") && isEstimate == false){
-          self.$app.dialog.confirm("Do you want to record the purchase without a payment made?", "Mogul Sheet", function(){
+          self.$app.dialog.confirm("Do you want to record the purchase without a payment made?", "Omni", function(){
             $$("input.amountpaid_sell_sales").val(0);
             self.processPaymentUpdate();
           })
@@ -1341,12 +1552,12 @@ export default {
       var sp = $$("input.amountpaid_sell_sales").val();
       var fullyPaid = 0;
       if(Number(sp) >= Number(cp)){
-        fullyPaid = 1;
+        fullyPaid = true;
       }else{
-          fullyPaid = 0;
+          fullyPaid = false;
       }
-      var isPaidDate = moment($("#paid-calendar-modal-sales").val()).format("X");
-      var isEstimate = $(".isEstimateSales").prop("checked") == true ? 1 : 0;
+      var isPaidDate = moment($("#paid-calendar-modal-sales").val()).format();
+      var isEstimate = $(".isEstimateSales").prop("checked");
       var taxes = $$("input.taxes-sales").val();
       taxes = taxes.trim() == "" ? 0 : Number(taxes.trim());
       var chosenUser = $$("input.buyer_sell_sales").val();
@@ -1361,26 +1572,23 @@ export default {
           self.saveProcessedPayement(theBuyerID, theBuyerName, taxes, isEstimate, fullyPaid, isPaidDate);
         }else{
           //new user new sale
-          var generatedID = "0" + moment().format("X");
-          var objNew = {
-                name: chosenUser,
-                _id: generatedID,
-                clientID: generatedID,
-                created_date: generatedID,
-                status:1
+          var obj = {
+                name: chosenUser
             }
-            mogulsheetdb.put(objNew).then(function(res) {
-                    //self.$app.dialog.alert("Item saved.");
-                    self.showToast("New User Created.", "center", true);
-                    self.saveProcessedPayement(generatedID, chosenUser, taxes, isEstimate, fullyPaid, isPaidDate);
-              })
+            $.when(self.$app.methods.postDataAPI("clients/SaveClient", obj, true)).then(function( data, textStatus, jqXHR ) {
+              self.$app.preloader.hide();
+                if(data != null){
+                  self.showToast("New User Created.", "center", true);
+                    self.saveProcessedPayement(data, chosenUser, taxes, isEstimate, fullyPaid, isPaidDate);
+                }
+            });
           }
       }else{
         //editing old sale
         if(selectedUserName != null && selectedUserID != null && selectedUserName == chosenUser){
           self.saveProcessedPayement(selectedUserID, selectedUserName, taxes, isEstimate, fullyPaid, isPaidDate);
         }else{
-          var buyerid = self.currentSale.buyer_id == undefined ? null : self.currentSale.buyer_id;
+          var buyerid = self.currentSale.clientId == undefined ? null : self.currentSale.clientId;
           self.saveProcessedPayement(buyerid, chosenUser, taxes, isEstimate, fullyPaid, isPaidDate);
         }
       }
@@ -1392,34 +1600,55 @@ export default {
       var productId = $("#productID_sell").val();
       var quantitySold = $$("input.quantity_sell_sales").val();
       var obj = {
-                //id: Number(self.currentSale),
-                product_name: $$("input.name_sell_sales").val(),  
-                buyer_name: theBuyername,
-                buyer_id: theBuyerid,
-                selling_price: $$("input.cost_sell_sales").val(),
-                tax: taxes,
+                //id: Number(self.currentSale.id),
+                productName: $$("input.name_sell_sales").val(),  
+                //buyer_name: theBuyername,
+                clientId: theBuyerid,
+                sellingPrice: $$("input.cost_sell_sales").val(),
+                taxes: taxes,
                 parentID: 0,
-                productID_saleID: productId,
+                isParent:false,
+                productId: productId,
                 isEstimate: isEstimate,
                 discount: $(".discount_sell_sales").val(),
-                afterTax: $$("input.afterTax_sales").val(),
+                afterTaxPrice: $$("input.afterTax_sales").val(),
                 quantity: quantitySold,
-                total_price: $$("input.total_sell_sales").val(),
+                totalPrice: $$("input.total_sell_sales").val(),
                 amountPaid: $$("input.amountpaid_sell_sales").val(),
                 isPaid: fullyPaid,
-                date_paid: isPaidDate,
-                created_date: moment($("#purchase-calendar-modal-sales").val()).format("X"),
-                status:1
+                datePaid: isPaidDate,
+                createdDate: moment($("#purchase-calendar-modal-sales").val()).format(),
+                status:true
               };
               if(self.currentSale != null){
-                obj._id = self.currentSale._id;
-                obj.saleID = obj._id;
-                obj._rev = self.currentSale._rev;
-              }else{
-                obj._id = moment().format("X");
-                obj.saleID = obj._id;
+                obj.id = self.currentSale.id;
               }
-            mogulsheetdb.put(obj).then(function(){
+
+              self.$app.preloader.show();
+              //console.log("sale", obj);
+            $.when(self.$app.methods.postDataAPI("sales/UpdateSales", obj, true)).then(function( data, textStatus, jqXHR ) {
+                self.$app.preloader.hide();
+                self.showToast("Product sale updated!", "center", true);
+                    $("#paid-calendar-modal-sales").next("span").click();
+                    $("#purchase-calendar-modal-sales").next("span").click();
+                    $$("input.buyer_sell_sales, input.amountpaid_sell_sales, .hiddenQuantitySingle, #purchase-calendar-modal-sales, #paid-calendar-modal-sales, .quantity_sell_sales, .total_sell_sales, .discount_sell_sales").val("");
+                    
+                    selectedUserID = null;
+                    selectedUserName = null;
+                    self.$setState({
+                            currentSale: null
+                        });
+                    var popup = self.$app.popup.close('.newSales', true);
+                    popup.once("closed", function(){
+                      self.getData();
+                  });
+
+            }).catch((err) => {
+                self.$app.preloader.hide();
+                self.$app.methods.showToast("An error occurred", "center");
+            })
+
+            /*mogulsheetdb.put(obj).then(function(){
                     self.showToast("Record saved!", "center", true);
                     $("#paid-calendar-modal-sales").next("span").click();
                     $("#purchase-calendar-modal-sales").next("span").click();
@@ -1464,74 +1693,66 @@ export default {
                  // });
                   
               }).catch(function (error) {
-                 self.$app.dialog.alert("An error occurred!", "Mogul Sheet");
-              })
+                 self.$app.dialog.alert("An error occurred!", "Omni");
+              })*/
+    },
+    shareInvoiceLink: function(){
+      var self = this;
+      var item = $(".shareLinkButton").eq(0).attr("data-id");
+      var share = self.$app.data.siteUrl + "Invoice/" + self.$app.data.settings.businessUrl + "/" + item;
+      copy(share);
+      self.$app.dialog.alert("Link copied to clipboard", "Omni");
     },
     showPDF: function(){
       var self = this;
-      var html = self.invoiceHtml;
-      var item = self.invoiceItem;
       self.$app.preloader.show();
-      var options = {
-                documentSize: 'A4',
-                type: 'share',
-                fileName: item.buyer_name + "-" + item._id + '.pdf'
-              }
-      try{
-          if(pdf != undefined){
-            pdf.fromData( html, options)
-              .then(function(stats){
-                self.$app.preloader.hide();
-              })   // ok..., ok if it was able to handle the file to the OS.  
-              .catch(function(err){
-                self.$app.preloader.hide();
-              })
-          }
-        }catch(err){
+      var element = document.getElementById("showInvoice");
           var opt = {
-            margin:       0.3,
-            filename:     item.buyer_name + "-" + item._id + '.pdf',
-            image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 1.5 },
-            jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+            margin:[0,0,0,0],
+            filename: "document.pdf",
+            html2canvas: { scale: 1, useCORS: true },
+            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' },
+            useCORS: true
           };
-          self.$app.preloader.hide();
+          
           // New Promise-based usage:
-          html2pdf().set(opt).from(html).save();
-            
-            //var w = window.open();
-            //$(w.document.body).html(html);
-        }
+          html2pdf().set(opt).from(element).save().then(function(){
+            self.$app.preloader.hide();
+          }).catch(function(){
+            self.$app.preloader.hide();
+          });
     },
     invoice: function(id){
       var self = this;
-      self.$app.preloader.show();
+      //self.$app.preloader.show();
       //self.loadImages();
-      var item = self.sales.find(function(e){ 
-                  return e._id == id;
-              });
+      /*var item = self.sales.find(function(e){ 
+                  return e.id == id;
+              });*/
               var children = [];
-              if(item.isParent == 1){
-                //var collection = db.sales.where('parentID').equals(item.id).toArray(function(arr){
-                  mogulsheetdb.find({
-                    selector: {
-                      parentID: {$eq: item._id},
-                      productID_saleID: {$gt: 0},
-                      status: {$gt: 0},
-                      _id: {$gte: null}
-                    }
-                  }).then(function(ar){
-                    var arr = ar.docs;
-                    children = ar;
-                    //var html = self.formatPDF(item, arr);
-                    self.loadImageLogo(item, arr);
+              //if(item.isParent == true){
+                self.$app.preloader.show();
+                $.when(self.$app.methods.getDataAPI("sales/GetSaleByID?id=" + id)).then(function( doc, textStatus, jqXHR ) {
+                    self.$app.preloader.hide();
+                    //self.formatPDF(doc.parent, doc.children);
+                    /*self.$setState({
+                        invoiceHtml:html,
+                        invoiceItem:doc.parent
+                    });*/
+                    /*var $iframe = $('#showInvoice');
+                    $iframe.ready(function() {
+                        $iframe.contents().find("html").html(html);
+                    });*/
+                    //load data into popup
+
+                    //load data into popup
+                    
+                      self.openPreviewInvoice(doc);
                     //self.showPDF(html, item);
+                }).catch((err) => {
+                  self.$app.preloader.hide();
+                  self.showToast("An error occurred", "center");
                 })
-              }else{
-                //var html = self.formatPDF(item, children);
-                self.loadImageLogo(item, children);
-                //self.showPDF(html, item);
-              }
               
     },
     findDifferenceMultiple: function(oldMaster, newMaster){
@@ -1680,51 +1901,46 @@ export default {
         //popup.once("opened", function(){
           if(id != null || id != undefined){
             var item = self.sales.find(function(e){ 
-                  return e._id == id;
+                  return e.id == id;
               });
-                $$("input.name_sell_sales").val(item.product_name);
-                $$("input.buyer_sell_sales").val(item.buyer_name);
-                $$("input.cost_sell_sales").val(item.selling_price);
-                var productID = item.productID_saleID == undefined ? "" : item.productID_saleID;
+                $$("input.name_sell_sales").val(item.productName);
+                $$("input.buyer_sell_sales").val(item.clientName);
+                $$("input.cost_sell_sales").val(item.sellingPrice);
+                var productID = item.productId;
                 $("#productID_sell").val(productID);
                 if(productID != ""){
-                  mogulsheetdb.get(productID).then((dats) => {
+                  $.when(self.$app.methods.getDataAPI("products/GetProductByID?id=" + productID)).then(function( dats, textStatus, jqXHR ) {
                     if(dats.stock != undefined){
                       $(".hiddenQuantitySingle").val(dats.stock);
                     }
                   })
                 }
                 var quantity = item.quantity == null ? 1 : item.quantity;
-                  var total = item.total_price == null ? item.cost : item.total_price;
-                  var taxes = item.tax;
+                  var total = item.totalPrice;
+                  var taxes = item.taxes;
                   var taxesAmt = taxes == undefined ? 0 : taxes;
                   taxesAmt = Number(taxesAmt);
                   total = Number(total);
                   var discount = item.discount == null ? 0 : item.discount;
-                  var afterTax = item.afterTax == undefined ? total : item.afterTax;
+                  var afterTax = item.afterTaxPrice == undefined ? total : item.afterTaxPrice;
                   $(".quantity_sell_sales").val(quantity);
                   $(".taxes-sales").val(taxesAmt);
                   $(".afterTax_sales").val(afterTax);
                   $(".discount_sell_sales").val(discount);
                   $(".total_sell_sales").val(total.toFixed(2));
                   if(item.isEstimate != undefined && item.isEstimate != null){
-                    var est = item.isEstimate == 1 ? true : false;
+                    var est = item.isEstimate;
                     $(".isEstimateSales").prop("checked", est);
                   }else{
                     $(".isEstimateSales").prop("checked", false);
                   }
                 $$("input.amountpaid_sell_sales").val(item.amountPaid);
-                if(item.created_date != ""){
-                  var myDate = new Date(item.created_date);
-                  //myDate = myDate.toLocaleString();
-                  //myDate = moment(item.created_date);
-                  myDate = moment.unix(item.created_date).format("LLL");
+                if(item.createdDate != ""){
+                  var myDate = moment(item.createdDate).format("LLL");
                   $("#purchase-calendar-modal-sales").val(myDate);
                 }
-                if(item.date_paid != ""){
-                  var myDate = new Date(item.date_paid);
-                  //myDate = myDate.toLocaleString();
-                  myDate = moment.unix(item.date_paid).format("LLL");
+                if(item.datePaid != ""){
+                  var myDate = moment(item.datePaid).format("LLL");
                   $("#paid-calendar-modal-sales").val(myDate);
                 }
                 var popup = self.$app.popup.open('.newSales', true);
@@ -1736,7 +1952,7 @@ export default {
                 $$("input.buyer_sell_sales").val("");
                 $$("input.cost_sell_sales").val("");
                 $("#productID_sell").val("");
-                var taxes = self.settings == null ? 0 : self.settings.taxes;
+                var taxes = self.$app.settings == null ? 0 : self.$app.settings.taxes;
                 var taxesAmt = taxes == undefined ? 0 : taxes;
                 $(".quantity_sell_sales").val("1");
                 $(".discount_sell_sales").val(0);
@@ -1762,16 +1978,19 @@ export default {
             if(item.amountPaid != 0 && item.amountPaid != ""){
                 totalPaid += Number(item.amountPaid);
             }
-            if(Number(item.amountPaid) < Number(item.afterTax)){
+            if(Number(item.amountPaid) < Number(item.afterTaxPrice)){
                 totalUnpaid += 1;
             }
-            var totalP = item.afterTax == null ? item.total_price : item.afterTax;
+            var totalP = item.afterTaxPrice == null ? item.totalPrice : item.afterTaxPrice;
             if(!isNaN(totalP)){
               totalMoney += Number(totalP);
             }
             
         })
         var diff = totalPaid - totalMoney;
+        totalMoney = self.formatMoney(totalMoney);
+        totalPaid = self.formatMoney(totalPaid);
+        diff = self.formatMoney(diff);
         self.$setState({
             totalMoney: totalMoney,
             totalPaid: totalPaid,
@@ -1806,16 +2025,7 @@ export default {
     },
     getClients: function(){
         var self = this;
-        var checked = 1;
-
-        mogulsheetdb.find({
-          selector: {
-            status: {$eq: checked},
-            clientID: {$gt: 0},
-            status: {$gt: 0}
-          }
-        }).then(function(ar){
-          var arr = ar.docs;
+        $.when(self.$app.methods.getDataAPI("clients/GetClients")).then(function( arr, textStatus, jqXHR ) {
           self.$setState({
                 clients: arr
               })
@@ -1823,16 +2033,7 @@ export default {
     },
     getProducts: function(){
         var self = this;
-        var checked = 1;
-
-        mogulsheetdb.find({
-          selector: {
-            status: {$eq: checked},
-            productID: {$gt: 0},
-            status: {$gt: 0}
-          }
-        }).then(function(ar){
-          var arr = ar.docs;
+        $.when(self.$app.methods.getDataAPI("products/GetProducts")).then(function( arr, textStatus, jqXHR ) {
           self.$setState({
                 products: arr
               })
@@ -1843,18 +2044,20 @@ export default {
         self.openPopUpMultiple();
         var currChosen = null;
 
-          mogulsheetdb.get(id).then(function(arr){
-
-            var taxesAmt = arr.tax;
+        self.$app.preloader.show();
+        $.when(self.$app.methods.getDataAPI("sales/GetSaleByID?id=" + id)).then(function( doc, textStatus, jqXHR ) {
+          self.$app.preloader.hide();
+          var arr = doc.parent;
+            var taxesAmt = arr.taxes;
             currChosen = arr;
-            $(".groupProductNameMultiple_sales").val(arr.product_name);
+            $(".groupProductNameMultiple_sales").val(arr.productName);
             if(self.sellToAnotherUser == null){
-              $(".buyersNameMultiple_sales").val(arr.buyer_name);
+              $(".buyersNameMultiple_sales").val(arr.clientName);
               $(".amountPaidMultiple-sales ").val(arr.amountPaid);
-              $(".multipleSales_sales:visible").find("#datePaidMultiple_sales").val(moment.unix(arr.date_paid).format("LLL"));
-              $(".multipleSales_sales:visible").find("#datePurchaseMultiple_sales").val(moment.unix(arr.created_date).format("LLL"));
+              $(".multipleSales_sales:visible").find("#datePaidMultiple_sales").val(moment(arr.datePaid).format("LLL"));
+              $(".multipleSales_sales:visible").find("#datePurchaseMultiple_sales").val(moment(arr.createdDate).format("LLL"));
               if(arr.isEstimate != null && arr.isEstimate != undefined){
-                var est = arr.isEstimate == 1 ? true : false;
+                var est = arr.isEstimate;
                 $(".isEstimateMultipleSales").prop("checked", est);
               }else{
                 $(".isEstimateMultipleSales").prop("checked", false);
@@ -1867,37 +2070,30 @@ export default {
               $(".isEstimateMultipleSales").prop("checked", false);
             }
             $(".taxpercent-sales").val(taxesAmt);
-        })
-        //var collection = db.sales.where('parentID').equals(Number(id)).toArray(function(arr){
-          mogulsheetdb.find({
-          selector: {
-            $and: [
-                  { status: {$eq: 1} },
-                  {parentID: {$eq: id}},
-                  {_id: {$gte: null}},
-                  {productID_saleID: {$gt: 0}},
-                ]
-          }
-        }).then(function(ar){
-          var arr = ar.docs;
-          self.selectedOldProducts = [];
+
+            //children
+            var child = doc.children;
+            self.selectedOldProducts = [];
             self.$setState({
             currentMultipleSale: currChosen,
-            selectedProducts: arr
+            selectedProducts: child
           }, function(){
-              for(var i = 0; i < arr.length; i++){
-                if(arr[i].isParent == 1){
-                  arr[i]._id = arr[i].productID;
-                  self.selectedOldProducts.push(arr[i]);
-                  self.SelectItemMultipleProducts(arr[i]);
+              for(var i = 0; i < child.length; i++){
+                if(child[i].isParent == true){
+                  child[i].id = child[i].productID;
+                  self.selectedOldProducts.push(child[i]);
+                  self.SelectItemMultipleProducts(child[i]);
                 }
-                if(arr[i].isParent == 0){
-                  self.AddNewProduct(arr[i]);
+                if(child[i].isParent == false){
+                  self.AddNewProduct(child[i]);
                 }
               }
 
               self.CalculateTotalProduct();
           })
+        }).catch((err) => {
+          self.$app.preloader.hide();
+            self.showToast("error occured during saving", "center");
         })
     },
     openPopUpMultiple:function(){
@@ -1913,20 +2109,20 @@ export default {
               multiple: true, //allow multiple values
               navbarColorTheme: 'col bg-color-white text-color-black',
               preloader: true, //enable preloader
-              valueProperty: '_id', //object's "value" property name
+              valueProperty: 'id', //object's "value" property name
               textProperty: 'name_price', //object's "text" property name
               popupCloseLinkText: 'Done',
               requestSourceOnOpen:true,
               source: function (query, render) {
                 var autocomplete = this;
                 autocomplete.preloaderShow();
-                var results = self.products.filter(x => x.status == 1); //.map(a => a.name);
+                var results = self.products; //.map(a => a.name);
                 //autocomplete.preloaderHide();
                 var newResult = results;
                 //render(results);
                 if (query.length === 0) {
                   $.each(results, function(ind, val){
-                      val["name_price"] = val["name"] + "\t" + " - " + self.formatMoney(val["selling_price"]);
+                      val["name_price"] = val["name"] + "\t" + " - " + self.formatMoney(val["sellingPrice"]);
                   })
                   autocomplete.preloaderHide();
                   render(results);
@@ -1938,7 +2134,7 @@ export default {
                   // Find matched items
                   for (var i = 0; i < results.length; i++) {
                     if (results[i].name.toLowerCase().indexOf(query.toLowerCase()) >= 0) {
-                        results[i].name_price = results[i].name + "\t" + " - " + self.formatMoney(results[i].selling_price);
+                        results[i].name_price = results[i].name + "\t" + " - " + self.formatMoney(results[i].sellingPrice);
                         newResult.push(results[i]);
                       }
                   }
@@ -1960,7 +2156,7 @@ export default {
                   }
                   for(var i = 0; i < selectedValues.length; i++){
 
-                    var found = self.selectedProducts.filter(x => x._id == selectedValues[i]._id).length;
+                    var found = self.selectedProducts.filter(x => x.id == selectedValues[i].id).length;
                     if(found < 1){
                       self.selectedProducts.push(selectedValues[i]);
                       self.SelectItemMultipleProducts(selectedValues[i]);
@@ -1974,7 +2170,7 @@ export default {
               }
         });
         var popup = self.$app.popup.open('.multipleSales_sales', true);
-        var taxes = self.settings == null ? 0 : self.settings.taxes;
+        var taxes = self.$app.data.settings == null ? 0 : self.$app.data.settings.taxes;
         var taxesAmt = taxes == undefined ? 0 : taxes;
         $(".taxpercent-sales").val(taxesAmt);
         $(".multipleSales_sales:visible").find("#datePaidMultiple_sales").val(moment().format('LLL'));
@@ -1984,17 +2180,22 @@ export default {
     },
     SelectItemMultipleProducts: function(select){//name,cost,status,created_date
       var self = this;
-      var name = select.product_name == null ? "" : select.product_name;
+      var prod = self.products.find(x => x.id == select.productId);
+      var stock = "Unlimited";
+      if(prod != null){
+        stock = prod.stock;
+      }
+      var name = select.productName == null ? "" : select.productName;
       if(name == ""){
         name = select.name == null ? "" : select.name;
       }
-      var cost = select.selling_price == null ? "" : select.selling_price;
+      var cost = select.sellingPrice == null ? "" : select.sellingPrice;
       var quantity = select.quantity == null ? 1 : select.quantity;
       var discount = select.discount == null ? 0 : select.discount;
-      var chosenID = select.productID_saleID == undefined ? select._id : select.productID_saleID;
+      var chosenID = select.id;
       //var discount = 0;
-      var totalPrice = select.total_price == null ? "" : select.total_price; 
-        var html = '<li class="eachSaleParent_sales eachProduct_sales"><div class="card myCard"><div class="card-content padding-horizontal-half">';
+      var totalPrice = select.totalPrice == null ? "" : select.totalPrice; 
+       /* var html = '<li class="eachSaleParent_sales eachProduct_sales"><div class="card myCard"><div class="card-content padding-horizontal-half">';
           html += '<div><span class="labelName">Product Name: </span><div class="display-inline-flex"><input class="productName" type="text" placeholder="Product Name" value="';
           html +=  name + '"></div></div>';
           html += '<input type="hidden" class="productID" value="' + chosenID + '">';
@@ -2012,7 +2213,26 @@ export default {
         html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
           html += '<a class="button button-small button-raised removeProduct" data-id="' + select._id + '">Delete</a>';
         html += '</p></div></div>'
-        html += '</li>';
+        html += '</li>';*/
+
+
+        var html = '<li class="eachSaleParent_sales eachProduct_sales margin-vertical"><div class="card myCard"><div class="card-content padding-horizontal padding-vertical">';
+          html += '<div class="row"><div class="col-50"><div class="labelName">Product Name </div><input class="productName" type="text" placeholder="Product Name" value="';
+          html +=  name + '"></div>';
+          html += '<div class="col-50"><div class="labelName">Product Price</div><input class="productCost_sales" type="text" placeholder="Product Price" value="' + cost + '"></div>';
+          html += '</div>';
+          html += '<input type="hidden" class="productID" value="' + select.productId + '">';
+          html += '<input type="hidden" class="hiddenQuantity" value="' + stock + '">';
+          html += '<div class="row margin-top-half"><div class="col-50"><div class="labelName">Quantity</div><input class="productQuantity_sales" type="text" placeholder="Product Quantity" value="' + quantity + '"></div>';
+          html += '<div class="col-50"><div class="labelName">Discount</div><input class="discount" type="text" placeholder="Discount" value="' + discount + '"></div>';
+          html += '</div>';
+
+          html += '<div class="row margin-top-half"><div class="col-50"><div class="labelName">Total Price: </div><input class="totalproductprice-sales" type="text" placeholder="Total Price" value="';
+          html +=  totalPrice + '" disabled></div>';
+          html += '<div class="col-50"><div>&nbsp</div><a class="button button-small removeProduct margin-top-half" data-id="' + select.id + '">Remove Product</a></div>';
+          html += '</div>';
+        html += '</div></div></li>';
+
         $("#products-list-sales .sortList").append(html);
         $(".eachSaleParent_sales .removeProduct").off("click").on("click", function(){
                   var id = $(this).attr("data-id");
@@ -2030,12 +2250,12 @@ export default {
       var self = this;
 
         var select = self.selectedProducts.filter(function(e){ 
-              return e._id != id;
+              return e.id != id;
           });
  
           //$(but).parents("li").eq(0).remove();
           self.$setState({
-                ings:self.ings,
+                //ings:self.ings,
                 selectedProducts:select
             }, function(){
 
@@ -2078,39 +2298,38 @@ export default {
 
                   for(var i = 0; i < self.sales.length; i++){
                     var row = self.sales[i];
-                        var isParent = row.isParent == null ? 0 : row.isParent;
+                        var isParent = row.isParent == null ? false : row.isParent;
                         var sellToOther = "";
-                            if(isParent == 1){
-                              sellToOther = '<a class="button popover-close sellToOthers" data-id="' + row._id + '" data-isparent="' + isParent + '">Sell To Others</a>';
+                            if(isParent == true){
+                              sellToOther = '<a class="button popover-close sellToOthers" data-id="' + row.id + '" data-isparent="' + isParent + '">Sell To Others</a>';
                             }
                         var quantity = row.quantity == null ? 1 : row.quantity;
-                        var taxes = row.tax == null ? 0 : row.tax;
-                        var total = row.total_price == null ? row.selling_price : row.total_price;
-                        var afterTax = row.afterTax == null ? total : row.afterTax;
-                        var type = row.isEstimate == 1 ? "Estimate" : "Invoice";
-                        var paidInFull = row.isPaid == 1 ? '<span class="badge color-green paid padding-horizontal">Yes</span>' : '<span class="badge color-red paid padding-horizontal">No</span>';
+                        var taxes = row.taxes == null ? 0 : row.taxes;
+                        var total = row.totalPrice == null ? row.sellingPrice : row.totalPrice;
+                        var afterTax = row.afterTaxPrice == null ? total : row.afterTaxPrice;
+                        var type = row.isEstimate == true ? "Estimate" : (row.isPaid ? "Receipt" : "Invoice");
+                        var paidInFull = row.isPaid == true ? '<span class="badge color-green paid padding-horizontal">Yes</span>' : '<span class="badge color-red paid padding-horizontal">No</span>';
                     var html = "<tr>";
-                        html += '<td class="id" style="display:none;">' + row._id + '</td>';
-                        html += "<td class='name'>" + row.product_name + "</td>";
-                        html += "<td>" + row.buyer_name + "</td>";
+                        html += '<td class="id" style="display:none;">' + row.id + '</td>';
+                        html += "<td class='name'>" + row.productName + "</td>";
+                        html += "<td>" + row.clientName + "</td>";
                         html += "<td>" + quantity + "</td>";
-                        html += "<td class='cost'>" + self.formatMoney(afterTax) + "</td>";
+                        html += "<td><div class='cost display-none'>" + afterTax + "</div>" + self.formatMoney(afterTax) + "</td>";
                         html += "<td>" + self.formatMoney(row.amountPaid) + "</td>";
                         html += "<td class='isPaid'>" + paidInFull + "</td>";
-                        html += "<td class='created_date'>" + moment.unix(row.created_date).format("LLL") + "</td>";
-                        
+                        html += "<td class='created_date'>" + moment(row.createdDate).format("LLL") + "</td>";
                         var pops = '<a href="#" data-popover=".sales-popover-' + i + '" class="popover-open"><i class="f7-icons">ellipsis_vertical</i></a>'
                                 pops += '<div class="popover my-popover sales-popover sales-popover-' + i + '" data-close-on-escape="true" data-backdrop="false">'; 
                                 pops += '<div class="popover-angle"></div><div class="popover-inner padding-half">';
-                                  pops += '<a class="button popover-close invoice" data-id="' + row._id + '">Invoice</a>';
+                                  pops += '<a class="button popover-close invoice" data-id="' + row.id + '">' + type + '</a>';
                                   pops += sellToOther;
-                                  pops += '<a class="button popover-close editSale" data-id="' + row._id + '" data-isparent="' + isParent + '">View / Edit</a>';
-                                  pops += '<a class="button popover-close deleteSale" data-id="' + row._id + '">';
-                                  pops += row.status == 1 ? 'Delete' : 'Activate';
+                                  pops += '<a class="button popover-close editSale" data-id="' + row.id + '" data-isparent="' + isParent + '">View / Edit</a>';
+                                  pops += '<a class="button popover-close deleteSale" data-id="' + row.id + '">';
+                                  pops += row.status == true ? 'Delete' : 'Activate';
                                   pops += '</a>';
-                                  if(row.status == 0){
+                                  /*if(row.status == 0){
                                     pops += '<a class="button popover-close permDelButton" data-id="' + row._id + '">Delete</a>';
-                                  }
+                                  }*/
 
                                 pops += '</div></div>';
                                 html += "<td>" + pops + "</td>";
@@ -2131,51 +2350,54 @@ export default {
                         $(".sortText").removeClass("display-none");
                         for(var i = 0; i < self.sales.length; i++){
                             var row = self.sales[i];
-                            var isParent = row.isParent == null ? 0 : row.isParent;
+                            var isParent = row.isParent == null ? true : row.isParent;
                             var sellToOther = "";
-                            if(isParent == 1){
-                              sellToOther = '<a class="button button-small button-raised sellToOthers" data-id="' + row._id + '" data-isparent="' + isParent + '">Sell To Others</a>';
+                            if(isParent == true){
+                              sellToOther = '<a class="button button-small button-raised sellToOthers" data-id="' + row.id + '" data-isparent="' + isParent + '">Sell To Others</a>';
                             }
                             var quantity = row.quantity == null ? 1 : row.quantity;
-                            var taxes = row.tax == null ? 0 : row.tax;
-                            var total = row.total_price == null ? row.cost : row.total_price;
-                            var afterTax = row.afterTax == null ? total : row.afterTax;
+                            var taxes = row.taxes == null ? 0 : row.taxes;
+                            var total = row.totalPrice == null ? row.cost : row.totalPrice;
+                            var afterTax = row.afterTaxPrice == null ? total : row.afterTaxPrice;
+                            var type = row.isEstimate == true ? "Estimate" : (row.isPaid ? "Receipt" : "Invoice");
                             var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
-                            html += '<div class="name cardName">' + row.product_name + '</div><div class="id display-none">' + row._id + '</div><div class="cost display-none">' + row.cost + '</div>';
-                            html += '<div class=""><span class="labelName">Buyer\'s name: </span><span class="valueName buyer">' + row.buyer_name + '</span></div><div class="isPaid display-none">' + row.isPaid + '</div>';
-                            html += '<div class=""><span class="labelName">Product Cost: </span><span class="valueName">' + self.formatMoney(row.selling_price) + '</span></div>';
+                            html += '<div class="name cardName">' + row.productName + '</div><div class="id display-none">' + row.id + '</div><div class="cost display-none">' + afterTax + '</div>';
+                            html += '<div class=""><span>Buyer\'s name: </span><span class="valueName buyer">' + row.clientName + '</span></div><div class="isPaid display-none">' + row.isPaid + '</div>';
+                            html += '<div class="display-none"><span>Product Price: </span><span class="valueName">' + self.formatMoney(row.sellingPrice) + '</span></div>';
 
-                            html += '<div class=""><span class="labelName">Quantity: </span><span class="valueName">' + quantity + '</span></div>';
-                            html += '<div class=""><span class="labelName">Total Cost: </span><span class="valueName">' + self.formatMoney(total) + '</span></div>';
+                            html += '<div class=""><span>Quantity: </span><span class="valueName">' + quantity + '</span></div>';
+                            
                             if(row.discount != null && row.discount != 0){
-                              html += '<div class=""><span class="labelName">Discount: </span><span class="valueName">' + self.formatMoney(row.discount) + '</span></div>';
+                              html += '<div class=""><span>Discount: </span><span class="valueName">' + self.formatMoney(row.discount) + '</span></div>';
                             }
                             /*if(row.isEstimate != null && row.isEstimate != undefined && row.isEstimate > 0){
                               html += '<div class=""><span class="labelName">Estimate: </span><span class="valueName">' + row.isEstimate + '</span></div>';
                             }*/
                             if(taxes != 0 || total != afterTax){
-                              html += '<div class=""><span class="labelName">Tax: </span><span class="valueName">' + taxes + '%</span></div>';
-                              html += '<div class=""><span class="labelName">After Tax Cost: </span><span class="valueName">' + self.formatMoney(afterTax) + '</span></div>';
+                              html += '<div class="display-none"><span class="labelName">Tax: </span><span class="valueName">' + taxes + '%</span></div>';
+                              html += '<div class=""><span>After Tax Price: </span><span class="valueName">' + self.formatMoney(afterTax) + '</span></div>';
+                            }else{
+                              html += '<div class=""><span>Total Price: </span><span class="valueName">' + self.formatMoney(total) + '</span></div>';
                             }
-                            html += '<div class=""><span class="labelName">Amount Paid: </span><span class="valueName">' + self.formatMoney(row.amountPaid) + '</span></div>';
-                            var stat = row.status == 1 ? "display-none" : "";
-                            var hidden = row.isPaid == 1 ? "" : "display-none";
-                            var checkbox = row.isPaid == 1 ? '<span class="badge color-green paid padding-horizontal">Yes</span>' : '<span class="badge color-red paid padding-horizontal">No</span>';
+                            html += '<div class=""><span>Amount Paid: </span><span class="valueName">' + self.formatMoney(row.amountPaid) + '</span></div>';
+                            var stat = row.status == true ? "display-none" : "";
+                            var hidden =  "display-none";//row.isPaid == 1 ? "" : "display-none";
+                            var checkbox = row.isPaid == true ? '<span class="badge color-green paid padding-horizontal">Yes</span>' : '<span class="badge color-red paid padding-horizontal">No</span>';
                             //var checkbox = row.isPaid == 1 ? '<i class="icon f7-icons text-color-green paid">checkmark_circle_fill</i>' : '<i class="icon f7-icons text-color-red paid">multiply_circle_fill</i>';
-                            html += '<div class=""><span class="labelName">Fully Paid: </span>' + checkbox + '</div>' + '<div class="display-none created_date">' + row.created_date + '</div>';
-                            html += '<div class="' + hidden + '"><span class="labelName">Date Fully Paid: </span><span class="valueName">' + moment.unix(row.date_paid).format("LLL") + '</span></div>';
-                            html += '<div class=""><span class="labelName">Purchase Date: </span><span class="valueName">' + moment.unix(row.created_date).format("LLL") + '</span></div>';
+                            html += '<div class=""><span>Fully Paid: </span>' + checkbox + '</div>' + '<div class="display-none created_date">' + row.createdDate + '</div>';
+                            html += '<div class="' + hidden + '"><span class="labelName">Date Fully Paid: </span><span class="valueName">' + moment(row.datePaid).format("LLL") + '</span></div>';
+                            html += '<div class="display-none"><span class="labelName">Purchase Date: </span><span class="valueName">' + moment(row.createdDate).format("LLL") + '</span></div>';
                             html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName">Deleted</span></div>';
                             html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
-                            html += '<a class="button invoice button-small button-raised" data-id="' + row._id + '">Invoice</a>';
+                            html += '<a class="button invoice button-small" data-id="' + row.id + '">' + type +'</a>';
                             html += sellToOther;
-                            html += '<a class="button button-small button-raised editSale" data-id="' + row._id + '" data-isparent="' + isParent + '">View / Edit</a>';
-                            html += '<a class="button button-small button-raised deleteSale" data-id="' + row._id + '">';
-                            html +=  row.status == 1 ? 'Delete' : 'Activate'; 
+                            html += '<a class="button button-small editSale" data-id="' + row.id + '" data-isparent="' + isParent + '">View / Edit</a>';
+                            html += '<a class="button button-small deleteSale" data-id="' + row.id + '">';
+                            html +=  row.status == true ? 'Delete' : 'Activate'; 
                             html += '</a>';
-                            if(row.status == 0){
-                              html += '<a class="button button-small button-raised permDelButton" data-id="' + row._id + '">Delete</a>';
-                            }
+                            /*if(row.status == 0){
+                              html += '<a class="button button-small permDelButton" data-id="' + row._id + '">Delete</a>';
+                            }*/
                             html += '</p></div></div>';
                             html += '</li>';
                             $("#sales-list .list").append(html);
@@ -2208,10 +2430,10 @@ export default {
                               
                               if($(this).hasClass("editSale")){
                                 var isAParent = $(this).attr("data-isparent");
-                                if(isAParent == "0"){
+                                if(isAParent == "false"){
                                   self.openPopUpUpdateSellProduct(data);
                                 }
-                                if(isAParent == "1"){
+                                if(isAParent == "true"){
                                   self.editMultiplePopUp(data);
                                 }
                               }
@@ -2221,9 +2443,9 @@ export default {
                               if($(this).hasClass("deleteSale")){
                                 self.deleteSale(sales, data);
                               }
-                              if($(this).hasClass("permDelButton")){
+                              /*if($(this).hasClass("permDelButton")){
                                 self.permDeleteSale(sales, data);
-                              }
+                              }*/
                               if($(this).hasClass("sellToOthers")){
                                 self.$setState({
                                   sellToAnotherUser:1
@@ -2244,94 +2466,16 @@ export default {
                         }
     },
     formatMoney:function(val){             
-      var self = this;           
-      var sym = self.settings == null ? "" : self.settings.currency;
-      sym = sym == undefined ? "" : sym;
-      val = Number(val);
-      if(val < 0){
-        var rev = 0 - val;
-        var val2 = val + rev + rev;
-        val = val2;
-        sym = "-" + sym;
-      }
-      val = Math.round((val + Number.EPSILON) * 100) / 100;
-      var ret = sym + val.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+      var self = this;   
+      var ret = self.$app.methods.formatMoney(val);
       return ret;
     },
     startPouch: function(){
           var self = this;
-          mogulsheetdb = self.$app.methods.startPouch();
-          var id = self.settingsID;
-            mogulsheetdb.get(id).then(function(doc) {
-                  self.$setState({
-                      settings: doc
-                    })
-              })
-          dbSettingsImages = new PouchDB('settingsImages.db');
           self.getData();
           self.getProducts();
           self.getClients();
-          /*products: "++id,name,cost,status,created_date",
-            product_ingredient: "++id,productID,ingredientID,unit_size,cost,status,created_date",
-            product_otherMaterials: "++id,productID,name,cost,status,created_date",*/
-            //sales: "++id,parentID,product_name,isParent,buyer_name,cost,quantity,tax,total_price,afterTax,amountPaid,isPaid,date_paid,created_date,status",
           
-          /*
-            try{//id,name,unit_size,unit,cost_per_unit,status,created_date
-            dbProducts = new PouchDB('products.db');
-                dbProdIngs = new PouchDB('product_ingredients.db');
-                dbProdOthers = new PouchDB('product_otherMaterials.db');
-                dbSales = new PouchDB('sales.db');
-                dbIngs = new PouchDB('ingredients.db');
-                dbSettings = new PouchDB('settings.db');
-                dbClients = new PouchDB('clients.db');
-                dbSettingsImages = new PouchDB('settingsImages.db');
-                dbClients.createIndex({
-                  index: {
-                    fields: ['name', 'created_date']
-                  }
-                })
-                dbIngs.createIndex({
-                  index: {
-                    fields: ['name', 'status']
-                  }
-                })
-                dbProdIngs.createIndex({
-                  index: {
-                    fields: ['productID', 'ingredientID', 'status']
-                  }
-                })
-                dbProdOthers.createIndex({
-                  index: {
-                    fields: ['productID', 'name', 'status']
-                  }
-                })
-                
-                dbProducts.createIndex({
-                  index: {
-                    fields: ['name', 'status']
-                  }
-                })
-                dbSales.createIndex({
-                  index: {
-                    fields: ['created_date','parentID', 'product_name', 'isParent', 'buyer_name', 'status']
-                  }
-                }).then(function (result) {
-                  self.getData();
-                  self.getProducts();
-                  self.getClients();
-                })
-
-                var id = self.settingsID;
-                dbSettings.get(id).then(function(doc) {
-                  self.$setState({
-                      settings: doc
-                      })
-                })
-          }catch(err){
-                
-            }*/
-           
         },
     loadImageLogo: function(item, arr){
       var self = this;
@@ -2346,7 +2490,6 @@ export default {
       var self = this;
         dbSettingsImages.get('signatureImage', {attachments: true}).then(function(signImage) {
           var html = self.formatPDF(item, arr, logoImage, signImage);
-          //$("#showInvoice").contents().find("body").append(html);
           self.$setState({
               invoiceHtml:html,
               invoiceItem:item
@@ -2375,36 +2518,13 @@ export default {
     },
     getData: function(){
       var self = this;
-      var checked = 1;
-        var toggle = self.$app.toggle.get(".showInactiveSales");
-      if(toggle != undefined){
-        checked = toggle.checked == true ? 0 : 1;
-      }
       var data = $(".switchEstimate").attr("data-estimate");
       var sales_estimate = Number(data);
-      var condition = null;
-      if(sales_estimate == 1){
-        condition = { isEstimate: { $eq: sales_estimate } };
-      }else{
-        condition = { isEstimate: { $ne: 1 } };
-      }
-      
-      self.$app.preloader.show();
-          mogulsheetdb.find({
-              selector: {
-                $and: [
-                  { status: {$eq: checked} },
-                  { parentID: { $lt: 1 } },
-                  { saleID: { $gt: 0 } },
-                  condition,
-                  {created_date: {$gt: true}}
-                ]
-              },
-              sort: [{'_id': 'desc'}]
-            }).then(function(ar){
-              self.$app.preloader.hide();
-              var arr = ar.docs;
+      var getEstimate = sales_estimate == 1 ? true : false;
 
+      self.$app.preloader.show();
+      $.when(self.$app.methods.getDataAPI("sales/GetSales?isEstimate=" + getEstimate)).then(function( arr, textStatus, jqXHR ) {
+          self.$app.preloader.hide();
               self.$setState({
                     sales: arr,
                     totalMat:arr.length
@@ -2413,7 +2533,7 @@ export default {
                   });
             }).catch(function(err){
               self.$app.preloader.hide();
-              self.showToast(err, "center");
+              self.showToast("An error has occurred", "center");
             });
       },
       preparePage: function(){
@@ -2425,7 +2545,7 @@ export default {
         var autocompleteDropdownAll = self.$app.autocomplete.create({
           inputEl: '#name_sell_sales',
           openIn: 'dropdown',
-          valueProperty: '_id', //object's "value" property name
+          valueProperty: 'id', //object's "value" property name
           textProperty: 'name_price', //object's "text" property name
           source: function (query, render) {
             var autocomplete = this;
@@ -2467,10 +2587,10 @@ export default {
         var autocompleteDropdownBuyer = self.$app.autocomplete.create({
           inputEl: '#buyer_sell_sales',//buyersNameMultiple_sales
           openIn: 'dropdown',
-          valueProperty: '_id', //object's "value" property name
+          valueProperty: 'id', //object's "value" property name
           textProperty: 'name', //object's "text" property name
           source: function (query, render) {
-            var results = self.clients.filter(x => x.status == 1);
+            var results = self.clients;
             var newResult = [];
             // Find matched items
             for (var i = 0; i < self.clients.length; i++) {
@@ -2485,7 +2605,7 @@ export default {
                   value = value[0];
                   $("#buyer_sell_sales").val(value.name);
                   selectedUserName = value.name;
-                  selectedUserID = value._id;
+                  selectedUserID = value.id;
                   }
                 }
               }
@@ -2493,10 +2613,10 @@ export default {
         var autocompleteDropdownMultipleBuyer = self.$app.autocomplete.create({
           inputEl: '#buyersNameMultiple_sales',//buyersNameMultiple_sales
           openIn: 'dropdown',
-          valueProperty: '_id', //object's "value" property name
+          valueProperty: 'id', //object's "value" property name
           textProperty: 'name', //object's "text" property name
           source: function (query, render) {
-            var results = self.clients.filter(x => x.status == 1);
+            var results = self.clients;
             var newResult = [];
             // Find matched items
             for (var i = 0; i < self.clients.length; i++) {
@@ -2511,7 +2631,7 @@ export default {
                   value = value[0];
                   $("#buyersNameMultiple_sales").val(value.name);
                   selectedUserName = value.name;
-                  selectedUserID = value._id;
+                  selectedUserID = value.id;
                   }
                 }
               }
@@ -2579,52 +2699,36 @@ export default {
             var from = null; var to = null;
             if(days.length == 1){
                 from = Date.parse(days[0]);
-                from = moment(moment(days[0]).format('LLL')).format("X");
+                from = moment(moment(days[0]).format('LLL')).format();
                 days.push(days[0]);
                 var date2 = days[1];
                 date2.setDate(date2.getDate() + 1);
                 to = Date.parse(date2);
-                to = moment(moment(date2).format('LLL')).format("X");
+                to = moment(moment(date2).format('LLL')).format();
             }
             else if(days.length > 1){
                 //var date1 = days[0];
                 //date1.setDate(date1.getDate() + 1);
-                from = moment(moment(days[0]).format('LLL')).format("X");
+                from = moment(moment(days[0]).format('LLL')).format();
                 var date2 = days[1];
                 date2.setDate(date2.getDate() + 1);
-                to = moment(moment(date2).format('LLL')).format("X");
+                to = moment(moment(date2).format('LLL')).format();
             }else{
                 self.getData();
             }
             if(from != null && to != null){
-                var checked = 1;
-                var toggle = self.$app.toggle.get(".showInactiveSales");
-                if(toggle != undefined){
-                  checked = toggle.checked == true ? 0 : 1;
-                }
-
                   var data = $(".switchEstimate").attr("data-estimate");
                   var sales_estimate = Number(data);
-                  var condition = null;
-                  if(sales_estimate == 1){
-                    condition = { isEstimate: { $eq: sales_estimate } };
-                  }else{
-                    condition = { isEstimate: { $ne: 1 } };
-                  }
-                mogulsheetdb.find({
-                    selector: {
-                      $and: [
-                         {status: {$eq: checked}},
-                         {created_date: { $gt: from }},
-                         {created_date: { $lt: to }},
-                         {saleID: { $gt: 0 }},
-                         condition,
-                         {parentID: { $lt: 1 } }
-                      ]
-                    },
-                    sort: [{'_id': 'desc'}]
-                  }).then(function(ar){
-                    var arr = ar.docs;
+                  var getEstimate = sales_estimate == 1 ? true : false;
+
+                  var obj = {}
+                  obj.isEstimate = getEstimate;
+                  obj.fromDate = from;
+                  obj.toDate = to;
+
+                  self.$app.preloader.show();
+                $.when(self.$app.methods.postDataAPI("sales/GetSalesByDate", obj, true)).then(function( arr, textStatus, jqXHR ) {
+                  self.$app.preloader.hide();
                     self.$setState({
                             sales: arr,
                             totalMat:arr.length

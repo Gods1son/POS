@@ -7,7 +7,51 @@
 
 *{
     --main-color: #673ab7;
+    --light-blue-color: #D3F3EE;
+    --red-color: #E63946;
+    --black-color:#262626;
+    --teal-color:#488286;
+    --grey-color:#697386;
     --panel-color: #c1aee4; /*#decff8*/
+}
+
+@font-face {
+    font-family: AvenirBlack;
+    src: url(../fonts/Avenir-Black.woff);
+}
+
+@font-face {
+    font-family: AvenirBook;
+    src: url(../fonts/Avenir-Book.woff);
+}
+
+@font-face {
+    font-family: AvenirHeavy;
+    src: url(../fonts/Avenir-Heavy.woff);
+}
+
+@font-face {
+    font-family: AvenirLight;
+    src: url(../fonts/Avenir-Light.woff);
+}
+
+@font-face {
+    font-family: AvenirMedium;
+    src: url(../fonts/Avenir-Medium.woff);
+}
+
+body {
+    /*width: 100%;*/
+    font-family: 'AvenirBook', sans-serif;
+    font-weight: 300;
+}
+
+.navbar-bg:before {
+    background: none;
+}
+
+.navbar .link.back{
+    display: none;
 }
 
 /* stripe */
@@ -68,17 +112,20 @@
 
 .panel.mylinks, .panel.mylinks .page, .panel.mylinks .page-content, 
 .panel.mylinks .quicklinks, .panel.mylinks .navbar-bg{
-    background: var(--main-color);
-    color:white;
+    background: white; /*var(--light-blue-color);*/
+    color:var(--black-color);
+    font-family: 'AvenirMedium';
 }
+
 
 .quicklinks .item-inner:before{
     display:none !important;
 }
 
 .quicklinks.list ul{
-    background: var(--main-color);
-    color:white;
+    /*background: var(--light-blue-color);*/
+    background: white;
+    color:var(--black-color);
 }
 
 .quicklinks.list ul:before{
@@ -89,15 +136,31 @@
     display: none;
 }
 
+.quicklinks .item-title{
+    font-size: 14px;
+    padding: 5px 20px;
+    color: #8C8C8C;
+}
+
+.quicklinks div.active .item-title{
+    color: var(--main-color);
+    font-weight: 600;
+    /*color: white;*/
+}
+
+.quicklinks i.icon{
+    font-size: 22px;
+}
+
 .ContactUs{
     bottom: 5px;
     position: absolute;
-    left: calc(var(--f7-list-item-padding-horizontal) + var(--f7-safe-area-left));
-    width: 100%;
+    color: darkgrey;
+    font-size: 0.9em;
 }
 
 .ContactUs a{
-    color:white !important;
+    color:var(--black-color) !important;
 }
 
 .navbar-inner .logoname{
@@ -110,6 +173,15 @@
 .navbar-inner .logoIcon{
     max-width: 70%;
     max-height: 70%;
+}
+
+.navbar .title{
+    font-size: 18px;
+    font-family: 'AvenirBlack';
+}
+
+.navbar-inner.sliding .title{
+    color: var(--teal-color);
 }
 
 .navbar-inner .link{
@@ -148,14 +220,14 @@
     
 }
 
-.data-table thead tr{
-    background: grey !important;
-}
 
 .data-table thead tr th{
-    font-weight: 700;
-    font-size: 1em;
-    color: white !important;
+    font-size: 14px;
+    color: var(--black-color) !important;
+}
+
+.data-table .popover-open{
+    color: var(--teal-color);
 }
 
 /*.logoName{
@@ -164,7 +236,8 @@
 }*/
 
 .panel-left.mylinks .item-link:hover .item-title{
-    font-weight: 700;
+    /*font-weight: 600;*/
+    color: black;
 }
 
 .text-editor{
@@ -185,14 +258,13 @@ button.text-editor-button.active{
 #showInvoice{
     width: 100%;
     height: 100%;
-    overflow: auto;
     border: none;
 }
 
 .popup .item-title, .signParent .item-title{
-    font-weight: 500;
-    /*letter-spacing: 0.4px;*/
-    color: gray;
+    font-size: 0.8em;
+    color: var(--grey-color);;
+    text-transform: lowercase;
 }
 
 .navbar-inner.sliding{
@@ -272,13 +344,20 @@ button.text-editor-button.active{
     border: 1px solid var(--main-color) !important;
     background: var(--main-color);
     color: white;
+    width: 50% !important;
     text-transform: none;
-    font-size: 1.1em;
+    /*font-size: 0.9em;*/
+    margin: auto;
+}
+
+.taxpercent, .taxpercent-sales, .profitvalue{
+    width: 35px !important;
+    border-bottom: 1.2px solid var(--main-color) !important;
+    text-align: center;
 }
 
 .myCard{
-    /*box-shadow: 0px 0px 1px 1px darkgrey;*/
-    box-shadow: 0 1px 4px 1px darkgrey;
+    box-shadow: 0px 0px 2px 0px var(--grey-color);
     margin-left: 5px;
     margin-right: 5px;
     margin-bottom: 0.8em;
@@ -308,14 +387,16 @@ button.text-editor-button.active{
 }
 
 .myCard .button, #savecompanyinfo1{
-    font-weight: 500;
-    /*font-size: 1em;*/
+    /*text-transform: none;
+    border: 0.1px solid;
+    width: 50%;
+    margin: auto;*/
+    border: 0.1px solid;
+    margin: auto;
     margin-right: 5px;
     text-transform: none;
-    letter-spacing: 0px;
-    border: 0.1px solid;
-    color: gray;
-    /*box-shadow: 0px 0px 2px 0px;*/
+    letter-spacing: 0;
+    color: grey;
 }
 
 #showPwdSignUp, #showPwdSignIn{
@@ -351,29 +432,51 @@ button.text-editor-button.active{
     text-align: center;
 }
 
+.tealBgButton{
+    background: var(--teal-color);
+    color: white;
+    border: 1px solid var(--teal-color);
+    text-transform: none;
+}
+
+.tealBgButton .item-title{
+    font-size: 1em;
+    text-transform: none;
+}
+
+.tealColorButton{
+    color: var(--teal-color);
+    border: 1px solid var(--teal-color);
+    text-transform: none;
+    font-size: 1em;
+}
+
+.deleteImage{
+    color: var(--red-color);
+    border: 1px solid var(--red-color);
+    text-transform: none;
+}
+
 .sellMultiple{
     font-weight: 500;
-    font-size: 1.2em;
+    background: var(--teal-color);
     letter-spacing: 0px;
     text-transform: none;
-    /*color: var(--main-color);*/
-    border: 1px solid;
+    color: white;
+    border: 1px solid var(--teal-color);
     /*box-shadow: 0px 1px 3px 1px var(--main-color)94;*/
 }
 
 .viewRestockHistory{
     font-weight: 500;
-    font-size: 1.2em;
     letter-spacing: 0px;
     text-transform: none;
-    color: white;
-    /*border: 1px solid;*/
+    color: var(--teal-color);
+    border: 1px solid var(--teal-color);
     /*box-shadow: 0px 1px 3px 1px #673ab794;*/
 }
 
-.btn-blue, .customcharges{
-    font-weight: 500 !important;
-    font-size: 1.2em !important;
+.btn-blue{
     letter-spacing: 0px;
     text-transform: none;
 }
@@ -388,6 +491,13 @@ button.text-editor-button.active{
     font-size: 0.8em;
     margin-top: 5px;
     text-transform: none;
+    border-color: var(--teal-color);
+    color: var(--teal-color);
+}
+
+.reportAllButtons a.active{
+    background: var(--teal-color);
+    color: white;
 }
 
 /*#myChart{
@@ -426,9 +536,11 @@ button.text-editor-button.active{
 }
 
 .switchEstimate{
-    border: 1px solid var(--main-color) !important;
-    color: var(--main-color) !important;
+    /*border: 1px solid var(--main-color) !important;*/
+    color: var(--teal-color) !important;
     font-weight: 700;
+    text-transform: inherit;
+    letter-spacing: 0.9px;
 }
 
 .header_title{
@@ -439,10 +551,21 @@ button.text-editor-button.active{
     vertical-align: bottom !important;
 }
 
-.settingsInput, .myCard input[type="text"], .item-input-wrap input[type="text"]:not(.specSearch){
-    border-bottom: 1.2px solid var(--main-color) !important;
+#passwordSignUp, #passwordSignIn{
+    border:none !important;
+}
+
+.text-small{
+    font-size: 80%;
+}
+
+.settingsInput, .myCard input[type="text"], .item-input-wrap select, 
+.item-input-wrap input[type="text"]:not(.specSearch),
+.item-input-wrap input[type="number"]:not(.specSearch){
+    border: 1.2px solid var(--teal-color) !important;
     padding: 2px 5px !important;
     margin-top: 2px !important;
+    border-radius: 5px;
 }
 
 .eachCostParent input, .extraCostRow input, .profitvalue{
@@ -465,9 +588,8 @@ button.text-editor-button.active{
 }
 
 .labelName{
-    font-weight: 400;
-    /* letter-spacing: 0.4px; */
-    color: gray;
+    font-size: 0.8em;
+    color: var(--grey-color);
 }
 
 
@@ -518,23 +640,28 @@ button.text-editor-button.active{
     font-size: 1.1em !important;
     text-align: center !important;
     background: white !important;
-    color: #000!important;
-    font-weight: 600!important;
-    border: 1.5px solid var(--main-color)!important;
-    border-radius: 15px!important;
+    color: var(--grey-color) !important;
+    border: 0.8px solid var(--grey-color) !important;
+    border-radius: 7.5px!important;
     margin-top: 5px;
+    margin-bottom: 20px;
 }
 
 .searchbar-input-wrap .searchbar-icon:after{
-    color:black !important;
+    color:var(--grey-color) !important;
 }
 
 .searchbar-input-wrap .input-clear-button:after{
-    color:red !important;
+    color:var(--grey-color) !important;
 }
 
-.searchbar-input-wrap input::placeholder, .darkSearch::placeholder{
-    color:black !important;
+.searchbar-input-wrap input::placeholder, .darkSearch::placeholder, input[type="text"]::placeholder,
+input[type="phone"]::placeholder, input[type="email"]::placeholder, input[type="date"]::placeholder,
+input[type="password"]::placeholder, input[type="number"]::placeholder, textarea::placeholder{
+    color: var(--teal-color) !important; /*var(--grey-color)*/
+    text-transform: lowercase;
+    font-weight: 100;
+    font-size: 0.8em;
 }
 
 .customList .sort:not(th){
@@ -557,7 +684,7 @@ button.text-editor-button.active{
 }
 
 .data-table tbody tr:hover{
-    background: #dbccf5 !important; /*var(--main-color);
+    background: rgb(247, 250, 252) !important; /*var(--main-color);
     color: white !important;*/
 }
 
@@ -572,19 +699,20 @@ button.text-editor-button.active{
 }
 
 
-.costvalue, .profitpercent, .profitvalue{
+/*.costvalue, .profitpercent{
     padding: 3px !important;
     text-align: center;
     width:60% !important;
     margin: auto !important;
-}
+}*/
 
 .costvalue{
     margin-left: 2px !important;
     margin-right: 2px !important;
+    width: 90% !important;
 }
 
-.total_sell, .totalproductprice{
+.afterTax, .afterTax_sales, .totalproductprice{
     background-color: #f5f5f5 !important;
     font-weight: 600;
 }
@@ -594,9 +722,6 @@ button.text-editor-button.active{
     width:100%;
 }
 
-.extraCostRow .eachCost, .extraName{
-    text-align: center;
-}
 
 .myOrange .item-inner:before{
     color: white !important;
@@ -608,9 +733,8 @@ button.text-editor-button.active{
 
 .ruleUnder{
     color: black;
-    border-bottom: 1px solid darkgray;
-    font-weight: 400;
-    padding: 3px !important;
+    font-size: 0.8em;
+    padding: 3px 7.5px !important;
 }
 
 .dashText{
@@ -621,6 +745,7 @@ button.text-editor-button.active{
 .sortList, .grouped{
     list-style: none;
     padding:0 !important;
+    font-size: var(--f7-font-size);
 }
 
 .myToolbar{
@@ -633,8 +758,7 @@ button.text-editor-button.active{
 
 .specWrap{
     border-radius: 5px;
-    box-shadow: 0px 0px 1px 1px darkgrey;
-    margin: 13px auto;
+    box-shadow: 0px 0px 1px 0px var(--grey-color);
 }
 
 .specWrap .item-input-wrap{
@@ -656,14 +780,14 @@ button.text-editor-button.active{
 }
 
 .dash .card-content{
-    font-size: 1.3em;
+    font-size: 2em;
     text-align: center;
     font-weight: 600;
-    color:#2196f3;
+    color: var(--teal-color);
 }
 
 .dash .card{
-    margin: 2px 1px;
+    margin: 5px;
 }
 
 .filterbydate{
@@ -673,14 +797,12 @@ button.text-editor-button.active{
 
 .pagination li{
     display: inline-block;
-    padding: 2px 13px;
-    color: #2196f3;
-    border: 1px solid #2196f3;
+    padding: 1px 10px;
+    border: 1px solid var(--grey-color);
 }
 
 .pagination li.active{
-    font-weight: 900;
-    background-color: #2196f3;
+    background-color: var(--grey-color);
     color: white;
 }
 
@@ -697,7 +819,7 @@ button.text-editor-button.active{
 .pagination .page{
     position: relative;
     color: inherit;
-    font-size: 1.3em;
+    font-size: 1.0em;
     background: inherit;
 }
 
@@ -725,11 +847,60 @@ button.text-editor-button.active{
     border-radius: 5px;
 }*/
 
+.no-transform{
+    text-transform: none;
+}
+
+.logoname{
+    font-size: 1.5em;
+    font-weight: 800;
+    color: white;
+}
+
+.loginWrapper{
+    display: flex;
+    height: 100%;
+}
+
+.loginWrapper .item-content{
+    margin-bottom: 20px;
+    background: #EEEEEE;
+    border-radius: 6px;
+}
+
+.loginImageParent{
+    height: inherit;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.loginImageFile{
+    height: 75%;
+}
+
 .signParent{
     display: flex;
     justify-content: center;
-    height: 100%;
     align-items: center;
+    width: 100%;
+    /*height: inherit;*/
+}
+
+.bannerImage{
+    background: var(--main-color);
+    height: inherit;
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+}
+
+.signParent .list{
+    margin-top: 50px;
+}
+
+.signUpsignIn{
+    margin: 40px auto 10px auto;
 }
 
 .signParent ul:before, .signParent ul:after{
@@ -738,8 +909,9 @@ button.text-editor-button.active{
 
 .signParent form{
     border-radius: 5px;
-    width: 95%;
-    box-shadow: 0px 0px 1px 2px lightgrey;
+    width: 80%;
+    /*padding: 30px 10px;
+    box-shadow: 0px 0px 1px 1px lightgrey;*/
 }
 
 .my-actions{
@@ -747,7 +919,8 @@ button.text-editor-button.active{
 }
 
 .panel-left.mylinks{
-    width:220px;
+    width:270px;
+    border-right: 0.1px solid lightgray;
 }
 
 .sellMultParent, .viewRestockHistoryParent{
@@ -778,24 +951,143 @@ button.text-editor-button.active{
   .demo-swiper {
     margin: 0px 0 35px;
     font-size: 18px;
-    height: 70vh;
+    max-height: 70vh;
   }
 
   .swiper-pagination{
       bottom: 0 !important;
   }
 
-  .expenseWrapper .images{
-      width: 100%;
-      max-width: 100%;
+  .expenseWrapper .images, .productsWrapper .images{
+    width: 60%;
+    max-width: 100%;
+    margin: auto;
   }
 
   .holderSwiper{
       height: 80%;
       overflow: auto;
+    justify-content: center;
+    display: flex;
+      
   }
 
+  .item-media{
+    height: 40px;
+    width: 40px;
+    padding: 0 !important;
+    border: 1px solid;
+  }
 
+  .item-media i.icon{
+      width:100%;
+      height: 100%;
+  }
+
+  .brandLogoReceipt{
+    border-radius: 100%;
+    height: 85px;
+    width: 85px;
+  }
+
+  #invoiceTable, #invoiceTableSum{
+    border-collapse: collapse;
+  }
+
+  #invoiceTable thead th{
+    padding: 7.5px 0;
+}
+
+#invoiceTable th, #invoiceTable td {
+    text-align: right;
+    padding: 25px 0;
+}
+
+#invoiceTableSum td {
+    text-align: right;
+    padding: 10px 0;
+}
+
+#invoiceTableSum td:first-of-type {
+    padding-right: 0;
+}
+
+#invoiceTableSum tr:nth-of-type(4) {
+    border-bottom: 2px solid black;
+    border-top: 1px solid black;
+}
+
+#invoiceTableSum tr:first-of-type {
+    border-top: 1px solid;
+}
+
+#invoiceTable th:first-of-type, #invoiceTable td:first-of-type, #signatureHolder, .invoiceHeader {
+    padding-left: 40px;
+    text-align: left;
+    font-size: 0.9em;
+}
+
+#invoiceTable tbody tr{
+    margin: 10px 0;
+}
+
+#invoiceTable th:last-of-type, #invoiceTable td:last-of-type, #invoiceTableSum td:last-of-type {
+    padding-right: 40px;
+}
+
+.invoiceLabel {
+    width: 100px;
+}
+
+.eachLine{
+    width: 100%;
+}
+
+.eachLine div{
+    display:inline-block;
+    width: 45%;
+    text-align: left;
+}
+
+  .border-bottom{
+    border-bottom: 1px solid #dee2e6;
+  }
+
+  @media only screen and (max-width: 768px) {
+
+    .page-content{
+        width: 95%;
+        margin: auto;
+    }
+
+    .bannerImage{
+        height: 225px;
+    }
+
+    .loginImageFile{
+        height: 150px;
+    }
+
+    .signParent form{
+        width: 100%;
+    }
+
+    .popup .item-title, .signParent .item-title{
+        font-size: 0.9em;
+    }
+
+    .hideOnMobile{
+        display: none;
+    }
+  }
+
+  @media only screen and (min-width: 768px) {
+    /* For mobile phones: */
+    .searchbar{
+        width: 50% !important;
+        margin: auto;
+    }
+  }
 
 @media only screen and (min-device-width : 1030px)   
 /* and (max-device-width : 1024px)  */
@@ -835,10 +1127,14 @@ button.text-editor-button.active{
         margin: auto;
     }
     .popup .page-content{
-        width: 80%;
+        width: 50%;
         margin: auto;
         /*border-left: 0.5px solid #673ab7;
         border-right: 0.5px solid #673ab7;*/
-        box-shadow: 0px 0px 4px 0px;
+        box-shadow: 0px 0px 2px 0px;
+    }
+    .signParent{
+        width: 50%;
+        margin: auto;
     }
 } 

@@ -10,13 +10,13 @@
         <div class="navbar navbar-bg"></div>
       <div class="navbar-inner sliding">
         <img src="static/icons/favicon.png" class="margin-left-half logoIcon">
-        <div class="title padding-half no-margin logoname">Mogul Sheet</div>
-        <div class="right">
+        <div class="title padding-half no-margin logoname">Flex Business</div>
+        <!--<div class="right">
           <a href="Landing/default.html" target="_blank" class="link icon-only external">
             <i class="icon f7-icons if-not-md">info_circle_fill</i>
             <i class="icon material-icons if-md">info_circle_fill</i>
           </a>
-        </div>
+        </div>-->
       </div>
     </div>
 
@@ -35,7 +35,7 @@
             <div class="col">
                 <div class="card myCard">
                   <div class="card-content text-align-center padding-vertical">
-                    <a href="/ingredient/" class="item-content item-link">
+                    <a href="/ingredient/" data-reload-all="true" class="item-content item-link">
                       <div class="item-inner">
                         <div class="item-title myPurple">
                           <i class="icon f7-icons text-color-blue1">layers_alt</i>
@@ -50,7 +50,7 @@
               <div class="col">
                 <div class="card myCard">
                   <div class="card-content text-align-center padding-vertical">
-                  <a href="/products/" class="item-content item-link">
+                  <a href="/products/" data-reload-all="true" class="item-content item-link">
                     <div class="item-inner">
                       <div class="item-title myPurple">
                         <i class="icon f7-icons text-color-blue1">cube_box</i>
@@ -67,7 +67,7 @@
             <div class="col">
                 <div class="card myCard">
                   <div class="card-content text-align-center padding-vertical">
-                    <a href="/sales/" class="item-content item-link">
+                    <a href="/sales/" data-reload-all="true" class="item-content item-link">
                       <div class="item-inner">
                         <div class="item-title myPurple">
                           <i class="icon f7-icons text-color-blue1">tag</i>
@@ -82,7 +82,7 @@
               <div class="col">
                 <div class="card myCard">
                   <div class="card-content text-align-center padding-vertical">
-                    <a href="/expenses/" class="item-content item-link">
+                    <a href="/expenses/" data-reload-all="true" class="item-content item-link">
                     <div class="item-inner">
                       <div class="item-title myPurple">
                         <i class="icon f7-icons text-color-blue1">purchased</i>
@@ -99,11 +99,11 @@
             <div class="col">
                 <div class="card myCard">
                   <div class="card-content text-align-center padding-vertical">
-                    <a href="/clients/" class="item-content item-link">
+                    <a href="/customers/" data-reload-all="true" class="item-content item-link">
                       <div class="item-inner">
                         <div class="item-title myPurple">
                           <i class="icon f7-icons text-color-blue1">person_2</i>
-                          <div>Clients</div>
+                          <div>Customers</div>
                         </div>
                       </div>
                     </a>
@@ -114,7 +114,7 @@
               <div class="col">
                 <div class="card myCard">
                   <div class="card-content text-align-center padding-vertical">
-                    <a href="/reports/" class="item-content item-link">
+                    <a href="/reports/" data-reload-all="true" class="item-content item-link">
                     <div class="item-inner">
                       <div class="item-title myPurple">
                         <i class="icon f7-icons text-color-blue1">chart_bar</i>
@@ -131,11 +131,11 @@
             <div class="col">
               <div class="card myCard">
                 <div class="card-content text-align-center padding-vertical">
-                  <a href="/sync/" class="item-content item-link">
+                  <a @click="SignOutUser" class="item-content item-link">
                   <div class="item-inner">
                     <div class="item-title myPurple">
                       <i class="icon f7-icons text-color-blue1">cloud_upload</i>
-                      <div>Login / Sync</div>
+                      <div>Log out</div>
                     </div>
                   </div>
                 </a>
@@ -146,7 +146,7 @@
             <div class="col">
               <div class="card myCard">
                 <div class="card-content text-align-center padding-vertical">
-                  <a href="/settings/" class="item-content item-link">
+                  <a href="/settings/" data-reload-all="true" class="item-content item-link">
                   <div class="item-inner">
                     <div class="item-title myPurple">
                       <i class="icon f7-icons text-color-blue1">gear_alt</i>
@@ -160,29 +160,18 @@
           </div>
       </div>
 
-      <div class="no-margin-top" style="width: inherit;margin: auto;position: absolute;bottom: 0;">
+      <!--<div class="no-margin-top" style="width: inherit;margin: auto;position: absolute;bottom: 0;">
         <div class="row padding-horizontal-half">
         <div class="col text-align-center">
           <div class="margin-bottom-half">
             <a href="#" data-actions=".my-actions" class="actions-open">Open <i class="icon f7-icons text-color-blue1">info_circle</i></a>
           </div>
-          <!--<div class="card myCard bg-color-red text-color-white">
-            <div class="card-content text-align-center padding-vertical-half">
-              <a href="#" class="item-content item-link" @click="confirmDelete()">
-                <div class="item-inner"><div class="item-title text-color-white"><div>
-                      <i class="icon f7-icons text-color-blue1">bin_xmark</i>
-                      <span style="vertical-align: bottom;margin-left: 5px;font-size: 1.2em;">Delete</span>
-                    </div>
-                  </div>
-                </div>
-              </a>
-            </div>
-          </div>-->
+          
         </div>
       </div>
-    </div>
+    </div>-->
 
-    <div class="actions-modal my-actions">
+    <!--<div class="actions-modal my-actions">
       <a href="#" class="item-content item-link" @click="confirmDelete()">
         <div class="item-title text-color-white">
           <div class="text-align-center bg-color-red padding-vertical-half">
@@ -191,7 +180,7 @@
         </div>
       </div>
       </a>
-    </div>
+    </div>-->
 
     </div>
 
@@ -216,25 +205,29 @@ export default {
   methods: {
       openAlert: function (text) {
         var self = this;
-        self.$app.dialog.alert(text);
+        self.$app.dialog.alert(text, "Flex Business");
         //alert(text);
       },
       test: function(){
         fakeAlert();
       },
+      SignOutUser: function(){
+        var self = this;
+        self.$app.methods.signOutGlobal();
+      },
       confirmDelete: function(){
         var self = this;
         var warn = "<div class='text-align-center text-color-red'><h4 class='margin-bottom-half'>Delete all your data</h4></div>";
         warn += "<div class='text-align-center'>This will delete all your data on this device</div>";
-        warn += "<div class='text-align-center'>Type <b>Mogul Sheet</b> in the textbox below to proceed</div>";
+        warn += "<div class='text-align-center'>Type <b>Flex Business</b> in the textbox below to proceed</div>";
         self.$app.dialog.prompt(warn, function (name) {
-          if(name.toLowerCase() == "mogul sheet"){
-            self.$app.dialog.confirm('Once deleted, data cannot be recovered except you have synced your data, do you want to proceed?', "Mogul Sheet", function () {
+          if(name.toLowerCase() == "Flex Business"){
+            self.$app.dialog.confirm('Once deleted, data cannot be recovered except you have synced your data, do you want to proceed?', "Flex Business", function () {
               //self.$app.dialog.alert('Deleted');
               self.clearAllDB();
             });
           }else{
-            //self.showToast("Mogul Sheet not typed correctly");
+            //self.showToast("Flex Business not typed correctly");
           }
         });
       },
@@ -249,7 +242,6 @@ export default {
         startPouch: function(){
           var self = this;
           mogulsheetdb = self.$app.methods.startPouch();
-          dbSettingsImages = new PouchDB('settingsImages.db');
           self.getData();
           //db = null;
           
@@ -302,34 +294,9 @@ export default {
           });
           
         },
-        clearAllDB: function(){
-          var self = this;
-          try{
-            self.$app.preloader.show();
-            try{
-                window.indexedDB.databases().then((r) => {
-                  for (var i = 0; i < r.length; i++) window.indexedDB.deleteDatabase(r[i].name);
-              }).then(() => {
-                self.$app.preloader.hide();
-                  self.showToast('All data cleared.', "center");
-                  localStorage.clear();
-                  $(".compName").empty();
-                  self.startPouch();
-              }).catch((e) => {
-                self.$app.preloader.hide();
-                self.showToast("An error occured", "center");
-              });
-            }catch(err){
-              self.$app.preloader.hide();
-              self.showToast(err, "center");
-            }
-          }catch(err){
-            
-          } 
-        },
         getData: function(){
           var self = this;
-          var id = self.settingsID;
+          /*var id = self.settingsID;
           mogulsheetdb.get(id).then(function(doc) {
                 var comName = doc.companyName;
                 var curr = doc.currency;
@@ -363,7 +330,7 @@ export default {
                     }
 
                   }).catch(function (err) {
-                  });
+                  });*/
         },
       reloadPage: function(){
         var self = this;
@@ -412,17 +379,6 @@ export default {
       pageInit: function(e, page) {
         var self = this;
         self.startPouch();
-        //mogulsheetdb = self.$app.methods.startPouch();
-        mogulsheetdb.getIndexes().then(function (result) {
-            // yo, a result
-            //return mogulsheetdb;
-          }).catch(function (err) {
-            // ouch, an error
-          });
-        //console.log("on home",  mogulsheetdb);
-        //self.startPouch();
-        //self.startPouch();
-        
       },
       pageAfterIn: function (event, page) {
           // do something after page gets into the view

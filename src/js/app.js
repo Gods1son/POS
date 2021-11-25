@@ -35,17 +35,17 @@ import App from '../app.f7.html';
 //window.Dexie = Dexie;
 import Dom7 from 'dom7';
 window.$$ = Dom7;
-//import * as moment from 'moment';
+import * as moment from 'moment';
 import jQuery from 'jquery';
 window.jQuery = jQuery;
 window.$ = jQuery;
 
 
 Template7.registerHelper("money", function(val){
-    var sym = localStorage.getItem("currency", val);
-    if(sym == undefined || sym == "undefined" || sym == null || sym == "null"){
-      sym = "";
-    }
+    //var sym = app.data.settings == null ? "" : app.data.settings.currency;
+    //sym = sym == undefined ? "" : sym;
+    var sym = "";
+    val = Number(val);
     //sym = sym == undefined ? "" : sym;
     if(val < 0){
       var rev = 0 - val;
@@ -69,7 +69,7 @@ setTimeout(function(){
     root: '#app', // App root element
     component: App, // App main component
   
-    name: 'Mogul Sheet', // App name
+    name: 'Omni', // App name
     theme: 'auto', // Automatic theme detection
     view: {
       pushState: true,
@@ -81,7 +81,11 @@ setTimeout(function(){
     data() {
       return {
         openedPanel: true,
-        isDesktop: false
+        isDesktop: false,
+        apiUrl: "https://localhost:44383/api/", //"https://flexmoni.com/api/",
+        siteUrl: "https://localhost:44383/", //"https://flexmoni.com/",
+        settings: null,
+        fetchedSettings: false
       };
     },
     methods: {
@@ -99,6 +103,172 @@ setTimeout(function(){
           return false;
         }
       },
+      postDataAPI: async function(url = '', data = {}, includeToken = true){
+        return new Promise((resolve, reject) => {
+              url = app.data.apiUrl + url;
+            var headers = {
+              
+              // 'Content-Type': 'application/x-www-form-urlencoded',
+            };
+            if(includeToken){
+              var token = localStorage.getItem("FlexBusinessToken");
+              headers.Authorization = 'Bearer ' + token;
+            }
+            $.ajax({
+              url: url,
+              headers: headers,
+              method: 'POST',
+              contentType: 'application/json',
+              data: JSON.stringify(data),
+              success: function (data) {
+                resolve(data)
+              },
+              error: function (error) {
+                if(error.status == 401){
+                  localStorage.removeItem("FlexBusinessToken");
+                  app.views.main.router.navigate('/login/');
+                }
+                reject(error);
+              }
+            });
+        });
+        
+          
+      },
+      postFormDataAPI: async function(url = '', data = {}, includeToken = true){
+        return new Promise((resolve, reject) => {
+            url = app.data.apiUrl + url;
+            var headers = {
+              
+              // 'Content-Type': 'application/x-www-form-urlencoded',
+            };
+            if(includeToken){
+              var token = localStorage.getItem("FlexBusinessToken");
+              headers.Authorization = 'Bearer ' + token;
+            }
+            $.ajax({
+              url: url,
+              type:"POST",
+              contentType: false,
+              processData: false,
+              headers: headers,
+              data: data,
+              success: function (data) {
+                resolve(data)
+              },
+              error: function (error) {
+                if(error.status == 401){
+                  localStorage.removeItem("FlexBusinessToken");
+                  app.views.main.router.navigate('/login/');
+                }
+                reject(error);
+              }
+            });
+        });
+        
+          
+      },
+      postData: async function (url = '', data = {}, includeToken = true) {
+        url = app.data.apiUrl + url;
+        
+        var headers = {
+          'Content-Type': 'application/json'
+          // 'Content-Type': 'application/x-www-form-urlencoded',
+        };
+        if(includeToken){
+          var token = localStorage.getItem("FlexBusinessToken");
+          headers.Authorization = 'Bearer ' + token;
+        }
+        // Default options are marked with *
+        await fetch(url, {
+          method: 'POST', // *GET, POST, PUT, DELETE, etc.
+          mode: 'cors', // no-cors, *cors, same-origin
+          headers: headers, // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+          body: JSON.stringify(data) // body data type must match "Content-Type" header
+        }).then(response => {
+          var ret_response = response.json();
+          console.log(ret_response);
+          return ret_response; // parses JSON response into native JavaScript objects
+        });
+      },
+      getDataAPI: async function (url = '', includeToken = true) {
+
+        return new Promise((resolve, reject) => {
+          url = app.data.apiUrl + url;
+          var headers = {
+            
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+          };
+          if(includeToken){
+            var token = localStorage.getItem("FlexBusinessToken");
+            headers.Authorization = 'Bearer ' + token;
+          }
+          $.ajax({
+            url: url,
+            headers: headers,
+            method: 'GET',
+            contentType: 'application/json',
+            data: {},
+            success: function (data) {
+              resolve(data)
+            },
+            error: function (error) {
+              if(error.status == 401){
+                localStorage.removeItem("FlexBusinessToken");
+                app.views.main.router.navigate('/login/');
+              }
+              reject(error);
+            }
+          });
+        });
+        
+      },
+      signOutGlobal: function(){
+        var token = localStorage.getItem("FlexBusinessToken");
+        if(token != null){
+          localStorage.removeItem("FlexBusinessToken");
+        }
+        console.log("Log out");
+        app.views.main.router.navigate('/login/');
+      },
+      getBusinessProfile: function() {
+        $.when(app.methods.getDataAPI("business/GetBusinessProfile")).then(function( data, textStatus, jqXHR ) {
+          if(data != null){
+            app.data.settings = data;
+          }
+        });
+      },
+      showToast: function(text, position, icon = false){
+        //var self = this;
+        app.toast.create({
+              icon: icon ? '<i class="f7-icons">checkmark_alt_circle</i>' : '',
+              text: text,
+              position: position,
+              closeTimeout: 2000,
+          }).open();
+    },
+    formatDate: function(date){
+      if(date != null){
+        return moment(date).format('MMM Do YYYY')
+      }
+      return "";
+    },
+    formatMoney:function(val){  
+      //var self = this;           
+      var sym = app.data.settings == null ? "" : app.data.settings.currency;
+      sym = sym == undefined ? "" : sym;
+      val = Number(val);
+      if(val < 0){
+        var rev = 0 - val;
+        var val2 = val + rev + rev;
+        val = val2;
+        sym = "-" + sym;
+      }
+      val = Math.round((val + Number.EPSILON) * 100) / 100;
+      //var ret = sym + val.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+      var ret = sym + val.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+      return ret;
+    },
       generateClientID: function(){
         var navigator_info = window.navigator;
         var screen_info = window.screen;
@@ -128,108 +298,19 @@ setTimeout(function(){
       },
       startPouch: function(){
         //var self = this;
-        //db = null;
-        try{//id,name,unit_size,unit,cost_per_unit,status,created_date
-          mogulsheetdb = new PouchDB('mogulsheet.db', {auto_compaction: true});
-          var mogulsheetIndex = localStorage.getItem("mogulsheetIndex");
-
-        if(mogulsheetIndex == undefined){
-          mogulsheetdb.createIndex({
-            index: {
-              fields: ['_id','ingredientID', 'status'],
-              name: 'ingredients',
-            }
-          });
-
-          mogulsheetdb.createIndex({
-            index: {
-              fields: ['_id','clientID', 'status'],
-              name: 'clients',
-            }
-          });
-
-          mogulsheetdb.createIndex({
-            index: {
-              fields: ['_id','productID', 'status'],
-              name: 'products',
-            }
-          });
-
-          mogulsheetdb.createIndex({
-            index: {
-              fields: ['_id','expenseID', 'status'],
-              name: 'expenses',
-            }
-          });
-
-          mogulsheetdb.createIndex({
-            index: {
-              fields: ['_id', 'settingID'],
-              name: 'settings',
-            }
-          });
-
-          mogulsheetdb.createIndex({
-            index: {
-              fields: ['_id','restockID'],
-              name: 'restock',
-            }
-          });
-
-          mogulsheetdb.createIndex({
-            index: {
-              fields: ['_id','prodIngsID', 'productID', 'status'],
-              name: 'prodIngs',
-            }
-          });
-
-          mogulsheetdb.createIndex({
-            index: {
-              fields: ['_id','prodOthersID', 'productID', 'status'],
-              name: 'prodOthers',
-            }
-          });
-
-          mogulsheetdb.createIndex({
-            index: {
-              fields: ['_id','saleID', 'parentID', 'status'],
-              name: 'sales',
-            }
-          });
-
-          mogulsheetdb.createIndex({
-            index: {
-              fields: ['_id','saleID', 'parentID', 'status', 'isEstimate', 'created_date'],
-              name: 'salesEstimate',
-            }
-          });
-
-          mogulsheetdb.createIndex({
-            index: {
-              fields: ['_id', 'parentID', 'status', 'productID_saleID'],
-              name: 'productSales',
-            }
-          });
-          localStorage.setItem("mogulsheetIndex", 1);
-        }
-          return mogulsheetdb;
-
-            //self.syncDB();
-            //self.getData();
-        }catch(err){
-          
-          }
+        
       },
     },
     on: {
       init: function () {
         var self = this;
         //console.log('App initialized');
-        app.methods.generateClientID();
+        //app.methods.generateClientID();
       },
       pageInit: function () {
         //var self = this;
         app.methods.startPouch();
+        
         //app.methods.alert();
         //self.$app.alert();
       },
@@ -247,6 +328,15 @@ setTimeout(function(){
       pageBeforeIn: function (event, page) {
         // do something after page gets into the view
         var self = this;
+        var token = localStorage.getItem("FlexBusinessToken");
+        if(token != null && app.data.settings == null && app.data.fetchedSettings == false){
+          //console.log("get profile from home");
+          app.methods.getBusinessProfile();
+          //console.log("fetched settings");
+          app.data.fetchedSettings = true;
+        }
+
+
         var width = $(window).width();
         if(width >= 1024){
             isDesktop = true;
@@ -257,20 +347,25 @@ setTimeout(function(){
         //console.log(isDesktop);
         var page = event.el;
         var name = $$(page).data("name");
+        
         var panel = app.panel.get('.panel-left');
-        if(name == "home"){
+        if(name == "home" || name == "login"){
 
           if(panel.opened){
             panel.toggle(false);
           }
         }else{
-          app.methods.sendAnalytics(name);
+          //app.methods.sendAnalytics(name);
           if(!panel.opened){
             var width = $(window).width();
             if(width >= 1024 && !openedPanel){
               panel.toggle(false);
             }
           }
+        }
+        if(name != undefined && name != "home" && name != "login"){
+          $(".quicklinks div.active").removeClass("active");
+          $(".quicklinks div." + name).addClass("active");
         }
       }
     }
@@ -299,6 +394,7 @@ setTimeout(function(){
       
   function onBackKeyDown() {
     // Handle the back button
+    console.log("back button");
     if(app.views.main.history.length == 1){
       exitApp();
       e.preventDefault();
@@ -316,6 +412,11 @@ setTimeout(function(){
   window.addEventListener("beforeunload", function(event) {
     event.returnValue = "Are you sure you want to leave?";
   });
+  /*window.addEventListener("popstate", function(event) {
+    console.log("going back now");
+    //event.preventDefault();
+    //app.views.main.router.refreshPage();
+  });*/
 
 },200)
 

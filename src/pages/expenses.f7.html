@@ -44,10 +44,6 @@
         </div>
 
         <div class="no-margin-vertical padding-horizontal-half">
-          <a href="#" class="no-padding text-color-blue">
-            <div class="item-inner padding-vertical-half">
-              <div class="dashText">Snapshot</div>
-            </div></a>
             <div class="">
               <div class="block no-margin-vertical no-padding">
                 <div class="row no-gap dash">
@@ -62,21 +58,21 @@
                   <div class="col-50 medium-50 small-50 xsmall-100">
                     <div class="card card-outline">
                       <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">Total Amount Paid</div>
-                      <div class="card-content">{{money totalPaid}}</div>
+                      <div class="card-content">{{totalPaid}}</div>
                     </div>
                   </div>
 
-                  <div class="col-100 medium-50">
+                  <div class="col-50 medium-50">
                     <div class="card card-outline">
                       <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">Total Amount of Expenses</div>
-                      <div class="card-content">{{money totalToPay}}</div>
+                      <div class="card-content">{{totalToPay}}</div>
                     </div>
                   </div>
         
-                  <div class="col-100 medium-50">
+                  <div class="col-50 medium-50">
                     <div class="card card-outline">
                       <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">(Total Amount Paid minus Total Expenses)</div>
-                      <div class="card-content">{{money totalDifference}}</div>
+                      <div class="card-content">{{totalDifference}}</div>
                     </div>
                   </div>
         
@@ -98,25 +94,29 @@
       </div>
     </div>
 
-          <div class="block no-margin-vertical padding-horizontal-half filterDateParent">  
-            <div class="no-hairlines-md no-margin-bottom margin-top-half">
-                <div class="item-content item-input1">
-                    <div class="item-inner bg-color-white specWrap">
-                    <div class="item-input-wrap">
-                        <input type="text" class="specSearch" placeholder="Filter expenses by date" id="demo-calendar-modal-expense"/>
-                        <span class="input-clear-button specClear" @click="resetTable"></span>
-                    </div>
-                    </div>
-                </div>
-            </div>
-          </div>
-
           <div class="row margin-top-half myToolbar">
-            <div class="col-50 no-padding-vertical">
+            <div class="col-33 no-padding-vertical">
               <span class="margin-left-half">You have {{totalMat}} {{js "this.totalMat > 1 ? 'expenses' : 'expense'"}}</span>
             </div>
-            <div class="col-50 no-padding-vertical text-align-right">
-              <span class="display-inline-flex margin-right-half">
+
+            <div class="col-33 no-padding-vertical">
+              <div class="block no-margin-vertical filterDateParent">  
+                <div class="no-hairlines-md no-margin-bottom margin-top-half">
+                    <div class="item-content item-input1">
+                        <div class="item-inner bg-color-white specWrap">
+                        <div class="item-input-wrap">
+                          <input type="text" class="specSearch" placeholder="Date filter" id="demo-calendar-modal-expense"/>
+                          <span class="input-clear-button specClear" @click="resetTable"></span>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+              </div>
+            </div>
+
+
+            <div class="col-33 no-padding-vertical text-align-right">
+              <span class="display-inline-flex margin-right-half display-none">
                 <span class="item-title float-right">Show Deleted</span>
                 <span class="item-after float-right margin-left-half">
                     <label class="toggle toggle-init color-red showInactiveExpenses">
@@ -157,7 +157,7 @@
   </div>
 
    <!--pop up add new product-->
-   <div class="popup expenseImages popup-tablet-fullscreen">
+   <!--<div class="popup expenseImages popup-tablet-fullscreen">
     <div class="view">
       <div class="page">
         <div class="navbar">
@@ -165,7 +165,6 @@
           <div class="navbar-inner">
             <div class="title">View Expense Receipts</div>
             <div class="right">
-              <!-- Link to close popup -->
               <a class="link" @click="closeReceiptImages()"><i class="icon f7-icons">multiply</i>Close</a>
             </div>
           </div>
@@ -174,23 +173,18 @@
           <div class="block margin-half">
             
             <div>
-              <input type="file" name="photos" id="myPhotos" accept="image/x-png,image/gif,image/jpeg,image/jpg,image/png" @change="checkFiles" multiple>
+              <input type="file" name="photos" id="myPhotos2" accept="image/x-png,image/gif,image/jpeg,image/jpg,image/png" @change="checkFiles" multiple>
               <a class="button mainButton margin-vertical-half" @click="uploadImages">Upload Now</A>
             </div>
 
-            <div class="swiper-container demo-swiper">
-              <div class="swiper-pagination"></div>
-              <div class="swiper-wrapper expenseWrapper">
-
-              </div>
-            </div>
+            
 
           </div>
         </div>
       </div>
     </div>
   
-  </div>
+  </div>-->
 
   <!--pop up-->
   <div class="popup newExpense popup-tablet-fullscreen">
@@ -199,7 +193,7 @@
         <div class="navbar">
           <div class="navbar-bg"></div>
           <div class="navbar-inner">
-            <div class="title">Add New Expense</div>
+            <div class="title">Add/Edit Expense</div>
             <div class="right">
               <!-- Link to close popup -->
               <a class="link" @click="closePopUp"><i class="icon f7-icons">multiply</i>Close</a>
@@ -278,6 +272,23 @@
                   </div>
                 </li>
                 <li>
+                  <div class="item-content item-input">
+                      <div class="item-inner">
+                        <div class="item-title">Upload Receipts</div>
+                      <div class="item-input-wrap">
+                        <input type="file" name="photos" id="myPhotos" accept="image/x-png,image/gif,image/jpeg,image/jpg,image/png" @change="checkFiles" multiple>
+                            
+                        <div class="swiper-container demo-swiper margin-top">
+                              <div class="swiper-pagination"></div>
+                              <div class="swiper-wrapper expenseWrapper">
+                
+                              </div>
+                            </div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
                   <div class="item-content">
                     <div class="item-inner">
                       <a href="#" class="col button button-outline button-raised mainButton" @click='saveData'>Save Expense</a>
@@ -333,61 +344,34 @@ export default {
     },
     uploadImages: function(){
           var self = this;
-            var data = new FormData();
-            self.$app.preloader.show();
-            for(var i = 0; i < $(".holderSwiper .images.new").length; i++){
-              var ImageURL = $(".holderSwiper .images.new").eq(i).attr("src");
-              var ImageName = $(".holderSwiper .images.new").eq(i).attr("data-name");
-              /*var block = ImageURL.split(";");
-              // Get the content type of the image
-              var contentType = block[0].split(":")[1];// In this case "image/gif"
-              // get the real base64 content of the file
-              var realData = block[1].split(",")[1];
-              // Convert it to a blob to upload*/
-              var blob = self.b64toBlob(ImageURL, ImageName);
-              data.append("photos", blob);
+            var form_data = new FormData();
+            
+
+            var fileUpload = $("#myPhotos").get(0);
+            var files = fileUpload.files;
+            if(files.length > 0){
+               // if there are multiple files , loop through each files
+               form_data.append("id", self.currentExpense.id);
+              for (var i = 0; i < files.length; i++) {
+                form_data.append("receiptsImages", files[i]);
+              }
+            }else{
+              return;
             }
             
+            self.$app.preloader.show();
             //return;
-
-            $.ajax({
-                url: self.backendUrl + 'uploadImages',
-                type: 'post',
-                data: data,
-                contentType: false,
-                processData: false,
-                success: function(response){
-                  self.$app.preloader.hide();
-                    if(response.success){
-                        var keys = Object.keys(response.images);
-                        if(self.currentExpense.images == undefined) self.currentExpense.images = [];
-                        //var images = [];
-                        for(var i = 0; i < keys.length; i++){
-                            var obj = {};
-                            var key = keys[i];
-                            var val = response.images[keys[i]];
-                            obj[key] = val;
-                            self.currentExpense.images.push(obj);
-                        }
-                        if(keys.length > 0){
-                          self.$app.preloader.show();
-                          mogulsheetdb.put(self.currentExpense).then((dat) => {
-                            self.$app.preloader.hide();
-                            self.showToast("Image(s) uploaded", "center", true);
-                            self.getData();
-                          }).catch((err) => {
-                            self.$app.preloader.hide();
-                          })
-                        }
-                    }else{
-                        self.showToast("An error uploading images", "center");
-                    }
-                },
-                error: function(err){
-                  self.$app.preloader.hide();
-                  self.showToast("An error uploading images", "center");
-                }
-            });
+            $.when(self.$app.methods.postFormDataAPI("expenses/UploadReceipts", form_data, true)).then(function( data, textStatus, jqXHR ) {
+              self.$app.preloader.hide();
+                //self.currentExpense.receipts = data;
+                self.$app.methods.showToast("Receipts uploaded", "center", true);
+                self.getData();
+                
+            }).catch((data, textStatus, jqXHR) => {
+                console.log(data, textStatus, jqXHR);
+                self.$app.preloader.hide();
+                self.$app.methods.showToast("An error occurred", "center");
+            })
     },
     setupReader: function(file) {
       var self = this;
@@ -404,7 +388,7 @@ export default {
     },
     checkFiles: function(e) {  
       var self = this;
-      var maxLimit = 3;  
+      var maxLimit = 5;  
       var id = e.target.id;
 
       let list = new DataTransfer;
@@ -415,7 +399,7 @@ export default {
           var files = $('#' + id)[0].files[i];
           var size = files.size / 1024 / 1024;
           if((size <= 2) && (i < maxLimit)){
-            self.setupReader(files);
+            //self.setupReader(files);
            /* var reader = new FileReader();
             reader.onload = function(){
               var html = "<div class='swiper-slide'>";
@@ -424,42 +408,15 @@ export default {
               $(".expenseWrapper").append(html); 
             };
             reader.readAsDataURL(files);*/
-              list.items.add(files);
+              //list.items.add(files);
           }else{
               cut++;
           }
       }  
-      document.getElementById(id).files = list.files; 
+      //document.getElementById(id).files = list.files; 
       var tense = cut == 1 ? " file was " : " files were "
       if(cut > 0) alert(cut + tense + "removed because it's too large or you went above file limits");   
   },
-    openReceiptImages: function(id){
-      var self = this;
-      var item = self.expenses.find(function(e){ 
-          return e._id == id;
-      });
-
-      self.$setState({
-        currentExpense:item
-      });
-      var popup = self.$app.popup.open('.expenseImages', true);
-      if(item.images == undefined || item.images.length == 0){
-        return;
-      }
-      //var images = ["https://mogulsheetimages.s3.us-east-2.amazonaws.com/1600046526415-blob","https://mogulsheetimages.s3.us-east-2.amazonaws.com/1600046526421-blob"];
-     var images = item.images;
-      $(".expenseWrapper").empty(); 
-      for(var i = 0; i < images.length; i++){
-        var obj = images[i];
-        var imgName = Object.keys(obj)[0];
-        var imgSrc = Object.values(obj)[0];
-        var html = "<div class='swiper-slide'>";
-          html += "<div class='holderSwiper'><img class='images' src='" + imgSrc + "' data-name='" + imgName + "'></div>";
-        html += "<div><p><a class='button bg-color-red text-color-white deleteImage'>Delete Image</a></p></div></div>";
-        $(".expenseWrapper").append(html); 
-      }
-      self.reInitSwiper();
-    },
     reInitSwiper: function(){
       var self = this;
       self.$app.swiper.destroy('.swiper-container');
@@ -480,17 +437,29 @@ export default {
       self.$setState({
         currentExpense:null
       });
+      popup.once("closed", function(){
+            self.getData();
+        });
     },
-    deleteImage1: function(event){
+    deleteImage: function(name, but){
       var self = this;
-      var but = event.target;
-      $(but).parents("swiper-slide").eq(0).remove();
-
+      $(but).parents(".swiper-slide").eq(0).remove();
+      self.reInitSwiper();
+      var obj = {}
+      obj.name = name;
+      obj.id = self.currentExpense.id;
+      self.$app.preloader.show();
+      $.when(self.$app.methods.postDataAPI("expenses/DeleteImage", obj, true)).then(function( data, textStatus, jqXHR ) {
+        self.$app.preloader.hide();
+      }).catch((err) => {
+        self.$app.preloader.hide();
+        self.$app.methods.showToast("An error occurred", "center");
+      })
     },
     permdeleteExpense: function(list, id){
         var self = this;
         
-        self.$app.dialog.confirm("Are you sure you want to permanently delete this expense?", "Mogul Sheet", function(){
+        self.$app.dialog.confirm("Are you sure you want to permanently delete this expense?", "Omni", function(){
                 mogulsheetdb.get(id).then(function(doc) {
                         // console.log(doc);
                           doc.status = -1
@@ -517,23 +486,22 @@ export default {
     },
     deleteExpense: function(list, id){
         var self = this;
-        var checked = 0;
+        var checked = false;
         var text = "delete"
-        var toggle = self.$app.toggle.get(".showInactiveExpenses");
+        /*var toggle = self.$app.toggle.get(".showInactiveExpenses");
         if(toggle != undefined){
             if(toggle.checked){
                 text = "activate";
                 checked = 1;
             }
-        }
-        self.$app.dialog.confirm("Are you sure you want to " + text + " this expense?", "Mogul Sheet", function(){
-          mogulsheetdb.get(id).then(function(doc) {
-                        // console.log(doc);
-                          doc.status = checked
-                          return mogulsheetdb.put(doc);
-                        }).then(function(){
-                self.expenses = self.expenses.filter(function(e){ 
-                      return e._id != id;
+        }*/
+        self.$app.dialog.confirm("Are you sure you want to " + text + " this expense?", "Omni", function(){
+          self.$app.preloader.show();
+          $.when(self.$app.methods.getDataAPI("expenses/DeleteActivateExpense?id=" + id + "&stat=" + checked)).then(function( data, textStatus, jqXHR ) {
+            self.$app.preloader.hide();
+            if(data){
+              self.expenses = self.expenses.filter(function(e){ 
+                      return e.id != id;
                   });
                   var act = checked == 0 ? "deleted!" : "activated!";
                   self.showToast("Expense " + act, "center", true);
@@ -547,8 +515,15 @@ export default {
                       self.setDataTable();
                     self.calculateTotalMoneyExpense();
                   });
-             // }
-            });
+                }    
+            }).catch((data, textStatus, jqXHR) => {
+                self.$app.preloader.hide();
+                  if(data != null && data.status == 404){
+                    self.$app.methods.showToast("Expense not found", "center");
+                    return;
+                  }
+                  self.$app.methods.showToast("An error occurred", "center");
+              })
         }, null);
     },
     openPopUp: function(id){
@@ -557,30 +532,54 @@ export default {
         //popup.once("opened", function(){
           if(id != null || id != undefined){
               var item = self.expenses.find(function(e){ 
-                        return e._id == id;
+                        return e.id == id;
                     });
                     self.$setState({
                       currentExpense:item
                     });
                     $$("input.name").val(item.name);
-                    $$("input.amount_to_pay").val(item.amount_to_pay);
-                    $$("input.amount_paid").val(item.amount_paid);
+                    $$("input.amount_to_pay").val(item.amountToPay);
+                    $$("input.amount_paid").val(item.amountPaid);
                     var toggle = self.$app.toggle.get(".recurring").checked;
                     if((toggle == true && item.recurring == 0) || (toggle == false && item.recurring == 1)){
                         self.$app.toggle.get(".recurring").toggle();
                     }
-                    if(item.created_date != ""){
-                      var myDate = new Date(item.created_date);
+                    if(item.createdDate != null && item.createdDate != ""){
+                      //var myDate = new Date(item.createdDate);
                       //myDate = myDate.toLocaleString();
-                      myDate = moment.unix(item.created_date).format("LLL");
+                      var myDate = moment(item.createdDate).format('LLL');
                       $("#expense-calendar-modal").val(myDate);
                     }
-                    if(item.date_paid != ""){
-                      var myDate = new Date(item.date_paid);
+                    if(item.datePaid != null && item.datePaid != ""){
+                      //var myDate = new Date(item.datePaid);
                      // myDate = myDate.toLocaleString();
-                      myDate = moment.unix(item.date_paid).format("LLL");
+                      //var myDate = self.$app.methods.formatDate(item.datePaid);
+                      var myDate = moment(item.datePaid).format('LLL');
                       $("#paid-calendar-modal").val(myDate);
                     }
+
+                    if(item.receipts != null){
+                      var images = item.receipts.split(";");
+                      $(".expenseWrapper").empty(); 
+                      for(var i = 0; i < images.length; i++){
+                        var obj = images[i];
+                        //var imgName = Object.keys(obj)[0];
+                        //var imgSrc = Object.values(obj)[0];
+                        var html = "<div class='swiper-slide'>";
+                          html += "<div class='holderSwiper'><img class='images' src='" + obj + "'></div>";
+                          html += "<div class='display-inline-flex margin-vertical padding-bottom' style='width:100%'><a class='button button-small tealBgButton link external margin-right' target='_blank' href='" + obj + "' download>Download Receipt</a><a class='button button-small deleteImage' data-name='" + obj + "'>Delete Receipt</a></div></div>";
+                        $(".expenseWrapper").append(html); 
+                      }
+                      $('.expenseWrapper').off("click").on('click','.button', function (e) {
+                          var name = $(this).attr("data-name");
+                          if($(this).hasClass("deleteImage")){
+                            self.deleteImage(name, this);
+                          }
+                          //return false;
+                      });
+                      self.reInitSwiper();
+                    }
+                    
                     var popup = self.$app.popup.open('.popup.newExpense', true);
             } else{
               $("#expense-calendar-modal").val(moment().format('LLL'));
@@ -598,27 +597,28 @@ export default {
         var totalPaid = 0;
         //var totalMoney = 0;
         $.each(self.expenses, function(index,item){
-            if(item.amount_to_pay != 0 && item.amount_to_pay != ""){
-                totalToPay += Number(item.amount_to_pay);
+            if(item.amountToPay != 0 && item.amountToPay != ""){
+                totalToPay += Number(item.amountToPay);
             }
-            if(item.amount_paid != 0 && item.amount_paid != ""){
-                totalPaid += Number(item.amount_paid);
+            if(item.amountPaid != 0 && item.amountPaid != ""){
+                totalPaid += Number(item.amountPaid);
             }
             //totalMoney += Number(item.cost);
         })
         var totDiff = totalPaid - totalToPay;
         totDiff = totDiff.toFixed(2);
+        var showDiff = (totalPaid - totalToPay);
         self.$setState({
-            totalToPay: totalToPay,
-            totalPaid: totalPaid,
-            totalDifference: (totalPaid - totalToPay),
+            totalToPay: self.formatMoney(totalToPay),
+            totalPaid: self.formatMoney(totalPaid),
+            totalDifference: self.formatMoney(showDiff),
         }, function(){
-          self.calculateTotalMoneyExpense();
+          //self.calculateTotalMoneyExpense();
         });
     },
     resetTable: function(){
         var self = this;
-        console.log("empty");
+        //console.log("empty");
         self.getData();
     },
     showCalendarPopup: function(){
@@ -635,10 +635,12 @@ export default {
         $("#paid-calendar-modal").next("span").click();
         $("#expense-calendar-modal").next("span").click();
         $$("input.name,input.amount_to_pay,input.amount_paid, #expense-calendar-modal, #paid-calendar-modal").val("");
-        self.getData();
+        self.$app.swiper.destroy('.swiper-container');
+        $(".expenseWrapper, .swiper-pagination").empty();
+        document.getElementById("myPhotos").value = "";
         var popup = self.$app.popup.close('.newExpense', true);
         popup.once("closed", function(){
-
+          self.getData();
         });
     },
     saveData: function(){
@@ -647,7 +649,7 @@ export default {
       var elem = $$("input:required");
       var err = self.$app.input.validateInputs(".expenseForm");
       var toggle = self.$app.toggle.get(".recurring");
-      var isRecur = toggle.checked == true ? 1 : 0;
+      var isRecur = toggle.checked;
       var toPay = $$("input.amount_to_pay").val();
       var paid = $$("input.amount_paid").val();
       var paidDate = ""; var today = Date.parse(new Date($.now()));
@@ -660,45 +662,64 @@ export default {
           return;
       }
       if(Number(paid) > 0 && Number(paid) >= Number(toPay)){
-            paidDate = moment().format("X");
+            paidDate = moment().format();
       }
       if($("#paid-calendar-modal").val().trim() != ""){
-        paidDate = moment($("#paid-calendar-modal").val()).format("X");
+        paidDate = moment($("#paid-calendar-modal").val()).format();
       }
       if(err){
         var obj = {
                 name: $$("input.name").val(), 
-                amount_to_pay: $$("input.amount_to_pay").val(), 
-                amount_paid: $$("input.amount_paid").val(), 
+                amountToPay: $$("input.amount_to_pay").val(), 
+                amountPaid: $$("input.amount_paid").val(), 
                 recurring: isRecur,
-                date_paid: paidDate,
-                created_date: moment($("#expense-calendar-modal").val()).format("X"),
-                status:1
+                datePaid: paidDate,
+                createdDate: moment($("#expense-calendar-modal").val()).format(),
+                status:true
               };
             if(self.currentExpense != null){
-              obj._id = self.currentExpense._id;
-              obj._rev = self.currentExpense._rev;
-              obj.expenseID = obj._id;
-              if(self.currentExpense.images != undefined){
-                obj.images = self.currentExpense.images;
+              obj.id = self.currentExpense.id;
+              if(self.currentExpense.receipts != undefined){
+                obj.receipts = self.currentExpense.receipts;
               }
-            }else{
-              obj._id = moment().format("X");
-              obj.expenseID = obj._id;
             }
-            mogulsheetdb.put(obj).then(function(res) {
-                  //db.expenses.get(id).then(function(item) {
-                    self.showToast("Item saved.", "center", true);
+            
+            var form_data = new FormData();
+
+              for ( var key in obj ) {
+                  form_data.append(key, obj[key]);
+              }
+            var fileUpload = $("#myPhotos").get(0);
+            var files = fileUpload.files;
+            if(files.length > 0){
+               // if there are multiple files , loop through each files
+               var id = self.currentExpense == null ? 0 : self.currentExpense.id;
+               form_data.append("id", id);
+              for (var i = 0; i < files.length; i++) {
+                form_data.append("receiptsImages", files[i]);
+              }
+            }
+
+            self.$app.preloader.show();
+            $.when(self.$app.methods.postFormDataAPI("expenses/SaveExpenseForm", form_data, true)).then(function( data, textStatus, jqXHR ) {
+              self.$app.preloader.hide();
+                if(data == true){
+                    self.showToast("Expense saved.", "center", true);
                     $("#paid-calendar-modal").next("span").click();
                     $("#expense-calendar-modal").next("span").click();
                     $$("input.name,input.amount_to_pay,input.amount_paid, #expense-calendar-modal, #paid-calendar-modal").val("");
+                    self.$app.swiper.destroy('.swiper-container');
+                    $(".expenseWrapper, .swiper-pagination").empty();
+                    document.getElementById("myPhotos").value = "";
                     self.$setState({
                       currentExpense: null
                     })
-                    //self.$app.popup.close('.newExpense', true);
-                    //self.getData();
-                //})
-              })
+                  }
+              }).catch((data, textStatus, jqXHR) => {
+                console.log(data, textStatus, jqXHR);
+                self.$app.preloader.hide();
+                self.$app.methods.showToast("An error occurred", "center");
+            })
           }else{
               self.showToast("Please fill all required fields", "center");
           }
@@ -713,18 +734,8 @@ export default {
           }).open();
     },
     formatMoney:function(val){             
-      var self = this;          
-      var sym = self.settings == null ? "" : self.settings.currency;
-      sym = sym == undefined ? "" : sym;
-      val = Number(val);
-      if(val < 0){
-        var rev = 0 - val;
-        var val2 = val + rev + rev;
-        val = val2;
-        sym = "-" + sym;
-      }
-      val = Math.round((val + Number.EPSILON) * 100) / 100;
-      var ret = sym + val.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+      var self = this;   
+      var ret = self.$app.methods.formatMoney(val);
       return ret;
     },
     setDataTable: function(){
@@ -740,30 +751,30 @@ export default {
                   $("#expenses-list ul.list").remove();
                   for(var i = 0; i < self.expenses.length; i++){
                     var row = self.expenses[i];
-                    var stat = row.status == 1 ? "display-none" : "";
-                    var hidden = row.amount_paid >= row.amount_to_pay ? "" : "display-none";
-                    var paidAll = parseFloat(row.amount_paid) >= parseFloat(row.amount_to_pay) ? '<span class="badge color-green paid padding-horizontal">Yes</span>' : '<span class="badge color-red paid padding-horizontal">No</span>';
-                    var recurr = row.recurring == 1 ? '<span class="badge color-green paid padding-horizontal">Yes</span>' : '--';
+                    var stat = row.status == true ? "display-none" : "";
+                    var hidden = row.amountPaid >= row.amountToPay ? "" : "display-none";
+                    var paidAll = parseFloat(row.amountPaid) >= parseFloat(row.amountToPay) ? '<span class="badge color-green paid padding-horizontal">Yes</span>' : '<span class="badge color-red paid padding-horizontal">No</span>';
+                    var recurr = row.recurring == true ? '<span class="badge color-green paid padding-horizontal">Yes</span>' : 'No';
                     var html = "<tr>";
-                        html += '<td class="id" style="display:none;">' + row._id + '</td>';
+                        html += '<td class="id" style="display:none;">' + row.id + '</td>';
                         html += "<td class='name'>" + row.name + "</td>";
-                        html += "<td class='cost'>" + self.formatMoney(row.amount_to_pay) + "</td>";
-                        html += "<td>" + self.formatMoney(row.amount_paid) + "</td>";
+                        html += "<td class='cost'>" + self.formatMoney(row.amountToPay) + "</td>";
+                        html += "<td>" + self.formatMoney(row.amountPaid) + "</td>";
                         html += "<td class='paidAll'>" + paidAll + "</td>";
                         html += "<td>" + recurr + "</td>";
-                        html += "<td class='created_date'>" + moment.unix(row.created_date).format("LLL") + "</td>";
+                        html += "<td class='created_date'>" + self.$app.methods.formatDate(row.createdDate) + "</td>";
                         
                         var pops = '<a href="#" data-popover=".expenses-popover-' + i + '" class="popover-open"><i class="f7-icons">ellipsis_vertical</i></a>'
                         pops += '<div class="popover my-popover expenses-popover expenses-popover-' + i + '" data-close-on-escape="true" data-backdrop="false">'; 
                         pops += '<div class="popover-angle"></div><div class="popover-inner padding-half">';
 
-                          pops += '<a class="button popover-close editExpense" data-id="' + row._id + '">View / Edit</a>';
-                          pops += '<a class="button popover-close receiptButton" data-id="' + row._id + '">Add Receipt</a>';
-                          pops += '<a class="button popover-close deleteExpense" data-id="' + row._id + '">';
+                          pops += '<a class="button popover-close editExpense" data-id="' + row.id + '">View / Edit</a>';
+                          //pops += '<a class="button popover-close receiptButton" data-id="' + row.id + '">Add Receipts</a>';
+                          pops += '<a class="button popover-close deleteExpense" data-id="' + row.id + '">';
                           pops += row.status == 1 ? 'Delete' : 'Activate';
                           pops += '</a>';
-                          if(row.status == 0){
-                            pops += '<a class="button popover-close permDelButton" data-id="' + row._id + '">Delete</a>';
+                          if(row.status == false){
+                            pops += '<a class="button popover-close permDelButton" data-id="' + row.id + '">Delete</a>';
                           }
 
                         pops += '</div></div>';
@@ -785,27 +796,27 @@ export default {
                     for(var i = 0; i < self.expenses.length; i++){
                         var row = self.expenses[i];
                         var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
-                        html += '<div class="name cardName">' + row.name + '</div><div class="id display-none">' + row._id + '</div><div class="cost display-none">' + row.amount_to_pay + '</div>';
-                        html += '<div class=""><span class="labelName">Amount to be paid: </span><span class="valueName">' + self.formatMoney(row.amount_to_pay) + '</span></div>';
-                        html += '<div class=""><span class="labelName">Amount Paid: </span><span class="valueName">' + self.formatMoney(row.amount_paid) + '</span></div>';
-                        var stat = row.status == 1 ? "display-none" : "";
-                        var hidden = row.amount_paid >= row.amount_to_pay ? "" : "display-none";
-                        var paidAll = row.amount_paid >= row.amount_to_pay ? 1 : 0;
-                        var checkbox = row.recurring == 1 ? '' : 'display-none';
+                        html += '<div class="name cardName">' + row.name + '</div><div class="id display-none">' + row.id + '</div><div class="cost display-none">' + row.amountToPay + '</div>';
+                        html += '<div class=""><span>Amount to be paid: </span><span class="valueName">' + self.formatMoney(row.amountToPay) + '</span></div>';
+                        html += '<div class=""><span>Amount Paid: </span><span class="valueName">' + self.formatMoney(row.amountPaid) + '</span></div>';
+                        var stat = row.status == true ? "display-none" : "";
+                        var hidden = row.amountPaid >= row.amountToPay ? "" : "display-none";
+                        var paidAll = row.amountPaid >= row.amountToPay ? 1 : 0;
+                        var checkbox = row.recurring == true ? '' : 'display-none';
                         html += '<div class="paidAll display-none">' + paidAll + '</div>'
-                        html += '<div class="' + checkbox + '"><span class="labelName">Recurring Payment: </span><span class="badge color-green">Yes</span></div>' + '<div class="display-none created_date">' + row.created_date + '</div>';
-                        html += '<div class="' + hidden + '"><span class="labelName">Date Fully Paid: </span><span class="valueName">' + moment.unix(row.date_paid).format("LLL") + '</span></div>';
-                        html += '<div class=""><span class="labelName">Created Date: </span><span class="valueName">' + moment.unix(row.created_date).format("LLL") + '</span></div>';
-                        html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName">Deleted</span></div>';
+                        html += '<div class="' + checkbox + '"><span>Recurring Payment: </span><span class="badge color-green">Yes</span></div>' + '<div class="display-none created_date">' + row.createdDate + '</div>';
+                        html += '<div class="' + hidden + '"><span>Date Fully Paid: </span><span class="valueName">' + self.$app.methods.formatDate(row.datePaid) + '</span></div>';
+                        html += '<div class=""><span>Created Date: </span><span class="valueName">' + self.$app.methods.formatDate(row.createdDate) + '</span></div>';
+                        html += '<div class="' + stat + '"><span>Status: </span><span class="valueName">Deleted</span></div>';
                         html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
-                        html += '<a class="button button-small button-raised editExpense" data-id="' + row._id + '">View / Edit</a>';
-                        html += '<a class="button button-small button-raised receiptButton" data-id="' + row._id + '">Receipt</a>';
-                        html += '<a class="button button-small button-raised deleteExpense" data-id="' + row._id + '">';
-                        html +=  row.status == 1 ? 'Delete' : 'Activate'; 
+                        html += '<a class="button button-small button-raised editExpense" data-id="' + row.id + '">View / Edit</a>';
+                        html += '<a class="button button-small button-raised receiptButton" data-id="' + row.id + '">Receipt</a>';
+                        html += '<a class="button button-small button-raised deleteExpense" data-id="' + row.id + '">';
+                        html +=  row.status == true ? 'Delete' : 'Activate'; 
                         html += '</a>';
                         
-                        if(row.status == 0){
-                          html += '<a class="button button-small button-raised permDelButton" data-id="' + row._id + '">Delete</a>';
+                        if(row.status == false){
+                          html += '<a class="button button-small button-raised permDelButton" data-id="' + row.id + '">Delete</a>';
                         }
                         html += '</p></div></div>';
                         html += '</li>';
@@ -896,36 +907,28 @@ export default {
       },
     getData: function(){
       var self = this;
-      var checked = 1;
+      /*var checked = 1;
         var toggle = self.$app.toggle.get(".showInactiveExpenses");
       if(toggle != undefined){
         checked = toggle.checked == true ? 0 : 1;
-      }
+      }*/
       //console.log(checked);
       self.$app.preloader.show();
-      mogulsheetdb.find({
-          selector: {
-            $and: [
-                  { _id: {$gte: null} },
-                  { status: {$eq: checked} },
-                  {expenseID: {$gt: 0}},
-                  {created_date: {$gt: true}}
-                ]
-          },
-          sort: [{'_id': 'desc'}]
-        }).then(function(ar){
-          //console.log(ar);
+          $.when(self.$app.methods.getDataAPI("expenses/GetExpenses")).then(function( data, textStatus, jqXHR ) {
           self.$app.preloader.hide();
-          var arr = ar.docs;
           self.$setState({
-                expenses: arr,
-                totalMat:arr.length
+                expenses: data,
+                totalMat:data.length
               }, function(){
                 self.setDataTable();
               });
       }).catch(function(err){
         self.$app.preloader.hide();
-        self.showToast(err, "center");
+              if(err != null && err.status == 404){
+                console.log("expenses not found"); 
+                return;
+              }
+              self.$app.methods.showToast("An error occurred", "center");
       });
     }
   },
@@ -937,11 +940,11 @@ export default {
       pageInit: function(e, page) {
         var self = this;
         registerPagination();
-        $(document).on('click', '.swiper-slide a', function(e) {
+        /*$(document).on('click', '.swiper-slide a', function(e) {
            var but = e.target;
            $(but).parents(".swiper-slide").eq(0).remove();
            self.reInitSwiper();
-        })
+        })*/
         var calendar = self.$app.calendar.create({
                 inputEl: '#paid-calendar-modal',
                 timePicker: true,
@@ -997,54 +1000,46 @@ export default {
             }
             var from = null; var to = null;
             if(days.length == 1){
-                from = moment(moment(days[0]).format('LLL')).format("X");
+                from = moment(moment(days[0]).format('LLL')).format();
                 days.push(days[0]);
                 var date2 = days[1];
                 date2.setDate(date2.getDate() + 1);
-                to = moment(moment(date2).format('LLL')).format("X");
+                to = moment(moment(date2).format('LLL')).format();
             }
             else if(days.length > 1){
                 //var date1 = days[0];
                 //date1.setDate(date1.getDate() + 1);
-                from = moment(moment(days[0]).format('LLL')).format("X");
+                from = moment(moment(days[0]).format('LLL')).format();
                 var date2 = days[1];
                 date2.setDate(date2.getDate() + 1);
-                to = moment(moment(date2).format('LLL')).format("X");
+                to = moment(moment(date2).format('LLL')).format();
             }else{
                 self.getData();
             }
             if(from != null && to != null){
                 //console.log(from);
                 //console.log(to);
-                var checked = 1;
-
-                mogulsheetdb.find({
-                    selector: {
-                      $and: [
-                         {_id: {$gte: null}},
-                         {status: {$eq: checked}},
-                         {created_date: { $gt: from }},
-                         {created_date: { $lt: to }},
-                         {expenseID: {$gt: 0}}
-                      ]
-                    },
-                    sort: [{'_id': 'desc'}]
-                  }).then(function(ar){
-                    //var collection = db.ingredients.toArray(function(arr){
-                    //console.log(arr);
-                    var arr = ar.docs;
-                    //var collection = db.ingredients.toArray(function(arr){
-                    //console.log(arr);
+                var obj = {};
+                obj.fromDate = from;
+                obj.toDate = to;
+                self.$app.preloader.show();
+                $.when(self.$app.methods.postDataAPI("expenses/GetExpensesByDate", obj, true)).then(function( data, textStatus, jqXHR ) {
+                    self.$app.preloader.hide();
                     self.$setState({
-                            expenses: arr,
-                            totalMat:arr.length
+                            expenses: data,
+                            totalMat:data.length
                         }, function(){
                           self.setDataTable();
                         });
+                      
+                  })
+                .catch((err) => {
+                  self.$app.preloader.hide();
+                  self.showToast("error occured during saving", "center");
                 });
             }
         })        
-        self.startPouch();
+        self.getData();
       }
   }
 

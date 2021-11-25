@@ -1,5 +1,5 @@
 <template>
-  <div class="page">
+  <div class="page" data-name="reports">
     <div class="navbar">
       <div class="navbar-bg"></div>
       <div class="navbar-inner sliding">
@@ -103,16 +103,7 @@
     },
     getProfitStart: function(){
       var self = this;
-      if(self.products == null){
-      mogulsheetdb.find({
-        selector: {
-            status: {$eq: 1},
-            productID: {$gt: 0},
-            _id: {$gte: null}
-          }
-        }).then(function(ar){
-          var arr = ar.docs;
-          
+      $.when(self.$app.methods.getDataAPI("products/GetProducts")).then(function( arr, textStatus, jqXHR ) {
           //self.$app.preloader.hide();
           self.$setState({
                 products: arr
@@ -123,9 +114,6 @@
         }).catch((err) => {
           console.log("profit start", err);
         })
-      }else{
-        self.getProfit();
-      }
     },
     startPouch: function(){
           var self = this;
@@ -250,54 +238,35 @@
         var dateFilterFrom = null;
         var dateFilterTo = null;
         if(from == 0 && to == 0){
-          dateFilterFrom = {created_date: {$gt: true}};
-          dateFilterTo = dateFilterFrom;
-        }else{
-          dateFilterFrom = {created_date: { $gt: from }};
-          dateFilterTo =  {created_date: { $lt: to }};
-        }
-        self.$app.preloader.show();
-        mogulsheetdb.find({
-              selector: {
-                $or:[
-                    {
-                    //single product
-                    $and: [
-                      { isParent: {$ne: 1}},
-                      { status: {$eq: 1}},
-                      dateFilterFrom,
-                      dateFilterTo,
-                      {isEstimate: { $ne: 1 }},
-                      { parentID: {$eq: 0} },
-                      { saleID: {$gt: 0} }
-                    ]
-                  },{
-                    //group
-                    $and: [
-                      { isParent: {$eq: 1}},
-                      { status: {$eq: 1}},
-                      dateFilterFrom,
-                      dateFilterTo,
-                      {isEstimate: { $ne: 1 }},
-                      { parentID: {$eq: 0} },
-                      { saleID: {$gt: 0} }
-                    ]
-                  }
-                ]
-              },
-              sort: [{'_id': 'asc'}]
-            }).then(function(ar){
-              try{
-              var arr = ar.docs;
-              self.$app.preloader.hide();
-              if(arr != null && arr.length > 0){
-                      self.showProductSales(arr);
-                    }
-              }catch(err){
-                self.showToast("An error occured", "center");
+          // just get 
+          self.$app.preloader.show();
+          $.when(self.$app.methods.getDataAPI("sales/GetSales?isEstimate=false", true)).then(function( arr, textStatus, jqXHR ) {
                 self.$app.preloader.hide();
-              }
-            }).catch(() => {self.$app.preloader.hide();})
+                if(arr != null && arr.length > 0){
+                      self.showProductSales(arr);
+                }
+
+            }).catch((err) => {
+              self.showToast("An error occured", "center");
+              self.$app.preloader.hide();
+            })
+        }else{
+            //post with conditions
+            var obj = {}
+            obj.isEstimate = false;
+            obj.fromDate = from;
+            obj.toDate = to;
+            self.$app.preloader.show();
+            $.when(self.$app.methods.postDataAPI("sales/GetSalesByDate", obj, true)).then(function( arr, textStatus, jqXHR ) {
+                self.$app.preloader.hide();
+                if(arr != null && arr.length > 0){
+                      self.showProductSales(arr);
+                }
+            }).catch((err) => {
+              self.showToast("An error occured", "center");
+              self.$app.preloader.hide();
+            })
+        }
       },
       clearChartTable: function(){
         var self = this;
@@ -307,65 +276,23 @@
         $(".chartHolder").addClass("display-none");
         $("#allTables").empty();
       },
-      dailySales: function(){
+      showDailySales:function(arr){
         var self = this;
-        var from = self.from;
-        var to = self.to;
-        var dateFilterFrom = null;
-        var dateFilterTo = null;
-        if(from == 0 && to == 0){
-          dateFilterFrom = {created_date: {$gt: true}};
-          dateFilterTo = dateFilterFrom;
-        }else{
-          dateFilterFrom = {created_date: { $gt: from }};
-          dateFilterTo =  {created_date: { $lt: to }};
-        }
-        self.$app.preloader.show();
-        mogulsheetdb.find({
-              selector: {
-                $or:[
-                    {
-                    //single product
-                    $and: [
-                      { isParent: {$ne: 1}},
-                      { status: {$eq: 1}},
-                      dateFilterFrom,
-                      dateFilterTo,
-                      {isEstimate: { $ne: 1 }},
-                      { parentID: {$eq: 0} },
-                      { saleID: {$gt: 0} }
-                    ]
-                  },{
-                    //group
-                    $and: [
-                      { isParent: {$eq: 1}},
-                      { status: {$eq: 1}},
-                      dateFilterFrom,
-                      dateFilterTo,
-                      {isEstimate: { $ne: 1 }},
-                      { parentID: {$eq: 0} },
-                      { saleID: {$gt: 0} }
-                    ]
-                  }
-                ]
-              },
-              sort: [{'_id': 'asc'}]
-            }).then(function(ar){
-              try{
-              self.$app.preloader.hide();
-              var arr = ar.docs;
+        try{
+              //self.$app.preloader.hide();
+              //var arr = ar.docs;
               //console.log(arr);
               var obj = {};
               $.each(arr, function(ind, val){
-                var date = val.created_date;
-                var formatDate = moment.unix(date).format("ll");
+                var date = val.createdDate;
+                var formatDate = moment(date).format("ll");
                 if(obj[formatDate] == undefined){
                   obj[formatDate] = [];
                 }
                   var save = {};
-                  save.product_name = val.product_name;
+                  save.productName = val.productName;
                   save.quantity = val.quantity;
-                  save.created_date = val.created_date;
+                  save.createdDate = val.createdDate;
                   var saving = obj[formatDate];
                   saving.push(save);
               })
@@ -382,10 +309,10 @@
                     var arrays = obj[key];
                     $.each(arrays, function(ind, val){
                       html += '<div class="timeline-item-inner">';
-                      var time = moment.unix(val.created_date).format("LT");
+                      var time = moment(val.createdDate).format("LT");
                       html += '<div class="timeline-item-time">' + time + '</div>';
                       html += '<div class="timeline-item-subtitle"><b>Product</b> -> <b>Quantity</b></div>';
-                      html += '<div class="timeline-item-text">' + val.product_name + ' -> ' + val.quantity + '</div>';
+                      html += '<div class="timeline-item-text">' + val.productName + ' -> ' + val.quantity + '</div>';
                       html += '</div>';
                     })
                             
@@ -398,9 +325,73 @@
                 }
               }catch(err){
                 self.showToast("An error occured", "center");
-                self.$app.preloader.hide();
+                //self.$app.preloader.hide();
               }
-            }).catch(() => {self.$app.preloader.hide();})
+      },
+      dailySales: function(){
+        var self = this;
+        var from = self.from;
+        var to = self.to;
+        var dateFilterFrom = null;
+        var dateFilterTo = null;
+        if(from == 0 && to == 0){
+
+          self.$app.preloader.show();
+          $.when(self.$app.methods.getDataAPI("sales/GetSales?isEstimate=false")).then(function( arr, textStatus, jqXHR ) {
+              self.$app.preloader.hide();
+              self.showDailySales(arr);
+              
+            }).catch((err) => {
+              self.$app.preloader.hide();
+              self.showToast("An error occured", "center");
+            })
+        }else{
+                  var obj = {}
+                  obj.isEstimate = getEstimate;
+                  obj.fromDate = from;
+                  obj.toDate = to;
+
+                self.$app.preloader.show();
+                $.when(self.$app.methods.postDataAPI("sales/GetSalesByDate", obj, true)).then(function( arr, textStatus, jqXHR ) {
+                  self.$app.preloader.hide();
+                  self.showDailySales(arr);
+                }).catch((err) => {
+                  self.$app.preloader.hide();
+                  self.showToast("An error occured", "center");
+                })
+        }
+        self.$app.preloader.show();
+        /*mogulsheetdb.find({
+              selector: {
+                $or:[
+                    {
+                    //single product
+                    $and: [
+                      { isParent: {$ne: 1}},
+                      { status: {$eq: 1}},
+                      dateFilterFrom,
+                      dateFilterTo,
+                      {isEstimate: { $ne: 1 }},
+                      { parentID: {$eq: 0} },
+                      { saleID: {$gt: 0} }
+                    ]
+                  },{
+                    //group
+                    $and: [
+                      { isParent: {$eq: 1}},
+                      { status: {$eq: 1}},
+                      dateFilterFrom,
+                      dateFilterTo,
+                      {isEstimate: { $ne: 1 }},
+                      { parentID: {$eq: 0} },
+                      { saleID: {$gt: 0} }
+                    ]
+                  }
+                ]
+              },
+              sort: [{'_id': 'asc'}]
+            }).then(function(ar){
+*/
       },
       getProfit: function(){
         var self = this;
@@ -409,13 +400,34 @@
         var dateFilterFrom = null;
         var dateFilterTo = null;
         if(from == 0 && to == 0){
-          dateFilterFrom = {created_date: {$gt: true}};
-          dateFilterTo = dateFilterFrom;
-        }else{
-          dateFilterFrom = {created_date: { $gt: from }};
-          dateFilterTo =  {created_date: { $lt: to }};
-        }
-        self.$app.preloader.show();
+
+            self.$app.preloader.show();
+            $.when(self.$app.methods.getDataAPI("sales/GetSales?isEstimate=false")).then(function( arr, textStatus, jqXHR ) {
+                self.$app.preloader.hide();
+                self.showProfitPage(arr);
+                
+              }).catch((err) => {
+                self.$app.preloader.hide();
+                self.showToast("An error occured", "center");
+              })
+            }else{
+                    var obj = {}
+                    obj.isEstimate = getEstimate;
+                    obj.fromDate = from;
+                    obj.toDate = to;
+
+                  self.$app.preloader.show();
+                  $.when(self.$app.methods.postDataAPI("sales/GetSalesByDate", obj, true)).then(function( arr, textStatus, jqXHR ) {
+                    self.$app.preloader.hide();
+                    self.showProfitPage(arr);
+                  }).catch((err) => {
+                    self.$app.preloader.hide();
+                    self.showToast("An error occured", "center");
+                  })
+            }
+        
+        
+        /*self.$app.preloader.show();
         mogulsheetdb.find({
               selector: {
                 $and: [
@@ -470,54 +482,59 @@
                       { productID_saleID: {$gt: 0} }
                     ]
                   }
-                ]*/
+                ]
               },
               sort: [{'_id': 'desc'}]
             }).then(function(ar){
-              try{
-              var arr = ar.docs;
-                  var arr2 = arr.filter(x => ((x.isParent != 1 && x.parentID == 0) || (x.isParent == 1 && x.parentID == 0)));
+              
+            }).catch(() => {self.$app.preloader.hide();})*/
+      },
+      showProfitPage:function(arr){
+        var self = this;
+        try{
+              //var arr = ar.docs;
+                  var arr2 = arr.filter(x => ((x.isParent != true && x.parentId == 0) || (x.isParent == true && x.parentId == 0)));
                   var obj = {};
                   var cost = 0;
                   var sold = 0;
                   var owed = 0;
                   //var unique = arr.map(item => item.product_name).filter((value, index, self) => self.indexOf(value) === index);
                   $.each(arr2, function(ind, val){
-                    var prod = val.productID_saleID; // == undefined ? val.saleID : val.productID_saleID;
+                    var prod = val.productId; // == undefined ? val.saleID : val.productID_saleID;
                     //single sale
-                    if(val.isParent != 1 && val.parentID == 0){
+                    if(val.isParent != true && val.parentId == 0){
                       if(prod != undefined){
-                      var findProd = self.products.find(x => x.productID == prod);
+                      var findProd = self.products.find(x => x.id == prod);
                       if(findProd != undefined){
-                          var cst = Number(findProd.cost_price) * Number(val.quantity);
+                          var cst = Number(findProd.costPrice) * Number(val.quantity);
                           cost += cst;
                           sold += Number(val.amountPaid);
-                          var owing = Number(val.afterTax) - Number(val.amountPaid);
+                          var owing = Number(val.afterTaxPrice) - Number(val.amountPaid);
                           owed += owing;
                         }
                       }
                     }
                     //group sale
-                    if(val.isParent == 1 && val.parentID == 0){
-                      var children = arr.filter(x => x.parentID == val._id);
+                    if(val.isParent == true && val.parentId == 0){
+                      var children = arr.filter(x => x.parentId == val.id);
                       sold += Number(val.amountPaid);
-                      var owing = Number(val.afterTax) - Number(val.amountPaid);
+                      var owing = Number(val.afterTaxPrice) - Number(val.amountPaid);
                       owed += owing;
                       $.each(children, function(ind2, val2){
                         //singleProduct
-                        if(val2.isParent == 1 && val2.parentID != 0){
-                          var prod2 = val2.productID_saleID;
+                        if(val2.isParent == true && val2.parentId != 0){
+                          var prod2 = val2.productId;
                           if(prod2 != undefined){
-                            var findProd = self.products.find(x => x.productID == prod2);
+                            var findProd = self.products.find(x => x.productId == prod2);
                             if(findProd != undefined){
-                              var cst = Number(findProd.cost_price) * Number(val2.quantity);
+                              var cst = Number(findProd.costPrice) * Number(val2.quantity);
                               cost += cst;
                             }
                           }
                         }
                         //singleProductOther
-                        if(val2.isParent == 0 && val2.parentID != 0){
-                          var cst = Number(val2.afterTax);
+                        if(val2.isParent == false && val2.parentId != 0){
+                          var cst = Number(val2.afterTaxPrice);
                           if(!isNaN(cst)) cost += cst;
                         }
                       })
@@ -541,101 +558,31 @@
                   self.showToast("An error occured", "center");
                   self.$app.preloader.hide();
                 }
-            }).catch(() => {self.$app.preloader.hide();})
       },
-      customerPurchases: function(){
+      displayCustomerPurchases(arr){
         var self = this;
-        var from = self.from;
-        var to = self.to;
-        var dateFilterFrom = null;
-        var dateFilterTo = null;
-        if(from == 0 && to == 0){
-          dateFilterFrom = {created_date: {$gt: true}};
-          dateFilterTo = dateFilterFrom;
-        }else{
-          dateFilterFrom = {created_date: { $gt: from }};
-          dateFilterTo =  {created_date: { $lt: to }};
-        }
-        self.$app.preloader.show();
-        mogulsheetdb.find({
-              selector: {
-                $and: [
-                         {status: {$eq: 1}},
-                         dateFilterFrom,
-                         dateFilterTo,
-                         {isEstimate: {$ne: 1}}
-                      ]
-                /*$or:[
-                    {
-                      //group member
-                      $and: [
-                        { isParent: {$eq: 1}},
-                        { status: {$eq: 1}},
-                        {isEstimate: { $ne: 1 }},
-                        dateFilterFrom,
-                        dateFilterTo,
-                        { parentID: {$ne: 0} },
-                        { saleID: {$gt: 0} }
-                      ]
-                  },{
-                    //single product
-                    $and: [
-                      { isParent: {$ne: 1}},
-                      { status: {$eq: 1}},
-                      dateFilterFrom,
-                      dateFilterTo,
-                      {isEstimate: { $ne: 1 }},
-                      { parentID: {$eq: 0} },
-                      { saleID: {$gt: 0} }
-                    ]
-                  },{
-                    //group
-                    $and: [
-                      { isParent: {$eq: 1}},
-                      { status: {$eq: 1}},
-                      dateFilterFrom,
-                      dateFilterTo,
-                      {isEstimate: { $ne: 1 }},
-                      { parentID: {$eq: 0} },
-                      { saleID: {$gt: 0} }
-                    ]
-                  },{
-                    //group member other
-                    $and: [
-                      { isParent: {$eq: 0}},
-                      { status: {$eq: 1}},
-                      dateFilterFrom,
-                      dateFilterTo,
-                      {isEstimate: { $ne: 1 }},
-                      { parentID: {$ne: 0} },
-                      {productID_saleID: {$gt: 0}}
-                    ]
-                  }
-                ]*/
-              },
-              sort: [{'_id': 'desc'}]
-            }).then(function(ar){
-              try{
+        //console.log(arr);
+        try{
                   self.clearChartTable();
-                  self.$app.preloader.hide();
-                  var arr = ar.docs;
-                  var arr2 = arr.filter(x => ((x.isParent != 1 && x.parentID == 0) || (x.isParent == 1 && x.parentID == 0)));
+                  //self.$app.preloader.hide();
+                  //var arr = ar.docs;
+                  var arr2 = arr.filter(x => ((x.isParent != true && x.parentId == 0) || (x.isParent == true && x.parentId == 0)));
                   var obj = {};
                   //console.log(arr2);
                   //var unique = arr.map(item => item.product_name).filter((value, index, self) => self.indexOf(value) === index);
                   $.each(arr2, function(ind, val){
                     try{
-                      var name = val.buyer_name + "-" + val.buyer_id;
-                      if(obj[name] == undefined){
+                      var name = val.clientName + "-" + val.clientId;
+                      if(obj[name] == null){
                         obj[name] = {};
                       }
-                      var idboth = val.productID_saleID == undefined ? val.saleID : val.productID_saleID;
-                      idboth = idboth == undefined ? "" : idboth;
-                      var sID = val.saleID == undefined ? "" : val.saleID;
-                      var prod = val.product_name + "-" + idboth + sID;
-                      if(val.isParent != 1 && val.parentID == 0){
+                      var idboth = val.productId == null ? val.id : val.productId;
+                      idboth = idboth == null ? "" : idboth;
+                      var sID = val.id == null ? "" : val.id;
+                      var prod = val.productName + "-" + idboth + sID;
+                      if(val.isParent != true && val.parentId == 0){
                         
-                        if(obj[name][prod] == undefined){
+                        if(obj[name][prod] == null){
                           var spendings = {};
                           spendings.quantity = Number(val.quantity);
                           spendings.paid = Number(val.amountPaid); 
@@ -651,10 +598,10 @@
                         }
                       }
                       // group
-                      if(val.isParent == 1 && val.parentID == 0){
-                        if(obj[name][prod] == undefined){
+                      if(val.isParent == true && val.parentId == 0){
+                        if(obj[name][prod] == null){
                           obj[name][prod] = {};
-                          var children = arr.filter(x => x.parentID == val._id);
+                          var children = arr.filter(x => x.parentId == val.id);
                           obj[name][prod]["paid"] = self.formatMoney(Number(val.amountPaid));
                           obj[name][prod]["children"] = children;
                         }else{
@@ -666,7 +613,7 @@
                             }
                           })
                           var prod2 = prod + "(" + ct + ")";
-                          var children = arr.filter(x => x.parentID == val._id);
+                          var children = arr.filter(x => x.parentId == val.id);
                           obj[name][prod2] = {};
                           obj[name][prod2]["paid"] = self.formatMoney(Number(val.amountPaid));
                           obj[name][prod2]["children"] = children;
@@ -678,7 +625,7 @@
                     }
                   })
                   var html = "<div class='block-title no-margin-vertical margin-bottom-half'>Cost and Amount Received</div>";
-                  html += "<div class='card myCard'><table><thead><tr><th>Buyer's name</th><th>Product name <br> Quantity -> Amount Received</th><th>Sub Products</th></tr></thead>";
+                  html += "<div class='card myCard'><table><thead><tr><th>Customer's name</th><th>Product name <br> Quantity -> Amount Received</th><th>Sub Products</th></tr></thead>";
                   html += "<tbody>";
                   //console.log(obj);
                   for(var user in obj){
@@ -721,7 +668,7 @@
                           var eachChild = eachKey["children"];
                           for(var y = 0; y < eachChild.length; y++){
                             var product = eachChild[y];
-                            html += "<div class='eachChild'>" + product.product_name + "<br>" + product.quantity + " -> " + self.formatMoney(product.afterTax) + "</div>";
+                            html += "<div class='eachChild'>" + product.productName + "<br>" + product.quantity + " -> " + self.formatMoney(product.afterTaxPrice) + "</div>";
                           }
                         html += "</td></tr>";
                         start = false;
@@ -736,10 +683,119 @@
                   self.showToast("An error occured", "center");
                   self.$app.preloader.hide();
                 }
-            }).catch(function(err){
+      },
+      customerPurchases: function(){
+        var self = this;
+        var from = self.from;
+        var to = self.to;
+        var dateFilterFrom = null;
+        var dateFilterTo = null;
+        if(from == 0 && to == 0){
+          // just get 
+          self.$app.preloader.show();
+          $.when(self.$app.methods.getDataAPI("sales/GetAllSales", true)).then(function( arr, textStatus, jqXHR ) {
+                self.$app.preloader.hide();
+                if(arr != null && arr.length > 0){
+                      self.displayCustomerPurchases(arr);
+                }
+
+            }).catch((err) => {
+              self.showToast("An error occured", "center");
               self.$app.preloader.hide();
             })
+        }else{
+            //post with conditions
+            var obj = {}
+            obj.isEstimate = false;
+            obj.fromDate = from;
+            obj.toDate = to;
+            self.$app.preloader.show();
+            $.when(self.$app.methods.postDataAPI("sales/GetAllSalesByDate", obj, true)).then(function( arr, textStatus, jqXHR ) {
+                self.$app.preloader.hide();
+                if(arr != null && arr.length > 0){
+                      self.displayCustomerPurchases(arr);
+                }
+            }).catch((err) => {
+              self.showToast("An error occured", "center");
+              self.$app.preloader.hide();
+            })
+        }
       },
+
+      createUnique: function(){
+        var self = this;
+        var r = Math.floor(Math.random() * 200);
+        var g = Math.floor(Math.random() * 200);
+        var b = Math.floor(Math.random() * 200);
+        //v = Math.floor(Math.random() * 500);
+        var c = 'rgb(' + r + ', ' + g + ', ' + b + ')';
+        var h = 'rgb(' + (r+20) + ', ' + (g+20) + ', ' + (b+20) + ')';
+        return c;
+      },
+
+      showUniqueProductSales: function(arr){
+                  var self = this;
+                  //console.log(arr);
+                  /*var obj = {};
+                  //var unique = arr.map(item => item.product_name).filter((value, index, self) => self.indexOf(value) === index);
+                  $.each(arr, function(ind, val){
+                    var name = val.productName;
+                    if(obj[name] == undefined){
+                      var count = Number(val.quantity);
+                      obj[name] = count;
+                    }else{
+                      var count = Number(val.quantity);
+                      var oldCount = obj[name];
+                      obj[name] = count + oldCount;
+                    }
+                  })*/
+                  var bg = [];
+                  var bc = [];
+                  for(var i = 0; i < arr.length; i++){
+                      var r = Math.floor(Math.random() * 200);
+                      var g = Math.floor(Math.random() * 200);
+                      var b = Math.floor(Math.random() * 200);
+                      //v = Math.floor(Math.random() * 500);
+                      var c = 'rgb(' + r + ', ' + g + ', ' + b + ')';
+                      var h = 'rgb(' + (r+20) + ', ' + (g+20) + ', ' + (b+20) + ')';
+                      bg.push(c);
+                      bc.push(h);
+                  }
+
+
+
+                  var ctx = document.getElementById('myChart');
+                  self.clearChartTable();
+                  $(".chartHolder").removeClass("display-none");
+                  myChart = new Chart(ctx, {
+                  type: 'bar',
+                  data: {
+                    labels: arr.map(x => x.productName),
+                    datasets: [{
+                      label: 'Quantity Sold',
+                      data: arr.map(x => x.quantity),
+                      backgroundColor: bg,
+                      borderColor: bc,
+                      maxBarThickness: 15
+                    }]
+                  },
+                  options: {
+                    //cutoutPercentage: 40,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    responsive: true,
+                    title: {
+                        display: true,
+                        text: 'Product Sales'
+                      },
+                  }
+                });
+                //self.$app.preloader.hide();
+      },
+
       productSales: function(){
         var self = this;
         var from = self.from;
@@ -747,12 +803,33 @@
         var dateFilterFrom = null;
         var dateFilterTo = null;
         if(from == 0 && to == 0){
-          dateFilterFrom = {created_date: {$gt: true}};
-          dateFilterTo = dateFilterFrom;
+          self.$app.preloader.show();
+          $.when(self.$app.methods.getDataAPI("sales/GetProductSales")).then(function( arr, textStatus, jqXHR ) {
+            self.$app.preloader.hide();
+            self.showUniqueProductSales(arr);
+          }).catch((err) => {
+            self.$app.preloader.hide();
+            self.showToast("An error has occurred", "center");
+          })
         }else{
-          dateFilterFrom = {created_date: { $gt: from }};
-          dateFilterTo =  {created_date: { $lt: to }};
+            //post with conditions
+            var obj = {}
+            obj.isEstimate = false;
+            obj.fromDate = from;
+            obj.toDate = to;
+            self.$app.preloader.show();
+            $.when(self.$app.methods.postDataAPI("sales/GetProductSalesByDate", obj, true)).then(function( arr, textStatus, jqXHR ) {
+                self.$app.preloader.hide();
+                if(arr != null && arr.length > 0){
+                      self.showUniqueProductSales(arr);
+                }
+            }).catch((err) => {
+              self.showToast("An error occured", "center");
+              self.$app.preloader.hide();
+            })
         }
+
+        /*
         self.$app.preloader.show();
         mogulsheetdb.find({
               selector: {
@@ -838,7 +915,7 @@
                 self.showToast("An error occured", "center");
                 self.$app.preloader.hide();
               }
-          }).catch(() => {self.$app.preloader.hide();})
+          }).catch(() => {self.$app.preloader.hide();})*/
       },
       showProductSales: function(arr){
         var self = this;
@@ -850,18 +927,18 @@
               var dataLineTotal = [];
               //self.getparentChildren(arr);
               $.each(arr, function(ind, elem){
-                var name = elem.product_name + '-' + elem.productID;
+                var name = elem.productName + '-' + elem.productId;
                 var pres = dataBar.find(v => v.x === name);
                 if(pres == undefined){
                   
-                  labels.push(elem.product_name);
+                  labels.push(elem.productName);
                   var b = {};
                   var a = {};
                   var c = {};
                   a.x = name;
                   a.y = 1;
                   b.x = name;
-                  b.y = Number(elem.afterTax);
+                  b.y = Number(elem.afterTaxPrice);
                   c.x = name;
                   c.y = Number(elem.amountPaid);
                   dataBar.push(a);
@@ -870,16 +947,16 @@
                 }else{
                   var curr = pres.y;
                   curr++;
-                  var name = elem.product_name + '-' + elem.productID;
+                  var name = elem.productName + '-' + elem.productId;
                   var presTotal = dataLineTotal.find(v => v.x === name).y;
                   var presPaid = dataLinePaid.find(v => v.x === name).y;
-                  var t = Number(elem.afterTax);
+                  var t = Number(elem.afterTaxPrice);
                   var p = Number(elem.amountPaid);
                   var fintotal = presTotal + t;
                   var finPaid = presPaid + p;
                   //var objIndexBar = dataBar.findIndex((obj => obj.x === elem.product_name));
                   //dataBar[objIndexBar].y = curr;
-                  var name = elem.product_name + '-' + elem.productID;
+                  var name = elem.productName + '-' + elem.productId;
                   var objIndexTotal = dataLineTotal.findIndex((obj => obj.x === name));
                   dataLineTotal[objIndexTotal].y = fintotal;
                   var objIndexPaid = dataLinePaid.findIndex((obj => obj.x === name));
@@ -905,24 +982,25 @@
                         }, */
                         {
                           label: 'Amount Received',
+                          borderColor: "#488286",
+                          backgroundColor: "#488286",
+                          //fill: false,
+                            data: dataLinePaid,
+                            //yAxisID: 'y-axis-1',
+                            type: 'bar',
+                            maxBarThickness: 15
+                            // this dataset is drawn on top
+                            //order: 1
+                        }, {
+                          label: 'Total Sales Amount',
                           borderColor: "red",
                           backgroundColor: "red",
                           fill: false,
-                            data: dataLinePaid,
-                            yAxisID: 'y-axis-1',
-                            type: 'line',
-                            // this dataset is drawn on top
-                            order: 1
-                        }, {
-                          label: 'Total Sales Amount',
-                          borderColor: "blue",
-                          backgroundColor: "blue",
-                          fill: false,
                             data: dataLineTotal,
                             type: 'line',
-                            yAxisID: 'y-axis-1',
+                            //yAxisID: 'y-axis-1',
                             // this dataset is drawn on top
-                            order: 2
+                            //order: 2
                         }],
                         labels: labels
                     },
@@ -965,28 +1043,20 @@
         self.$app.dialog.alert('Hello World');
       },
       formatMoney: function(val){
-        var cur = localStorage.getItem("currency");
-        var sym = cur;
-        if(sym == undefined || sym == "undefined" || sym == null || sym == "null"){
-          sym = "";
-        }
-      val = Number(val);
-      if(val < 0){
-        var rev = 0 - val;
-        var val2 = val + rev + rev;
-        val = val2;
-        sym = "-" + sym;
-      }
-      val = Math.round((val + Number.EPSILON) * 100) / 100;
-      var ret = sym + val.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
-      return ret;
-        //return curr + val.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");;
+        var self = this;   
+        var ret = self.$app.methods.formatMoney(val);
+        return ret;
       },
     },
     // Page Events
     on: {
       pageMounted: function(e, page) {
         var self = this;
+        $(".reportAllButtons a").click(function(e){
+            e.preventDefault();
+            $(this).parents(".reportAllButtons").find("a").removeClass("active");
+            $(this).addClass("active");
+        })
         //trackReportsPage();
       },
       pageInit: function(e, page) {
@@ -1009,21 +1079,21 @@
             if(days.length == 1){
                 from = Date.parse(days[0]);
                 //console.log(moment(days[0]).format('LLL'));
-                from = moment(moment(days[0]).format('LLL')).format("X");
+                from = moment(moment(days[0]).format('LLL')).format();
                 days.push(days[0]);
                 var date2 = days[1];
                 date2.setDate(date2.getDate() + 1);
                 to = Date.parse(date2);
                 //console.log(moment(date2).format('LLL'));
-                to = moment(moment(date2).format('LLL')).format("X");
+                to = moment(moment(date2).format('LLL')).format();
             }
             else if(days.length > 1){
                 //var date1 = days[0];
                 //date1.setDate(date1.getDate() + 1);
-                from = moment(moment(days[0]).format('LLL')).format("X");
+                from = moment(moment(days[0]).format('LLL')).format();
                 var date2 = days[1];
                 date2.setDate(date2.getDate() + 1);
-                to = moment(moment(date2).format('LLL')).format("X");
+                to = moment(moment(date2).format('LLL')).format();
             }else{
               //self.getProductSales();
             }
@@ -1034,7 +1104,7 @@
                 })
             }
         })  
-        self.startPouch();
+        //self.startPouch();
         //console.log('pageInit', page);
       },
       pageAfterIn: function(e, page) {

@@ -84,9 +84,9 @@
             <span class="margin-left-half">You have {{totalMat}} {{js "this.totalMat > 1 ? 'products' : 'product'"}}</span>
           </div>
           <div class="col-50 no-padding-vertical text-align-right">
-            <span class="display-inline-flex margin-right-half">
+            <span class="display-inline-flex margin-right-half display-none">
               <span class="item-title float-right">Show Deleted</span>
-              <span class="item-after float-right margin-left-half">
+              <span class="item-after float-right margin-left-half display-none">
                   <label class="toggle toggle-init color-red showInactive">
                   <input type="checkbox">
                   <span class="toggle-icon"></span>
@@ -103,9 +103,9 @@
                 <thead>
                   <tr>
                     <th class="sort" data-sort="name"><i class="icon f7-icons">arrow_up_down</i> Name</th>
-                    <th>Description</th>
                     <th class="sort" data-sort="cost"><i class="icon f7-icons">arrow_up_down</i> Selling Price</th>
                     <th class="sort" data-sort="in-stock"><i class="icon f7-icons">arrow_up_down</i> Stock</th>
+                    <th>Public Views</th>
                     <th>Action</th>
                   </tr>
                 </thead>
@@ -133,14 +133,14 @@
             <div class="title">Upload Products</div>
             <div class="right">
               <!-- Link to close popup -->
-              <a class="link" @click="closePopUpExcel()"><i class="icon f7-icons">multiply</i>Close</a>
+              <a class="link" @click="closePopUpExcel()"><i class="icon f7-icons">multiply</i></a>
             </div>
           </div>
         </div>
         <div class="page-content">
           <div class="block margin-half">
             <div class="item-label">* Ensure you don't have duplicate products in Excel and on system.</div>
-            <div class="item-label">Expected column names are: <b>name</b>, <b>description</b>, <b>cost_price</b>, <b>selling_price</b>, <b>stock e.g 5</b></div>
+            <div class="item-label">Expected column names are: <b>name</b>, <b>description</b>, <b>cost_price</b>, <b>selling_price</b>, <b>stock e.g 5</b>, <b>product_category</b>, <b>show_to_public (1 or 0)</b></div>
             <input type="file" id="fileUploadProducts" accept=".xls,.xlsx" />
             <a class="button filePicker" @click="productPicker">Select File</a>
             <a href="#" class="col button button-outline button-raised mainButton margin-top-half" @click='uploadFile'>Save Excel Data</a>
@@ -162,7 +162,7 @@
             <div class="title">Generate Product Link</div>
             <div class="right">
               <!-- Link to close popup -->
-              <a class="link" @click="closeEditProdLink"><i class="icon f7-icons">multiply</i>Close</a>
+              <a class="link" @click="closeEditProdLink"><i class="icon f7-icons">multiply</i></a>
             </div>
           </div>
         </div>
@@ -233,7 +233,7 @@
                     <div class="item-inner">
                       <div class="item-title">Selling Price</div>
                       <div class="item-input-wrap">
-                        <input type="text" class="selling_priceLink" placeholder="Selling price of product"/>
+                        <input type="number" class="selling_priceLink" placeholder="Selling price of product"/>
                         <span class="input-clear-button"></span>
                       </div>
                     </div>
@@ -285,7 +285,7 @@
               <div class="title">Product Restock History</div>
               <div class="right">
                 <!-- Link to close popup -->
-                <a class="link" @click="closePopUpRestockHistory"><i class="icon f7-icons">multiply</i>Close</a>
+                <a class="link" @click="closePopUpRestockHistory"><i class="icon f7-icons">multiply</i></a>
               </div>
             </div>
           </div>
@@ -356,7 +356,7 @@
             <div class="title">Restock Product</div>
             <div class="right">
               <!-- Link to close popup -->
-              <a class="link" @click="closeRestockProduct"><i class="icon f7-icons">multiply</i>Close</a>
+              <a class="link" @click="closeRestockProduct"><i class="icon f7-icons">multiply</i></a>
             </div>
           </div>
         </div>
@@ -445,13 +445,27 @@
             <div class="title">Add/Edit Product</div>
             <div class="right">
               <!-- Link to close popup -->
-              <a class="link" @click="closeEditProdPopUp"><i class="icon f7-icons">multiply</i>Close</a>
+              <a class="link" @click="closeEditProdPopUp"><i class="icon f7-icons">multiply</i></a>
             </div>
           </div>
         </div>
         <div class="page-content">
             <div class="list no-hairlines-md margin-top-half margin-bottom-half productForm">
               <ul>
+                <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-title">Product Type</div>
+                      <div class="item-input-wrap">
+                        <select id="productType">
+                          <option value="physicalProduct" selected>Physical Product</option>
+                          <option value="digitalProduct">Digital Product</option>
+                          <option value="service">Service</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </li>
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
@@ -481,9 +495,20 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
+                      <div class="item-title">Product Category</div>
+                      <div class="item-input-wrap">
+                        <input type="text" class="productCategory" placeholder="Add product into a category"/>
+                        <span class="input-clear-button"></span>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
                       <div class="item-title">Cost Price</div>
                       <div class="item-input-wrap">
-                        <input type="text" class="cost_price" placeholder="Cost price of product" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                        <input type="number" class="cost_price" placeholder="Cost price of product" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                         <span class="input-clear-button"></span>
                       </div>
                     </div>
@@ -494,7 +519,7 @@
                     <div class="item-inner">
                       <div class="item-title">Selling Price</div>
                       <div class="item-input-wrap">
-                        <input type="text" class="selling_price" placeholder="Selling price of product" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                        <input type="number" class="selling_price" placeholder="Selling price of product" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                         <span class="input-clear-button"></span>
                       </div>
                     </div>
@@ -505,7 +530,7 @@
                     <div class="item-inner">
                       <div class="item-title">In Stock</div>
                       <div class="item-input-wrap">
-                        <input type="text" class="stock_quantity" placeholder="Quantity of product in stock" @keyup="stockInput" @keypress="onlyDecimal"/>
+                        <input type="number" class="stock_quantity" placeholder="Quantity of product in stock" @keyup="stockInput" @keypress="onlyDecimal"/>
                         <span class="input-clear-button"></span>
                       </div>
 
@@ -517,6 +542,34 @@
                           <!-- checkbox icon -->
                           <i class="icon-checkbox"></i>
                         </label>
+                      </div>
+
+                      <div class="item-title padding-top-half">
+                        <span>Show to public</span>
+                        <label class="checkbox vertical-align-super padding-left-half">
+                          <!-- checkbox input -->
+                          <input type="checkbox" class="showToPublic">
+                          <!-- checkbox icon -->
+                          <i class="icon-checkbox"></i>
+                        </label>
+                      </div>
+
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content item-input">
+                      <div class="item-inner">
+                        <div class="item-title">Upload Images</div>
+                      <div class="item-input-wrap">
+                        <input type="file" name="photos" id="productPhotos" accept="image/x-png,image/gif,image/jpeg,image/jpg,image/png" @change="checkFilesPhoto" multiple>
+                            
+                        <div class="swiper-container demo-swiper margin-top">
+                              <div class="swiper-pagination"></div>
+                              <div class="swiper-wrapper productsWrapper">
+                
+                              </div>
+                            </div>
                       </div>
                     </div>
                   </div>
@@ -547,7 +600,7 @@
             <div class="title">Sell Product</div>
             <div class="right">
               <!-- Link to close popup -->
-              <a class="link" @click="resetSalePopUp"><i class="icon f7-icons">multiply</i>Close</a>
+              <a class="link" @click="resetSalePopUp"><i class="icon f7-icons">multiply</i></a>
             </div>
           </div>
         </div>
@@ -555,24 +608,42 @@
             <div class="list no-hairlines-md margin-top-half margin-bottom-half">
               <ul>
                 <li>
-                  <div class="item-content item-input">
-                    <div class="item-inner">
-                      <div class="item-title">Product Name</div>
-                      <div class="item-input-wrap">
-                        <input type="text" class="name_sell" placeholder="Product name" required/>
-                        <span class="input-clear-button"></span>
+                  <div class="row">
+                    <div class="col-50">
+                      <div class="item-content item-input">
+                        <div class="item-inner">
+                          <div class="item-title">Product Name</div>
+                          <div class="item-input-wrap">
+                            <input type="text" class="name_sell" placeholder="Product name" required/>
+                            <span class="input-clear-button"></span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-50">
+                      <div class="item-content item-input">
+                        <div class="item-inner">
+                          <div class="item-title">Selling Price</div>
+                          <div class="item-input-wrap">
+                            <input type="number" class="cost_sell" @keyup="calculateQuantity" placeholder="selling price" required disabled validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                            <span class="input-clear-button"></span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
+
+
+                  
                 </li>
                 <li>
                   <div class="row">
                       <div class="col-50">
                         <div class="item-content item-input">
                           <div class="item-inner">
-                            <div class="item-title">Selling Price</div>
+                            <div class="item-title">Quantity</div>
                             <div class="item-input-wrap">
-                              <input type="text" class="cost_sell" @keyup="calculateQuantity" placeholder="selling price" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                              <input type="number" class="quantity_sell" @keyup="calculateQuantity" placeholder="Quantity" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                               <span class="input-clear-button"></span>
                             </div>
                           </div>
@@ -582,9 +653,9 @@
                       <div class="col-50">
                         <div class="item-content item-input">
                           <div class="item-inner">
-                            <div class="item-title">Quantity</div>
+                            <div class="item-title">Discount</div>
                             <div class="item-input-wrap">
-                              <input type="text" class="quantity_sell" @keyup="calculateQuantity" placeholder="Quantity" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                              <input type="number" class="discount_sell" @keyup="calculateQuantity" value="0" placeholder="Discount" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                               <span class="input-clear-button"></span>
                             </div>
                           </div>
@@ -596,20 +667,9 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Discount</div>
-                      <div class="item-input-wrap">
-                        <input type="text" class="discount_sell" @keyup="calculateQuantity" value="0" placeholder="Discount" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
-                        <span class="input-clear-button"></span>
-                      </div>
-                    </div>
-                  </div>
-                </li>
-                <li>
-                  <div class="item-content item-input">
-                    <div class="item-inner">
                       <div class="item-title">Total Price</div>
                       <div class="item-input-wrap">
-                        <input type="text" class="total_sell" @keyup="calculateQuantity2" placeholder="Total Price" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                        <input type="number" class="total_sell" @keyup="calculateQuantity2" placeholder="Total Price" disabled required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                         <span class="input-clear-button"></span>
                       </div>
                     </div>
@@ -622,7 +682,7 @@
                           <div class="item-inner">
                             <div class="item-title">Taxes in %</div>
                             <div class="item-input-wrap">
-                              <input type="text" class="taxes" @keyup="calculateQuantity" placeholder="Taxes in %" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                              <input type="number" class="taxes" @keyup="calculateQuantity" placeholder="Taxes in %" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                               <span class="input-clear-button"></span>
                             </div>
                           </div>
@@ -634,7 +694,7 @@
                           <div class="item-inner">
                             <div class="item-title">After Tax Price</div>
                             <div class="item-input-wrap">
-                              <input type="text" class="afterTax" placeholder="After Tax Price"/>
+                              <input type="text" class="afterTax" placeholder="After Tax Price" disabled/>
                               <span class="input-clear-button"></span>
                             </div>
                           </div>
@@ -666,7 +726,7 @@
                               </p>
                           </div>
                           <div class="item-input-wrap">
-                            <input type="text" class="amountpaid_sell" placeholder="Amount customer paid" value="0" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                            <input type="number" class="amountpaid_sell" placeholder="Amount customer paid" value="0" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                             <span class="input-clear-button"></span>
                           </div>
                         </div>
@@ -691,26 +751,32 @@
                 </div>
                 </li>
                 <li>
-                  <div class="item-content item-input">
-                      <div class="item-inner">
-                        <div class="item-title">Date Buyer Paid</div>
-                      <div class="item-input-wrap">
-                          <input type="text" placeholder="Date buyer paid" id="paid-calendar-modal-prods"/>
-                          <span class="input-clear-button"></span>
-                      </div>
-                      </div>
+                  <div class="row">
+                    <div class="col-50">
+                      <div class="item-content item-input">
+                        <div class="item-inner">
+                          <div class="item-title">Date Buyer Paid</div>
+                        <div class="item-input-wrap">
+                            <input type="text" placeholder="Date buyer paid" id="paid-calendar-modal-prods"/>
+                            <span class="input-clear-button"></span>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+
+                    <div class="col-50">
+                      <div class="item-content item-input">
+                        <div class="item-inner">
+                          <div class="item-title">Date of Purchase</div>
+                        <div class="item-input-wrap">
+                            <input type="text" placeholder="Date of purchase" id="purchase-calendar-modal" required validate data-error-message="Select date of purchase please!"/>
+                            <span class="input-clear-button"></span>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
                   </div>
-                </li>
-                <li>
-                  <div class="item-content item-input">
-                      <div class="item-inner">
-                        <div class="item-title">Date of Purchase</div>
-                      <div class="item-input-wrap">
-                          <input type="text" placeholder="Date of purchase" id="purchase-calendar-modal" required validate data-error-message="Select date of purchase please!"/>
-                          <span class="input-clear-button"></span>
-                      </div>
-                      </div>
-                  </div>
+                  
                 </li>
                 <li>
                   <div class="item-content">
@@ -738,7 +804,7 @@
             <div class="title">Add/Edit Product Raw Materials</div>
             <div class="right">
               <!-- Link to close popup -->
-              <a class="link" @click="closePopUp"><i class="icon f7-icons">multiply</i>Close</a>
+              <a class="link" @click="closePopUp"><i class="icon f7-icons">multiply</i></a>
             </div>
           </div>
         </div>
@@ -747,11 +813,10 @@
                   <div class="block-title block-title-medium no-margin-bottom">{{productToEdit}}</div>
             </div>
 
-        <div class="list margin-bottom-half no-margin-top">
-          <div class="block-header text-color-black no-margin-bottom margin-top-half text-align-center">Select Raw Materials Below - select multiple</div>
-          <div class="margin-horizontal-half">
-            <a class="col button button-outline button-raised" href="#" id="autocomplete-standalone-multiple">
-            <div class="item-title text-color-blue btn-blue">Add Raw Materials</div>
+        <div class="list margin-bottom-half margin-top">
+          <div class="row justify-content-center">
+            <a class="col-50 button tealBgButton" href="#" id="autocomplete-standalone-multiple">
+            <div class="item-title text-color-white">Add Raw Materials</div>
           </a>
         </div>
           <!--<ul>
@@ -774,8 +839,8 @@
           <!--<ul class="pagination"></ul>-->
         </div>
 
-        <div class="margin-horizontal-half">
-          <a class="button button-raised button-fill color-blue customcharges" @click="AddNewCost">Add Custom Charges</a>
+        <div class="row justify-content-center">
+          <a class="col-50 button tealColorButton customcharges" @click="AddNewCost">Add Other Charges</a>
         </div>
 
         <div id="prodOtherIng-list" class="customList">
@@ -786,35 +851,35 @@
         </div>
 
         <ul class="list sortList margin-top-half margin-bottom-half">
-          <div class="card myCard">
-            <div class="card-content padding-horizontal-half">
-              <!--<div><span class="labelName">Add Profit in %:</span>
-                <div class="display-inline-flex">
-                  <input class="profitpercent" type="text" placeholder="profit 0 to 100" @keyup="calculateprofit" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" value="0">
-                </div></div>-->
-                <div><span class="labelName">Profit in Money:</span>
+                <div class="bigLabel">
+                  <span class="labelName margin-right-half">Profit in Money:</span>
                   <div class="display-inline-flex">
                     <input class="profitvalue" type="text" @keyup="calculateprofit">
                     <!--<div class="profitvalue valueName"></div>-->
-                  </div></div>
-            </div>
-          </div>
+                  </div>
+                </div>
+
       </ul>
 
       <div class="margin-top-half bigLabel margin-horizontal-half">
-        <span class="labelName">Cost before profit: </span>
+        <span class="labelName margin-right-half">Cost before profit: </span>
         <div class="display-inline-flex"><div class="totalAmountBeforeProfit">0</div></div>
       </div>
       <div class="margin-top-half bigLabel margin-horizontal-half">
-        <span class="labelName">Cost after profit: </span>
+        <span class="labelName margin-right-half">Cost after profit: </span>
         <div class="display-inline-flex"><div class="totalAmount">0</div></div>
       </div>
 
-      <div class="row padding-horizontal-half margin-bottom-half"><div class="col-50">
+      <!--<div class="row padding-horizontal-half margin-bottom-half"><div class="col-50">
         <a class="col button button-outline button-raised mainButton calculateTotalButton" @click="CalculateTotal">Calculate</a>
       </div>
-      <div class="col-50">
+      <div class="col-100">
             <a class="col button button-outline button-raised mainButton saveTotalButton" @click="SaveTotal">Save</a>
+      </div>
+    </div>-->
+    <div class="row padding-horizontal-half margin-vertical-half">
+      <div class="col-100">
+        <a class="col button mainButton saveTotalButton" @click="SaveTotal">Save Raw Materials</a>
       </div>
     </div>
         
@@ -837,41 +902,28 @@
             <div class="title">Multiple Product Sales</div>
             <div class="right">
               <!-- Link to close popup -->
-              <a class="link" @click="closePopUpMultiple"><i class="icon f7-icons">multiply</i>Close</a>
+              <a class="link" @click="closePopUpMultiple"><i class="icon f7-icons">multiply</i></a>
             </div>
           </div>
         </div>
         <div class="page-content">
             
-        <div class="list margin-bottom-half no-margin-top">
-          <div class="block-header text-color-black no-margin-bottom margin-top text-align-center">Select Products Below - select multiple</div>
-          <div class="margin-horizontal-half">
-            <a class="col button button-outline button-raised" href="#" id="autocomplete-standalone-multiple2">
-            <div class="item-title text-color-blue btn-blue">Add Products</div>
-          </a>
+        <div class="list margin-bottom-half margin-top">
+          <div class="row justify-content-center">
+            <a class="col-50 button sellMultipleList tealBgButton" href="#" id="autocomplete-standalone-multiple2">
+              <div class="item-title text-color-white">Select Products</div></a>
         </div>
-          <!--<ul>
-            <li>
-              <a class="item-link item-content bg-color-orange myOrange" href="#" id="autocomplete-standalone-multiple2">
-                <input type="hidden">
-                <div class="item-inner">
-                  <div class="block-title item-title no-margin text-color-white">Add Products</div>
-                  <div class="item-after"></div>
-                </div>
-              </a>
-            </li>
-          </ul>-->
         </div>
 
         <div id="products-list" class="customList">
-          <ul class="list sortList margin-top-half margin-bottom-half">
+          <ul class="list sortList margin-top margin-bottom-half">
             
           </ul>
           <!--<ul class="pagination"></ul>-->
         </div>
 
-        <div class="margin-horizontal-half">
-          <a class="button button-raised button-fill color-blue customcharges" @click="AddNewProduct(null)">Add Custom Products</a>
+        <div class="row justify-content-center">
+          <a class="col-50 button customcharges tealColorButton" @click="AddNewProduct(null)">Add Other Charges</a>
         </div>
 
         <div id="productsOther-list" class="customList">
@@ -882,78 +934,87 @@
         </div>
 
         <ul class="list sortList margin-top-half margin-bottom-half">
-          <div class="card myCard">
-            <div class="card-content padding-horizontal-half">
-              <div><span class="labelName">Taxes in %:</span>
+              <div class="bigLabel">
+                <span class="labelName margin-right-half">Taxes in %:</span>
                 <div class="display-inline-flex">
                   <input class="taxpercent" type="text" placeholder="0 to 100" @keyup="CalculateTotalProduct" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" value="0">
-                </div></div>
-            </div>
-          </div>
+                </div>
+              </div>
       </ul>
-      <div class="row padding-horizontal-half"><div class="col-100">
+      <div class="row padding-horizontal-half display-none">
+        <div class="col-100">
         <a class="col button button-outline button-raised mainButton calculateTotalButton" @click="CalculateTotalProduct">Calculate</a>
       </div>
     </div>
         <div class="margin-top-half bigLabel text-align-center margin-horizontal-half">
-          <span class="labelName">Cost before Tax: </span>
-          <div class="display-inline-flex"><div class="totalAmountBeforeProfitProduct">0</div></div>
+          <span class="labelName">Price before tax: </span>
+          <div class="display-inline-flex margin-left-half"><div class="totalAmountBeforeProfitProduct">0</div></div>
         </div>
         <div class="margin-top-half bigLabel text-align-center margin-horizontal-half">
-          <span class="labelName">Cost after Tax: </span>
-          <div class="display-inline-flex"><div class="totalAmountProduct">0</div></div>
+          <span class="labelName">Price after tax: </span>
+          <div class="display-inline-flex margin-left-half"><div class="totalAmountProduct">0</div></div>
         </div>
          
         <ul class="list margin-top-half margin-bottom-half margin-horizontal-half grouped"><li>
         <div class="card myCard">
-          <div class="card-content padding-horizontal-half" style="font-size: 1.15em;">
-            <div><span class="labelName">Grouped Name: </span><div class="display-inline-flex">
-              <input class="groupProductNameMultiple" type="text" placeholder="Give Group Name" value=""></div></div>
-            <div><span class="labelName">Buyer's Name: </span><div class="display-inline-flex">
-              <input class="buyersNameMultiple" id="buyersNameMultiple" type="text" placeholder="Buyer's Name" value=""></div></div>
+          <div class="card-content padding-horizontal padding-vertical">
             
-              <div>
-                <span class="labelName">It's an Estimate<i class="icon f7-icons icon-tooltip estimateExplain color-black">info_circle_fill</i></span>
-                <div class="display-inline-flex" style="vertical-align: bottom;margin-left: 10px;">
-                  <div class="item-input-wrap" style="position: relative;">
-                    <label class="checkbox" style="position: absolute;bottom: 4px;">
-                      <input type="checkbox" class="isEstimateMultiple">
-                      <i class="icon-checkbox"></i>
-                    </label>
+            <div class="row">
+              <div class="col-50">
+                <div class="labelName">Product Combo</div>
+              <input class="groupProductNameMultiple" type="text" placeholder="e.g shirt & pants" value="">
+            </div>
+
+            <div class="col-50">
+              <div class="labelName">Buyer's Name: </div>
+              <input class="buyersNameMultiple" id="buyersNameMultiple" type="text" placeholder="Buyer's Name" value="">
+            </div>
+          </div>
+
+
+              <div class="row margin-top-half">
+                <div class="col-50">
+                  <div class="row">
+                    <div class="col-33 labelName">Amount Paid</div>
+                        <div class="col-66">
+                          <a class="button button-small text-color-white button-green bg-color-green" @click="recordPaidFullyMultiple">Paid fully</a>
+                        </div>
+                    </div>
+                  <input class="amountPaidMultiple" type="text" placeholder="Amount Paid" value="0">
+                </div> 
+
+                <div class="col-50">
+                    <div class="labelName">This is an estimate<i class="icon f7-icons icon-tooltip estimateExplain color-black">info_circle_fill</i></div>
+                    <div>
+                      <div class="item-input-wrap" style="position: relative;">
+                        <label class="checkbox" style="position: absolute;bottom: 4px;">
+                          <input type="checkbox" class="isEstimateMultiple">
+                          <i class="icon-checkbox"></i>
+                        </label>
+                      </div>
                   </div>
-              </div></div>
+                </div>
+            </div>
             
-            <div><span class="labelName">Amount Paid: </span><div class="display-inline-flex">
-                <input class="amountPaidMultiple" type="text" placeholder="Amount Paid" value="0"></div>
-                <p class="display-inline-flex" style="margin: 0;">
-                  <a class="button button-small button-outline text-color-white button-green bg-color-green no-margin padding-horizontal-half" @click="recordPaidFullyMultiple">Paid fully</a>
-                </p>
+            
+            <div class="row margin-top-half">
+              <div class="col-50">
+                <div class="labelName">Date of Payment: </div>
+                <input id="datePaidMultiple" class="text-align-center" type="text" placeholder="Date of Payment" value="0">
               </div>
-            <div><span class="labelName">Date of Payment: </span><div class="display-inline-flex" style="width:100%">
-                  
-              <div class="item-input" style="width: 100%;"> 
-                <div class="item-input-wrap">   
-                  <input id="datePaidMultiple" class="text-align-center" type="text" placeholder="Date of Payment" value="0">
-                  <span class="input-clear-button"></span>
-                </div>
-                </div>
-                
-                </div></div>
-            <div><span class="labelName">Date of Purchase: </span><div class="display-inline-flex" style="width:100%">
-                    
-              <div class="item-input" style="width: 100%;"> 
-                <div class="item-input-wrap">   
-                  <input id="datePurchaseMultiple" class="text-align-center" type="text" placeholder="Date of Purchase" value="0">
-                  <span class="input-clear-button"></span>
-                </div>
-                </div>
-                  
-                  </div></div>
+
+              <div class="col-50">
+                <div class="labelName">Date of Purchase </div>
+                <input id="datePurchaseMultiple" class="text-align-center" type="text" placeholder="Date of Purchase" value="0">
+              </div>
+              
+            </div>
+
           </div>
         </div>
         </li></ul>
-                <div class="row padding-horizontal-half"><div class="col-100">
-                  <a class="col button button-outline button-raised mainButton margin-bottom-half" @click="saveMultipleProduct">Save All</a>
+                <div class="row padding-horizontal-half margin-bottom-half"><div class="col-100">
+                  <a class="col button mainButton margin-bottom-half" @click="saveMultipleProduct">Sell Products</a>
                 </div>
               </div>
         </div>
@@ -1085,14 +1146,7 @@ export default {
     openPopUpRestockHistory: function(){
       var self = this;
       self.$app.preloader.show();
-      mogulsheetdb.find({
-          selector: {
-            restockID: {$gt: 0},
-            _id: {$gte: null}
-          },
-          sort: [{'_id': 'desc'}]
-        }).then(function(ar){
-          var arr = ar.docs;
+      $.when(self.$app.methods.getDataAPI("products/GetRestockHistory")).then(function( arr, textStatus, jqXHR ) {
           self.$app.preloader.hide();
           $("#restock-list .list").empty();
           $("#restock-list .pagination").remove();
@@ -1106,12 +1160,12 @@ export default {
               for(var i = 0; i < arr.length; i++){
                     var row = arr[i];
                     var html = "<tr>";
-                      html += '<td class="id" style="display:none;">' + row._id + '</td>';
+                      html += '<td class="id" style="display:none;">' + row.id + '</td>';
                       html += "<td class='name'>" + row.productName + "</td>";
-                      html += "<td>" + row.last_stock + "</td>";
-                      html += "<td>" + row.new_stock + "</td>";
-                      html += "<td>" + row.total_stock + "</td>";
-                      html += "<td class='restock_date'>" + moment.unix(row.restock_date).format("LLL") + "</td>";
+                      html += "<td>" + row.lastStock + "</td>";
+                      html += "<td>" + row.newStock + "</td>";
+                      html += "<td>" + row.totalStock + "</td>";
+                      html += "<td class='restock_date'>" + moment(row.restockDate).format("LLL") + "</td>";
                       
                     html += "</tr>";
                     $("#restock-list tbody.list").append(html);
@@ -1129,11 +1183,11 @@ export default {
                     var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
                     html += '<div class="name cardName">' + row.productName + '</div>';
                     html += '<div class="name display-none">' + row.productName + '</div>';
-                    html += '<div class="display-none restock_date">' + row.restock_date + '</div>';
-                    html += '<div class=""><span class="labelName">Last Stock: </span><span class="">' + row.last_stock + '</span></div>';
-                    html += '<div class=""><span class="labelName">Added Stock: </span><span class=""><b>' + row.new_stock + '</b></span></div>';
-                    html += '<div class=""><span class="labelName">Total Stock: </span><span class="">' + row.total_stock + '</span></div>';
-                    html += '<div class=""><span class="labelName">Restock Date: </span><span class="">' + moment.unix(row.restock_date).format("LLL") + '</span></div>';
+                    html += '<div class="display-none restock_date">' + row.restockDate + '</div>';
+                    html += '<div class=""><span>Last Stock: </span><span class="">' + row.lastStock + '</span></div>';
+                    html += '<div class=""><span>Added Stock: </span><span class=""><b>' + row.newStock + '</b></span></div>';
+                    html += '<div class=""><span>Total Stock: </span><span class="">' + row.totalStock + '</span></div>';
+                    html += '<div class=""><span>Restock Date: </span><span class="">' + moment(row.restockDate).format("LLL") + '</span></div>';
                     html += '</div></div></li>';
                     //moment.unix(item.created_date).format("LLL");
                     
@@ -1165,8 +1219,10 @@ export default {
           
         }).catch((err) => {
           self.$app.preloader.hide();
+          self.showToast("An error occurred", "center");
         })
       var popup = self.$app.popup.open('.popup.restockHistory', true);
+      
     },
     closePopUpRestockHistory: function(){
       var self = this;
@@ -1179,42 +1235,36 @@ export default {
           var stock = $(".restock_quantity").val();
           var unlimited = $(".isUnlimitedRestock").is(":checked");
           if((stock == "" && !unlimited) || (stock != "" && unlimited)){
-            self.$app.dialog.alert("Check stock as unlimited or enter stock quantity");
+            self.$app.dialog.alert("Check stock as unlimited or enter stock quantity", "Omni");
             return;
           }
           var finalStock = stock != "" ? stock : "Unlimited";
           var obj = {};
-          obj._id = moment().format("X");
-          obj.restockID = obj._id;
-          obj.productID_restockID = self.currentProduct._id;
+          obj.productId = self.currentProduct.id;
           obj.productName = self.currentProduct.name;
-          obj.last_stock = $(".currentStock").text();
-          obj.total_stock = $(".totalStock").text();
-          obj.new_stock = finalStock;
-          obj.restock_date = moment($("#restock-calendar-modal").val()).format("X");
-          obj.created_date = moment().format("X");
-          mogulsheetdb.put(obj).then((dat) => {
-            mogulsheetdb.get(self.currentProduct._id).then((dat2) => {
-              dat2.stock = $(".totalStock").text();
-              mogulsheetdb.put(dat2).then((dat3) => {
-                self.showToast("Restocking Saved", "center", true);
-                self.closeRestockProduct();
-                self.getData();
-              })
-            }).catch((err) => {
-              self.showToast("An error occured", "center");
+          obj.lastStock = $(".currentStock").text();
+          obj.totalStock = $(".totalStock").text();
+          obj.newStock = finalStock;
+          obj.restockDate = moment($("#restock-calendar-modal").val()).format();
+          //save stock
+          self.$app.preloader.show();
+          $.when(self.$app.methods.postDataAPI("products/SaveProdStockUpdateProd", obj, true)).then(function( data, textStatus, jqXHR ) {
+                self.$app.preloader.hide();
+                if(data){
+                  self.showToast("Restocking Saved", "center", true);
+                  self.closeRestockProduct();
+                }
+              }).catch((data, textStatus, jqXHR) => {
+                self.$app.preloader.hide();
+                self.$app.methods.showToast("An error occurred", "center");
             })
-            
-          }).catch((err) => {
-            self.showToast("An error occured", "center");
-          })
         }
     },
     openRestockProduct: function(id){
       var self = this;
       if(id != null || id != undefined){
             var item = self.products.find(function(e){ 
-                  return e._id == id;
+                  return e.id == id;
               });
               self.$setState({
                 currentProduct:item
@@ -1242,6 +1292,7 @@ export default {
           currentProduct:null
       });
       var popup = self.$app.popup.close('.restockProduct', true);
+      self.getData();
     },
     onlyDecimal: function(evt){
       var charCode = (evt.which) ? evt.which : evt.keyCode;
@@ -1356,7 +1407,7 @@ export default {
       var self = this;
       var id = $(but).attr("data-id");
         var select = self.productIngs.filter(function(e){ 
-              return e._id != id;
+              return e.id != id;
           });
  
           $(but).parents("li").eq(0).remove();
@@ -1370,23 +1421,39 @@ export default {
     },
     SelectItem: function(select){
       var self = this;
-        var cpu = select.cost_per_unit == undefined ? 0 : select.cost_per_unit;
+        var cpu = select.costPerUnit == undefined ? 0 : select.costPerUnit;
         var sus = select.select_unit_size == undefined ? 0 : select.select_unit_size; 
-        var html = '<li class="eachCostParent"><div class="card myCard"><div class="card-content padding-horizontal-half">';
+        var val2 = select.select_cost != undefined ? select.select_cost : 0;
+        var stat = select.status == true ? "display-none" : "";
+        /*var html = '<li class="eachCostParent"><div class="card myCard"><div class="card-content padding-horizontal-half">';
         html += '<div class="name cardName">' + select.name + '</div>';
-        html += '<div class=""><span class="labelName">Unit Cost: </span><span class="valueName">' + self.formatMoney(cpu) + " for " + select.unit_size + select.unit + '</span></div>';
+        html += '<div class=""><span class="labelName">Unit Cost: </span><span class="valueName">' + self.formatMoney(cpu) + " for " + select.unitSize + select.unit + '</span></div>';
         html += '<div><span class="labelName">Quantity To Use: </span><div class="display-inline-flex align-items-center"><input class="margin-horizontal-half costvalue" type="text" placeholder="Enter Quantity" ';
-        html += 'data-cost="' + cpu +'" data-unit="' + select.unit_size + '" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" '; 
+        html += 'data-cost="' + cpu +'" data-unit="' + select.unitSize + '" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" '; 
                 //var val = sus != undefined ? select.select_unit_size : 0;
         html +=  'value="' + sus + '"><span>' + select.unit + '</span></div></div>';
         var val2 = select.select_cost != undefined ? select.select_cost : 0;
-        var stat = select.status == 1 ? "display-none" : "";
+        var stat = select.status == true ? "display-none" : "";
         html += '<div class=""><span class="labelName">Cost of Material: </span><span class="valueName eachCost">' + val2 + '</span></div>';
         html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName">Deleted</span></div>';
         html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
-          html += '<a class="button button-small button-raised removeCost" data-id="' + select._id + '">Delete</a>';
+          html += '<a class="button button-small button-raised removeCost" data-id="' + select.id + '">Delete</a>';
         html += '</p></div></div>'
-        html += '</li>';
+        html += '</li>';*/
+
+        
+        var html = '<li class="eachCostParent"><div class="card myCard"><div class="card-content padding-horizontal-half"><div class="row">';
+        html += '<div class="col-50"><div class="labelName">Name</div><div class="name cardName">' + select.name + '</div>';
+        html += '</div><div class="col-50"><div class="labelName">Unit Cost</div><div class="cardName">' + self.formatMoney(cpu) + ' for ' + select.unitSize + select.unit + '</div></div>';
+        html += '</div><div class="row margin-top-half"><div class="col-50"><div class="labelName">Quantity To Use</div><div class="row justify-content-start align-items-center">';
+        html += '<span class="cardName">' + select.unit + ': </span><input class="margin-horizontal-half costvalue" type="text" placeholder="Enter Quantity" ';
+        html += 'data-cost="' + cpu +'" data-unit="' + select.unitSize + '" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" ';
+        html +=  'value="' + sus + '">';
+        html += '</div></div><div class="col-50"><div class="labelName">Cost of Material</div><div class="cardName eachCost padding-top-half">' + val2 + '</div></div>';
+        html += '</div><div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName">Deleted</span></div><div class="row">';
+        html += '<div class="col-50"></div><div class="col-50"><a class="button button-small removeCost" data-id="' + select.id + '">Remove Raw Material</a></div>';
+        html += '</div></div></div></li>';
+
         $("#prodIng-list .sortList").append(html);
         $(".removeCost").off("click").on("click", function(){
                   //var id = $(this).attr("data-itemid");
@@ -1409,14 +1476,14 @@ export default {
     permDeleteItem: function(list, id){
         var self = this;
         
-        self.$app.dialog.confirm("Are you sure you want to permanently delete this?", "Mogul Sheet", function(){
+        self.$app.dialog.confirm("Are you sure you want to permanently delete this?", "Omni", function(){
                   mogulsheetdb.get(id).then(function(doc) {
                     doc.status = -1
                     return mogulsheetdb.put(doc);
                   }).then(function(){
 
                   self.products = self.products.filter(function(e){ 
-                      return e._id != id;
+                      return e.id != id;
                   });
                   self.$setState({
                       products:self.products,
@@ -1434,23 +1501,22 @@ export default {
     },
     DeleteItem: function(list, id){
         var self = this;
-        var checked = 0;
+        var checked = false;
         var text = "delete"
-        var toggle = self.$app.toggle.get(".showInactive");
+        /*var toggle = self.$app.toggle.get(".showInactive");
         if(toggle != undefined){
             if(toggle.checked){
                 text = "activate";
                 checked = 1;
             }
-        }
-        self.$app.dialog.confirm("Are you sure you want to " + text + "?", "Mogul Sheet", function(){
-                  mogulsheetdb.get(id).then(function(doc) {
-                    doc.status = checked
-                    return mogulsheetdb.put(doc);
-                  }).then(function(){
-
+        }*/
+        self.$app.dialog.confirm("Are you sure you want to " + text + "?", "Omni", function(){
+          self.$app.preloader.show();
+          $.when(self.$app.methods.getDataAPI("products/DeleteActivateProd?id=" + id + "&stat=" + checked)).then(function( data, textStatus, jqXHR ) {
+                if(data){
+                  self.$app.preloader.hide();
                   self.products = self.products.filter(function(e){ 
-                      return e._id != id;
+                      return e.id != id;
                   });
                   self.$setState({
                       products:self.products,
@@ -1463,6 +1529,14 @@ export default {
                         $("#product-list .pagination").remove();
                       }
                   });
+                }  
+              }).catch((data, textStatus, jqXHR) => {
+                self.$app.preloader.hide();
+                  if(data != null && data.status == 404){
+                    self.$app.methods.showToast("Product not found", "center");
+                    return;
+                  }
+                  self.$app.methods.showToast("An error occurred", "center");
               })
           }, null);
     },
@@ -1470,7 +1544,7 @@ export default {
       var self = this;
       var saveLink = "https://mogulsheet.com/landing/page?id=" + self.lastLink.link;
       copy(saveLink);
-      self.$app.dialog.alert("Link copied to clipboard");
+      self.$app.dialog.alert("Link copied to clipboard", "Omni");
     },
     createActionSheet: function(){
       var self = this;
@@ -1520,17 +1594,17 @@ export default {
         //popup.once("opened", function(){
           if(id != null || id != undefined){
             var item = self.products.find(function(e){ 
-                  return e._id == id;
+                  return e.id == id;
               });
               self.$setState({
                       currentProduct:item
                     });
-                    $$("input.nameProduct").val(item.name);
+                    $("input.nameProduct").val(item.name);
                     var textEditor = self.$app.textEditor.get('.desc_of_product');
-                    var desc = item.desc == null ? "" : item.desc;
+                    var desc = item.description == null ? "" : item.description;
                     textEditor.setValue(desc);
-                    $("input.cost_price").val(item.cost_price);
-                    $$("input.selling_price").val(item.selling_price);
+                    $("input.cost_price").val(item.costPrice);
+                    $("input.selling_price").val(item.sellingPrice);
                     if(item.stock == undefined || item.stock == "" || item.stock == "Unlimited"){
                       $(".isUnlimited").prop("checked", true);
                       $(".stock_quantity").val("");
@@ -1538,10 +1612,40 @@ export default {
                       $(".isUnlimited").prop("checked", false);
                       $(".stock_quantity").val(item.stock);
                     }
+                    //var makePub = $(".showToPublic").is(":checked");
+                    //makePub = makePub == null ? true : makePub;
+                    $(".showToPublic").prop("checked", item.showToPublic);
+                    $(".productCategory").val(item.productCategory == null ? "" : item.productCategory);
+                    $("#productType").val(item.typeOfProduct == null ? "physicalProduct" : item.typeOfProduct).change();
+                    if(item.images != null){
+                        var images = item.images.split(";");
+                        $(".productsWrapper").empty(); 
+                        for(var i = 0; i < images.length; i++){
+                          var obj = images[i];
+                          //var imgName = Object.keys(obj)[0];
+                          //var imgSrc = Object.values(obj)[0];
+                          var html = "<div class='swiper-slide'>";
+                            html += "<div class='holderSwiper'><img class='images' src='" + obj + "'></div>";
+                            html += "<div class='display-inline-flex margin-vertical padding-bottom' style='width:100%'><a class='button button-small tealBgButton link external margin-right' target='_blank' href='" + obj + "' download>Download Image</a><a class='button button-small deleteImage' data-name='" + obj + "'>Delete Image</a></div></div>";
+                          $(".productsWrapper").append(html); 
+                        }
+                        $('.productsWrapper').off("click").on('click','.button', function (e) {
+                            var name = $(this).attr("data-name");
+                            if($(this).hasClass("deleteImage")){
+                              self.deleteImage(name, this);
+                            }
+                            //return false;
+                        });
+                        self.reInitSwiper();
+                    }
+                    
+
                     //$(".stock_quantity, .isUnlimited").prop("disabled", true);
                     var popup = self.$app.popup.open('.popup.newProduct', true);
             } else{
               $(".isUnlimited").prop("checked", true);
+              $("input.nameProduct,input.selling_price,.cost_price, .stock_quantity, .productCategory").val("");
+              $("#productType").val("physicalProduct").change();
               //$(".stock_quantity, .isUnlimited").prop("disabled", false);
               var popup = self.$app.popup.open('.popup.newProduct', true);
               self.$setState({
@@ -1550,6 +1654,21 @@ export default {
             }
         //})
         
+    },
+    deleteImage: function(name, but){
+      var self = this;
+      $(but).parents(".swiper-slide").eq(0).remove();
+      self.reInitSwiper();
+      var obj = {}
+      obj.name = name;
+      obj.id = self.currentProduct.id;
+      self.$app.preloader.show();
+      $.when(self.$app.methods.postDataAPI("products/DeleteImage", obj, true)).then(function( data, textStatus, jqXHR ) {
+        self.$app.preloader.hide();
+      }).catch((err) => {
+        self.$app.preloader.hide();
+        self.$app.methods.showToast("An error occurred", "center");
+      })
     },
     openPopUpLink: function(id){
         var self = this;
@@ -1761,18 +1880,18 @@ export default {
         //popup.once("opened", function(){
           if(id != null || id != undefined){
             var item = self.products.find(function(e){ 
-                  return e._id == id;
+                  return e.id == id;
               });
               self.$setState({
                   currentProduct: item
               });
 
                 $$("input.name_sell").val(item.name);
-                $$("input.cost_sell").val(item.selling_price);
+                $$("input.cost_sell").val(item.sellingPrice);
                 var quantity = item.quantity == null ? 1 : item.quantity;
-                var total = item.total_price == null ? item.selling_price : item.total_price;
+                var total = item.totalPrice == null ? item.sellingPrice : item.totalPrice;
                 //var taxes = localStorage.getItem("taxes");
-                var taxes = self.settings == null ? 0 : self.settings.taxes;
+                var taxes = self.$app.data.settings == null ? 0 : self.$app.data.settings.taxes;
                 var taxesAmt = taxes == undefined ? 0 : taxes;
                 taxesAmt = Number(taxesAmt);
                 total = Number(total);
@@ -1785,7 +1904,7 @@ export default {
                 $("#purchase-calendar-modal").val(moment().format('LLL'));
                 var popup = self.$app.popup.open('.popup.sellProduct', true);
             } else{
-              var taxes = self.settings == null ? 0 : self.settings.taxes;
+              var taxes = self.$app.data.settings == null ? 0 : self.$app.data.settings.taxes;
               var taxesAmt = taxes == undefined ? 0 : taxes;
               $(".quantity_sell").val("1");
               $(".taxes").val(taxesAmt);
@@ -1801,33 +1920,31 @@ export default {
     },
     SelectItemMultipleProducts: function(select){//name,cost,status,created_date
       var self = this;
-      var name = select.product_name == null ? "" : select.product_name;
+      var name = select.productName == null ? "" : select.productName;
       if(name == ""){
         name = select.name == null ? "" : select.name;
       }
       var discount = select.discount == null ? "0" : select.discount;
-      var cost = select.selling_price == null ? "" : select.selling_price;
+      var cost = select.sellingPrice == null ? "" : select.sellingPrice;
       var quantity = select.quantity == null ? 1 : select.quantity;
-      var totalPrice = select.total_price == null ? "" : select.total_price; 
-        var html = '<li class="eachSaleParent eachProduct"><div class="card myCard"><div class="card-content padding-horizontal-half">';
-          html += '<div><span class="labelName">Product Name: </span><div class="display-inline-flex"><input class="productName" type="text" placeholder="Product Name" value="';
-          html +=  name + '"></div></div>';
-          html += '<input type="hidden" class="productID" value="' + select._id + '">';
+      var totalPrice = select.totalPrice == null ? "" : select.totalPrice; 
+        var html = '<li class="eachSaleParent eachProduct margin-vertical"><div class="card myCard"><div class="card-content padding-horizontal padding-vertical">';
+          html += '<div class="row"><div class="col-50"><div class="labelName">Product Name </div><input class="productName" type="text" placeholder="Product Name" value="';
+          html +=  name + '"></div>';
+          html += '<div class="col-50"><div class="labelName">Product Price</div><input class="productCost" type="text" placeholder="Product Price" value="' + cost + '" disabled></div>';
+          html += '</div>';
+
+          html += '<input type="hidden" class="productID" value="' + select.id + '">';
           html += '<input type="hidden" class="hiddenQuantity" value="' + select.stock + '">';
-          html += '<div class="row"><div class="col-50"><div class="item-content item-input no-padding-left"><div class="item-inner no-padding-right"><div class="labelName">Product Cost</div>';
-          html += '<div class="item-input-wrap"><input class="productCost" type="text" placeholder="Product Cost" value="' + cost + '">';
-          html +=  '<span class="input-clear-button"></span></div></div></div></div>';
-          html += '<div class="col-50"><div class="item-content item-input no-padding-left"><div class="item-inner no-padding-right"><div class="labelName">Quantity</div>';
-          html += '<div class="item-input-wrap"><input class="productQuantity" type="text" placeholder="Product Quantity" value="' + quantity + '">';
-          html +=  '<span class="input-clear-button"></span></div></div></div></div></div>'; 
-          html += '<div><span class="labelName">Discount: </span><div class="display-inline-flex"><input class="discount" type="text" placeholder="Discount" value="';
-          html +=  discount + '"></div></div>';
-          html += '<div><span class="labelName">Total Price: </span><div class="display-inline-flex"><input class="totalproductprice" type="text" placeholder="Total Price" value="';
-          html +=  totalPrice + '"></div></div>';
-        html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
-          html += '<a class="button button-small button-raised removeProduct" data-id="' + select._id + '">Delete</a>';
-        html += '</p></div></div>'
-        html += '</li>';
+          html += '<div class="row margin-top-half"><div class="col-50"><div class="labelName">Quantity</div><input class="productQuantity" type="text" placeholder="Product Quantity" value="' + quantity + '"></div>';
+          html += '<div class="col-50"><div class="labelName">Discount</div><input class="discount" type="text" placeholder="Discount" value="' + discount + '"></div>';
+          html += '</div>';
+
+          html += '<div class="row margin-top-half"><div class="col-50"><div class="labelName">Total Price: </div><input class="totalproductprice" type="text" placeholder="Total Price" value="';
+          html +=  totalPrice + '" disabled></div>';
+          html += '<div class="col-50"><div>&nbsp</div><a class="button button-small removeProduct margin-top-half" data-id="' + select.id + '">Remove Product</a></div>';
+          html += '</div>';
+        html += '</div></div></li>';
         $("#products-list .sortList").append(html);
         $(".eachSaleParent .removeProduct").off("click").on("click", function(){
                   var id = $(this).attr("data-id");
@@ -1845,7 +1962,7 @@ export default {
       var self = this;
       
         var select = self.selectedProducts.filter(function(e){ 
-              return e._id != id;
+              return e.id != id;
           });
  
           //$(but).parents("li").eq(0).remove();
@@ -1859,20 +1976,11 @@ export default {
     },
     getClients: function(){
         var self = this;
-        var checked = 1;
-        
-        mogulsheetdb.find({
-          selector: {
-            status: {$eq: checked},
-            clientID: {$gt: 0},
-            _id: {$gte: null}
-          }
-        }).then(function(ar){
-          var arr = ar.docs;
+        $.when(self.$app.methods.getDataAPI("clients/GetClients")).then(function( data, textStatus, jqXHR ) {
           self.$setState({
-                clients: arr
+                clients: data
               })
-        })
+        });
     },
     openPopUpMultiple:function(){
       var self = this;
@@ -1887,7 +1995,7 @@ export default {
               multiple: true, //allow multiple values
               navbarColorTheme: 'col bg-color-white text-color-black',
               preloader: true, //enable preloader
-              valueProperty: '_id', //object's "value" property name
+              valueProperty: 'id', //object's "value" property name
               textProperty: 'name_price', //object's "text" property name
               popupCloseLinkText: 'Done',
               requestSourceOnOpen:true,
@@ -1899,7 +2007,7 @@ export default {
                 //render(results);
                 if (query.length === 0) {
                   $.each(results, function(ind, val){
-                      val["name_price"] = val["name"] + "\t" + " - " + self.formatMoney(val["selling_price"]);
+                      val["name_price"] = val["name"] + "\t" + " - " + self.formatMoney(val["sellingPrice"]);
                   })
                   autocomplete.preloaderHide();
                   render(results);
@@ -1911,7 +2019,7 @@ export default {
                   // Find matched items
                   for (var i = 0; i < results.length; i++) {
                     if (results[i].name.toLowerCase().indexOf(query.toLowerCase()) >= 0) {
-                        results[i].name_price = results[i].name + "\t" + " - " + self.formatMoney(results[i].selling_price);
+                        results[i].name_price = results[i].name + "\t" + " - " + self.formatMoney(results[i].sellingPrice);
                         newResult.push(results[i]);
                       }
                   }
@@ -1932,7 +2040,7 @@ export default {
                   }
                   for(var i = 0; i < selectedValues.length; i++){
 
-                    var found = self.selectedProducts.filter(x => x._id == selectedValues[i]._id).length;
+                    var found = self.selectedProducts.filter(x => x.id == selectedValues[i].id).length;
                     if(found < 1){
                       self.selectedProducts.push(selectedValues[i]);
                       self.SelectItemMultipleProducts(selectedValues[i]);
@@ -1947,7 +2055,7 @@ export default {
         });
         
         var popup = self.$app.popup.open('.popup.multipleSales', true);
-        var taxes = self.settings == null ? 0 : self.settings.taxes;
+        var taxes = self.$app.data.settings == null ? 0 : self.$app.data.settings.taxes;
         var taxesAmt = taxes == undefined ? 0 : taxes;
         $(".taxpercent").val(taxesAmt);
         $(".multipleSales:visible").find("#datePaidMultiple").val(moment().format('LLL'));
@@ -1959,7 +2067,7 @@ export default {
         var self = this;
         
         //popup.once("opened", function(){
-            self.getDataIngredients(id);
+            self.getDataIngredients(id); //get all ingredients
             var selectedValues = null;
             var autocompleteStandaloneMultiple = self.$app.autocomplete.create({
               openIn: 'popup', //open in page
@@ -1967,19 +2075,19 @@ export default {
               multiple: true, //allow multiple values
               navbarColorTheme: 'col bg-color-white text-color-black',
               preloader: true, //enable preloader
-              valueProperty: '_id', //object's "value" property name
+              valueProperty: 'id', //object's "value" property name
               textProperty: 'name_price', //object's "text" property name
               popupCloseLinkText: 'Done',
               requestSourceOnOpen:true,
               source: function (query, render) {
                 var autocomplete = this;
                 autocomplete.preloaderShow();
-                var results = self.ings.filter(x => x.status == 1); //.map(a => a.name);
+                var results = self.ings; //.map(a => a.name);
                 
                 //render(results);
                 if (query.length === 0) {
                   $.each(results, function(ind, val){
-                      val["name_price"] = val["name"] + "\t" + " - " + self.formatMoney(val["cost_per_unit"]) + " for " + val["unit_size"] + val["unit"];
+                      val["name_price"] = val["name"] + "\t" + " - " + self.formatMoney(val["costPerUnit"]) + " for " + val["unitSize"] + val["unit"];
                   })
                   autocomplete.preloaderHide();
                   render(results);
@@ -1990,7 +2098,7 @@ export default {
                   // Find matched items
                   for (var i = 0; i < results.length; i++) {
                     if (results[i].name.toLowerCase().indexOf(query.toLowerCase()) >= 0) {
-                        results[i].name_price = results[i].name + "\t" + " - " + self.formatMoney(results[i].cost_per_unit) + " for " + results[i].unit_size + results[i].unit;
+                        results[i].name_price = results[i].name + "\t" + " - " + self.formatMoney(results[i].costPerUnit) + " for " + results[i].unitSize + results[i].unit;
                         newResult.push(results[i]);
                       }
                   }
@@ -2010,7 +2118,7 @@ export default {
                     return;
                   }
                   for(var i = 0; i < selectedValues.length; i++){
-                    var found = self.productIngs.filter(x => x._id == selectedValues[i]._id).length;
+                    var found = self.productIngs.filter(x => x.id == selectedValues[i].id).length;
                     if(found < 1){
                       self.productIngs.push(selectedValues[i]);
                       self.SelectItem(selectedValues[i]);
@@ -2020,7 +2128,7 @@ export default {
                       return !selectedValues.includes(x);  // "this element doesn't exist in currentArray"
                   })
                   for(var i = 0; i < deleted.length; i++){
-                    $(".eachCostParent .removeCost[data-id='" + deleted[i]._id + "']").click()
+                    $(".eachCostParent .removeCost[data-id='" + deleted[i].id + "']").click();
                   }
                 }
               }
@@ -2028,58 +2136,46 @@ export default {
             var savearray = [];
             var profit = 0;
             if(id != null || id != undefined){
-
-                  mogulsheetdb.find({
-                      selector: {
-                        productID_prodIngsID: {$eq: id},
-                        prodIngsID: {$gt: 0},
-                        status: {$gte: null},
-                        _id: {$gte: null}
-                      }
-                    }).then(function(ar){
-                      var arr = ar.docs;
+                //get main ingredient
+                self.$app.preloader.show();
+                $.when(self.$app.methods.getDataAPI("products/GetProductIngs?id=" + id)).then(function( arrBig, textStatus, jqXHR ) {
+                  self.$app.preloader.hide();
+                  if(arrBig.prodIngs != null){
+                    var arr = arrBig.prodIngs;
                     $.each(arr, function( key, value ) {
    
-                        var each = self.activeArr.find(x => x._id == value.ingredientIDFK);
-                        if(each != undefined){
-                          each.select_unit_size = value.unit_size;
-                          each.select_cost = value.cost;
-                          savearray.push(each);
-                        }
+                      var each = self.ings.find(x => x.id == value.ingredientId);
+                      if(each != undefined){
+                        each.select_unit_size = value.unitSize;
+                        each.select_cost = value.cost;
+                        savearray.push(each);
+                      }
                     })
 
                     self.$setState({
-                        productIngs:savearray
-                        //ings: self.ings
+                      productIngs:savearray
+                      //ings: self.ings
                     }, function(){
-                        for(var i = 0; i < savearray.length; i++){
-                          if(savearray[i] != undefined) self.SelectItem(savearray[i]);
-                        }
-                        self.CalculateTotal();
-                    });
-                    //self.CalculateTotal();
-                }).then(function(){
-                
-                  mogulsheetdb.find({
-                      selector: {
-                        productID_prodIngsID: {$eq: id},
-                        prodOthersID: {$gt: 0},
-                        status: {$gte: null},
-                        _id: {$gte: null}
+                      for(var i = 0; i < savearray.length; i++){
+                        if(savearray[i] != undefined) self.SelectItem(savearray[i]);
                       }
-                    }).then(function(ar){
-                    var arr = ar.docs;
+                      self.CalculateTotal();
+                    });
+                  }
 
-                  $.each(arr, function( key, value ) {
+                  if(arrBig.prodIngsOthers != null){
+                    var arr = arrBig.prodIngsOthers;
+                    $.each(arr, function( key, value ) {
                     if(value.name != "***Profit***"){
-                      var html = '<li class="extraCostRow"><div class="card myCard"><div class="card-content padding-horizontal-half">';
-                        html += '<div><span class="labelName">Enter Name: </span><div class="display-inline-flex"><input class="extraName" type="text" placeholder="Enter Name" value="';
-                        html +=  value.name + '"></div></div>';
-                        html += '<div class="margin-top-half"><span class="labelName">Enter Cost: </span><div class="display-inline-flex"><input class="eachCost" type="text" placeholder="Enter Cost" value="';
-                        html += value.cost + '"></div></div>';
-                        html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
-                          html += '<a class="button button-small button-raised removeRow">Delete</a>';
-                        html += '</p></div></div>'
+                      var html = '<li class="extraCostRow"><div class="card myCard"><div class="card-content padding-horizontal-half"><div class="row">';
+                        html += '<div class="col-50"><div class="labelName">Name</div><input class="extraName" type="text" placeholder="e.g transport fare" value="';
+                        html +=  value.name + '"></div>';
+                        html += '<div class="col-50"><span class="labelName">Cost</span><input class="eachCost" type="text" placeholder="Enter Cost" value="';
+                        html += value.cost + '"></div>';
+                        html += '</div>';
+                        html += '<div class="row margin-top-half"><div class="col-50"></div><div class="col-50">';
+                          html += '<a class="button button-small removeRow">Remove Charge</a>';
+                        html += '</div></div></div>';
                         html += '</li>';
                         $("#prodOtherIng-list .sortList").append(html);
                       
@@ -2096,18 +2192,22 @@ export default {
                             profit = value.cost;
                         }
                     })
-                    var prd = self.products.find(x => x._id == id);
-                    var costPrice = Number(prd.cost_price);
-                    var sellingPrice = Number(prd.selling_price);
+                  }
+
+                  var prd = self.products.find(x => x.id == id);
+                    var costPrice = Number(prd.costPrice);
+                    var sellingPrice = Number(prd.sellingPrice);
                     $(".totalAmountBeforeProfit").text(costPrice.toFixed(2));
                     $(".totalAmount").text(sellingPrice.toFixed(2));
                     //var cent = (100 * profit)/(finalPrice - profit);
                     //$(".profitpercent").val(cent.toFixed(2));
                     //self.CalculateTotal();
                     var popup = self.$app.popup.open('.ProductIngredients', true);
-                    //self.CalculateTotal();
-                });
-              });
+
+                }).catch((err) => {
+                  self.$app.preloader.hide();
+                  self.$app.methods.showToast("An error occurred", "center");
+                })
             } 
             /*else{
               self.$setState({
@@ -2143,20 +2243,20 @@ export default {
 
         var beforeTaxes = Number($(".totalAmountBeforeProfitProduct").text());
           var afterTaxes = Number($(".totalAmountProduct").text());
-          var fullyPaid = 0;
+          var fullyPaid = false;
       var isPaidDate = null;
       if(amountPaid >= afterTaxes){
-        fullyPaid = 1;
+        fullyPaid = true;
       }else{
-        fullyPaid = 0;
+        fullyPaid = false;
       }
-      isPaidDate = moment($(".multipleSales:visible").find("#datePaidMultiple").val()).format("X");//  Date.parse($("#paid-calendar-modal-prods").val());
-      var isEstimate = $(".isEstimateMultiple").prop("checked") == true ? 1 : 0;
+      isPaidDate = moment($(".multipleSales:visible").find("#datePaidMultiple").val()).format();//  Date.parse($("#paid-calendar-modal-prods").val());
+      var isEstimate = $(".isEstimateMultiple").prop("checked");
         $(".eachProduct").each(function(i, curr){
-        var productID = "0";
+        var productID = null;
         var productName = $(curr).find(".productName").eq(0).val().trim();
         if($(curr).find(".productID").length > 0){
-          productID = $(curr).find(".productID").eq(0).val();
+          productID = parseInt($(curr).find(".productID").eq(0).val());
         }
         
         var price = Number($(curr).find(".productCost").eq(0).val().trim());
@@ -2170,27 +2270,28 @@ export default {
         }else{
           $(curr).removeClass("bg-color-red");
           // saving logic
-          var isParent = $(curr).hasClass("eachSaleParent") == true ? 1 : 0;
+          var isParent = $(curr).hasClass("eachSaleParent") == true;
           var tax = (taxes/100) * totalPric;
           var costPlusTax = totalPric + tax;
           var obj = {
-                product_name: productName,  
-                productID_saleID: productID,
-                buyer_name: buyername,
-                selling_price: price,
+                productName: productName,
+                productId: productID,
+                //buyer_name: buyername,
+                sellingPrice: price,
                 discount: discount,
                 isEstimate: isEstimate,
-                tax: taxes,
+                taxes: taxes,
                 parentID: 0,
+                clientID: 0,
                 isParent: isParent,
-                afterTax: costPlusTax,
+                afterTaxPrice: costPlusTax,
                 quantity: quant,
-                total_price: totalPric,
+                totalPrice: totalPric,
                 amountPaid:  0,
                 isPaid: fullyPaid,
-                date_paid: isPaidDate,
-                created_date: moment($("#datePurchaseMultiple").val()).format("X"), //Date.parse($("#purchase-calendar-modal").val()),
-                status:1
+                datePaid: isPaidDate,
+                createdDate: moment($("#datePurchaseMultiple").val()).format(), //Date.parse($("#purchase-calendar-modal").val()),
+                status:true
               };
             bigData.push(obj)
         }
@@ -2209,19 +2310,17 @@ export default {
               theBuyerID = selectedUserID;
               self.saveProcessedMultiplePayment(grpName, theBuyerName,theBuyerID,isEstimate,taxes,afterTaxes,beforeTaxes,amountPaid,fullyPaid,isPaidDate,bigData);
             }else{
-              var generatedID = "0" + moment().format("X");
               var objNew = {
                   name: buyername,
-                  _id: generatedID,
-                  clientID: generatedID,
-                  created_date: generatedID,
-                  status:1
-              }
-              mogulsheetdb.put(objNew).then(function(res) {
-                      //self.$app.dialog.alert("Item saved.");
-                      self.showToast("New User Created.", "center", true);
-                      self.saveProcessedMultiplePayment(grpName, buyername,generatedID,isEstimate,taxes,afterTaxes,beforeTaxes,amountPaid,fullyPaid,isPaidDate,bigData);
-                })
+                  status:true
+              }//saveClient
+              $.when(self.$app.methods.postDataAPI("clients/SaveClient", objNew, true)).then(function( userid, textStatus, jqXHR ) {
+              self.$app.preloader.hide();
+                if(userid != null){
+                  self.showToast("New User Created.", "center", true);
+                  self.saveProcessedMultiplePayment(grpName, buyername,userid,isEstimate,taxes,afterTaxes,beforeTaxes,amountPaid,fullyPaid,isPaidDate,bigData);
+                }
+              });
             }
 
            
@@ -2232,86 +2331,74 @@ export default {
       grpName1 = grpName1 == "" ? buyername1 + " group purchase" : grpName1;
           
           var objMaster = {
-              product_name: grpName1,  
-              buyer_name: buyername1,
-              buyer_id: theBuyerID1,
-              selling_price: beforeTaxes1,
+              productName: grpName1,  
+              //buyer_name: buyername1,
+              clientId: theBuyerID1,
+              sellingPrice: beforeTaxes1,
               discount: 0,
               isEstimate: isEstimate1,
-              tax: taxes1,
+              taxes: taxes1,
               parentID: 0,
-              isParent:1,
-              afterTax: afterTaxes1,
+              isParent:true,
+              afterTaxPrice: afterTaxes1,
               quantity: 1,
-              total_price: beforeTaxes1,
+              totalPrice: beforeTaxes1,
               amountPaid:  amountPaid1,
               isPaid: fullyPaid1,
-              date_paid: isPaidDate1,
-              created_date: moment($("#datePurchaseMultiple").val()).format("X"), //Date.parse($("#purchase-calendar-modal").val()),
-              status:1
+              datePaid: isPaidDate1,
+              createdDate: moment($("#datePurchaseMultiple").val()).format(), //Date.parse($("#purchase-calendar-modal").val()),
+              status:true
             };
             var deleted = "";
-            if(self.currentMultipleSale != null){
-              objMaster._id = self.currentMultipleSale;
-              objMaster.saleID = objMaster._id;
-            }else{
-              objMaster._id = moment().format("X");
-              objMaster.saleID = objMaster._id;
-            }
+            /*if(self.currentMultipleSale != null){
+              objMaster.id = self.currentMultipleSale;
+            }*/
 
-            //db.transaction('rw', db.sales, () => {
-                
-                mogulsheetdb.put(objMaster).then(function(res){
-                    sbigData.forEach((element, index) => {
-                    sbigData[index].parentID = res.id;
-                    var add = index.toString() + index.toString();
-                    sbigData[index]._id = add + moment().format("X");
-                    sbigData[index].saleID = sbigData[index]._id;
-                    sbigData[index].buyer_name = buyername1;
-                    sbigData[index].buyer_id = theBuyerID1;
+            var objSaveAll = {};
+            objSaveAll.parent = objMaster;
+            objSaveAll.children = sbigData;
+
+            self.$app.preloader.show();
+            $.when(self.$app.methods.postDataAPI("sales/SaveSalesList", objSaveAll, true)).then(function( dataid, textStatus, jqXHR ) {
+              self.$app.preloader.hide();
+              self.showToast("Product sale saved", "center", true);
+              self.closePopUpMultiple();
+
+            }).catch((err) => {
+              self.$app.preloader.hide();
+              self.showToast("An error occurred", "center");
+            })
+
+            /*$.when(self.$app.methods.postDataAPI("sales/SaveSalesMaster", objMaster, true)).then(function( dataid, textStatus, jqXHR ) {
+              sbigData.forEach((element, index) => {
+                    sbigData[index].parentID = dataid;
+                    sbigData[index].clientId = theBuyerID1;
                     //deleted = res.id; 
                   });
-
+                  var method = "";
                 if(self.currentMultipleSale != null){
-                  mogulsheetdb.find({
-                      selector: {
-                        parentID: {$eq: deleted},
-                        saleID: {$gt: 0},
-                        _id: {$gte: null}
-                      }
-                    }).then(function(ar){
-                      var arr = ar.docs;
-                            arr.forEach((element, index) => {
-                            arr[index]._deleted = true;
-                        });
-                        mogulsheetdb.bulkDocs(arr).then(function(){
-                          mogulsheetdb.bulkDocs(sbigData);
-                        })
-                    })
-
+                  method = "SaveSalesListDeleteFirst";
                 }else{
-                    
-                    mogulsheetdb.bulkDocs(sbigData).then(function(lastKey) {
-                        
-                        if(isEstimate1 == 0){
-                            self.subtractStockMultiple(sbigData);
-                          }
-                    })
+                  method = "SaveSalesList";  
                 }
-                self.showToast("Saved successfully", "center", true);
-                
-                self.closePopUpMultiple();
-                //self.$app.popup.close('.multipleSales', true);
-                  
-              }).catch(err => {
+                //save all
+                $.when(self.$app.methods.postDataAPI("sales/" + method, sbigData, true)).then(function( dataid, textStatus, jqXHR ) {
+                  self.showToast("Product sale saved", "center", true);
+                  self.closePopUpMultiple();
+                }).catch(err => {
                 // Transaction aborted. NOT WITHIN ZONE!
                 //console.error (e);
                   self.showToast(err, "center");
-               });
+                });
+            }).catch(err => {
+                // Transaction aborted. NOT WITHIN ZONE!
+                //console.error (e);
+                  self.showToast(err, "center");
+            });*/
 
             //saving clean data
     },
-    subtractStockMultiple: function(bigData){
+    /*subtractStockMultiple: function(bigData){
       var self = this;
       var prods = bigData.filter(x => x.productID_saleID != "0");
       var prodsID = prods.map(x => x.productID_saleID);
@@ -2342,19 +2429,25 @@ export default {
                 mogulsheetdb.bulkDocs(saveBigData);
               }
             })
-    },
+    },*/
     AddNewProduct: function(select){
       var self = this;
-      var name = select == null ? "" : select.product_name;
-      var cost = select == null ? "" : select.selling_price;
+      var name = select == null ? "" : select.productName;
+      var cost = select == null ? "" : select.sellingPrice;
       var discount = select == null ? "0" : select.discount;
       var quantity = select == null ? 1 : select.quantity;
-      var totalPrice = select == null ? "" : select.total_price;
+      var totalPrice = select == null ? "" : select.totalPrice;
         //var cost = select.cost == undefined ? 0 : select.cost; 
-        var html = '<li class="eachSaleParentOther eachProduct"><div class="card myCard"><div class="card-content padding-horizontal-half">';
-          html += '<div><span class="labelName">Product Name: </span><div class="display-inline-flex"><input class="productName" type="text" placeholder="Product Name" value="';
-          html +=  name + '"></div></div>';
-          html += '<div class="row"><div class="col-50"><div class="item-content item-input no-padding-left"><div class="item-inner no-padding-right"><div class="labelName">Product Cost</div>';
+        var html = '<li class="eachSaleParentOther eachProduct margin-vertical"><div class="card myCard"><div class="card-content padding-horizontal padding-vertical">';
+          html += '<div class="row"><div class="col-50"><div class="labelName">Name</div><input class="productName" type="text" placeholder="e.g delivery" value="';
+          html +=  name + '"></div><div class="col-50"><div class="labelName">Amount</div><input class="productCost" type="text" placeholder="Amount" value="' + cost + '"></div></div>';
+          html += '<div class="row margin-top-half"><div class="col-50"></div><div class="col-50"><a class="button button-small removeProduct">Remove Charge</a></div></div>';
+          html += '<input type="hidden" class="discount" value="' + discount + '"><input type="hidden" class="productQuantity" value="' + quantity + '"><input type="hidden" class="totalproductprice" value="'+ totalPrice + '">';
+          html += "</div></div></li>"; //closing
+
+
+
+          /*html += '<div class="row"><div class="col-50"><div class="item-content item-input no-padding-left"><div class="item-inner no-padding-right"><div class="labelName">Product Cost</div>';
           html += '<div class="item-input-wrap"><input class="productCost" type="text" placeholder="Product Cost" value="' + cost + '">';
           html +=  '<span class="input-clear-button"></span></div></div></div></div>';
           html += '<div class="col-50"><div class="item-content item-input no-padding-left"><div class="item-inner no-padding-right"><div class="labelName">Quantity</div>';
@@ -2367,7 +2460,7 @@ export default {
         html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
           html += '<a class="button button-small button-raised removeProduct">Delete</a>';
         html += '</p></div></div>'
-        html += '</li>';
+        html += '</li>';*/
         $("#productsOther-list .sortList").append(html);
         $(".eachSaleParentOther .removeProduct").off("click").on("click", function(){
                   //var id = $(this).attr("data-itemid");
@@ -2433,11 +2526,17 @@ export default {
     },
     closeEditProdPopUp: function(){
       var self = this;
-      $$("input.name,input.selling_price,.cost_price, .stock_quantity").val("");
+      $$("input.name,input.selling_price,.cost_price, .stock_quantity, .productCategory").val("");
       $(".isUnlimited").prop("checked", true);
       var textEditor = self.$app.textEditor.get('.desc_of_product');
       textEditor.setValue("");
+      self.$app.swiper.destroy('.swiper-container');
+      $(".productsWrapper, .swiper-pagination").empty();
+      document.getElementById("productPhotos").value = "";
       var popup = self.$app.popup.close('.newProduct', true);
+      popup.once("closed", function(){
+            self.getData();
+        });
     },
     closePopUp: function(){
         var self = this;
@@ -2464,8 +2563,9 @@ export default {
       if(err){
         var stock = $(".stock_quantity").val();
         var unlimited = $(".isUnlimited").is(":checked");
+        var makePub = $(".showToPublic").is(":checked");
         if((stock == "" && !unlimited) || (stock != "" && unlimited)){
-          self.$app.dialog.alert("Check stock as unlimited or enter stock quantity");
+          self.$app.dialog.alert("Check stock as unlimited or enter stock quantity", "Omni");
           return;
         }
         var finalStock = stock != "" ? stock : "Unlimited";
@@ -2474,72 +2574,161 @@ export default {
 
         //add stocking to dbRestocking
         var saveStock = {};
+        
         var obj = {
                 name: $(".nameProduct").val(),  
-                desc: desc,
+                description: desc,
                 stock: finalStock,
-                cost_price: $("input.cost_price").val(),
-                selling_price: $$("input.selling_price").val(), 
-                status:1,
-                created_date: moment().format("X")
+                costPrice: $("input.cost_price").val(),
+                sellingPrice: $$("input.selling_price").val(), 
+                status:true,
+                showToPublic: makePub,
+                typeOfProduct: $("#productType").val(),
+                productCategory: $(".productCategory").val()
               };
+
             if(self.currentProduct != null){
-              obj._id = self.currentProduct._id;
-              obj._rev = self.currentProduct._rev;
-              obj.productID = obj._id;
-              saveStock.last_stock = self.currentProduct.stock == undefined ? "Unlimited" : self.currentProduct.stock;
-              saveStock.total_stock = finalStock;
-              if(saveStock.last_stock != "Unlimited" && finalStock != "Unlimited"){
-                var stockFloat = parseFloat(saveStock.last_stock);
+              obj.id = self.currentProduct.id;
+              saveStock.lastStock = self.currentProduct.stock == undefined ? "Unlimited" : self.currentProduct.stock;
+              saveStock.totalStock = finalStock;
+              saveStock.productId = self.currentProduct.id;
+              if(saveStock.lastStock != "Unlimited" && finalStock != "Unlimited"){
+                var stockFloat = parseFloat(saveStock.lastStock);
                 var finalFloat = parseFloat(finalStock);
-                saveStock.new_stock = finalFloat - stockFloat;
+                saveStock.newStock = finalFloat - stockFloat;
               }else{
-                saveStock.new_stock = finalStock;
+                saveStock.newStock = finalStock;
               }
-              if(self.currentProduct.product_link_id != undefined){
+              /*if(self.currentProduct.product_link_id != undefined){
                 obj.product_link_id = self.currentProduct.product_link_id;
-              }
+              }*/
               
             }else{
-              obj._id = moment().format("X");
-              obj.productID = obj._id;
-              saveStock.last_stock = 0;
-              saveStock.new_stock = finalStock;
-              saveStock.total_stock = finalStock;
+              //new stock
+              /*obj._id = moment().format("X");
+              obj.productID = obj._id;*/
+              saveStock.lastStock = 0;
+              saveStock.newStock = finalStock;
+              saveStock.totalStock = finalStock;
             }
+            saveStock.restockDate = moment().format();
             
-            saveStock._id = 0 + moment().format("X");
-            saveStock.restockID = saveStock._id;
-            saveStock.productID_restockID = obj._id;
-            saveStock.productName = $(".nameProduct").val();
-            saveStock.restock_date = moment().format("X");
-            saveStock.created_date = moment().format("X");
+            //saveStock.created_date = moment().format("X");
             
+            self.$app.preloader.show();
+            var bigSave = {};
+            bigSave.product = obj;
+            if((self.currentProduct == null) || (self.currentProduct.stock != finalStock)){
+                    //save stock
+                bigSave.restock = saveStock;
+            }
 
-          mogulsheetdb.put(obj).then(function(id) {
-                  //self.$app.dialog.alert("Item saved.");
-                  self.showToast("Item saved.", "center", true);
-                  $$("input.nameProduct,input.selling_price,.cost_price, .stock_quantity").val("");
-                  $(".isUnlimited").prop("checked", true);
-                  var textEditor = self.$app.textEditor.get('.desc_of_product');
-                  textEditor.setValue("");
-                  if((self.currentProduct == null) || (self.currentProduct.stock != finalStock)){
-                    mogulsheetdb.put(saveStock).then((dat2) => {
-                      self.getData();
-                    }).catch((err) => {
-                      self.getData();
-                    })
-                  }else{
-                    self.getData();
-                  }
-                  
-              })
+            var form_data = new FormData();
+              //add prod
+              for ( var key in obj ) {
+                  form_data.append(key, obj[key]);
+              }
+              //add restock
+              for ( var key in saveStock ) {
+                  form_data.append(key, saveStock[key]);
+              }
+              //add image
+              var fileUpload = $("#productPhotos").get(0);
+              var files = fileUpload.files;
+              if(files.length > 0){
+                // if there are multiple files , loop through each files
+                //var id = self.currentExpense == null ? 0 : self.currentExpense.id;
+                //form_data.append("id", id);
+                for (var i = 0; i < files.length; i++) {
+                  form_data.append("imagesUpload", files[i]);
+                }
+              }
+            //console.log("product form_data", form_data);
+            
+            $.when(self.$app.methods.postFormDataAPI("products/SaveProdForm", form_data, true)).then(function( data, textStatus, jqXHR ) {
+              self.$app.preloader.hide();
+                if(data){
+                    //self.$app.dialog.alert("Item saved.");
+                    self.showToast("Product saved.", "center", true);
+                    $("input.nameProduct,input.selling_price,.cost_price, .stock_quantity, .productCategory").val("");
+                    $(".isUnlimited").prop("checked", true);
+                    var textEditor = self.$app.textEditor.get('.desc_of_product');
+                    textEditor.setValue("");
+                    self.$app.swiper.destroy('.swiper-container');
+                    $(".productsWrapper, .swiper-pagination").empty();
+                    document.getElementById("productPhotos").value = "";
+                } 
+              }).catch((data, textStatus, jqXHR) => {
+                self.$app.preloader.hide();
+                self.$app.methods.showToast("An error occurred", "center");
+            })
           }
+    },
+    saveStockAfterProd: function(obj){
+      var self = this;
+      $.when(self.$app.methods.postDataAPI("products/SaveProdStock", obj, true)).then(function( data, textStatus, jqXHR ) {
+                if(data){
+                      //self.$app.dialog.alert("Item saved.");
+                      //self.showToast("Client saved.", "center", true);
+                      //$(".clientname,.email,.address,.phone,.otherNotes, #client_bday").val("");
+                      //self.getData();
+                }
+              }).catch((data, textStatus, jqXHR) => {
+                console.log("stock error", data);
+                //self.$app.preloader.hide();
+                //self.$app.methods.showToast("An error occurred", "center");
+            })
+    },
+    checkFilesPhoto: function(e) {  
+      var self = this;
+      var maxLimit = 5;  
+      var id = e.target.id;
+
+      let list = new DataTransfer;
+      var cut = 0;
+      var pres = 0;
+      //$(".expenseWrapper").empty(); 
+      for(var i = 0; i < $('#' + id)[0].files.length; i++){
+          var files = $('#' + id)[0].files[i];
+          var size = files.size / 1024 / 1024;
+          if((size <= 2) && (i < maxLimit)){
+            //self.setupReader(files);
+           /* var reader = new FileReader();
+            reader.onload = function(){
+              var html = "<div class='swiper-slide'>";
+              html += "<div class='holderSwiper'><img class='images' src='" + reader.result + "'></div>";
+              html += "<div><p><a class='button bg-color-red text-color-white deleteImage'>Delete Image</a></p></div></div>";
+              $(".expenseWrapper").append(html); 
+            };
+            reader.readAsDataURL(files);*/
+              //list.items.add(files);
+          }else{
+              cut++;
+          }
+      }  
+      //document.getElementById(id).files = list.files; 
+      var tense = cut == 1 ? " file was " : " files were "
+      if(cut > 0) alert(cut + tense + "removed because it's too large or you went above file limits");   
+  },
+    reInitSwiper: function(){
+      var self = this;
+      self.$app.swiper.destroy('.swiper-container');
+      var swiper = self.$app.swiper.create('.swiper-container', {
+        //data-pagination='{"el": ".swiper-pagination"}' data-space-between="10" data-slides-per-view="auto" data-centered-slides="true" 
+          speed: 400,
+          spaceBetween: 10,
+          centeredSlides: true,
+          pagination: {"el": ".swiper-pagination"}
+      });
     },
     resetSalePopUp: function(){
       var self = this;
+      self.$setState({
+          currentProduct: null
+      });
       $("#paid-calendar-modal-prods").next("span").click();
       $("#purchase-calendar-modal").next("span").click();
+      $(".discount_sell").val(0);
       $$("input.buyer_sell, input.amountpaid_sell, #purchase-calendar-modal, #paid-calendar-modal-prods, .quantity_sell, .total_sell").val("");
       var popup = self.$app.popup.close('.sellProduct', true);
       selectedUserName = null;
@@ -2576,7 +2765,7 @@ export default {
           return;
       }
       if(($$("input.amountpaid_sell").val() == "0" || $$("input.amountpaid_sell").val().trim() == "") && isEstimate == false){
-          self.$app.dialog.confirm("Do you want to record the purchase without a payment made?", "Mogul Sheet", function(){
+          self.$app.dialog.confirm("Do you want to record the purchase without a payment made?", "Omni", function(){
             $$("input.amountpaid_sell").val(0);  
             self.processPayment();
           })
@@ -2588,15 +2777,15 @@ export default {
       var self = this;
       var cp = $$("input.afterTax").val();
       var sp = $$("input.amountpaid_sell").val();
-      var fullyPaid = 0;
+      var fullyPaid = false;
       var isPaidDate = null;
       if(Number(sp) >= Number(cp)){
-        fullyPaid = 1;
+        fullyPaid = true;
       }else{
-        fullyPaid = 0;
+        fullyPaid = false;
       }
-      isPaidDate = moment($("#paid-calendar-modal-prods").val()).format("X");//  Date.parse($("#paid-calendar-modal").val());
-      var isEstimate = $(".isEstimate").prop("checked") == true ? 1 : 0; 
+      isPaidDate = moment($("#paid-calendar-modal-prods").val()).format();//  Date.parse($("#paid-calendar-modal").val());
+      var isEstimate = $(".isEstimate").prop("checked"); 
       var chosenUser = $("input.buyer_sell").val();
       var theBuyerID = "";
       var theBuyerName = "";
@@ -2606,130 +2795,99 @@ export default {
         theBuyerName = selectedUserName;
         self.saveProcessedPayement(theBuyerName, theBuyerID, isEstimate, fullyPaid, isPaidDate);
       }else{
-        var generatedID = "0" + moment().format("X");
         var obj = {
-                name: chosenUser,
-                _id: generatedID,
-                clientID: generatedID,
-                created_date: generatedID,
-                status:1
+                name: chosenUser
             }
-            mogulsheetdb.put(obj).then(function(res) {
-                    //self.$app.dialog.alert("Item saved.");
-                    self.showToast("New User Created.", "center", true);
-                    self.saveProcessedPayement(chosenUser, generatedID, isEstimate, fullyPaid, isPaidDate);
-              })
+            $.when(self.$app.methods.postDataAPI("clients/SaveClient", obj, true)).then(function( data, textStatus, jqXHR ) {
+              self.$app.preloader.hide();
+                if(data != null){
+                  self.showToast("New User Created.", "center", true);
+                    self.saveProcessedPayement(chosenUser, data, isEstimate, fullyPaid, isPaidDate);
+                }
+            });
         }
       
     },
     saveProcessedPayement: function(theBuyerName, theBuyerID, isEstimate, fullyPaid, isPaidDate){
       var self = this;
       var productId = 0;
-      if($("input.name_sell").val() == self.currentProduct.name){
-        productId = self.currentProduct._id;
-      }
+      
       var quantitySold = $("input.quantity_sell").val();
       var obj = {
-                product_name: $$("input.name_sell").val(),  
-                buyer_name: theBuyerName,
-                buyer_id: theBuyerID,
-                selling_price: $$("input.cost_sell").val(),
-                tax: $$("input.taxes").val(),
-                parentID: 0,
-                isParent:0,
-                productID_saleID: productId,
+                productName: $$("input.name_sell").val(),  
+                //buyer_name: theBuyerName,
+                clientId: theBuyerID,
+                sellingPrice: $$("input.cost_sell").val(),
+                taxes: $$("input.taxes").val(),
+                parentId: 0,
+                isParent:false,
                 isEstimate: isEstimate,
                 discount: $(".discount_sell").val(),
-                afterTax: $$("input.afterTax").val(),
+                afterTaxPrice: $$("input.afterTax").val(),
                 quantity: quantitySold,
-                total_price: $$("input.total_sell").val(),
+                totalPrice: $$("input.total_sell").val(),
                 amountPaid:  $$("input.amountpaid_sell").val(),
                 isPaid: fullyPaid,
-                date_paid: isPaidDate,
-                created_date: moment($("#purchase-calendar-modal").val()).format("X"), //Date.parse($("#purchase-calendar-modal").val()),
-                status:1,
-                _id: moment().format("X"),
-                saleID: moment().format("X")
+                datePaid: isPaidDate,
+                createdDate: moment($("#purchase-calendar-modal").val()).format(), //Date.parse($("#purchase-calendar-modal").val()),
+                status:true,
               };
- 
-            mogulsheetdb.put(obj).then(function(){
-                  self.showToast("Record saved!","center", true);
+              if($("input.name_sell").val() == self.currentProduct.name){
+                obj.productId = self.currentProduct.id;
+              }
+
+              self.$app.preloader.show();
+              //console.log("sale", obj);
+            $.when(self.$app.methods.postDataAPI("sales/SaveSales", obj, true)).then(function( data, textStatus, jqXHR ) {
+              self.$app.preloader.hide();
+                if(data != null){
+                  self.showToast("Product sale saved!","center", true);
                   $("#paid-calendar-modal-prods").next("span").click();
                   $("#purchase-calendar-modal").next("span").click();
                   $$("input.buyer_sell, input.amountpaid_sell, #purchase-calendar-modal, #paid-calendar-modal-prods, .quantity_sell, .total_sell, .discount_sell").val("");
                   $(".isEstimate").prop("checked", false);
-                  self.$app.popup.close('.sellProduct', true);
                   selectedUserName = null;
                   selectedUserID = null;
-                  if(productId != 0 && isEstimate == 0){
-                    mogulsheetdb.get(productId).then((dat) => {
-                      if(dat.stock != undefined && dat.stock != "undefined" && dat.stock != "Unlimited"){
-                        var floatStock = parseFloat(dat.stock);
-                        if(!isNaN(floatStock)){
-                          var remain = floatStock - quantitySold;
-                          if(!isNaN(remain)){
-                            dat.stock = remain;
-                            return mogulsheetdb.put(dat).then((dt) => {
-                              self.getData();
-                            })
-                          }
-                        }
-                      }
-                    }).catch((err) => {
-
-                    })
-                  }
-              }).catch(function (error) {
-                 self.showToast("An error occurred!", "center");
-              })
+                  var popup = self.$app.popup.close('.sellProduct', true);
+                  popup.once("closed", function(){
+                      self.getData();
+                  });
+                }
+              }).catch((data, textStatus, jqXHR) => {
+                self.$app.preloader.hide();
+                self.$app.methods.showToast("An error occurred", "center");
+            })
     },
     formatMoney:function(val){  
-      var self = this;           
-      var sym = self.settings == null ? "" : self.settings.currency;
-      sym = sym == undefined ? "" : sym;
-      val = Number(val);
-      if(val < 0){
-        var rev = 0 - val;
-        var val2 = val + rev + rev;
-        val = val2;
-        sym = "-" + sym;
-      }
-      val = Math.round((val + Number.EPSILON) * 100) / 100;
-      var ret = sym + val.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+      var self = this;   
+      var ret = self.$app.methods.formatMoney(val);
       return ret;
     },
     getData: function(){
       var self = this;
-      var checked = 1;
-      var toggle = self.$app.toggle.get(".showInactive");
+      var checked = true;
+      /*var toggle = self.$app.toggle.get(".showInactive");
+      console.log("toggle prods", toggle);
       if(toggle != undefined){
         checked = toggle.checked == true ? 0 : 1;
-      }
+      }*/
       self.$app.preloader.show();
-      mogulsheetdb.find({
-          selector: {
-            status: {$eq: checked},
-            productID: {$gt: 0},
-            _id: {$gte: null}
-          },
-          sort: [{'_id': 'desc'}]
-        }).then(function(ar){
-          var arr = ar.docs;
+      $.when(self.$app.methods.getDataAPI("products/GetProducts")).then(function( arr, textStatus, jqXHR ) {
           self.$app.preloader.hide();
           self.$setState({
                 products: arr,
                 totalMat:arr.length
               }, function(){
                 $("#product-list .list").empty();
-                $("#product-list .pagination, .viewRestockHistoryParent").remove();
-                $(".sellMultiple").remove();
+                $("#product-list .pagination, .viewRestockHistoryParent, .productActions").remove();
+                //$(".sellMultiple, .sellMultParent").remove();
                 //var desktop = true;
                       if(arr != null && arr.length > 0){
                         var pagination = "<ul class='pagination padding-left-half margin-vertical-half'><ul>";
                         $(pagination).insertAfter($("#product-list .list"));
                         
-                        var mult = "<div class='margin-top-half viewRestockHistoryParent'><a class='button button-raised bg-color-blue viewRestockHistory'>View Restock History</div>";
-                        mult += "<div class='margin-top-half sellMultParent'><a class='button button-raised mainButton sellMultiple'>Sell Multiple Products</div>";
+                        var mult = "<div class='row productActions justify-content-center'><a class='button sellMultiple margin-right-half'>Sell Multiple Products</a>";
+                        mult += "<a class='button viewRestockHistory'>View Restock History</a></div>";
                           //
                         var isDesktop = self.$app.methods.isDesktop();
                         //console.log("Product Screen", isDesktop);
@@ -2755,10 +2913,10 @@ export default {
                           for(var i = 0; i < arr.length; i++){
                             var row = arr[i];
                               var html = "<tr>";
-                                html += '<td class="id" style="display:none;">' + row._id + '</td>';
+                                html += '<td class="id" style="display:none;">' + row.id + '</td>';
                                 html += "<td class='name'>" + row.name + "</td>";
-                                html += "<td>" + (row.desc != undefined && row.desc != "" ? row.desc : "--")+ "</td>";
-                                html += "<td class='cost'>" + self.formatMoney(row.selling_price) + "</td>";
+                                //html += "<td>" + (row.description != undefined && row.description != "" ? row.description : "--")+ "</td>";
+                                html += "<td class='cost'>" + self.formatMoney(row.sellingPrice) + "</td>";
                                 var stock = "Unlimited";
                                 var stockCount = 9999999;
                                 if(row.stock != undefined){
@@ -2766,24 +2924,25 @@ export default {
                                   stockCount = parseFloat(row.stock);
                                 }
                                 html += "<td class='in-stock'>" + stock + "</td>";
+                                html += "<td class='publicViews'>" + row.views + "</td>";
                                 
                                 var pops = '<a href="#" data-popover=".products-popover-' + i + '" class="popover-open"><i class="f7-icons">ellipsis_vertical</i></a>'
                                 pops += '<div class="popover my-popover products-popover products-popover-' + i + '" data-close-on-escape="true" data-backdrop="false">'; 
                                 pops += '<div class="popover-angle"></div><div class="popover-inner padding-half">';
                                 
-                                  var page_link = row.product_link_id == undefined ? null : row.product_link_id;
+                                  //var page_link = row.product_link_id == undefined ? null : row.product_link_id;
 
-                                  pops += '<a class="button popover-close sellProduct" data-id="' + row._id + '">Sell</a>';
-                                  pops += '<a class="button popover-close editProduct" data-id="' + row._id + '">Edit</a>';
-                                  pops += '<a class="button popover-close restockProduct" data-id="' + row._id + '">Restock</a>';
-                                  pops += '<a class="button popover-close addIngredients" data-id="' + row._id + '">Raw Materials</a>';
-                                  pops += '<a class="button popover-close linkProduct" data-link="' + page_link + '" data-id="' + row._id + '">Share Link</a>';
-                                  pops += '<a class="button popover-close deleteProduct" data-id="' + row._id + '">';
-                                  pops += row.status == 1 ? 'Delete' : 'Activate';
+                                  pops += '<a class="button popover-close sellProduct" data-id="' + row.id + '">Sell</a>';
+                                  pops += '<a class="button popover-close editProduct" data-id="' + row.id + '">Edit</a>';
+                                  pops += '<a class="button popover-close restockProduct" data-id="' + row.id + '">Restock</a>';
+                                  pops += '<a class="button popover-close addIngredients" data-id="' + row.id + '">Raw Materials</a>';
+                                  pops += '<a class="button popover-close linkProduct" data-busid="' + row.businessId + '" data-id="' + row.slug + '">Share Link</a>';
+                                  pops += '<a class="button popover-close deleteProduct" data-id="' + row.id + '">';
+                                  pops += row.status == true ? 'Delete' : 'Activate';
                                   pops += '</a>';
-                                  if(row.status == 0){
-                                    pops += '<a class="button popover-close permDelButton" data-id="' + row._id + '">Delete</a>';
-                                  }
+                                  /*if(row.status == false){
+                                    pops += '<a class="button popover-close permDelButton" data-id="' + row.id + '">Delete</a>';
+                                  }*/
 
                                 pops += '</div></div>';
                                 html += "<td>" + pops + "</td>";
@@ -2801,12 +2960,12 @@ export default {
                         for(var i = 0; i < arr.length; i++){
                             var row = arr[i];
                             var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
-                            html += '<div class="name cardName">' + row.name + '</div><div class="id display-none">' + row._id + '</div><div class="cost display-none">' + row.selling_price + '</div>';
-                            if(row.desc != null && row.desc != ""){
-                              html += '<div class=""><span class="labelName">Description: </span><span class="">' + row.desc + '</span></div>';
-                            }
-                            html += '<div class=""><span class="labelName">Selling Price: </span><span class="valueName">' + self.formatMoney(row.selling_price) + '</span></div>';
-                            var stat = row.status == 1 ? "display-none" : "";
+                            html += '<div class="name cardName">' + row.name + '</div><div class="id display-none">' + row.id + '</div><div class="cost display-none">' + row.selling_price + '</div>';
+                            /*if(row.description != null && row.description != ""){
+                              html += '<div class=""><span>Description: </span><span class="">' + row.description + '</span></div>';
+                            }*/
+                            html += '<div class=""><span>Selling Price: </span><span class="valueName">' + self.formatMoney(row.sellingPrice) + '</span></div>';
+                            var stat = row.status == true ? "display-none" : "";
                             var stock = "Unlimited";
                             var stockCount = 9999999;
                             if(row.stock != undefined){
@@ -2814,21 +2973,22 @@ export default {
                               stockCount = parseFloat(row.stock);
                             }
                             html += '<div class="in-stock display-none">' + stockCount + '</div>';
-                            html += '<div class=""><span class="labelName">In Stock: </span><span class="">' + stock + '</span></div>';
-                            html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName">Deleted</span></div>';
+                            html += '<div class=""><span>In Stock: </span><span class="">' + stock + '</span></div>';
+                            html += '<div class=""><span>Public views: </span><span class="">' + row.views + '</span></div>';
+                            html += '<div class="' + stat + '"><span>Status: </span><span class="valueName">Deleted</span></div>';
                             html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
-                            var page_link = row.product_link_id == undefined ? null : row.product_link_id;
-                            html += '<a class="button button-small button-raised sellProduct" data-id="' + row._id + '">Sell</a>';
-                            html += '<a class="button button-small button-raised editProduct" data-id="' + row._id + '">Edit</a>';
-                            html += '<a class="button button-small button-raised restockProduct" data-id="' + row._id + '">Restock</a>';
-                            html += '<a class="button button-small button-raised addIngredients" data-id="' + row._id + '">Raw Materials</a>';
-                            html += '<a class="button button-small button-raised linkProduct" data-link="' + page_link + '" data-id="' + row._id + '">Share Link</a>';
-                            html += '<a class="button button-small button-raised deleteProduct" data-id="' + row._id + '">';
-                            html +=  row.status == 1 ? 'Delete' : 'Activate';
+                            //var page_link = row.product_link_id == undefined ? null : row.product_link_id;
+                            html += '<a class="button button-small button-raised sellProduct" data-id="' + row.id + '">Sell</a>';
+                            html += '<a class="button button-small button-raised editProduct" data-id="' + row.id + '">Edit</a>';
+                            html += '<a class="button button-small button-raised restockProduct" data-id="' + row.id + '">Restock</a>';
+                            html += '<a class="button button-small button-raised addIngredients" data-id="' + row.id + '">Raw Materials</a>';
+                            html += '<a class="button button-small button-raised linkProduct" data-busid="' + row.businessId + '" data-id="' + row.slug + '">Share Link</a>';
+                            html += '<a class="button button-small button-raised deleteProduct" data-id="' + row.id + '">';
+                            html +=  row.status == true ? 'Delete' : 'Activate';
                             html += '</a>';
-                            if(row.status == 0){
-                              html += '<a class="button button-small button-raised permDelButton" data-id="' + row._id + '">Delete</a>';
-                            }
+                            /*if(row.status == false){
+                              html += '<a class="button button-small button-raised permDelButton" data-id="' + row.id + '">Delete</a>';
+                            }*/
                             html += '</p></div></div></li>';
                             $("#product-list ul.list").append(html);
                             //return html;
@@ -2859,23 +3019,23 @@ export default {
                                 self.openPopUpSellProduct(data);
                               }
                               if($(this).hasClass("restockProduct")){
-                                self.openRestockProduct(data);
+                                self.openRestockProduct(data); //done
                               }
                               if($(this).hasClass("editProduct")){
-                                self.openPopUp(data);
+                                self.openPopUp(data); //done
                               }
                               if($(this).hasClass("addIngredients")){
                                 self.openPopUpIngredients(data);
                               }
                               if($(this).hasClass("deleteProduct")){
-                                self.DeleteItem(productList,data);
+                                self.DeleteItem(productList,data); //done
                               }
                               if($(this).hasClass("permDelButton")){
                                 self.permDeleteItem(productList, data);
                               }
                               if($(this).hasClass("linkProduct")){
-                                var link = $(this).attr("data-link");
-                                self.shareableLink(link, data);
+                                var bid = $(this).attr("data-busid");
+                                self.shareableLink(bid, data);
                               }
                               
                               //return false;
@@ -2888,8 +3048,13 @@ export default {
             self.$app.preloader.hide();
           });
     },
-    shareableLink: function(link, prodID){
+    shareableLink: function(bid, prodID){
       var self = this;
+      //console.log(self.$app.data.settings);
+      var share = self.$app.data.siteUrl + "shop/" + self.$app.data.settings.businessUrl + "/" + prodID;
+      copy(share);
+      self.$app.dialog.alert("Link copied to clipboard", "Omni");
+      /*
       if(link == null || link == "null"){
         self.openPopUpLink(prodID);
       }else{
@@ -2902,37 +3067,24 @@ export default {
           myActionSheet.open();
         })
       }
-      
+      */
     },
     getDataIngredients: function(idOfProd){
       var self = this;
-      var checked = 1;
-      var toggle = self.$app.toggle.get(".showInactive");
-      if(toggle != undefined){
-        checked = toggle.checked == true ? 0 : 1;
-      }
-
-      mogulsheetdb.find({
-          selector: {
-            status: {$gt: -1},
-            ingredientID: { $gt: 0 },
-            _id: {$gte: null}
-          },
-          sort: [{'_id': 'desc'}]
-        }).then(function(ar){
-          var arr = ar.docs;
-          var arr2 = arr.filter(x => (x.status == 1 || x.status == 0)).map(x => x);
-          var activeArr = arr.filter(x => x.status == 1).map(x => x);
-        
-          self.$setState({
-                activeArr: activeArr,
-                ings: arr2,
-                totalMatIngredients:activeArr.length,
+      var checked = true;
+      self.$app.preloader.show();
+      $.when(self.$app.methods.getDataAPI("ingredients/GetAllIngredients?status=" + checked)).then(function( data, textStatus, jqXHR ) {
+        self.$app.preloader.hide(); 
+        self.$setState({
+                ings: data,
+                totalMatIngredients:data.length,
                 productIngs:[],
-                productToEdit: self.products.find(x => x._id == idOfProd).name,
-                productToEditID: self.products.find(x => x._id == idOfProd)._id
+                productToEdit: self.products.find(x => x.id == idOfProd).name,
+                productToEditID: self.products.find(x => x.id == idOfProd).id
               });
-      });
+      }).catch((err) => {
+        self.$app.preloader.hide(); 
+      })
     },
     uploadFileBatches: function(){
       var self = this;
@@ -2944,10 +3096,17 @@ export default {
         smallUpload = dataToUpload.slice(uploaded, picking + uploaded); 
         //upload small amount
 
-        mogulsheetdb.bulkDocs(smallUpload).then(() => {
-            uploaded += picking;
-            setTimeout(self.uploadFileBatches(), 1000);
-          }).catch((err) => {
+        self.$app.preloader.show();
+          $.when(self.$app.methods.postDataAPI("products/SaveProdList", smallUpload, true)).then(function( data, textStatus, jqXHR ) {
+              self.$app.preloader.hide();
+                //console.log("when data ings save ", data); // JSON data parsed by `data.json()` call
+                if(data == true){
+                  uploaded += picking;
+                  setTimeout(self.uploadFileBatches(), 1000);
+                }
+                
+            })
+          .catch((err) => {
             self.$app.preloader.hide();
             self.showToast("error occured during saving", "center");
           })
@@ -3006,33 +3165,40 @@ export default {
                   obj.name = val.name;
 
                   if(val.description != undefined){
-                    obj.desc = val.description;
+                    obj.description = val.description;
                   }else{
-                    obj.desc = "";
+                    obj.description = "";
                   }
 
                   if(val.cost_price != undefined){
-                    obj.cost_price = val.cost_price;
+                    obj.costPrice = val.cost_price;
                   }else{
-                    obj.cost_price = "";
+                    obj.costPrice = "";
+                  }
+
+                  if(val.product_category != undefined){
+                    obj.productCategory = val.product_category;
+                  }
+
+                  //show_to_public
+                  if(val.show_to_public != undefined){
+                    obj.showToPublic = val.show_to_public == 1 ? true : false;
+                  }else{
+                    obj.showToPublic = true;
                   }
 
                   if(val.selling_price != undefined){
-                    obj.selling_price = val.selling_price;
+                    obj.sellingPrice = val.selling_price;
                   }else{
-                    obj.selling_price = 0;
+                    obj.sellingPrice = 0;
                   }
 
                   if(val.stock != undefined){
                     obj.stock = val.stock;
                   }
 
-                  obj.status = 1;
-                  obj.created_date = moment().format("X");
-                  var ids = moment().format("X");
-                  ids = Number(ids) - ind;
-                  obj._id = ids.toString();
-                  obj.productID = obj._id;
+                  obj.status = true;
+                  //obj.created_date = moment().format("X");
                   toSave.push(obj);
                 }else{
                   rejected.push(val);
@@ -3074,7 +3240,7 @@ export default {
     },
     AddNewCost: function(e){
       var self = this;
-      var html = '<li class="extraCostRow"><div class="card myCard"><div class="card-content padding-horizontal-half">';
+      /*var html = '<li class="extraCostRow"><div class="card myCard"><div class="card-content padding-horizontal-half">';
         html += '<div><span class="labelName">Enter Name: </span><div class="display-inline-flex"><input class="extraName" type="text" placeholder="Enter Name" ';
         html += '></div></div>';
         html += '<input type="hidden" class="productID" value="0">';
@@ -3083,6 +3249,19 @@ export default {
         html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
           html += '<a class="button button-small button-raised removeRow">Delete</a>';
         html += '</p></div></div>'
+        html += '</li>';*/
+
+
+        var html = '<li class="extraCostRow"><div class="card myCard"><div class="card-content padding-horizontal-half"><div class="row">';
+        html += '<div class="col-50"><div class="labelName">Name</div><input class="extraName" type="text" placeholder="e.g transport fare" value="';
+        html +=  '' + '"></div>';
+        html += '<input type="hidden" class="productID" value="0">';
+        html += '<div class="col-50"><span class="labelName">Cost</span><input class="eachCost" type="text" placeholder="Enter Cost" value="';
+        html += '' + '"></div>';
+        html += '</div>';
+        html += '<div class="row margin-top-half"><div class="col-50"></div><div class="col-50">';
+          html += '<a class="button button-small removeRow">Remove Charge</a>';
+        html += '</div></div></div>';
         html += '</li>';
         $("#prodOtherIng-list .sortList").append(html);
       
@@ -3097,82 +3276,16 @@ export default {
     },
     startPouch: function(){
           var self = this;
-          mogulsheetdb = self.$app.methods.startPouch();
-          var id = self.settingsID;
-            mogulsheetdb.get(id).then(function(doc) {
-                  self.$setState({
-                      settings: doc
-                    })
-              })
-              
-          self.getClients();
+          
           self.getData();
+          //self.getClients();
           try{
             if(chooser != undefined){
               $("#fileUploadProducts").addClass("display-none");
             }
           }catch(err){
             $(".filePicker").addClass("display-none");
-          }
-          /*
-          try{//id,name,unit_size,unit,cost_per_unit,status,created_date
-                dbProducts = new PouchDB('products.db');
-                dbProdIngs = new PouchDB('product_ingredients.db');
-                dbProdOthers = new PouchDB('product_otherMaterials.db');
-                dbSales = new PouchDB('sales.db');
-                dbIngs = new PouchDB('ingredients.db');
-                dbSettings = new PouchDB('settings.db');
-                dbClients = new PouchDB('clients.db');
-                dbRestock = new PouchDB('restock.db');
-                dbRestock.createIndex({
-                  index: {
-                    fields: ['name', 'created_date']
-                  }
-                })
-                dbClients.createIndex({
-                  index: {
-                    fields: ['productID', 'restock_date', 'created_date']
-                  }
-                })
-                dbIngs.createIndex({
-                  index: {
-                    fields: ['name', 'status']
-                  }
-                })
-                dbProdIngs.createIndex({
-                  index: {
-                    fields: ['productID', 'ingredientID', 'status']
-                  }
-                })
-                dbProdOthers.createIndex({
-                  index: {
-                    fields: ['productID', 'name', 'status']
-                  }
-                })
-                dbSales.createIndex({
-                  index: {
-                    fields: ['parentID', 'product_name', 'isParent', 'buyer_name', 'created_date', 'status']
-                  }
-                })
-                dbProducts.createIndex({
-                  index: {
-                    fields: ['name', 'status']
-                  }
-                }).then(function (result) {
-                  self.getData();
-                  self.getClients();
-                })
-
-                var id = self.settingsID;
-                dbSettings.get(id).then(function(doc) {
-                  self.$setState({
-                      settings: doc
-                    })
-              })
-          }catch(err){
-                
-          }*/
-          
+          }        
         },
     SaveTotal: function(){
       var self = this;
@@ -3180,7 +3293,7 @@ export default {
       var allExtraCost = [];
       var passed = true;
       if($(".extraCostRow").length == 0 && $(".eachCostParent").length == 0){
-          self.$app.dialog.alert("Please choose raw materials to save!", "Mogul Sheet");
+          self.$app.dialog.alert("Please choose raw materials to save!", "Omni");
           return false;
       }
       $(".eachCostParent").each(function(index,item){
@@ -3188,19 +3301,17 @@ export default {
           var val = $(item).find(".costvalue").eq(0).val();
           var ingID = $(item).find(".removeCost").eq(0).attr("data-id");
           if((cost == "" || cost == "0") || (val == "")){
-              self.$app.dialog.alert("Please fill all fields or remove unused selected raw materials", "Mogul Sheet");
+              self.$app.dialog.alert("Please fill all fields or remove unused selected raw materials", "Omni");
               passed = false;
               return false;
           }else{
             var obj = {};
-            obj.productID_prodIngsID = self.productToEditID;
-            obj.ingredientIDFK = ingID;
-            obj.unit_size = Number(val);
+            obj.ingredientId = ingID;
+            obj.unitSize = Number(val);
             obj.cost = Number(cost);
-            obj.status = 1;
-            obj.created_date = moment().format("X");
-            obj._id = index + moment().format("X");
-            obj.prodIngsID = obj._id;
+            obj.status = true;
+            obj.createdDate = moment().format();
+            obj.productId = self.productToEditID;
             allCost.push(obj);
           }
       })
@@ -3210,97 +3321,54 @@ export default {
               var extraname = $(item).find(".extraName").val().trim();
               var extracost = $(item).find(".eachCost").val().trim();
               if(extraname == "" || extracost == ""){
-                  self.$app.dialog.alert("Please fill all fields or remove unused for custom charges", "Mogul Sheet");
+                  self.$app.dialog.alert("Please fill all fields or remove unused for custom charges", "Omni");
                   passed = false;
                   return false;
               }else{
                 var obj = {};
-                obj.productID_prodIngsID = self.productToEditID;
+                obj.productId = self.productToEditID;
                 obj.name = extraname;
                 obj.cost = Number(extracost);
-                obj.status = 1;
-                obj.created_date = moment().format("X");
-                var add = index.toString() + index.toString();
-                obj._id = add + moment().format("X");
-                obj.prodOthersID = obj._id;
+                obj.status = true;
+                obj.createdDate = moment().format();
                 allExtraCost.push(obj);
               }
           })
       }
           if(passed){
                 var obj = {};
-                obj.productID_prodIngsID = self.productToEditID;
+                obj.productId = self.productToEditID;
                 obj.name = "***Profit***";
                 obj.cost = Number($(".profitvalue").val());
-                obj.status = 1;
-                obj.created_date = moment().format("X");
-                obj._id = "000" + moment().format("X");
-                obj.prodOthersID = obj._id;
+                obj.status = true;
+                obj.createdDate = moment().format();
                 allExtraCost.push(obj);
           }
           //record in db
           if(passed){
                 var total1 = Number($(".totalAmountBeforeProfit").text());
                 var total2 = Number($(".totalAmount").text());
-
-                          mogulsheetdb.find({
-                            selector: {
-                              productID_prodIngsID: {$eq: self.productToEditID},
-                              status: {$gt: 0},
-                              prodIngsID: {$gt: 0},
-                              _id: {$gte: null}
-                            }
-                          }).then(function(ar){
-                            var arr = ar.docs;
-                                  arr.forEach((element, index) => {
-                                  arr[index]._deleted = true;
-                              });
-
-                              mogulsheetdb.bulkDocs(arr).then(function(){
-                                mogulsheetdb.bulkDocs(allCost);
-                              })
-                          
-
-                          mogulsheetdb.find({
-                            selector: {
-                              productID_prodIngsID: {$eq: self.productToEditID},
-                              prodOthersID: {$gt: 0},
-                              status: {$eq: 1},
-                              _id: {$gte: null}
-                            }
-                          }).then(function(ar1){
-                            var arr2 = ar1.docs;
-                                  arr2.forEach((element, index) => {
-                                  arr2[index]._deleted = true;
-                              });
-                              mogulsheetdb.bulkDocs(arr2).then(function(){
-                                mogulsheetdb.bulkDocs(allExtraCost).then((res) => {
-                                }).catch((err) => {
-                                  console.log("res of save other costs err", err);
-                                })
-                              })
-                          })
-
-                          mogulsheetdb.get(self.productToEditID).then(function(doc) {
-                            doc.cost_price = total1;
-                            doc.selling_price = total2;
-                            return mogulsheetdb.put(doc);
-                          })
+                //save all data
+                var finalObj = {};
+                finalObj.ings = allCost;
+                finalObj.ingsOthers = allExtraCost;
+                finalObj.costPrice = total1;
+                finalObj.sellingPrice = total2;
+                finalObj.productId = self.productToEditID;
+                self.$app.preloader.show();
+                $.when(self.$app.methods.postDataAPI("products/SaveAllProductIngredients", finalObj, true)).then(function( data, textStatus, jqXHR ) {
+                    self.$app.preloader.hide();
+                      //console.log("when data ings save ", data); // JSON data parsed by `data.json()` call
+                      if(data == true){
+                        self.showToast("Saved successfully", "center", true);
+                      }
                       
-                        //}).then(() => {
-                            // Transaction committed. NOT WITHIN ZONE!
-                            self.showToast("Saved successfully", "center", true);
-                            self.closePopUp();
-                            //self.$app.popup.close('.ProductIngredients', true);
-                        }).catch(err => {
-
-                            // Transaction aborted. NOT WITHIN ZONE!
-                            //console.error (e);
-                            self.showToast("An error occured, please try again");
-                        });
-               /* if(passed){
-                  self.$app.dialog.alert("Saved successfully");
-                }*/
+                  })
+                .catch((err) => {
+                  self.$app.preloader.hide();
+                  self.showToast("error occured during saving", "center");
+                });
+                         
           }
                 
           
@@ -3310,6 +3378,7 @@ export default {
   on: {
     pageAfterIn: function(e, page) {
         var self = this;
+        self.getClients();
         //trackProductsPage();
       },
       pageInit: function(e, page) {
@@ -3323,10 +3392,11 @@ export default {
         var autocompleteDropdownBuyer = self.$app.autocomplete.create({
           inputEl: '#buyer_sell',//buyersNameMultiple
           openIn: 'dropdown',
-          valueProperty: '_id', //object's "value" property name
+          preloader: true,
+          valueProperty: 'id', //object's "value" property name
           textProperty: 'name', //object's "text" property name
           source: function (query, render) {
-            var results = self.clients.filter(x => x.status == 1);
+            var results = self.clients.filter(x => x.status == true); //come back later
             var newResult = [];
             // Find matched items
             for (var i = 0; i < self.clients.length; i++) {
@@ -3341,7 +3411,7 @@ export default {
                   value = value[0];
                   $("#buyer_sell").val(value.name);
                   selectedUserName = value.name;
-                  selectedUserID = value._id;
+                  selectedUserID = value.id;
                   }
                 }
               }
@@ -3349,10 +3419,10 @@ export default {
         var autocompleteDropdownMultipleBuyer = self.$app.autocomplete.create({
           inputEl: '#buyersNameMultiple',//buyersNameMultiple
           openIn: 'dropdown',
-          valueProperty: '_id', //object's "value" property name
+          valueProperty: 'id', //object's "value" property name
           textProperty: 'name', //object's "text" property name
           source: function (query, render) {
-            var results = self.clients.filter(x => x.status == 1);
+            var results = self.clients.filter(x => x.status == 1); //come back later
             var newResult = [];
             // Find matched items
             for (var i = 0; i < self.clients.length; i++) {
@@ -3367,7 +3437,32 @@ export default {
                   value = value[0];
                   $("#buyersNameMultiple").val(value.name);
                   selectedUserName = value.name;
-                  selectedUserID = value._id;
+                  selectedUserID = value.id;
+                  }
+                }
+              }
+        });
+        var autocompleteDropdownProductCategory = self.$app.autocomplete.create({
+          inputEl: '.productCategory',//buyersNameMultiple
+          openIn: 'dropdown',
+         // preloader: true,
+          expandInput: true,
+          source: function (query, render) {
+            var results = self.products.filter(x => x.productCategory != null).map(x => x.productCategory); //come back later
+            results = [...new Set(results)];
+            var newResult = [];
+            // Find matched items
+            for (var i = 0; i < results.length; i++) {
+              if (results[i].toLowerCase().indexOf(query.toLowerCase()) >= 0) newResult.push(results[i]);
+            }
+            // Render items by passing array with result items
+            render(newResult);
+          },
+          on: {
+                change: function (value) {
+                  if(value.length > 0){
+                  value = value[0];
+                  $(".productCategory").val(value);
                   }
                 }
               }

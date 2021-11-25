@@ -1,6 +1,6 @@
 
 <template>
-    <div class="page">
+    <div class="page" data-name="settings">
         <div class="navbar">
             <div class="navbar navbar-bg"></div>
             <div class="navbar-inner sliding">
@@ -35,6 +35,14 @@
                       </li>
                       <li class="item-content item-input">
                         <div class="item-inner">
+                          <div class="item-title item-label">Company URL</div>
+                          <div class="item-input-wrap">
+                            <input id="companyurl" type="text" class="settingsInput" placeholder="Company URL">
+                          </div>
+                        </div>
+                      </li>
+                      <li class="item-content item-input">
+                        <div class="item-inner">
                           <div class="item-title item-label">Company Address</div>
                           <div class="item-input-wrap">
                             <textarea class="settingsInput" id="companyaddress" placeholder="Company Address"></textarea>
@@ -42,6 +50,16 @@
                           </div>
                         </div>
                       </li>
+
+                      <li class="item-content item-input">
+                        <div class="item-inner">
+                          <div class="item-title item-label">Company Phone Number</div>
+                          <div class="item-input-wrap">
+                            <input id="phoneNumber" type="text" class="settingsInput" placeholder="phone number with country code">
+                          </div>
+                        </div>
+                      </li>
+
                       <li class="item-content item-input">
                         <div class="item-inner">
                           <div class="item-title item-label">Company Tagline (shown in invoice)</div>
@@ -56,7 +74,7 @@
                           <div class="item-title item-label">Company Logo</div>
                           <div class="item-input-wrap display-inline-flex1">
                             <div><input id="logo" type="file" class="settingsInput"></div>
-                            <div class="margin-left-half1"><img id="logoShow" style="max-width: 100px;"/></div>
+                            <div class="margin-left-half1 margin-top-half"><img id="logoShow" style="max-width: 100px;"/></div>
                           </div>
                         </div>
                       </li>
@@ -65,7 +83,7 @@
                           <div class="item-title item-label">Company Signature (for invoice)</div>
                           <div class="item-input-wrap display-inline-flex1">
                             <div><input id="signature" type="file" class="settingsInput"></div>
-                            <div class="margin-left-half1"><img id="signatureShow" style="max-width: 100px;"/></div>
+                            <div class="margin-left-half1 margin-top-half"><img id="signatureShow" style="max-width: 100px;"/></div>
                           </div>
                         </div>
                       </li>
@@ -100,7 +118,17 @@
                       </li>
                       <li class="item-content item-input">
                         <div class="item-inner">
-                          <div class="item-input-wrap">
+                          <div class="item-title item-label margin-bottom-half">Select Primary Color</div>
+                          <div class="item-input-wrap display-flex"><div class="item-media margin-right-half">
+                            <i class="icon demo-list-icon primaryColor" id="demo-color-picker-wheel-value"></i>
+                          </div>
+                          <input type="text" placeholder="Color" id="demo-color-picker-wheel" readonly="" class="input-with-value">
+                        </div>
+                      </div>
+                    </li>
+                      <li class="margin-top-half">
+                        <div class="item-inners">
+                          <div class="item-input-wraps">
                             <a id="savecompanyinfo" class="button button-outline button-raised mainButton" @click="savecompanyinfo">Save Info</a>
                           </div>
                         </div>
@@ -189,96 +217,108 @@
               }
             
         },
+        checkUrl: function(){
+          var self = this;
+          var check = true;
+          if(self.settings != null && self.settings.businessUrl != null){
+            var currURL = $("#companyurl").val();
+            if(currURL == "" || currURL == self.settings.businessUrl){
+              check = false;
+            }
+          }
+
+          if(check){
+            var obj = {};
+            obj.name = $("#companyurl").val();
+            self.$app.preloader.show();
+            $.when(self.$app.methods.postDataAPI("business/CheckBusinessName", obj, true)).then(function( data, textStatus, jqXHR ) {
+              self.$app.preloader.hide();
+                //console.log("when data ings save ", data); // JSON data parsed by `data.json()` call
+                if(data == true){
+                  self.$app.methods.showToast("URL is good", "center", true);
+                }else{
+                  self.$app.methods.showToast("URL is taken", "center", false);
+                }
+                
+            }).catch((data, textStatus, jqXHR) => {
+                console.log(data, textStatus, jqXHR);
+                self.$app.preloader.hide();
+            })
+          }
+        },
+        getProfile:function(){
+          var self = this;
+          self.$app.preloader.show();
+          $.when(self.$app.methods.getDataAPI("business/GetBusinessProfile")).then(function( data, textStatus, jqXHR ) {
+            self.$app.preloader.hide();
+              var doc = data;
+              var comName = doc.name;
+              if(comName != ""){
+                  $("#companyname").val(comName);
+              }
+              var taxes = doc.taxes;
+              if(taxes != ""){
+                  $("#taxes").val(taxes);
+              }
+              var comAdd = doc.address;
+              if(comAdd != ""){
+                  $("#companyaddress").val(comAdd);
+              }
+              var comNumber = doc.phoneNumber;
+              if(comNumber != null && comNumber != ""){
+                $("#phoneNumber").val(comNumber);
+              }
+              var tagline = doc.tagline;
+              if(tagline != ""){
+                  $("#companytagline").val(tagline);
+              }
+              var terms = doc.termsConditions;
+              if(terms != "" && terms != undefined){
+                var textEditor = self.$app.textEditor.get('.terms_condition');
+                textEditor.setValue(terms);
+              }
+              var savedCurr = doc.currency;
+              if(savedCurr != ""){
+                  $('#autocomplete-dropdown-all').val(savedCurr);
+                  localStorage.setItem("currency", savedCurr);
+              }
+              var url = doc.businessUrl;
+              if(url != null && url != ""){
+                $("#companyurl").val(url);
+              }
+
+              var primColor = doc.primaryColor;
+              if(primColor != null && primColor != ""){
+                $(".primaryColor").css("background-color", primColor);
+                $("#demo-color-picker-wheel").val(primColor);
+              }
+
+              //logo
+              if(doc.logo != null && doc.logo != ""){
+                $("#logoShow").attr("src", doc.logo);
+              }
+
+              //signature
+              if(doc.signature != null && doc.signature != ""){
+                $("#signatureShow").attr("src", doc.signature);
+              }
+
+              self.$setState({
+                  settings: doc
+              })
+          }).catch((data, textStatus, jqXHR) => {
+            self.$app.preloader.hide();
+              if(data != null && data.status == 404){
+                console.log("profile not found"); 
+                return;
+              }
+              self.$app.methods.showToast("An error occurred", "center");
+          })
+        },
         getData: function(){
           var self = this;
-          var id = self.settingsID;
-          self.$app.preloader.show();
-          mogulsheetdb.get(id).then(function(doc) {
-                   //console.log(doc);
-                   self.$app.preloader.hide();
-                   var comName = doc.companyName;
-                  if(comName != ""){
-                      $("#companyname").val(comName);
-                  }
-                  var taxes = doc.taxes;
-                  if(taxes != ""){
-                      $("#taxes").val(taxes);
-                  }
-                  var comAdd = doc.companyAddress;
-                  if(comAdd != ""){
-                      $("#companyaddress").val(comAdd);
-                  }
-                  var tagline = doc.tagline;
-                  if(tagline != ""){
-                      $("#companytagline").val(tagline);
-                  }
-                  var terms = doc.terms_condition;
-                  if(terms != "" && terms != undefined){
-                    var textEditor = self.$app.textEditor.get('.terms_condition');
-                    textEditor.setValue(terms);
-                  }
-                  /*var logo = doc.logo;
-                  if(logo != "" && logo != null){
-                      $("#logoShow").attr("src", logo);
-                  }
-                  var signature = doc.signature;
-                  if(signature != "" && signature != null){
-                    $("#signature").attr("src", signature);
-                  }*/
-                  var savedCurr = doc.currency;
-                  if(savedCurr != ""){
-                      $('#autocomplete-dropdown-all').val(savedCurr);
-                      localStorage.setItem("currency", savedCurr);
-                  }
-
-                  dbSettingsImages.get('logoImage', {attachments: true}).then(function (blobOrBuffer) {
-                    // handle result
-                    self.$setState({
-                      logo: blobOrBuffer
-                    })
-                    var attachments = blobOrBuffer._attachments.logoImage.data;
-                    var type = blobOrBuffer._attachments.logoImage.content_type;
-                    //console.log(blobOrBuffer._attachments.logoID);
-                    $("#logoShow").attr("src", "data:"+ type + ";base64," + attachments);
-                    //console.log(JSON.stringify(blobOrBuffer));
-                  }).catch(function (err) {
-                    //console.log(err);
-                  });
-
-                  dbSettingsImages.get('signatureImage', {attachments: true}).then(function(blobOrBuffer) {
-                    self.$setState({
-                      signature: blobOrBuffer
-                    })
-                    var attachments = blobOrBuffer._attachments.signatureImage.data;
-                    var type = blobOrBuffer._attachments.signatureImage.content_type;
-                    //console.log(blobOrBuffer._attachments.logoID);
-                    $("#signatureShow").attr("src", "data:"+ type + ";base64," + attachments);
-                  }).catch(function (err) {
-                    //console.log(err);
-                  });
-
-                  self.$setState({
-                      settings: doc
-                    })
-            }).catch(function(err){
-              //console.log(err);
-              //self.showToast(err, "center");
-              self.$app.preloader.hide();
-            })
-        },
-        startPouch: function(){
-          var self = this;
-          mogulsheetdb = self.$app.methods.startPouch();
-          dbSettingsImages = new PouchDB('settingsImages.db');
-          self.getData();
-          //db = null;
-         /* try{//id,name,unit_size,unit,cost_per_unit,status,created_date
-            dbSettings = new PouchDB('settings.db');
-            dbSettingsImages = new PouchDB('settingsImages.db');
-              self.getData();
-          }catch(err){
-            
-            }*/
+          
+          
         },
         showToast: function(text, position){
         var self = this;
@@ -296,6 +336,10 @@
             var currency = $('#autocomplete-dropdown-all').val();
             var tagline = $("#companytagline").val();
             var terms = self.$app.textEditor.get('.terms_condition').value;
+            var busURL = $("#companyurl").val().trim();
+            var primColor = $("#demo-color-picker-wheel").val();
+            var phone = $("#phoneNumber").val();
+
             if(taxes != ""){
                 var tax = Number(taxes);
                 if(isNaN(tax)){
@@ -303,20 +347,76 @@
                     return;
                 }
             }
+            if(busURL == ""){
+              self.showToast("Please enter url", "center");
+              return;
+            }
             
             var saved = false;
             var obj = {};
-            obj.companyName = comName;
-            obj.companyAddress = comAdd;
+            obj.name = comName;
+            obj.address = comAdd;
             obj.taxes = taxes;
             obj.currency = currency;
             obj.country = self.country;
             obj.tagline = tagline;
-            obj.terms_condition = terms;
+            obj.termsConditions = terms;
+            obj.businessUrl = busURL;
+            obj.primaryColor = primColor;
+            obj.phoneNumber = phone;
+
+            var form_data = new FormData();
+
+              for ( var key in obj ) {
+                  form_data.append(key, obj[key]);
+              }
+
+            var fileUploadLogo = $("#logo").get(0);
+            var filesLogo = fileUploadLogo.files;
+            if(filesLogo.length > 0){
+               // if there are multiple files , loop through each files
+              for (var i = 0; i < filesLogo.length; i++) {
+                form_data.append("logoImage", filesLogo[i]);
+              }
+            }
+
+            var fileUploadSign = $("#signature").get(0);
+            var filesSign = fileUploadSign.files;
+            if(filesSign.length > 0){
+               // if there are multiple files , loop through each files
+              for (var i = 0; i < filesSign.length; i++) {
+                form_data.append("signatureImage", filesSign[i]);
+              }
+            }
+           
+            /*self.$app.preloader.show();
+            $.when(self.$app.methods.postDataAPI("business/SaveBusinessForm", form_data, true)).then(function( data, textStatus, jqXHR ) {
+              self.$app.preloader.hide();
+                if(data == true){
+                  self.$app.methods.showToast("Information saved", "center", true);
+                }
+                
+            }).catch((data, textStatus, jqXHR) => {
+                console.log(data, textStatus, jqXHR);
+                self.$app.preloader.hide();
+                self.$app.methods.showToast("An error occurred", "center");
+            })*/
+            $.when(self.$app.methods.postFormDataAPI("business/SaveBusinessForm", form_data, true)).then(function( data, textStatus, jqXHR ) {
+              self.$app.preloader.hide();
+                if(data == true){
+                  self.$app.methods.showToast("Information saved", "center", true);
+                }
+                
+            }).catch((data, textStatus, jqXHR) => {
+                console.log(data, textStatus, jqXHR);
+                self.$app.preloader.hide();
+                self.$app.methods.showToast("An error occurred", "center");
+            })
+
             //obj.logo = logo;
             //obj.signature = sig;
 
-            if(self.settings == null){
+            /*if(self.settings == null){
               obj._id = self.settingsID;
               obj.settingID = obj._id;
               mogulsheetdb.put(obj).then(function(){
@@ -344,7 +444,7 @@
                   console.log(err);
                   self.showToast("An error occured, please try again!", "center");
                 })
-            }
+            }*/
         },
         uploadImages: function(){
               var self = this;
@@ -398,18 +498,42 @@
       on: {
         pageAfterIn: function(e, page) {
         var self = this;
-        trackSettingsPage();
+        //trackSettingsPage();
       },
       pageInit: function(e, page) {
             var self = this;
-            self.startPouch();
+            self.getProfile();
             $("#logo").change(function(){
                 self.getBase64(this, "logo");
+            });
+            $('#companyurl').on('keypress', function (event) {
+                var regex = new RegExp("^[a-zA-Z0-9-_]+$");
+                var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+                if (!regex.test(key)) {
+                  event.preventDefault();
+                  return false;
+                }
+            });
+            $("#companyurl").on("blur", function(){
+              self.checkUrl();
             });
             $("#signature").change(function(){
               self.getBase64(this, "signature");
             });
             var cur = Object.keys(currencies);
+            
+            //initialize color picker
+            var colorPickerWheel = self.$app.colorPicker.create({
+                inputEl: '#demo-color-picker-wheel',
+                targetEl: '#demo-color-picker-wheel-value',
+                targetElSetBackgroundColor: true,
+                modules: ['wheel'],
+                openIn: 'popover',
+                value: {
+                  hex: '#000000',
+                },
+              });
+
             var autocompleteDropdownAll = self.$app.autocomplete.create({
                 inputEl: '#autocomplete-dropdown-all',
                 openIn: 'dropdown',
