@@ -48,33 +48,33 @@
               <div class="block no-margin-vertical no-padding">
                 <div class="row no-gap dash">
         
-                  <div class="col-50 medium-50 small-50 xsmall-100">
-                    <div class="card card-outline">
-                      <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">Total {{js "this.totalMat > 1 ? 'Expenses' : 'Expense'"}}</div>
-                      <div class="card-content">{{totalMat}}</div>
+                  <div class="col-100 medium-33">
+                    <div class="card card-outline padding-vertical-half totalExpenses">
+                      <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder text-color-white">Total Expenses</div>
+                      <div class="card-content text-color-white">{{totalToPay}}</div>
                     </div>
                   </div>
                   
-                  <div class="col-50 medium-50 small-50 xsmall-100">
-                    <div class="card card-outline">
+                  <div class="col-100 medium-33">
+                    <div class="card card-outline padding-vertical-half">
                       <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">Total Amount Paid</div>
                       <div class="card-content">{{totalPaid}}</div>
                     </div>
                   </div>
 
-                  <div class="col-50 medium-50">
-                    <div class="card card-outline">
-                      <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">Total Amount of Expenses</div>
-                      <div class="card-content">{{totalToPay}}</div>
+                  <div class="col-100 medium-33">
+                    <div class="card card-outline padding-vertical-half">
+                      <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">Number of {{js "this.totalMat > 1 ? 'Expenses' : 'Expense'"}}</div>
+                      <div class="card-content">{{totalMat}}</div>
                     </div>
                   </div>
         
-                  <div class="col-50 medium-50">
+                  <!--<div class="col-100 medium-33">
                     <div class="card card-outline">
                       <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">(Total Amount Paid minus Total Expenses)</div>
                       <div class="card-content">{{totalDifference}}</div>
                     </div>
-                  </div>
+                  </div>-->
         
               </div>
             </div>
@@ -99,6 +99,18 @@
               <span class="margin-left-half">You have {{totalMat}} {{js "this.totalMat > 1 ? 'expenses' : 'expense'"}}</span>
             </div>
 
+            <div class="col-33 no-padding-vertical text-align-right">
+              <span class="display-inline-flex margin-right-half display-none">
+                <span class="item-title float-right">Show Deleted</span>
+                <span class="item-after float-right margin-left-half">
+                    <label class="toggle toggle-init color-red showInactiveExpenses">
+                    <input type="checkbox">
+                    <span class="toggle-icon"></span>
+                    </label>
+                </span>
+                </span>
+            </div>
+
             <div class="col-33 no-padding-vertical">
               <div class="block no-margin-vertical filterDateParent">  
                 <div class="no-hairlines-md no-margin-bottom margin-top-half">
@@ -114,18 +126,6 @@
               </div>
             </div>
 
-
-            <div class="col-33 no-padding-vertical text-align-right">
-              <span class="display-inline-flex margin-right-half display-none">
-                <span class="item-title float-right">Show Deleted</span>
-                <span class="item-after float-right margin-left-half">
-                    <label class="toggle toggle-init color-red showInactiveExpenses">
-                    <input type="checkbox">
-                    <span class="toggle-icon"></span>
-                    </label>
-                </span>
-                </span>
-            </div>
           </div>
 
 
@@ -868,51 +868,22 @@ export default {
                   //var html = "<li><div class='card myCard'><div class='card-content text-align-center'>No result found</div></div></li>";
                   //$("#expenses-list .list").append(html);
                   self.calculateTotalMoneyExpense();
+                  var options = {
+                    valueNames: ['id','cost','paidAll','name','created_date'],
+                    page: 10
+                };
+
+                var expense = new List('expenses-list', options);
+                  
                   $(".sortTextPar").addClass("display-none");
                 }
     },
     startPouch: function(){
           var self = this;
-          mogulsheetdb = self.$app.methods.startPouch();
-          var id = self.settingsID;
-            mogulsheetdb.get(id).then(function(doc) {
-                  self.$setState({
-                      settings: doc
-                    })
-              })
           self.getData();
-          //db = null;
-         
-         /* try{//name,amount_to_pay,amount_paid,date_paid,created_date,recurring,status
-            dbExpenses = new PouchDB('expenses.db');
-            dbSettings = new PouchDB('settings.db');
-            dbExpenses.createIndex({
-                  index: {
-                    fields: ['created_date', 'name', 'status']
-                  }
-                }).then(function (result) {
-                  self.getData();
-                })
-
-                var id = self.settingsID;
-              dbSettings.get(id).then(function(doc) {
-                  self.$setState({
-                      settings: doc
-                    })
-              })
-          }catch(err){
-            
-          }*/
-          
       },
     getData: function(){
       var self = this;
-      /*var checked = 1;
-        var toggle = self.$app.toggle.get(".showInactiveExpenses");
-      if(toggle != undefined){
-        checked = toggle.checked == true ? 0 : 1;
-      }*/
-      //console.log(checked);
       self.$app.preloader.show();
           $.when(self.$app.methods.getDataAPI("expenses/GetExpenses")).then(function( data, textStatus, jqXHR ) {
           self.$app.preloader.hide();

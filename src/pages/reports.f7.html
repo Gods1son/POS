@@ -117,73 +117,7 @@
     },
     startPouch: function(){
           var self = this;
-          mogulsheetdb = self.$app.methods.startPouch();
-          var id = self.settingsID;
-            mogulsheetdb.get(id).then(function(doc) {
-                  self.$setState({
-                      settings: doc
-                    })
-              })
-
-        /*
-          //db = null;
-          try{//id,name,unit_size,unit,cost_per_unit,status,created_date
-            if(pdf != undefined){
-                db = new PouchDB('clients.db', { adapter: 'cordova-sqlite' });
-                dbSales = new PouchDB('sales.db', { adapter: 'cordova-sqlite' });
-                dbProducts = new PouchDB('products.db', { adapter: 'cordova-sqlite' });
-                dbExpenses = new PouchDB('expenses.db', { adapter: 'cordova-sqlite' });
-                dbExpenses.createIndex({
-                  index: {
-                    fields: ['created_date', 'name', 'status']
-                  }
-                })
-                dbSales.createIndex({
-                  index: {
-                    fields: ['created_date','parentID', 'product_name', 'isParent', 'buyer_name', 'status']
-                  }
-                })
-                dbProducts.createIndex({
-                  index: {
-                    fields: ['name', 'status']
-                  }
-                })
-                db.createIndex({
-                  index: {
-                    fields: ['name', 'created_date']
-                  }
-                }).then(function (result) {
-                  //self.getData();
-                })
-              }
-          }catch(err){
-            db = new PouchDB('clients.db');
-            dbSales = new PouchDB('sales.db');
-            dbExpenses = new PouchDB('expenses.db');
-            dbProducts = new PouchDB('products.db');
-                dbExpenses.createIndex({
-                  index: {
-                    fields: ['created_date', 'name', 'status']
-                  }
-                })
-            dbSales.createIndex({
-                  index: {
-                    fields: ['created_date','parentID', 'product_name', 'isParent', 'buyer_name', 'status']
-                  }
-                })
-                dbProducts.createIndex({
-                  index: {
-                    fields: ['name', 'status']
-                  }
-                })
-            db.createIndex({
-                  index: {
-                    fields: ['name', 'created_date']
-                  }
-                }).then(function (result) {
-                  //self.getData();
-                })
-          }*/
+          
         },
       getparentChildren: function(arr){
         var self = this;

@@ -80,11 +80,8 @@
         </div>
 
         <div class="row margin-top-half myToolbar">
-          <div class="col-50 no-padding-vertical">
-            <span class="margin-left-half">You have {{totalMat}} {{js "this.totalMat > 1 ? 'products' : 'product'"}}</span>
-          </div>
-          <div class="col-50 no-padding-vertical text-align-right">
-            <span class="display-inline-flex margin-right-half display-none">
+          <div class="col-100 medium-50 no-padding-vertical text-align-right sellingButtonsTab">
+            <!--<span class="display-inline-flex margin-right-half display-none">
               <span class="item-title float-right">Show Deleted</span>
               <span class="item-after float-right margin-left-half display-none">
                   <label class="toggle toggle-init color-red showInactive">
@@ -92,7 +89,11 @@
                   <span class="toggle-icon"></span>
                   </label>
               </span>
-              </span>
+              </span>-->
+          </div>
+
+          <div class="col-100 medium-50 no-padding-vertical text-align-right">
+            <span class="margin-horizontal-half">You have {{totalMat}} {{js "this.totalMat > 1 ? 'products' : 'product'"}}</span>
           </div>
         </div>
           <!--<ul class="list sortList margin-vertical-half">
@@ -2886,17 +2887,19 @@ export default {
                         var pagination = "<ul class='pagination padding-left-half margin-vertical-half'><ul>";
                         $(pagination).insertAfter($("#product-list .list"));
                         
-                        var mult = "<div class='row productActions justify-content-center'><a class='button sellMultiple margin-right-half'>Sell Multiple Products</a>";
-                        mult += "<a class='button viewRestockHistory'>View Restock History</a></div>";
+                        var mult = "<div class='row productActions justify-content-start'><a class='button sellMultiple margin-right-half button-round'>Sell Multiple Products</a>";
+                        mult += "<a class='button viewRestockHistory button-round margin-right-half'>Restock History</a></div>";
                           //
                         var isDesktop = self.$app.methods.isDesktop();
                         //console.log("Product Screen", isDesktop);
                         if(isDesktop){
                           //$("#product-list .data-table").show();
-                          $(mult).insertBefore($("#product-list table"));
+                          //$(mult).insertBefore($("#product-list table"));
+                          $(".sellingButtonsTab").append(mult);
                         }else{
                          // $("#product-list .data-table").hide();
-                          $(mult).insertBefore($("#product-list ul.list"));
+                          //$(mult).insertBefore($("#product-list ul.list"));
+                          $(".sellingButtonsTab").append(mult);
                         }
                         
                         $(".sellMultiple").off("click").on("click", function(){

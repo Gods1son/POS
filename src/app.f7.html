@@ -54,7 +54,7 @@
                     <div class="sales">
                       <a href="/sales/" data-reload-all="true" class="item-content item-link panel-close">
                         <div class="item-inner">
-                          <div class="item-title"><i class="icon f7-icons text-color-blue1 margin-right-half">tag</i>Sales / Estimates</div>
+                          <div class="item-title"><i class="icon f7-icons text-color-blue1 margin-right-half">tag</i>Sales/Estimates</div>
                         </div>
                       </a>
                     </div>
@@ -117,7 +117,10 @@
                   </div>
              </div>
              <div class="ContactUs margin-left">
-              <div>Omni v1.0</div>
+              <div>
+                <a @click="copystorelink" class="button">Copy your store link</a>
+              </div>
+              <div class="padding-left-half">Omni v1.0</div>
                <!--<a class="external" target="_system" href="mailto:mogulsheet@gmail.com"><i class="icon f7-icons envelope">envelope</i><span class="in-link">Contact Us</span></a>-->
               </div>
           </div>
@@ -213,6 +216,7 @@
 </template>
 <script>
   import * as XLSX from 'xlsx';
+  import copy from 'copy-to-clipboard';
   export default {
     data() {
       return {
@@ -246,6 +250,17 @@
       SignOut(){
         var self = this;
         self.$app.methods.signOutGlobal();
+      },
+      copystorelink(){
+        var self = this;
+        if(self.$app.data.settings != null && self.$app.data.settings.businessUrl){
+          var share = self.$app.data.siteUrl + "shop/" + self.$app.data.settings.businessUrl;
+          copy(share);
+          self.$app.dialog.alert("Link copied to clipboard", "Omni");
+        }else{
+          self.$app.dialog.alert("Please complete your business profile on settings page", "Omni");
+        }
+        
       },
       downloadData(){
         var self = this;

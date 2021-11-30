@@ -9,7 +9,7 @@
           <span class="if-not-md">Back</span>
         </a>
       </div>
-      <div class="title padding-vertical-half">Sales / Estimates</div>
+      <div class="title padding-vertical-half">Sales/Estimates</div>
       <div class="right">
         <a href="#" class="link icon-only panel-toggle" data-panel="left">
           <i class="icon f7-icons if-not-md">menu</i>
@@ -59,32 +59,33 @@
                 <div class="">
                   <div class="block no-margin-vertical no-padding">
                     <div class="row no-gap dash">
-              
-                        <div class="col-50 medium-50 small-50 xsmall-100">
-                          <div class="card card-outline">
-                            <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">Total {{js "this.totalMat > 1 ? 'Sales' : 'Sale'"}}</div>
-                            <div class="card-content">{{totalMat}}</div>
-                          </div>
-                        </div>
 
-                        <div class="col-50 medium-50 small-50 xsmall-100">
+                        <!--<div class="col-50 medium-50 small-50 xsmall-100">
                           <div class="card card-outline">
                             <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">Sales Not Fully Paid</div>
                             <div class="card-content">{{totalUnpaid}}</div>
                           </div>
-                        </div>
+                        </div>-->
               
-                        <div class="col-50 medium-50 small-50 xsmall-100">
-                          <div class="card card-outline">
-                            <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">Total Amount of Sales</div>
-                            <div class="card-content">{{totalMoney}}</div>
+                        <div class="col-100 medium-33">
+                          <div class="card card-outline padding-vertical-half totalSales">
+                            <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder text-color-white">Total Amount of Sales</div>
+                            <div class="card-content text-color-white">{{totalMoney}}</div>
                           </div>
                         </div>
               
-                        <div class="col-50 medium-50 small-50 xsmall-100">
-                          <div class="card card-outline">
+                        <div class="col-100 medium-33">
+                          <div class="card card-outline padding-vertical-half">
                             <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">Total Amount Received</div>
                             <div class="card-content">{{totalPaid}}</div>
+                          </div>
+                        </div>
+
+                        
+                        <div class="col-100 medium-33">
+                          <div class="card card-outline padding-vertical-half">
+                            <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">Number of {{js "this.totalMat > 1 ? 'Sales' : 'Sale'"}}</div>
+                            <div class="card-content">{{totalMat}}</div>
                           </div>
                         </div>
               
@@ -122,21 +123,6 @@
              </span>
             </div>
 
-            <div class="col-33 no-padding-vertical">
-              <div class="block no-margin-vertical filterDateParent">  
-                <div class="no-hairlines-md no-margin-bottom margin-top-half">
-                    <div class="item-content item-input1">
-                        <div class="item-inner bg-color-white specWrap">
-                        <div class="item-input-wrap">
-                            <input type="text" class="specSearch" placeholder="Date filter" id="demo-calendar-modal"/>
-                            <span class="input-clear-button specClear" @click="resetTable"></span>
-                        </div>
-                        </div>
-                    </div>
-                </div>
-              </div>
-            </div>
-
             <div class="col-33 no-padding-vertical text-align-right">
               <span class="display-inline-flex margin-right-half display-none">
                 <span class="item-title float-right">Show Deleted</span>
@@ -148,6 +134,22 @@
                 </span>
                 </span>
             </div>
+
+            <div class="col-33 no-padding-vertical">
+              <div class="block no-margin-vertical filterDateParent">  
+                <div class="no-hairlines-md no-margin-bottom margin-top-half">
+                    <div class="item-content item-input1">
+                        <div class="item-inner bg-color-white specWrap">
+                        <div class="item-input-wrap">
+                            <input type="text" class="specSearch" placeholder="filter sales by date" id="demo-calendar-modal"/>
+                            <span class="input-clear-button specClear" @click="resetTable"></span>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+              </div>
+            </div>
+
           </div>
           <div class="block header_title text-align-center no-margin-vertical block-title-medium margin-top display-none"></div>
           
@@ -2462,6 +2464,12 @@ export default {
                           //var html = "<li><div class='card myCard'><div class='card-content text-align-center'>No result found</div></div></li>";
                           //$("#sales-list .list").append(html);
                           self.calculateTotalMoney();
+                          var options = {
+                            valueNames: ['id','isPaid','buyer','created_date','cost','name'],
+                            page: 10
+                        };
+
+                        var sales = new List('sales-list', options);
                           $(".sortTextPar, .header_title").addClass("display-none");
                         }
     },

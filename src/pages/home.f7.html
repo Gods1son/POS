@@ -241,43 +241,8 @@ export default {
         },
         startPouch: function(){
           var self = this;
-          mogulsheetdb = self.$app.methods.startPouch();
           self.getData();
-          //db = null;
           
-          /*try{//id,name,unit_size,unit,cost_per_unit,status,created_date
-            mogulsheetdb = new PouchDB('mogulsheet.db');
-            mogulsheetdb.createIndex({
-              index: {
-                fields: ['ingredientID','name', 'status'],
-                name: 'ingredients',
-                ddoc: 'mydesigndoc',
-                type: 'json'
-              }
-            });
-
-            mogulsheetdb.createIndex({
-              index: {
-                fields: ['clientID', 'created_date','parentID', 'product_name', 'isParent', 'buyer_name', 'status'],
-                name: 'clients',
-                ddoc: 'mydesigndoc',
-                type: 'json'
-              }
-            });
-
-
-            mogulsheetdb.getIndexes().then(function (result) {
-              // yo, a result
-              console.log(result);
-            }).catch(function (err) {
-              // ouch, an error
-            });
-
-              //self.syncDB();
-              //self.getData();
-          }catch(err){
-            
-            }*/
         },
         syncDB: function(){
           var self = this;

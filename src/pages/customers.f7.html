@@ -190,26 +190,11 @@
               </div>
             </div>-->
             <div class="row margin-top-half myToolbar">
-              <div class="col-33 no-padding-vertical">
-                <span class="margin-left-half">User made {{totalMatUser}} {{js "this.totalMatUser > 1 ? 'purchases' : 'purchase'"}}</span>
+              <div class="col-50 no-padding-vertical">
+                <span class="margin-left-half">Customer made {{totalMatUser}} {{js "this.totalMatUser > 1 ? 'purchases' : 'purchase'"}}</span>
               </div>
 
-              <div class="col-33 no-padding-vertical">
-                <div class="block no-margin-vertical filterDateParent">  
-                  <div class="no-hairlines-md no-margin-bottom margin-top-half">
-                      <div class="item-content item-input1">
-                          <div class="item-inner bg-color-white specWrap">
-                          <div class="item-input-wrap">
-                            <input type="text" class="specSearch" placeholder="Date filter" id="demo-calendar-modal-clients"/>
-                            <span class="input-clear-button specClear" @click="resetTable"></span>
-                          </div>
-                          </div>
-                      </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="col-33 no-padding-vertical text-align-right">
+              <!--<div class="col-33 no-padding-vertical text-align-right">
                 <span class="display-inline-flex margin-right-half display-none">
                   <span class="item-title float-right">Show Deleted</span>
                   <span class="item-after float-right margin-left-half">
@@ -219,7 +204,24 @@
                       </label>
                   </span>
                   </span>
+              </div>-->
+
+              <div class="col-50 no-padding-vertical">
+                <div class="block no-margin-vertical filterDateParent">  
+                  <div class="no-hairlines-md no-margin-bottom margin-top-half">
+                      <div class="item-content item-input1">
+                          <div class="item-inner bg-color-white specWrap">
+                          <div class="item-input-wrap">
+                            <input type="text" class="specSearch" placeholder="Filter by date" id="demo-calendar-modal-clients"/>
+                            <span class="input-clear-button specClear" @click="resetTable"></span>
+                          </div>
+                          </div>
+                      </div>
+                  </div>
+                </div>
               </div>
+
+              
             </div>
             <div class="clientPurchases-table data-table margin-vertical-half">
               <table>
@@ -385,13 +387,6 @@ export default {
     },
     startPage: function(){
           var self = this;
-         /* mogulsheetdb = self.$app.methods.startPouch();
-          var id = self.settingsID;
-            mogulsheetdb.get(id).then(function(doc) {
-                  self.$setState({
-                      settings: doc
-                    })
-              })*/
           self.getData();
           try{
             if(chooser != undefined){
@@ -400,32 +395,7 @@ export default {
           }catch(err){
             $(".filePicker").addClass("display-none");
           }
-          //db = null;
-          /*try{//id,name,unit_size,unit,cost_per_unit,status,created_date
-            db = new PouchDB('clients.db');
-            dbSales = new PouchDB('sales.db');
-            dbSettings = new PouchDB('settings.db');
-            dbSales.createIndex({
-                  index: {
-                    fields: ['created_date','parentID', 'product_name', 'isParent', 'buyer_name', 'status']
-                  }
-                })
-            db.createIndex({
-                  index: {
-                    fields: ['name', 'created_date']
-                  }
-                }).then(function (result) {
-                  var id = self.settingsID;
-                  dbSettings.get(id).then(function(doc) {
-                  self.$setState({
-                      settings: doc
-                    })
-                  })
-                  self.getData();
-                })
-          }catch(err){
-            
-          }*/
+          
         },
     formatMoney:function(val){             
       var self = this;   
@@ -646,6 +616,12 @@ export default {
                         }else{
                           //var html = "<li><div class='card myCard'><div class='card-content text-align-center'>No result found</div></div></li>";
                           //$("#sales-list .list").append(html);
+                          var options = {
+                            valueNames: ['id','isPaid','buyer','created_date','cost','name'],
+                            page: 10,
+                        };
+
+                        var sales = new List('clientSales-list', options);
                           
                           $(".clientSales").find(".sortTextPar").addClass("display-none");
                         }

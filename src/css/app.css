@@ -10,7 +10,7 @@
     --light-blue-color: #D3F3EE;
     --red-color: #E63946;
     --black-color:#262626;
-    --teal-color:#488286;
+    --teal-color: #333333;
     --grey-color:#697386;
     --panel-color: #c1aee4; /*#decff8*/
 }
@@ -160,7 +160,9 @@ body {
 }
 
 .ContactUs a{
-    color:var(--black-color) !important;
+    color: var(--main-color) !important;
+    text-transform: capitalize;
+    text-decoration: underline;
 }
 
 .navbar-inner .logoname{
@@ -224,6 +226,7 @@ body {
 .data-table thead tr th{
     font-size: 14px;
     color: var(--black-color) !important;
+    font-weight: 600;
 }
 
 .data-table .popover-open{
@@ -459,21 +462,21 @@ button.text-editor-button.active{
 
 .sellMultiple{
     font-weight: 500;
-    background: var(--teal-color);
+    background: var(--main-color);
     letter-spacing: 0px;
     text-transform: none;
     color: white;
-    border: 1px solid var(--teal-color);
-    /*box-shadow: 0px 1px 3px 1px var(--main-color)94;*/
+    padding: 0px 30px;
+    border: 1px solid var(--main-color);
 }
 
 .viewRestockHistory{
-    font-weight: 500;
+    font-weight: 600;
     letter-spacing: 0px;
     text-transform: none;
-    color: var(--teal-color);
-    border: 1px solid var(--teal-color);
-    /*box-shadow: 0px 1px 3px 1px #673ab794;*/
+    color: var(--main-color);
+    border: 1px solid var(--main-color);
+    padding: 0px 30px;
 }
 
 .btn-blue{
@@ -559,10 +562,14 @@ button.text-editor-button.active{
     font-size: 80%;
 }
 
+.settingsWrapper{
+    width: 70%;
+}
+
 .settingsInput, .myCard input[type="text"], .item-input-wrap select, 
 .item-input-wrap input[type="text"]:not(.specSearch),
 .item-input-wrap input[type="number"]:not(.specSearch){
-    border: 1.2px solid var(--teal-color) !important;
+    border: 1px solid #626262 !important;
     padding: 2px 5px !important;
     margin-top: 2px !important;
     border-radius: 5px;
@@ -630,19 +637,23 @@ button.text-editor-button.active{
     margin-top: 2px !important;
 }
 
+.customList .searchbar-inline{
+    margin-left: 12px;
+    margin-right: 8px;
+}
+
 .customList .searchbar-input-wrap{
     width: 99%;
     margin: auto;
 }
 
 .searchbar-input-wrap input, .darkSearch{
-    padding: 5px 0 !important;
+    padding: 5px 0 5px 36px !important;
     font-size: 1.1em !important;
-    text-align: center !important;
-    background: white !important;
+    background: #ECECEC !important;
     color: var(--grey-color) !important;
-    border: 0.8px solid var(--grey-color) !important;
-    border-radius: 7.5px!important;
+    border: 0.8px solid #ECECEC !important;
+    border-radius: 36px !important;
     margin-top: 5px;
     margin-bottom: 20px;
 }
@@ -658,7 +669,7 @@ button.text-editor-button.active{
 .searchbar-input-wrap input::placeholder, .darkSearch::placeholder, input[type="text"]::placeholder,
 input[type="phone"]::placeholder, input[type="email"]::placeholder, input[type="date"]::placeholder,
 input[type="password"]::placeholder, input[type="number"]::placeholder, textarea::placeholder{
-    color: var(--teal-color) !important; /*var(--grey-color)*/
+    color: #8C8C8C !important; /*var(--grey-color)*/
     text-transform: lowercase;
     font-weight: 100;
     font-size: 0.8em;
@@ -731,6 +742,10 @@ input[type="password"]::placeholder, input[type="number"]::placeholder, textarea
     color: blue !important;
 }
 
+.totalSales, .totalExpenses{
+    background: var(--main-color);
+}
+
 .ruleUnder{
     color: black;
     font-size: 0.8em;
@@ -757,7 +772,7 @@ input[type="password"]::placeholder, input[type="number"]::placeholder, textarea
 }
 
 .specWrap{
-    border-radius: 5px;
+    border-radius: 36px;
     box-shadow: 0px 0px 1px 0px var(--grey-color);
 }
 
@@ -766,7 +781,7 @@ input[type="password"]::placeholder, input[type="number"]::placeholder, textarea
 }
 
 .specClear{
-    right:25px;
+    right:35px;
 }
 
 .specSearch{
@@ -781,13 +796,13 @@ input[type="password"]::placeholder, input[type="number"]::placeholder, textarea
 
 .dash .card-content{
     font-size: 2em;
-    text-align: center;
+    text-align: left;
     font-weight: 600;
-    color: var(--teal-color);
+    padding: 7.5px 8px;
 }
 
 .dash .card{
-    margin: 5px;
+    margin: 5px 10px 5px 0;
 }
 
 .filterbydate{
@@ -901,6 +916,7 @@ input[type="password"]::placeholder, input[type="number"]::placeholder, textarea
 
 .signUpsignIn{
     margin: 40px auto 10px auto;
+    border-radius: 36px;
 }
 
 .signParent ul:before, .signParent ul:after{
@@ -1055,9 +1071,26 @@ input[type="password"]::placeholder, input[type="number"]::placeholder, textarea
 
   @media only screen and (max-width: 768px) {
 
+    .settingsWrapper{
+        width: 100%;
+    }
+
     .page-content{
         width: 95%;
         margin: auto;
+    }
+
+    .productActions{
+        justify-content: center;
+    }
+
+    .sellMultiple, .viewRestockHistory{
+        width: 100%;
+    }
+
+    .viewRestockHistory{
+        margin-top: 10px;
+        margin-bottom: 10px;
     }
 
     .bannerImage{
