@@ -358,6 +358,7 @@ import * as moment from 'moment';
 import * as XLSX from 'xlsx';
 var db = null, dbSales = null, dbSettings = null, calendarBday = null, mogulsheetdb = null;
 var dataToUpload = null, eachBatch = 50, uploaded = 0;
+var clientPurchasesList = null;
 export default {
   test: 5,
   data: function () {
@@ -601,7 +602,7 @@ export default {
                             pagination: [{outerWindow:2}],
                         };
 
-                        var sales = new List('clientSales-list', options);
+                        clientPurchasesList = new List('clientSales-list', options);
 
                         $(".clientSales").find(".sort").off("click").on("click", function(){
                           $(".clientSales").find(".sort").find(".asc").remove();
@@ -616,12 +617,8 @@ export default {
                         }else{
                           //var html = "<li><div class='card myCard'><div class='card-content text-align-center'>No result found</div></div></li>";
                           //$("#sales-list .list").append(html);
-                          var options = {
-                            valueNames: ['id','isPaid','buyer','created_date','cost','name'],
-                            page: 10,
-                        };
-
-                        var sales = new List('clientSales-list', options);
+                          
+                          clientPurchasesList.clear();
                           
                           $(".clientSales").find(".sortTextPar").addClass("display-none");
                         }

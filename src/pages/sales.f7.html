@@ -637,7 +637,7 @@ import copy from 'copy-to-clipboard';
 import html2pdf from 'html2pdf.js';
 var selectedUserName = null, selectedUserID = null, mogulsheetdb = null;
   var dbProducts = null, dbProdIngs = null, dbProdOthers = null, dbSales = null, dbIngs = null, dbSettings = null, dbClients = null, dbSettingsImages = null;
-//var $$ = Dom7;
+var salesList = null;
 export default {
   data: function () {
       // Must return an object
@@ -2414,7 +2414,7 @@ export default {
                             pagination: [{outerWindow:2}]
                         };
 
-                        var sales = new List('sales-list', options);
+                        salesList = new List('sales-list', options);
 
                         $(".sort").off("click").on("click", function(){
                           $("#sales-list").find(".sort").find(".asc").remove();
@@ -2464,12 +2464,9 @@ export default {
                           //var html = "<li><div class='card myCard'><div class='card-content text-align-center'>No result found</div></div></li>";
                           //$("#sales-list .list").append(html);
                           self.calculateTotalMoney();
-                          var options = {
-                            valueNames: ['id','isPaid','buyer','created_date','cost','name'],
-                            page: 10
-                        };
+                        
+                          salesList.clear();
 
-                        var sales = new List('sales-list', options);
                           $(".sortTextPar, .header_title").addClass("display-none");
                         }
     },

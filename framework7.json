@@ -3,7 +3,7 @@
   "type": [
     "web"
   ],
-  "name": "BizExpenseManager",
+  "name": "omni",
   "framework": "core",
   "template": "single-view",
   "bundler": "webpack",

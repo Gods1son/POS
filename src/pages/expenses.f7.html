@@ -312,6 +312,7 @@
 import * as moment from 'moment';
 
 var dbExpenses = null, dbSettings = null, mogulsheetdb = null;
+var expenseList = null;
 //var $$ = Dom7;
 export default {
   data: function () {
@@ -832,7 +833,7 @@ export default {
                     pagination: [{outerWindow:2}]
                 };
 
-                var expense = new List('expenses-list', options);
+                expenseList = new List('expenses-list', options);
 
                 $(".sort").off("click").on("click", function(){
                   $("#expenses-list").find(".sort").find(".asc").remove();
@@ -868,12 +869,7 @@ export default {
                   //var html = "<li><div class='card myCard'><div class='card-content text-align-center'>No result found</div></div></li>";
                   //$("#expenses-list .list").append(html);
                   self.calculateTotalMoneyExpense();
-                  var options = {
-                    valueNames: ['id','cost','paidAll','name','created_date'],
-                    page: 10
-                };
-
-                var expense = new List('expenses-list', options);
+                  expenseList.clear();
                   
                   $(".sortTextPar").addClass("display-none");
                 }
