@@ -235,7 +235,6 @@
                       <div class="item-title">Selling Price</div>
                       <div class="item-input-wrap">
                         <input type="number" class="selling_priceLink" placeholder="Selling price of product"/>
-                        <span class="input-clear-button"></span>
                       </div>
                     </div>
                   </div>
@@ -509,8 +508,7 @@
                     <div class="item-inner">
                       <div class="item-title">Cost Price</div>
                       <div class="item-input-wrap">
-                        <input type="number" class="cost_price" placeholder="Cost price of product" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
-                        <span class="input-clear-button"></span>
+                        <input type="number" class="cost_price" placeholder="Cost price of product" required step=".01"/>
                       </div>
                     </div>
                   </div>
@@ -520,7 +518,7 @@
                     <div class="item-inner">
                       <div class="item-title">Selling Price</div>
                       <div class="item-input-wrap">
-                        <input type="number" class="selling_price" placeholder="Selling price of product" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                        <input type="number" class="selling_price" placeholder="Selling price of product" required step=".01"/>
                         <span class="input-clear-button"></span>
                       </div>
                     </div>
@@ -532,7 +530,6 @@
                       <div class="item-title">In Stock</div>
                       <div class="item-input-wrap">
                         <input type="number" class="stock_quantity" placeholder="Quantity of product in stock" @keyup="stockInput" @keypress="onlyDecimal"/>
-                        <span class="input-clear-button"></span>
                       </div>
 
                       <div class="item-title padding-top-half">
@@ -627,7 +624,6 @@
                           <div class="item-title">Selling Price</div>
                           <div class="item-input-wrap">
                             <input type="number" class="cost_sell" @keyup="calculateQuantity" placeholder="selling price" required disabled validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
-                            <span class="input-clear-button"></span>
                           </div>
                         </div>
                       </div>
@@ -645,7 +641,6 @@
                             <div class="item-title">Quantity</div>
                             <div class="item-input-wrap">
                               <input type="number" class="quantity_sell" @keyup="calculateQuantity" placeholder="Quantity" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
-                              <span class="input-clear-button"></span>
                             </div>
                           </div>
                         </div>
@@ -657,7 +652,6 @@
                             <div class="item-title">Discount</div>
                             <div class="item-input-wrap">
                               <input type="number" class="discount_sell" @keyup="calculateQuantity" value="0" placeholder="Discount" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
-                              <span class="input-clear-button"></span>
                             </div>
                           </div>
                         </div>
@@ -671,7 +665,6 @@
                       <div class="item-title">Total Price</div>
                       <div class="item-input-wrap">
                         <input type="number" class="total_sell" @keyup="calculateQuantity2" placeholder="Total Price" disabled required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
-                        <span class="input-clear-button"></span>
                       </div>
                     </div>
                   </div>
@@ -684,7 +677,6 @@
                             <div class="item-title">Taxes in %</div>
                             <div class="item-input-wrap">
                               <input type="number" class="taxes" @keyup="calculateQuantity" placeholder="Taxes in %" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
-                              <span class="input-clear-button"></span>
                             </div>
                           </div>
                         </div>
@@ -728,7 +720,6 @@
                           </div>
                           <div class="item-input-wrap">
                             <input type="number" class="amountpaid_sell" placeholder="Amount customer paid" value="0" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
-                            <span class="input-clear-button"></span>
                           </div>
                         </div>
                       </div>
@@ -1644,7 +1635,7 @@ export default {
                     //$(".stock_quantity, .isUnlimited").prop("disabled", true);
                     var popup = self.$app.popup.open('.popup.newProduct', true);
             } else{
-              $(".isUnlimited").prop("checked", true);
+              $(".isUnlimited, .showToPublic").prop("checked", true);
               $("input.nameProduct,input.selling_price,.cost_price, .stock_quantity, .productCategory").val("");
               $("#productType").val("physicalProduct").change();
               //$(".stock_quantity, .isUnlimited").prop("disabled", false);
@@ -2528,7 +2519,7 @@ export default {
     closeEditProdPopUp: function(){
       var self = this;
       $$("input.name,input.selling_price,.cost_price, .stock_quantity, .productCategory").val("");
-      $(".isUnlimited").prop("checked", true);
+      $(".isUnlimited, .showToPublic").prop("checked", true);
       var textEditor = self.$app.textEditor.get('.desc_of_product');
       textEditor.setValue("");
       self.$app.swiper.destroy('.swiper-container');
@@ -2652,7 +2643,7 @@ export default {
                     //self.$app.dialog.alert("Item saved.");
                     self.showToast("Product saved.", "center", true);
                     $("input.nameProduct,input.selling_price,.cost_price, .stock_quantity, .productCategory").val("");
-                    $(".isUnlimited").prop("checked", true);
+                    $(".isUnlimited, .showToPublic").prop("checked", true);
                     var textEditor = self.$app.textEditor.get('.desc_of_product');
                     textEditor.setValue("");
                     self.$app.swiper.destroy('.swiper-container');

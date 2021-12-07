@@ -73,8 +73,8 @@ setTimeout(function(){
       return {
         openedPanel: true,
         isDesktop: false,
-        apiUrl: "https://localhost:44383/api/", //"https://flexmoni.com/api/",
-        siteUrl: "https://localhost:44383/", //"https://flexmoni.com/",
+        apiUrl: "https://tryomni.co/api/", //"https://localhost:44383/api/", //
+        siteUrl: "https://tryomni.co/", //"https://localhost:44383/", //"https://flexmoni.com/",
         settings: null,
         fetchedSettings: false
       };
@@ -82,6 +82,9 @@ setTimeout(function(){
     methods: {
       alert: function() {
         app.dialog.alert('Hello World');
+      },
+      resaveSettings:function(newData){
+        app.data.settings = newData;
       },
       consoling: function(){
         console.log("master page");
@@ -315,6 +318,9 @@ setTimeout(function(){
             openedPanel = true;
           }
         })
+
+        $('input[type=text], input[type=address], input[type=password], textarea').attr("autocomplete", "new-password");
+        $('input[type=number]').attr("step", "any");
       },
       pageBeforeIn: function (event, page) {
         // do something after page gets into the view
@@ -325,6 +331,10 @@ setTimeout(function(){
           app.methods.getBusinessProfile();
           //console.log("fetched settings");
           app.data.fetchedSettings = true;
+        }
+
+        if(app.data.settings != null && app.data.settings.name != null){
+          $(".businessNameLabel").text(app.data.settings.name);
         }
 
 

@@ -405,6 +405,7 @@
               self.$app.preloader.hide();
                 if(data == true){
                   self.$app.methods.showToast("Information saved", "center", true);
+                  self.$app.methods.resaveSettings(obj);
                 }
                 
             }).catch((data, textStatus, jqXHR) => {

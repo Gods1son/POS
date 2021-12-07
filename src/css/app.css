@@ -8,10 +8,10 @@
 *{
     --main-color: #673ab7;
     --light-blue-color: #D3F3EE;
-    --red-color: #E63946;
-    --black-color:#262626;
-    --teal-color: #333333;
-    --grey-color:#697386;
+    --omni-red-color: #E63946;
+    --omni-black-color:#262626;
+    --omni-teal-color: #333333;
+    --omni-grey-color:#697386;
     --panel-color: #c1aee4; /*#decff8*/
 }
 
@@ -113,7 +113,7 @@ body {
 .panel.mylinks, .panel.mylinks .page, .panel.mylinks .page-content, 
 .panel.mylinks .quicklinks, .panel.mylinks .navbar-bg{
     background: white; /*var(--light-blue-color);*/
-    color:var(--black-color);
+    color:var(--omni-black-color);
     font-family: 'AvenirMedium';
 }
 
@@ -125,7 +125,7 @@ body {
 .quicklinks.list ul{
     /*background: var(--light-blue-color);*/
     background: white;
-    color:var(--black-color);
+    color:var(--omni-black-color);
 }
 
 .quicklinks.list ul:before{
@@ -183,7 +183,7 @@ body {
 }
 
 .navbar-inner.sliding .title{
-    color: var(--teal-color);
+    color: var(--omni-teal-color);
 }
 
 .navbar-inner .link{
@@ -225,12 +225,12 @@ body {
 
 .data-table thead tr th{
     font-size: 14px;
-    color: var(--black-color) !important;
+    color: var(--omni-black-color) !important;
     font-weight: 600;
 }
 
 .data-table .popover-open{
-    color: var(--teal-color);
+    color: var(--omni-teal-color);
 }
 
 /*.logoName{
@@ -266,7 +266,7 @@ button.text-editor-button.active{
 
 .popup .item-title, .signParent .item-title{
     font-size: 0.8em;
-    color: var(--grey-color);;
+    color: var(--omni-grey-color);;
     text-transform: lowercase;
 }
 
@@ -360,7 +360,7 @@ button.text-editor-button.active{
 }
 
 .myCard{
-    box-shadow: 0px 0px 2px 0px var(--grey-color);
+    box-shadow: 0px 0px 2px 0px var(--omni-grey-color);
     margin-left: 5px;
     margin-right: 5px;
     margin-bottom: 0.8em;
@@ -436,9 +436,9 @@ button.text-editor-button.active{
 }
 
 .tealBgButton{
-    background: var(--teal-color);
+    background: var(--omni-teal-color);
     color: white;
-    border: 1px solid var(--teal-color);
+    border: 1px solid var(--omni-teal-color);
     text-transform: none;
 }
 
@@ -448,15 +448,15 @@ button.text-editor-button.active{
 }
 
 .tealColorButton{
-    color: var(--teal-color);
-    border: 1px solid var(--teal-color);
+    color: var(--omni-teal-color);
+    border: 1px solid var(--omni-teal-color);
     text-transform: none;
     font-size: 1em;
 }
 
 .deleteImage{
-    color: var(--red-color);
-    border: 1px solid var(--red-color);
+    color: var(--omni-red-color);
+    border: 1px solid var(--omni-red-color);
     text-transform: none;
 }
 
@@ -494,12 +494,12 @@ button.text-editor-button.active{
     font-size: 0.8em;
     margin-top: 5px;
     text-transform: none;
-    border-color: var(--teal-color);
-    color: var(--teal-color);
+    border-color: var(--omni-teal-color);
+    color: var(--omni-teal-color);
 }
 
 .reportAllButtons a.active{
-    background: var(--teal-color);
+    background: var(--omni-teal-color);
     color: white;
 }
 
@@ -540,7 +540,7 @@ button.text-editor-button.active{
 
 .switchEstimate{
     /*border: 1px solid var(--main-color) !important;*/
-    color: var(--teal-color) !important;
+    color: var(--omni-teal-color) !important;
     font-weight: 700;
     text-transform: inherit;
     letter-spacing: 0.9px;
@@ -566,7 +566,7 @@ button.text-editor-button.active{
     width: 70%;
 }
 
-.settingsInput, .myCard input[type="text"], .item-input-wrap select, 
+.settingsInput, .myCard input[type="text"], .myCard input[type="number"], .item-input-wrap select, 
 .item-input-wrap input[type="text"]:not(.specSearch),
 .item-input-wrap input[type="number"]:not(.specSearch){
     border: 1px solid #626262 !important;
@@ -596,7 +596,7 @@ button.text-editor-button.active{
 
 .labelName{
     font-size: 0.8em;
-    color: var(--grey-color);
+    color: var(--omni-grey-color);
 }
 
 
@@ -651,7 +651,7 @@ button.text-editor-button.active{
     padding: 5px 0 5px 36px !important;
     font-size: 1.1em !important;
     background: #ECECEC !important;
-    color: var(--grey-color) !important;
+    color: var(--omni-grey-color) !important;
     border: 0.8px solid #ECECEC !important;
     border-radius: 36px !important;
     margin-top: 5px;
@@ -659,17 +659,17 @@ button.text-editor-button.active{
 }
 
 .searchbar-input-wrap .searchbar-icon:after{
-    color:var(--grey-color) !important;
+    color:var(--omni-grey-color) !important;
 }
 
 .searchbar-input-wrap .input-clear-button:after{
-    color:var(--grey-color) !important;
+    color:var(--omni-grey-color) !important;
 }
 
 .searchbar-input-wrap input::placeholder, .darkSearch::placeholder, input[type="text"]::placeholder,
 input[type="phone"]::placeholder, input[type="email"]::placeholder, input[type="date"]::placeholder,
 input[type="password"]::placeholder, input[type="number"]::placeholder, textarea::placeholder{
-    color: #8C8C8C !important; /*var(--grey-color)*/
+    color: #8C8C8C !important; /*var(--omni-grey-color)*/
     text-transform: lowercase;
     font-weight: 100;
     font-size: 0.8em;
@@ -773,7 +773,7 @@ input[type="password"]::placeholder, input[type="number"]::placeholder, textarea
 
 .specWrap{
     border-radius: 36px;
-    box-shadow: 0px 0px 1px 0px var(--grey-color);
+    box-shadow: 0px 0px 1px 0px var(--omni-grey-color);
 }
 
 .specWrap .item-input-wrap{
@@ -813,11 +813,11 @@ input[type="password"]::placeholder, input[type="number"]::placeholder, textarea
 .pagination li{
     display: inline-block;
     padding: 1px 10px;
-    border: 1px solid var(--grey-color);
+    border: 1px solid var(--omni-grey-color);
 }
 
 .pagination li.active{
-    background-color: var(--grey-color);
+    background-color: var(--omni-grey-color);
     color: white;
 }
 
@@ -1097,8 +1097,12 @@ input[type="password"]::placeholder, input[type="number"]::placeholder, textarea
         height: 225px;
     }
 
+    .bannerImage{
+        height: 50px;
+    }
+
     .loginImageFile{
-        height: 150px;
+        display:none;
     }
 
     .signParent form{
