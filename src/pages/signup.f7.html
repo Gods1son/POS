@@ -1,6 +1,6 @@
 
 <template>
-  <div class="page" data-name="login">
+  <div class="page" data-name="signup">
   
     <!-- Scrollable page content-->
     <div class="page-content no-padding-horizontal">
@@ -37,32 +37,52 @@
           </div>
 
               <div class="col-100 medium-55 signParent">
-                <form id="signInPage">
-                  <div class="text-align-center block-title-medium margin-vertical-half margin-horizontal">
-                    <h3 class="margin-bottom-half">Let's log you back into the system</h3>
-                  </div>
-                  <!--<div class="text-align-center margin-bottom">Open a store in 5 minutes</div>-->
+                  <form id="signUpPage">
+                    <div class="text-align-center block-title-medium margin-vertical-half margin-horizontal">
+                      <h3 class="margin-bottom-half">Everything you need to start selling</h3>
+                    </div>
+                    <div class="text-align-center margin-bottom signUpText">Open a store in 5 minutes</div>
 
                     <div class="list padding-horizontal margin-horizontal">
-                        
                       <ul>
+
                         <li class="item-content item-input">
                           <div class="item-inner">
-                            <div class="item-title">Email</div>
+                            <div class="item-title">First Name</div>
                             <div class="item-input-wrap signingInput">
-                              <input id="emailSignIn" type="email" name="email" placeholder="Enter Email" required>
+                              <input id="firstNameSignUp" type="text" name="firstName" placeholder="Enter First Name">
                               <span class="input-clear-button"></span>
                             </div>
                           </div>
                         </li>
+
+                        <li class="item-content item-input">
+                          <div class="item-inner">
+                            <div class="item-title">Last Name</div>
+                            <div class="item-input-wrap signingInput">
+                              <input id="lastNameSignUp" type="text" name="lastName" placeholder="Enter Last Name">
+                              <span class="input-clear-button"></span>
+                            </div>
+                          </div>
+                        </li>
+
+                        <li class="item-content item-input">
+                            <div class="item-inner">
+                              <div class="item-title">Email</div>
+                              <div class="item-input-wrap signingInput">
+                                <input id="emailSignUp" type="email" name="email" placeholder="Enter Email">
+                                <span class="input-clear-button"></span>
+                              </div>
+                            </div>
+                          </li>
                         <li class="item-content item-input">
                           <div class="item-inner">
                             <div class="row" style="width: 100%;">
-                                <div class="col-50 item-title">Password</div>
-                                <div class="col-50 text-align-right text-color-blue text-small" id="showPwdSignInButton" @click="showPasswordSignInSwitch()">Show Password</div>
-                              </div>
+                              <div class="col-50 item-title">Password</div>
+                              <div class="col-50 text-align-right text-color-blue text-small" id="showPwdSignUpButton" @click="showPasswordSignUpPage()">Show Password</div>
+                            </div>
                             <div class="item-input-wrap signingInput">
-                              <input id="passwordSignIn" type="password" name="password" placeholder="Enter Password" required>
+                              <input id="passwordSignUp" type="password" name="password" placeholder="Enter Password">
                               <span class="input-clear-button"></span>
                             </div>
                           </div>
@@ -70,15 +90,15 @@
                       </ul>
                     </div>
                     <div class="">
-                        <a href="#" class="button mainButton signUpsignIn" @click="signUserIn()">Log In</a>
+                        <a href="#" class="button mainButton signUpsignIn" @click="signUserUp()">Sign Up</a>
                         <div class="margin-vertical text-align-center">
-                          <span>Don't have an account? </span>
-                          <a href="/signup/" class="no-transform">Sign Up</a>
+                          <span>Have an account? </span>
+                          <a href="/login/" class="no-transform color-red">Sign In</a>
                         </div>
-                        
                     </div>
                     
                   </form>
+                
             </div>
         </div>
       </div>
@@ -108,38 +128,50 @@ export default {
                         closeTimeout: time,
                         }).open();
         },
-        showPasswordSignInSwitch: function(){
-          var cur = $("#passwordSignIn").attr("type");
+        showSignUpPage: function(){
+            $("#signUpPage").removeClass("display-none");
+            $("#signInPage").addClass("display-none");
+        },
+        showSignInPage: function(){
+            $("#signInPage").removeClass("display-none");
+            $("#signUpPage").addClass("display-none");
+        },
+        showPasswordSignUpPage: function(){
+          var cur = $("#passwordSignUp").attr("type");
           if(cur.toLowerCase() == "password"){
-            $("#passwordSignIn").attr("type", "text");
-            $("#showPwdSignInButton").text("Hide Password");
+            $("#passwordSignUp").attr("type", "text");
+            $("#showPwdSignUpButton").text("Hide Password");
           }else{
-            $("#passwordSignIn").attr("type", "password");
-            $("#showPwdSignInButton").text("Show Password");
+            $("#passwordSignUp").attr("type", "password");
+            $("#showPwdSignUpButton").text("Show Password");
           }
         },
-        signUserIn: async function(){
+        signUserUp: function(){
           var self = this;
-          var email = $("#emailSignIn").val().trim();
-          var pwd = $("#passwordSignIn").val().trim();
-          if(email == "" || pwd == ""){
-            self.$app.methods.showToast("Email and Password are required to be filled", "center");
+          var email = $("#emailSignUp").val().trim();
+          var pwd = $("#passwordSignUp").val().trim();
+          var firstName = $("#firstNameSignUp").val().trim();
+          var lastName = $("#lastNameSignUp").val().trim();
+          if(email == "" || pwd == "" || firstName == "" || lastName == ""){
+            self.$app.methods.showToast("All required fields need to be filled", "center");
             return;
           }
           self.$app.preloader.show();
           var obj = {
             email: email,
-            pwd: pwd
+            pwd: pwd,
+            firstName: firstName,
+            lastName: lastName,
           };
-          $.when(self.$app.methods.postDataAPI("user/authenticate", obj, false)).then(function( data, textStatus, jqXHR ) {
+          $.when(self.$app.methods.postDataAPI("user/Register", obj, false)).then(function( data, textStatus, jqXHR ) {
             self.$app.preloader.hide();
               //console.log("when data ", data); // JSON data parsed by `data.json()` call
               localStorage.setItem("FlexBusinessToken", data);
-              self.$app.views.main.router.navigate('/products/');
+              self.$app.views.main.router.navigate('/settings/');
           }).catch((data, textStatus, jqXHR) => {
               console.log(data, textStatus, jqXHR);
               self.$app.preloader.hide();
-              self.$app.methods.showToast(data?.responseText, "center");
+              self.$app.methods.showToast("An error occurred", "center");
           })
         },
     },
@@ -177,6 +209,8 @@ export default {
       pageAfterIn: function (event, page) {
           // do something after page gets into the view
           var self = this;
+          
+          //console.log("login page");
 
       }
     }

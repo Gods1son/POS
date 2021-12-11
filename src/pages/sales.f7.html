@@ -434,8 +434,10 @@
               <div class="container-fluid">
                 <div class="row margin-top invoiceHeader">
                     <div class="col-100 medium-40 no-padding-left">
-                        <div class="text-muted">BILL TO</div>
+                        <div class="text-muted margin-bottom-half">BILL TO</div>
                         <div id="buyerName"></div>
+                        <div id="buyerAddress" class="text-90"></div>
+                        <div id="buyerPhone" class="text-90"></div>
                     </div>
     
                     <div class="col-100 medium-60 mt-3 mt-md-0 text-md-right docDetails px-0 px-md-3">
@@ -1218,6 +1220,12 @@ export default {
         $("#addressLabel").html(Comaddress);
         $("#buyerName").text(buyer);
         $(".taglineReceipt").text(settings?.tagline);
+        if (sales.clientAddress != null) {
+          $("#buyerAddress").html(sales.clientAddress.split("\n").join("<br>"));
+        }
+        if (sales.clientNumber != null) {
+            $("#buyerPhone").text(sales.clientNumber);
+        }
 
         var docDetails = "<div>";
         docDetails += "<div class='eachLine'><div class='margin-right'><h2 class='text-color-green receiptLabel no-margin-top margin-bottom-half'>" + invoiceLabel + "</h2></div ><div></div></div>";

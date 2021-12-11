@@ -322,12 +322,19 @@ button.text-editor-button.active{
     color: white !important;
 }*/
 
+.logoImage img{
+    top: 35px;
+    left: 75px;
+    position: absolute;
+}
+
 .fab a{
     background: var(--main-color);
 }
 
 .sortTextPar{
     white-space: nowrap;
+    overflow-x: auto;
 }
 
 .sortText{
@@ -554,7 +561,7 @@ button.text-editor-button.active{
     vertical-align: bottom !important;
 }
 
-#passwordSignUp, #passwordSignIn{
+#passwordSignUp, #passwordSignIn, #firstNameSignUp, #lastNameSignUp{
     border:none !important;
 }
 
@@ -892,6 +899,7 @@ input[type="password"]::placeholder, input[type="number"]::placeholder, textarea
 
 .loginImageFile{
     height: 75%;
+    margin-top:65px;
 }
 
 .signParent{
@@ -908,6 +916,16 @@ input[type="password"]::placeholder, input[type="number"]::placeholder, textarea
     display: flex;
     width: 100%;
     flex-direction: column;
+}
+
+.signUpText{
+    color: red;
+    font-weight: 600;
+    background: #f6e4e4f7;
+    border-radius: 40px;
+    padding: 5px 0;
+    width: 250px;
+    margin: auto;
 }
 
 .signParent .list{
@@ -1075,8 +1093,14 @@ input[type="password"]::placeholder, input[type="number"]::placeholder, textarea
         width: 100%;
     }
 
+    .logoImage img{
+        left: 15px;
+    }
+
     .page-content{
-        width: 95%;
+        width: 100%;
+        padding-right: 2.5%;
+        padding-left: 2.5%;
         margin: auto;
     }
 
@@ -1094,11 +1118,7 @@ input[type="password"]::placeholder, input[type="number"]::placeholder, textarea
     }
 
     .bannerImage{
-        height: 225px;
-    }
-
-    .bannerImage{
-        height: 50px;
+        height: 100px;
     }
 
     .loginImageFile{

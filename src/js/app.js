@@ -73,7 +73,7 @@ setTimeout(function(){
       return {
         openedPanel: true,
         isDesktop: false,
-        apiUrl: "https://tryomni.co/api/", //"https://localhost:44383/api/", //
+        apiUrl: "https://tryomni.co/api/", //"https://localhost:44383/api/", // 
         siteUrl: "https://tryomni.co/", //"https://localhost:44383/", //"https://flexmoni.com/",
         settings: null,
         fetchedSettings: false
@@ -229,6 +229,10 @@ setTimeout(function(){
         $.when(app.methods.getDataAPI("business/GetBusinessProfile")).then(function( data, textStatus, jqXHR ) {
           if(data != null){
             app.data.settings = data;
+            //set business name
+            if(app.data.settings != null && app.data.settings.name != null){
+              $(".businessNameLabel").text(app.data.settings.name);
+            }
           }
         });
       },
@@ -321,6 +325,7 @@ setTimeout(function(){
 
         $('input[type=text], input[type=address], input[type=password], textarea').attr("autocomplete", "new-password");
         $('input[type=number]').attr("step", "any");
+
       },
       pageBeforeIn: function (event, page) {
         // do something after page gets into the view
@@ -350,7 +355,7 @@ setTimeout(function(){
         var name = $$(page).data("name");
         
         var panel = app.panel.get('.panel-left');
-        if(name == "home" || name == "login"){
+        if(name == "home" || name == "login" || name == "signup"){
 
           if(panel.opened){
             panel.toggle(false);

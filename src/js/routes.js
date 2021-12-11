@@ -9,6 +9,7 @@ import SettingsPage from '../pages/settings.f7.html';
 import ClientsPage from '../pages/customers.f7.html';
 //import SyncPage from '../pages/sync.f7.html';
 import LoginPage from '../pages/login.f7.html';
+import SignupPage from '../pages/signup.f7.html';
 
 import ReportsRoutePage from '../pages/reports.f7.html';
 import RequestAndLoad from '../pages/request-and-load.f7.html';
@@ -92,7 +93,6 @@ function checkAuthLogin(to, from, resolve, reject) {
   var token = localStorage.getItem("FlexBusinessToken");
   
   if(token != null){
-    console.log("authenticated");
     reject();
     router.navigate('/products/');
     return;
@@ -150,6 +150,11 @@ var routes = [
   {
     path: '/login/',
     component: LoginPage,
+    beforeEnter: checkAuthLogin,
+  },
+  {
+    path: '/signup',
+    component: SignupPage,
     beforeEnter: checkAuthLogin,
   },
   {
