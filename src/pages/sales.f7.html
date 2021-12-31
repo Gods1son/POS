@@ -1084,24 +1084,6 @@ export default {
       var quantity = select == null ? 1 : select.quantity;
       var totalPrice = select == null ? "" : select.totalPrice;
       var discount = select == null ? "0" : select.discount;
-        //var cost = select.cost == undefined ? 0 : select.cost; 
-       /* var html = '<li class="eachSaleParentOther_sales eachProduct_sales"><div class="card myCard"><div class="card-content padding-horizontal-half">';
-          html += '<div><span class="labelName">Product Name: </span><div class="display-inline-flex"><input class="productName" type="text" placeholder="Product Name" value="';
-          html +=  name + '"></div></div>';
-          html += '<div class="row"><div class="col-50"><div class="item-content item-input no-padding-left"><div class="item-inner no-padding-right"><div class="labelName">Product Cost</div>';
-          html += '<div class="item-input-wrap"><input class="productCost_sales" type="text" placeholder="Product Cost" value="' + cost + '">';
-          html +=  '<span class="input-clear-button"></span></div></div></div></div>';
-          html += '<div class="col-50"><div class="item-content item-input no-padding-left"><div class="item-inner no-padding-right"><div class="labelName">Quantity</div>';
-          html += '<div class="item-input-wrap"><input class="productQuantity_sales" type="text" placeholder="Product Quantity" value="' + quantity + '">';
-          html +=  '<span class="input-clear-button"></span></div></div></div></div></div>';
-          html += '<div><span class="labelName">Discount: </span><div class="display-inline-flex"><input class="discount" type="text" placeholder="Discount" value="';
-          html +=  discount + '"></div></div>';
-          html += '<div><span class="labelName">Total Price: </span><div class="display-inline-flex"><input class="totalproductprice-sales" type="text" placeholder="Total Price" value="';
-          html += totalPrice + '"></div></div>';
-        html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
-          html += '<a class="button button-small button-raised removeProduct">Delete</a>';
-        html += '</p></div></div>'
-        html += '</li>';*/
 
         var html = '<li class="eachSaleParentOther_sales eachProduct_sales margin-vertical"><div class="card myCard"><div class="card-content padding-horizontal padding-vertical">';
           html += '<div class="row"><div class="col-50"><div class="labelName">Name</div><input class="productName" type="text" placeholder="e.g delivery" value="';
@@ -1181,7 +1163,8 @@ export default {
       $(".shareLinkButton").attr("data-id", sales.id);
       var settings = self.$app.data.settings;
       var Companyname = settings == null ? "" : settings.name;
-      var Comaddress = (settings != null && settings.address != null) ? settings.address.split("\n").join("<br>") : "";
+      var Comaddress = settings?.street + "<br>" + settings?.city + ", " + settings?.provinceCode + " " + settings?.postalCode + "<br>" + settings?.countryName;
+      //(settings != null && settings.address != null) ? settings.address.split("\n").join("<br>") : "";
       var buyer = sales.clientName;
       var productName = sales.productName;
       var curr = settings == null ? "" : settings.currency;
@@ -1205,6 +1188,9 @@ export default {
       $(".downloadInvoiceButton").text("Download " + invoiceLabel);
       //var invoiceLabel = isEstimate == true ? "Estimate" : "Invoice";
 
+      var phone = settings != null && settings.phoneNumber != null ? "<br>" + settings.phoneNumber : "";
+      var email = settings != null && settings.publicEmail != null ? "<br>" + settings.publicEmail : "";
+
       /*new pdf*/
 
 
@@ -1215,9 +1201,9 @@ export default {
         }
 
         $(".brandNameReciept").text(Companyname);
-        $("#addressLabel").html(Comaddress);
+        $("#addressLabel").html(Comaddress + phone + email);
         $("#invoiceLabel").text(invoiceLabel.toUpperCase());
-        $("#addressLabel").html(Comaddress);
+        //$("#addressLabel").html(Comaddress);
         $("#buyerName").text(buyer);
         $(".taglineReceipt").text(settings?.tagline);
         if (sales.clientAddress != null) {
@@ -2199,25 +2185,6 @@ export default {
       var chosenID = select.id;
       //var discount = 0;
       var totalPrice = select.totalPrice == null ? "" : select.totalPrice; 
-       /* var html = '<li class="eachSaleParent_sales eachProduct_sales"><div class="card myCard"><div class="card-content padding-horizontal-half">';
-          html += '<div><span class="labelName">Product Name: </span><div class="display-inline-flex"><input class="productName" type="text" placeholder="Product Name" value="';
-          html +=  name + '"></div></div>';
-          html += '<input type="hidden" class="productID" value="' + chosenID + '">';
-          html += '<input type="hidden" class="hiddenQuantity" value="' + select.stock + '">';
-          html += '<div class="row"><div class="col-50"><div class="item-content item-input no-padding-left"><div class="item-inner no-padding-right"><div class="labelName">Product Cost</div>';
-          html += '<div class="item-input-wrap"><input class="productCost_sales" type="text" placeholder="Product Cost" value="' + cost + '">';
-          html +=  '<span class="input-clear-button"></span></div></div></div></div>';
-          html += '<div class="col-50"><div class="item-content item-input no-padding-left"><div class="item-inner no-padding-right"><div class="labelName">Quantity</div>';
-          html += '<div class="item-input-wrap"><input class="productQuantity_sales" type="text" placeholder="Product Quantity" value="' + quantity + '">';
-          html +=  '<span class="input-clear-button"></span></div></div></div></div></div>';
-          html += '<div><span class="labelName">Discount: </span><div class="display-inline-flex"><input class="discount" type="text" placeholder="Discount" value="';
-          html +=  discount + '"></div></div>';
-          html += '<div><span class="labelName">Total Price: </span><div class="display-inline-flex"><input class="totalproductprice-sales" type="text" placeholder="Total Price" value="';
-          html +=  totalPrice + '"></div></div>';
-        html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
-          html += '<a class="button button-small button-raised removeProduct" data-id="' + select._id + '">Delete</a>';
-        html += '</p></div></div>'
-        html += '</li>';*/
 
 
         var html = '<li class="eachSaleParent_sales eachProduct_sales margin-vertical"><div class="card myCard"><div class="card-content padding-horizontal padding-vertical">';
@@ -2357,7 +2324,7 @@ export default {
                             var isParent = row.isParent == null ? true : row.isParent;
                             var sellToOther = "";
                             if(isParent == true){
-                              sellToOther = '<a class="button button-small button-raised sellToOthers" data-id="' + row.id + '" data-isparent="' + isParent + '">Sell To Others</a>';
+                              sellToOther = '<a class="button button-small sellToOthers" data-id="' + row.id + '" data-isparent="' + isParent + '">Sell To Others</a>';
                             }
                             var quantity = row.quantity == null ? 1 : row.quantity;
                             var taxes = row.taxes == null ? 0 : row.taxes;

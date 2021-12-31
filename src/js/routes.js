@@ -10,6 +10,7 @@ import ClientsPage from '../pages/customers.f7.html';
 //import SyncPage from '../pages/sync.f7.html';
 import LoginPage from '../pages/login.f7.html';
 import SignupPage from '../pages/signup.f7.html';
+import OrderPage from '../pages/orders.f7.html';
 
 import ReportsRoutePage from '../pages/reports.f7.html';
 import RequestAndLoad from '../pages/request-and-load.f7.html';
@@ -166,6 +167,11 @@ var routes = [
   {
     path: '/reports/',
     component: ReportsRoutePage,
+    beforeEnter: checkAuth,
+  },
+  {
+    path: '/orders/',
+    component: OrderPage,
     beforeEnter: checkAuth,
   },
   {

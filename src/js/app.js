@@ -73,7 +73,7 @@ setTimeout(function(){
       return {
         openedPanel: true,
         isDesktop: false,
-        apiUrl: "https://tryomni.co/api/", //"https://localhost:44383/api/", // 
+        apiUrl: "https://localhost:44383/api/", //"https://tryomni.co/api/", // 
         siteUrl: "https://tryomni.co/", //"https://localhost:44383/", //"https://flexmoni.com/",
         settings: null,
         fetchedSettings: false
@@ -304,10 +304,18 @@ setTimeout(function(){
         var self = this;
         //console.log('App initialized');
         //app.methods.generateClientID();
+        
+        var token = localStorage.getItem("FlexBusinessToken");
+
+        if(token != null && app.data.settings == null){
+          //console.log("get profile from home");
+          app.methods.getBusinessProfile();
+          //console.log("fetched settings");
+          //app.data.fetchedSettings = true;
+        }
       },
       pageInit: function () {
         //var self = this;
-        app.methods.startPouch();
         
         //app.methods.alert();
         //self.$app.alert();
@@ -330,18 +338,6 @@ setTimeout(function(){
       pageBeforeIn: function (event, page) {
         // do something after page gets into the view
         var self = this;
-        var token = localStorage.getItem("FlexBusinessToken");
-        if(token != null && app.data.settings == null && app.data.fetchedSettings == false){
-          //console.log("get profile from home");
-          app.methods.getBusinessProfile();
-          //console.log("fetched settings");
-          app.data.fetchedSettings = true;
-        }
-
-        if(app.data.settings != null && app.data.settings.name != null){
-          $(".businessNameLabel").text(app.data.settings.name);
-        }
-
 
         var width = $(window).width();
         if(width >= 1024){

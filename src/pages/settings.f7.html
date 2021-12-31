@@ -20,134 +20,465 @@
             </div>
           </div>
 
-            <div class="page-content">
-                <div class="list no-hairlines-md margin-top-half settingsWrapper">
-                    <div class="block-title text-color-black no-margin-bottom margin-left-half margin-top-half padding-vertical-half">Company Info and Taxes</div>
-                    <div class="block-header no-margin-vertical margin-horizontal-half no-padding-horizontal">The information is used for invoicing!</div>
-                    <ul>
-                    <li class="item-content item-input">
-                        <div class="item-inner">
-                          <div class="item-title item-label">Company Name</div>
-                          <div class="item-input-wrap">
-                            <input id="companyname" type="text" class="settingsInput" placeholder="Company Name">
-                          </div>
-                        </div>
-                      </li>
-                      <li class="item-content item-input">
-                        <div class="item-inner">
-                          <div class="item-title item-label">Company URL</div>
-                          <div class="item-input-wrap">
-                            <input id="companyurl" type="text" class="settingsInput" placeholder="Company URL">
-                          </div>
-                        </div>
-                      </li>
-                      <li class="item-content item-input">
-                        <div class="item-inner">
-                          <div class="item-title item-label">Company Address</div>
-                          <div class="item-input-wrap">
-                            <textarea class="settingsInput" id="companyaddress" placeholder="Company Address"></textarea>
-                            <!--<input id="companyaddress" type="text" placeholder="Company Address">-->
-                          </div>
-                        </div>
-                      </li>
+          <div class="toolbar tabbar toolbar-bottom">
+            <div class="toolbar-inner">
+              <a href="#company-details" class="tab-link tab-link-active">Profile</a>
+              <a href="#payment-settings" class="tab-link">Payment</a>
+              <a href="#delivery-settings" class="tab-link">Delivery</a>
+            </div>
+          </div>
 
-                      <li class="item-content item-input">
-                        <div class="item-inner">
-                          <div class="item-title item-label">Company Phone Number</div>
-                          <div class="item-input-wrap">
-                            <input id="phoneNumber" type="text" class="settingsInput" placeholder="phone number with country code">
-                          </div>
-                        </div>
-                      </li>
 
-                      <li class="item-content item-input">
-                        <div class="item-inner">
-                          <div class="item-title item-label">Company Tagline (shown in invoice)</div>
-                          <div class="item-input-wrap">
-                            <textarea class="settingsInput" id="companytagline" placeholder="Company Tagline"></textarea>
-                            <!--<input id="companyaddress" type="text" placeholder="Company Address">-->
-                          </div>
-                        </div>
-                      </li>
-                      <li class="item-content item-input">
-                        <div class="item-inner">
-                          <div class="item-title item-label">Company Logo</div>
-                          <div class="item-input-wrap display-inline-flex1">
-                            <div><input id="logo" type="file" class="settingsInput"></div>
-                            <div class="margin-left-half1 margin-top-half"><img id="logoShow" style="max-width: 100px;"/></div>
-                          </div>
-                        </div>
-                      </li>
-                      <li class="item-content item-input">
-                        <div class="item-inner">
-                          <div class="item-title item-label">Company Signature (for invoice)</div>
-                          <div class="item-input-wrap display-inline-flex1">
-                            <div><input id="signature" type="file" class="settingsInput"></div>
-                            <div class="margin-left-half1 margin-top-half"><img id="signatureShow" style="max-width: 100px;"/></div>
-                          </div>
-                        </div>
-                      </li>
-                      <li>
-                        <div class="item-content item-input">
-                          <div class="item-inner">
-                            <div class="item-title">Terms and Conditions</div>
-                            <div class="item-input-wrap">
-                              <div class="text-editor terms_condition margin-top-half" data-placeholder="Terms and Condition" 
-                                data-buttons='[["bold", "italic", "underline", "strikeThrough"], ["orderedList", "unorderedList"]]'>
-                                <div class="text-editor-content" contenteditable></div>
+          <div class="tabs-swipeable-wrap">
+            <!-- Tabs, tabs wrapper -->
+              <div class="tabs">
+                  <!-- Tab 1, active by default -->
+                  <div id="company-details" class="page-content tab tab-active">
+                      <div class="list no-hairlines-md margin-top-half settingsWrapper">
+                        <div class="block-title text-color-black no-margin-bottom margin-left-half margin-top-half padding-vertical-half">Company Info and Taxes</div>
+                        <div class="block-header no-margin-vertical margin-horizontal-half no-padding-horizontal">The information is used for invoicing!</div>
+                        <ul>
+                        <li class="item-content item-input">
+                            <div class="item-inner">
+                              <div class="item-title item-label">Company Name</div>
+                              <div class="item-input-wrap">
+                                <input id="companyname" type="text" class="settingsInput" placeholder="Company Name">
                               </div>
+                            </div>
+                          </li>
+                          <li class="item-content item-input">
+                            <div class="item-inner">
+                              <div class="item-title item-label">Company URL</div>
+                              <div class="item-input-wrap">
+                                <input id="companyurl" type="text" class="settingsInput" placeholder="Company URL">
+                              </div>
+                            </div>
+                          </li>
+    
+                        <!-- <li class="item-content item-input">
+                            <div class="item-inner">
+                              <div class="item-title item-label">Company Address</div>
+                              <div class="item-input-wrap">
+                                <textarea class="settingsInput" id="companyaddress" placeholder="Company Address"></textarea>
+                              </div>
+                            </div>
+                          </li>-->
+    
+                          <li class="item-content item-input">
+                            <div class="item-inner">
+                              <div class="item-title item-label">Company Country</div>
+                              <div class="item-input-wrap">
+                                <select id="companyCountry">
+                                  <option value="CA" selected>Canada</option>
+                                  <option value="US">United States of America</option>
+                                  <option value="NG">Nigeria</option>
+                                </select>
+                              </div>
+                            </div>
+                          </li>
+    
+                          <li class="item-content item-input">
+                            <div class="item-inner">
+                              <div class="item-title item-label">Company Province/State</div>
+                              <div class="item-input-wrap">
+                                <select id="companyProvince">
+                                  <option value="">Select One</option>
+                                  <optgroup label="U.S. States/Territories" class="provinceOptGrp" id="optGrpUS" style="display: none;">
+                                    <option value="AK">Alaska</option>
+                                    <option value="AL">Alabama</option>
+                                    <option value="AR">Arkansas</option>
+                                    <option value="AZ">Arizona</option>
+                                    <option value="CA">California</option>
+                                    <option value="CO">Colorado</option>
+                                    <option value="CT">Connecticut</option>
+                                    <option value="DC">District of Columbia</option>
+                                    <option value="DE">Delaware</option>
+                                    <option value="FL">Florida</option>
+                                    <option value="GA">Georgia</option>
+                                    <option value="HI">Hawaii</option>
+                                    <option value="IA">Iowa</option>
+                                    <option value="ID">Idaho</option>
+                                    <option value="IL">Illinois</option>
+                                    <option value="IN">Indiana</option>
+                                    <option value="KS">Kansas</option>
+                                    <option value="KY">Kentucky</option>
+                                    <option value="LA">Louisiana</option>
+                                    <option value="MA">Massachusetts</option>
+                                    <option value="MD">Maryland</option>
+                                    <option value="ME">Maine</option>
+                                    <option value="MI">Michigan</option>
+                                    <option value="MN">Minnesota</option>
+                                    <option value="MO">Missouri</option>
+                                    <option value="MS">Mississippi</option>
+                                    <option value="MT">Montana</option>
+                                    <option value="NC">North Carolina</option>
+                                    <option value="ND">North Dakota</option>
+                                    <option value="NE">Nebraska</option>
+                                    <option value="NH">New Hampshire</option>
+                                    <option value="NJ">New Jersey</option>
+                                    <option value="NM">New Mexico</option>
+                                    <option value="NV">Nevada</option>
+                                    <option value="NY">New York</option>
+                                    <option value="OH">Ohio</option>
+                                    <option value="OK">Oklahoma</option>
+                                    <option value="OR">Oregon</option>
+                                    <option value="PA">Pennsylvania</option>
+                                    <option value="PR">Puerto Rico</option>
+                                    <option value="RI">Rhode Island</option>
+                                    <option value="SC">South Carolina</option>
+                                    <option value="SD">South Dakota</option>
+                                    <option value="TN">Tennessee</option>
+                                    <option value="TX">Texas</option>
+                                    <option value="UT">Utah</option>
+                                    <option value="VA">Virginia</option>
+                                    <option value="VT">Vermont</option>
+                                    <option value="WA">Washington</option>
+                                    <option value="WI">Wisconsin</option>
+                                    <option value="WV">West Virginia</option>
+                                    <option value="WY">Wyoming</option>
+                                  </optgroup>
+                                  <optgroup label="Canadian Provinces" class="provinceOptGrp" id="optGrpCA">
+                                    <option value="AB">Alberta</option>
+                                    <option value="BC">British Columbia</option>
+                                    <option value="MB">Manitoba</option>
+                                    <option value="NB">New Brunswick</option>
+                                    <option value="NF">Newfoundland</option>
+                                    <option value="NT">Northwest Territories</option>
+                                    <option value="NS">Nova Scotia</option>
+                                    <option value="NU">Nunavut</option>
+                                    <option value="ON">Ontario</option>
+                                    <option value="PE">Prince Edward Island</option>
+                                    <option value="QC">Quebec</option>
+                                    <option value="SK">Saskatchewan</option>
+                                    <option value="YT">Yukon Territory</option>
+                                  </optgroup>
+                                  <optgroup label="Nigerian States" class="provinceOptGrp" id="optGrpNG" style="display: none;">
+                                    <option value="Abia">Abia</option>
+                                    <option value="Adamawa">Adamawa</option>
+                                    <option value="Akwa Ibom">Akwa Ibom</option>
+                                    <option value="Anambra">Anambra</option>
+                                    <option value="Bauchi">Bauchi</option>
+                                    <option value="Bayelsa">Bayelsa</option>
+                                    <option value="Benue">Benue</option>
+                                    <option value="Borno">Borno</option>
+                                    <option value="Cross Rive">Cross River</option>
+                                    <option value="Delta">Delta</option>
+                                    <option value="Ebonyi">Ebonyi</option>
+                                    <option value="Edo">Edo</option>
+                                    <option value="Ekiti">Ekiti</option>
+                                    <option value="Enugu">Enugu</option>
+                                    <option value="FCT">Federal Capital Territory</option>
+                                    <option value="Gombe">Gombe</option>
+                                    <option value="Imo">Imo</option>
+                                    <option value="Jigawa">Jigawa</option>
+                                    <option value="Kaduna">Kaduna</option>
+                                    <option value="Kano">Kano</option>
+                                    <option value="Katsina">Katsina</option>
+                                    <option value="Kebbi">Kebbi</option>
+                                    <option value="Kogi">Kogi</option>
+                                    <option value="Kwara">Kwara</option>
+                                    <option value="Lagos">Lagos</option>
+                                    <option value="Nasarawa">Nasarawa</option>
+                                    <option value="Niger">Niger</option>
+                                    <option value="Ogun">Ogun</option>
+                                    <option value="Ondo">Ondo</option>
+                                    <option value="Osun">Osun</option>
+                                    <option value="Oyo">Oyo</option>
+                                    <option value="Plateau">Plateau</option>
+                                    <option value="Rivers">Rivers</option>
+                                    <option value="Sokoto">Sokoto</option>
+                                    <option value="Taraba">Taraba</option>
+                                    <option value="Yobe">Yobe</option>
+                                    <option value="Zamfara">Zamfara</option>
+                                  </optgroup>
+                                </select>
+                              </div>
+                            </div>
+                          </li>
+    
+                          <li class="item-content item-input">
+                            <div class="item-inner">
+                              <div class="item-title item-label">Company Street</div>
+                              <div class="item-input-wrap">
+                                <input id="companyStreet" type="text" class="settingsInput" placeholder="Company Street">
+                              </div>
+                            </div>
+                          </li>
+    
+                          <li class="item-content item-input">
+                            <div class="item-inner">
+                              <div class="item-title item-label">Company City</div>
+                              <div class="item-input-wrap">
+                                <input id="companyCity" type="text" class="settingsInput" placeholder="Company City">
+                              </div>
+                            </div>
+                          </li>
+    
+                          <li class="item-content item-input">
+                            <div class="item-inner">
+                              <div class="item-title item-label">Company Postal Code</div>
+                              <div class="item-input-wrap">
+                                <input id="companyPostalCode" type="text" class="settingsInput" placeholder="Company Postal Code">
+                              </div>
+                            </div>
+                          </li>
+    
+                          <li class="item-content item-input">
+                            <div class="item-inner">
+                              <div class="item-title item-label">Company Phone Number</div>
+                              <div class="item-input-wrap">
+                                <input id="phoneNumber" type="text" class="settingsInput" placeholder="phone number with country code">
+                              </div>
+                            </div>
+                          </li>
+    
+                          <li class="item-content item-input">
+                            <div class="item-inner">
+                              <div class="item-title item-label">Company Tagline (shown in invoice)</div>
+                              <div class="item-input-wrap">
+                                <textarea class="settingsInput" id="companytagline" placeholder="Company Tagline"></textarea>
+                                <!--<input id="companyaddress" type="text" placeholder="Company Address">-->
+                              </div>
+                            </div>
+                          </li>
+                          <li class="item-content item-input">
+                            <div class="item-inner">
+                              <div class="item-title item-label">Company Logo</div>
+                              <div class="item-input-wrap display-inline-flex1">
+                                <div><input id="logo" type="file" class="settingsInput"></div>
+                                <div class="margin-left-half1 margin-top-half"><img id="logoShow" style="max-width: 100px;"/></div>
+                              </div>
+                            </div>
+                          </li>
+                          <li class="item-content item-input">
+                            <div class="item-inner">
+                              <div class="item-title item-label">Company Signature (for invoice)</div>
+                              <div class="item-input-wrap display-inline-flex1">
+                                <div><input id="signature" type="file" class="settingsInput"></div>
+                                <div class="margin-left-half1 margin-top-half"><img id="signatureShow" style="max-width: 100px;"/></div>
+                              </div>
+                            </div>
+                          </li>
+                          <li>
+                            <div class="item-content item-input">
+                              <div class="item-inner">
+                                <div class="item-title">Terms and Conditions</div>
+                                <div class="item-input-wrap">
+                                  <div class="text-editor terms_condition margin-top-half" data-placeholder="Terms and Condition" 
+                                    data-buttons='[["bold", "italic", "underline", "strikeThrough"], ["orderedList", "unorderedList"]]'>
+                                    <div class="text-editor-content" contenteditable></div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </li>
+                          <li class="item-content item-input">
+                            <div class="item-inner">
+                              <div class="item-title item-label">Taxes in percentage (do not include %)</div>
+                              <div class="item-input-wrap">
+                                <input id="taxes" type="text" class="settingsInput" placeholder="Enter % taxes">
+                              </div>
+                            </div>
+                          </li>
+                          <li class="item-content item-input">
+                            <div class="item-inner">
+                              <div class="item-title item-label">Currency</div>
+                              <div class="item-input-wrap">
+                                <input id="autocomplete-dropdown-all" class="settingsInput" type="text" placeholder="Currency">
+                              </div>
+                            </div>
+                          </li>
+                          <li class="item-content item-input">
+                            <div class="item-inner">
+                              <div class="item-title item-label margin-bottom-half">Select Primary Color</div>
+                              <div class="item-input-wrap display-flex"><div class="item-media margin-right-half">
+                                <i class="icon demo-list-icon primaryColor" id="demo-color-picker-wheel-value"></i>
+                              </div>
+                              <input type="text" placeholder="Color" id="demo-color-picker-wheel" readonly="" class="input-with-value">
+                            </div>
+                          </div>
+                        </li>
+                          <li class="margin-top-half">
+                            <div class="item-inners">
+                              <div class="item-input-wraps">
+                                <a id="savecompanyinfo" class="button button-outline button-raised mainButton" @click="savecompanyinfo">Save Info</a>
+                              </div>
+                            </div>
+                          </li>
+    
+
+                        </ul>
+    
+                        <!--<div class="block-title text-color-black no-margin-bottom margin-left-half padding-bottom-half margin-top-half">Choose currency</div>
+                        <ul>
+                          <li class="item-content item-input">
+                            <div class="item-inner">
+                              <div class="item-title item-label">Currency</div>
+                              <div class="item-input-wrap">
+                                <input id="autocomplete-dropdown-all" class="settingsInput" type="text" placeholder="Currency">
+                              </div>
+                            </div>
+                          </li>
+                        </ul>-->
+    
+                    </div>
+                  </div>
+                  
+                  
+                  <!-- Tab 2 -->
+                  <div id="payment-settings" class="page-content tab">
+                    <div class="block-title text-color-black no-margin-bottom margin-left-half margin-top-half padding-vertical-half">Accept payment with Stripe</div>
+                    
+                      <div class="no-margin-vertical padding-horizontal-half display-none" id="stripepaymentdashboard">
+                        <div class="">
+                          <div class="block no-margin-vertical no-padding">
+                            <div class="row no-gap dash">
+
+                                <div class="col-100 medium-50">
+                                  <div class="card card-outline padding-vertical-half totalSales">
+                                    <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder text-color-white">Available Balance</div>
+                                    <div class="card-content text-color-white" id="availableBalance"></div>
+                                  </div>
+                                </div>
+                      
+                                <div class="col-100 medium-50">
+                                  <div class="card card-outline padding-vertical-half">
+                                    <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">Pending Balance</div>
+                                    <div class="card-content" id="pendingBalance"></div>
+                                  </div>
+                                </div>
                             </div>
                           </div>
                         </div>
-                      </li>
-                      <li class="item-content item-input">
-                        <div class="item-inner">
-                          <div class="item-title item-label">Taxes in percentage (do not include %)</div>
-                          <div class="item-input-wrap">
-                            <input id="taxes" type="text" class="settingsInput" placeholder="Enter % taxes">
-                          </div>
-                        </div>
-                      </li>
-                      <li class="item-content item-input">
-                        <div class="item-inner">
-                          <div class="item-title item-label">Currency</div>
-                          <div class="item-input-wrap">
-                            <input id="autocomplete-dropdown-all" class="settingsInput" type="text" placeholder="Currency">
-                          </div>
-                        </div>
-                      </li>
-                      <li class="item-content item-input">
-                        <div class="item-inner">
-                          <div class="item-title item-label margin-bottom-half">Select Primary Color</div>
-                          <div class="item-input-wrap display-flex"><div class="item-media margin-right-half">
-                            <i class="icon demo-list-icon primaryColor" id="demo-color-picker-wheel-value"></i>
-                          </div>
-                          <input type="text" placeholder="Color" id="demo-color-picker-wheel" readonly="" class="input-with-value">
-                        </div>
-                      </div>
-                    </li>
-                      <li class="margin-top-half">
+                  </div>
+
+                    <ul>
+                      <li class="margin-top-half setUpPaymentHolder">
                         <div class="item-inners">
                           <div class="item-input-wraps">
-                            <a id="savecompanyinfo" class="button button-outline button-raised mainButton" @click="savecompanyinfo">Save Info</a>
+                            <a id="setPayment" class="button button-outline button-raised mainButton" @click="setPayment">Set Up Payment</a>
+                            <a class="link external display-none openStripeLink" target="_blank" href="#">Open Stripe</a>
                           </div>
                         </div>
                       </li>
                     </ul>
+                    
+                    <!--<div>
+                      <a id="getBalance" class="button button-outline button-raised mainButton" @click="getBalance">Get Your Balance</a>
+                    </div>-->
+                  
+                  
+                  </div>
+                  
+                  <!-- Tab 3 -->
+                  <div id="delivery-settings" class="page-content tab">
 
-                    <!--<div class="block-title text-color-black no-margin-bottom margin-left-half padding-bottom-half margin-top-half">Choose currency</div>
-                    <ul>
-                      <li class="item-content item-input">
-                        <div class="item-inner">
-                          <div class="item-title item-label">Currency</div>
-                          <div class="item-input-wrap">
-                            <input id="autocomplete-dropdown-all" class="settingsInput" type="text" placeholder="Currency">
-                          </div>
+                      <!--fab-->
+                        <div class="fab-backdrop"></div>
+                        <div class="fab fab-extended fab-right-bottom">
+                          <a href="#" @click="openPopUpDelivery(null)"> 
+                            <i class="icon f7-icons">plus</i>
+                            <i class="icon f7-icons">multiply</i>
+                            <div class="fab-text">Delivery Option</div>
+                          </a>
+                            
                         </div>
-                      </li>
-                    </ul>-->
+                        <!--fab-->
 
-                </div>
+                        <!--pop up-->
+                        <div class="popup newDeliveryOption popup-tablet-fullscreen">
+                          <div class="view">
+                            <div class="page">
+                              <div class="navbar">
+                                <div class="navbar-bg"></div>
+                                <div class="navbar-inner">
+                                  <div class="title">Add/Edit Delivery Option</div>
+                                  <div class="right">
+                                    <!-- Link to close popup -->
+                                    <a class="link" @click="closePopUpDelivery"><i class="icon f7-icons">multiply</i></a>
+                                  </div>
+                                </div>
+                              </div>
+                              <div class="page-content">
+                                  <div class="list no-hairlines-md margin-top-half margin-bottom-half deliveryForm">
+                                    <ul>
+                                      <li>
+                                        <div class="item-content item-input">
+                                          <div class="item-inner">
+                                            <div class="item-title">Location</div>
+                                            <div class="item-input-wrap">
+                                              <input type="text" class="delivery_location" placeholder="Location" required validate/>
+                                              <span class="input-clear-button"></span>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </li>
+                                      
+                                      <li>
+                                        <div class="item-content item-input">
+                                          <div class="item-inner">
+                                            <div class="item-title">Delivery Cost</div>
+                                            <div class="item-input-wrap">
+                                              <input type="number" class="delivery_cost" placeholder="delivery cost" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
+                                              <span class="input-clear-button"></span>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </li>
+                                      <li>
+                                        <div class="item-content">
+                                          <div class="item-inner">
+                                            <a href="#" class="col button button-outline button-raised mainButton" @click='saveDeliveryOption'>Save Delivery Option</a>
+                                          </div>
+                                        </div>
+                                      </li>
+                                    </ul>
+                                  </div>
+                              </div>
+                            </div>
+                          </div>
+                        
+                        </div>
+                        <!--Pop -up-->
+
+
+                      <div class="block-title text-color-black no-margin-bottom margin-left-half margin-top-half padding-vertical-half">Set cost of delivery</div>
+                      <div class="block-header no-margin-vertical margin-horizontal-half no-padding-horizontal">Create as many as you want e.g. Within city, within province, out of province</div>
+
+                      <div class="delivery-table data-table margin-vertical-half">
+                        <table>
+                            <thead>
+                              <tr>
+                                <th>Location</th>
+                                <th>Cost</th>
+                                <th>Action</th>
+                              </tr>
+                            </thead>
+                            <tbody class="">
+                              {{#each delivery}}
+                                  <tr>
+                                    <td>{{location}}</td>
+                                    <td>{{costFormatted}}</td>
+                                    <td>
+                                          <a href="#" data-popover=".orders-popover-{{id}}" class="popover-open"><i class="f7-icons">ellipsis_vertical</i></a>
+                                          <div class="popover my-popover orders-popover orders-popover-{{id}}" data-close-on-escape="true" data-backdrop="false">
+                                          <div class="popover-angle"></div><div class="popover-inner padding-half">
+                                            <a class="button popover-close" data-id="{{id}}" @click="openPopUpDelivery({{id}})">View / Edit</a>
+                                            <a class="button popover-close color-red" data-id="{{id}}" @click="DeleteDelivery({{id}})">Delete</a>
+                                          </div>
+                                        </div>
+                                    </td>
+                                  </tr>
+                                {{/each}}
+                            </tbody>
+                        </table>
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+            <div class="page-content">
+                
             </div>
   
     </div> 
@@ -171,7 +502,9 @@
           signature: null,
           logo: null,
           signatureUpload: null,
-          logoUpload: null
+          logoUpload: null,
+          delivery: [],
+          currentDeliveryOption: null
   
         };
       },
@@ -217,6 +550,143 @@
               }
             
         },
+        openPopUpDelivery: function(id){
+          var self = this;
+        
+        //popup.once("opened", function(){
+          if(id != null || id != undefined){
+            self.$app.preloader.show();
+              $.when(self.$app.methods.getDataAPI("ingredients/GetIngredientByID?id=" + id)).then(function( item, textStatus, jqXHR ) {
+                self.$app.preloader.hide();
+                  item = self.delivery.find(x => x.id == id);
+                  //console.log("when data ing get ", item); // JSON data parsed by `data.json()` call
+                  self.$setState({
+                      currentDeliveryOption: item
+                    });
+                    
+                    $(".delivery_location").val(item.location);
+                    $(".delivery_cost").val(item.cost);
+
+                    var popup = self.$app.popup.open('.newDeliveryOption', true);
+                  
+              }).catch((data, textStatus, jqXHR) => {
+                self.$app.preloader.hide();
+                  if(data != null && data.status == 404){
+                    self.$app.methods.showToast("Delivery option not found", "center");
+                    return;
+                  }
+                  self.$app.methods.showToast("An error occurred", "center");
+              })
+            } else{
+              var popup = self.$app.popup.open('.newDeliveryOption', true);
+              self.$setState({
+                currentDeliveryOption:null
+              });
+            }
+        },
+        closePopUpDelivery: function(){
+          var self = this;
+          var popup = self.$app.popup.close('.newDeliveryOption', true);
+          $$(".delivery_location, .delivery_cost").val("");
+          popup.once("closed", function(){
+            self.getDeliveryOptions();
+          });
+        },
+        saveDeliveryOption:function (){
+          var self = this;
+          var err = self.$app.input.validateInputs(".deliveryForm");
+          if(err){
+
+            var obj = {
+                location: $(".delivery_location").val().trim(), 
+                cost: parseFloat($(".delivery_cost").val()), 
+                status:true
+              };
+            if(self.currentDeliveryOption != null){
+              obj.id = self.currentDeliveryOption.id;
+            }
+
+            $.when(self.$app.methods.postDataAPI("business/SaveDeliveryOption", obj, true)).then(function( data, textStatus, jqXHR ) {
+              self.$app.preloader.hide();
+                //console.log("when data ings save ", data); // JSON data parsed by `data.json()` call
+                if(data == true){
+                  self.$app.methods.showToast("Delivery option saved", "center", true);
+                  $(".delivery_location,.delivery_cost").val("");
+                  //self.getData();
+                  self.$setState({
+                    currentDeliveryOption:null
+                  });
+                }
+                
+            }).catch((data, textStatus, jqXHR) => {
+                console.log(data, textStatus, jqXHR);
+                self.$app.preloader.hide();
+                self.$app.methods.showToast("An error occurred", "center");
+            })
+          }
+        },
+        getDeliveryOptions: function(){
+          var self = this;
+
+          self.$app.preloader.show();
+          $.when(self.$app.methods.getDataAPI("business/GetDeliveries")).then(function( data, textStatus, jqXHR ) {
+            self.$app.preloader.hide();
+            if(data != null){
+              if(data.length == 0){
+                self.$app.methods.showToast("No delivery option added yet", "center");
+                return;
+              };
+
+              $.each(data, function(ind, elem){
+                data[ind].costFormatted = self.formatMoney(data[ind].cost);
+              })
+
+              self.$setState({
+                    delivery: data
+                })
+            }
+
+          }).catch((data, textStatus, jqXHR) => {
+            self.$app.preloader.hide();
+              if(data != null && data.status == 404){
+                return;
+              }
+              self.$app.methods.showToast("An error occurred", "center");
+          })
+        },
+        DeleteDelivery: function(id){
+        var self = this;
+        var checked = false;
+        var text = "delete"
+        self.$app.dialog.confirm("Are you sure you want to " + text + "?", "Omni", function(){
+          self.$app.preloader.show();
+              $.when(self.$app.methods.getDataAPI("business/DeleteDelivery?id=" + id)).then(function( data, textStatus, jqXHR ) {
+                self.$app.preloader.hide();
+                if(data){
+
+                  self.$app.methods.showToast("Delivery option deleted", "center", true);
+
+                  self.delivery = self.delivery.filter(function(e){ 
+                      return e.id != id;
+                  });
+
+                  self.$setState({
+                    delivery: self.delivery
+                  })
+                }
+                  
+              }).catch((data, textStatus, jqXHR) => {
+                self.$app.preloader.hide();
+                  if(data != null && data.status == 404){
+                    self.$app.methods.showToast("Delivery option not found", "center");
+                    return;
+                  }
+                  self.$app.methods.showToast("An error occurred", "center");
+              })
+                
+        }, null);
+        //}, null);
+    },
         checkUrl: function(){
           var self = this;
           var check = true;
@@ -251,6 +721,7 @@
           self.$app.preloader.show();
           $.when(self.$app.methods.getDataAPI("business/GetBusinessProfile")).then(function( data, textStatus, jqXHR ) {
             self.$app.preloader.hide();
+              $(".provinceOptGrp").show();
               var doc = data;
               var comName = doc.name;
               if(comName != ""){
@@ -260,10 +731,22 @@
               if(taxes != ""){
                   $("#taxes").val(taxes);
               }
-              var comAdd = doc.address;
+              /*var comAdd = doc.address;
               if(comAdd != ""){
                   $("#companyaddress").val(comAdd);
+              }*/
+              $("#companyStreet").val(doc.street == null ? "" : doc.street);
+              $("#companyCity").val(doc.city == null ? "" : doc.city);
+              $("#companyPostalCode").val(doc.postalCode == null ? "" : doc.postalCode);
+
+              if(doc.countryTwoDigit != null){
+                $("#companyCountry").val(doc.countryTwoDigit);
               }
+
+              if(doc.provinceCode != null){
+                $("#companyProvince").val(doc.provinceCode);
+              }
+
               var comNumber = doc.phoneNumber;
               if(comNumber != null && comNumber != ""){
                 $("#phoneNumber").val(comNumber);
@@ -280,7 +763,7 @@
               var savedCurr = doc.currency;
               if(savedCurr != ""){
                   $('#autocomplete-dropdown-all').val(savedCurr);
-                  localStorage.setItem("currency", savedCurr);
+                  //localStorage.setItem("currency", savedCurr);
               }
               var url = doc.businessUrl;
               if(url != null && url != ""){
@@ -301,6 +784,10 @@
               //signature
               if(doc.signature != null && doc.signature != ""){
                 $("#signatureShow").attr("src", doc.signature);
+              }
+
+              if(doc.stripeDetailsCompleted == true && doc.stripeChargesEnabled == true){
+                $(".setUpPaymentHolder").addClass("display-none");
               }
 
               self.$setState({
@@ -328,10 +815,55 @@
                         closeTimeout: 2000,
                         }).open();
         },
+        setPayment: function(){
+          var self = this;
+          self.$app.preloader.show();
+          $.when(self.$app.methods.getDataAPI("business/StartStripeOnboard")).then(function( data, textStatus, jqXHR ) {
+                self.$app.preloader.hide();
+                if(data != null){
+                  if(data == "all set"){
+                    self.$app.methods.showToast("Your payment settings is all set", "center", true);
+                    return false;
+                  }
+                  console.log("stripe url", data);
+                  $(".openStripeLink").attr("href", data);
+                  $(".openStripeLink").click();
+                }
+            }).catch(function(err){
+              self.$app.preloader.hide();
+                    if(err != null && err.status == 404){
+
+                    }
+                    self.$app.methods.showToast("An error occurred", "center");
+            });
+        },
+        getBalance: function(){
+          var self = this;
+          self.$app.preloader.show();
+          $.when(self.$app.methods.getDataAPI("business/GetBalance")).then(function( data, textStatus, jqXHR ) {
+                self.$app.preloader.hide();
+                if(data != null){
+                  $("#stripepaymentdashboard").removeClass("display-none");
+                  var av = data.available[0].amount/100 + " " + data.available[0].currency;
+                  var pd = data.pending[0].amount/100 + " " + data.pending[0].currency;
+
+                  $("#availableBalance").text(av);
+                  $("#availableBalance").attr("data-amount", data.available[0].amount/100);
+                  $("#pendingBalance").text(pd);
+                  $("#pendingBalance").attr("data-amount", data.pending[0].amount/100);
+                }
+            }).catch(function(err){
+              self.$app.preloader.hide();
+                    if(err != null && err.status == 404){
+
+                    }
+                    self.$app.methods.showToast("An error occurred", "center");
+            });
+        },
         savecompanyinfo: function(){
             var self = this;
             var comName = $("#companyname").val().trim();
-            var comAdd = $("#companyaddress").val().trim();
+            //var comAdd = $("#companyaddress").val().trim();
             var taxes = $("#taxes").val().trim();
             var currency = $('#autocomplete-dropdown-all').val();
             var tagline = $("#companytagline").val();
@@ -351,11 +883,31 @@
               self.showToast("Please enter url", "center");
               return;
             }
+
+            if($("#companyStreet").val().trim() == ""){
+              self.showToast("Please enter company street", "center");
+              return;
+            }
+
+            if($("#companyCity").val().trim() == ""){
+              self.showToast("Please enter company city", "center");
+              return;
+            }
+
+            if($("#companyPostalCode").val().trim() == ""){
+              self.showToast("Please enter company postal code", "center");
+              return;
+            }
+
+            if($("#companyProvince").val().trim() == ""){
+              self.showToast("Please choose company province", "center");
+              return;
+            }
             
             var saved = false;
             var obj = {};
             obj.name = comName;
-            obj.address = comAdd;
+            //obj.address = comAdd;
             obj.taxes = taxes;
             obj.currency = currency;
             obj.country = self.country;
@@ -364,6 +916,13 @@
             obj.businessUrl = busURL;
             obj.primaryColor = primColor;
             obj.phoneNumber = phone;
+            obj.street = $("#companyStreet").val().trim();
+            obj.postalCode = $("#companyPostalCode").val().trim();
+            obj.city = $("#companyCity").val().trim();
+            obj.provinceCode = $("#companyProvince").val().trim();
+            obj.province = $("#companyProvince option:selected").text().trim();
+            obj.countryTwoDigit = $("#companyCountry").val().trim();
+            obj.countryName = $("#companyCountry option:selected").text().trim();
 
             var form_data = new FormData();
 
@@ -413,88 +972,13 @@
                 self.$app.preloader.hide();
                 self.$app.methods.showToast("An error occurred", "center");
             })
-
-            //obj.logo = logo;
-            //obj.signature = sig;
-
-            /*if(self.settings == null){
-              obj._id = self.settingsID;
-              obj.settingID = obj._id;
-              mogulsheetdb.put(obj).then(function(){
-                saved = true;
-                self.uploadImages();
-                self.showToast("Information Saved!", "center");
-              }).catch(function(err){
-                console.log(err);
-                self.showToast("An error occured, please try again!", "center");
-              })
-            }else{
-              var getid = self.settingsID;
-              mogulsheetdb.get(getid).then(function(doc) {
-                   // console.log(doc);
-                   obj._id = doc._id;
-                   obj.settingID = obj._id;
-                    obj._rev = doc._rev;
-                    return mogulsheetdb.put(obj);
-                  }).then(function(){
-                    saved = true;
-                    self.uploadImages();
-                    localStorage.setItem("currency", currency);
-                    self.showToast("Information Saved!", "center");
-                }).catch(function(err){
-                  console.log(err);
-                  self.showToast("An error occured, please try again!", "center");
-                })
-            }*/
         },
-        uploadImages: function(){
-              var self = this;
-                if(document.getElementById("logo").files && document.getElementById("logo").files[0]){
-                  var rev = self.logo == null ? null : self.logo._rev;
-                  var myDoc = {
-                      _id: "logoImage",
-                      _attachments: {
-                        "logoImage": {
-                          content_type: document.getElementById("logo").files[0].type,
-                          data: document.getElementById("logo").files[0]
-                        }
-                      }
-                    }
-                    if(self.logo != null){
-                      myDoc._rev = self.logo._rev;
-                    }
-                    dbSettingsImages.put(myDoc).then(function (result) {
-                              // handle result
-                              self.showToast("Logo saved!", "center");
-                              //console.log(result);
-                      }).catch(function (err) {
-                        //console.log(err);
-                      });
-                  }
-              
-                  if(document.getElementById("signature").files && document.getElementById("signature").files[0]){
-                  var rev = self.signature == null ? null : self.signature._rev;
-                  var myDoc = {
-                      _id: "signatureImage",
-                      _attachments: {
-                        "signatureImage": {
-                          content_type: document.getElementById("signature").files[0].type,
-                          data: document.getElementById("signature").files[0]
-                        }
-                      }
-                    }
-                    if(self.signature != null){
-                      myDoc._rev = self.signature._rev;
-                    }
-                    dbSettingsImages.put(myDoc).then(function (result) {
-                              // handle result
-                              self.showToast("Signature saved!", "center");
-                              //console.log(result);
-                      }).catch(function (err) {
-                        //console.log(err);
-                      });
-                  }
-          }
+
+        formatMoney:function(val){   
+          var self = this;   
+          var ret = self.$app.methods.formatMoney(val);
+          return ret;
+        },
       },
       on: {
         pageAfterIn: function(e, page) {
@@ -503,6 +987,25 @@
       },
       pageInit: function(e, page) {
             var self = this;
+
+            /*fetch delivery*/
+            
+            $("#delivery-settings").on('tab:show', function() { 
+                self.getDeliveryOptions();
+            });
+
+            /*fetch delivery*/
+
+            /* payment page*/
+
+            $("#payment-settings").on('tab:show', function() { 
+                if(self.settings.stripeChargesEnabled == true && self.settings.stripeDetailsCompleted == true){
+                  self.getBalance();
+                }
+            })
+
+            /* payment page*/
+
             self.getProfile();
             $("#logo").change(function(){
                 self.getBase64(this, "logo");
@@ -518,6 +1021,13 @@
             $("#companyurl").on("blur", function(){
               self.checkUrl();
             });
+
+            $("#companyCountry").on("change", function(){
+              var val = $("#companyCountry").val();
+              $(".provinceOptGrp").hide();
+              $("#optGrp" + val).show();
+            })
+
             $("#signature").change(function(){
               self.getBase64(this, "signature");
             });

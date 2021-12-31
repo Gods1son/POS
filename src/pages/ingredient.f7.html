@@ -548,6 +548,9 @@ export default {
                   self.$app.methods.showToast("Ingredient saved", "center", true);
                   $$("input.name,input.unit_size,input.unit,input.cost_per_unit").val("");
                   //self.getData();
+                  self.$setState({
+                      currentIng:null
+                  });
                 }
                 
             }).catch((data, textStatus, jqXHR) => {
@@ -633,12 +636,12 @@ export default {
                               //html += '<div class=""><span class="labelName">Cost: </span><span class="valueName">' + self.formatMoney(row.cost_per_unit) + '</span></div>';
                               html += '<div class="' + stat + '"><span>Status: </span><span class="valueName">Deleted</span></div>';
                               html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
-                              html += '<a class="button button-small button-raised editButton" data-id="' + row.id + '">Edit</a>';
-                              html += '<a class="button button-small button-raised deleteButton" data-id="' + row.id + '">';
+                              html += '<a class="button button-small editButton" data-id="' + row.id + '">Edit</a>';
+                              html += '<a class="button button-small deleteButton" data-id="' + row.id + '">';
                               html +=  row.status == true ? 'Delete' : 'Activate'; 
                               html += '</a>';
                               if(row.status == false){
-                                html += '<a class="button button-small button-raised permDelButton" data-id="' + row.id + '">Delete</a>';
+                                html += '<a class="button button-small permDelButton" data-id="' + row.id + '">Delete</a>';
                               }
                               html += '</p></div></div>';
                               html += '</li>';

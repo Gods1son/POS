@@ -810,14 +810,14 @@ export default {
                         html += '<div class=""><span>Created Date: </span><span class="valueName">' + self.$app.methods.formatDate(row.createdDate) + '</span></div>';
                         html += '<div class="' + stat + '"><span>Status: </span><span class="valueName">Deleted</span></div>';
                         html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
-                        html += '<a class="button button-small button-raised editExpense" data-id="' + row.id + '">View / Edit</a>';
-                        html += '<a class="button button-small button-raised receiptButton" data-id="' + row.id + '">Receipt</a>';
-                        html += '<a class="button button-small button-raised deleteExpense" data-id="' + row.id + '">';
+                        html += '<a class="button button-small editExpense" data-id="' + row.id + '">View / Edit</a>';
+                        html += '<a class="button button-small receiptButton" data-id="' + row.id + '">Receipt</a>';
+                        html += '<a class="button button-small deleteExpense" data-id="' + row.id + '">';
                         html +=  row.status == true ? 'Delete' : 'Activate'; 
                         html += '</a>';
                         
                         if(row.status == false){
-                          html += '<a class="button button-small button-raised permDelButton" data-id="' + row.id + '">Delete</a>';
+                          html += '<a class="button button-small permDelButton" data-id="' + row.id + '">Delete</a>';
                         }
                         html += '</p></div></div>';
                         html += '</li>';

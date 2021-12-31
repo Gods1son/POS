@@ -864,6 +864,9 @@ export default {
                       self.showToast("Client saved.", "center", true);
                       $(".clientname,.email,.address,.phone,.otherNotes, #client_bday").val("");
                       //self.getData();
+                      self.$setState({
+                        currentClient:null
+                      });
                 }
               }).catch((data, textStatus, jqXHR) => {
                 self.$app.preloader.hide();
@@ -973,13 +976,13 @@ export default {
                                 //html += '<div class=""><span class="labelName">Cost: </span><span class="valueName">' + self.formatMoney(row.cost_per_unit) + '</span></div>';
                                 html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName">Deleted</span></div>';
                                 html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
-                                html += '<a class="button button-small button-raised editButton" data-id="' + row.id + '">Edit</a>';
-                                html += '<a class="button button-small button-raised viewPurchases" data-id="' + row.id + '" data-name="' + row.name + '">View Purchases</a>';
-                                html += '<a class="button button-small button-raised deleteButton" data-id="' + row.id + '">';
+                                html += '<a class="button button-small editButton" data-id="' + row.id + '">Edit</a>';
+                                html += '<a class="button button-small viewPurchases" data-id="' + row.id + '" data-name="' + row.name + '">View Purchases</a>';
+                                html += '<a class="button button-small deleteButton" data-id="' + row.id + '">';
                                 html +=  row.status == 1 ? 'Delete' : 'Activate'; 
                                 html += '</a>';
                                 if(row.status == false){
-                                  html += '<a class="button button-small button-raised permDelButton" data-id="' + row.id + '">Delete</a>';
+                                  html += '<a class="button button-small permDelButton" data-id="' + row.id + '">Delete</a>';
                                 }
                                 html += '</p></div></div>';
                                 html += '</li>';

@@ -1,0 +1,477 @@
+<template>
+<div class="page" data-name="orders">
+  <div class="navbar">
+    <div class="navbar navbar-bg"></div>
+    <div class="navbar-inner sliding">
+      <div class="left">
+        <a href="#" class="link back">
+          <i class="icon icon-back"></i>
+          <span class="if-not-md">Back</span>
+        </a>
+      </div>
+      <div class="title padding-vertical-half">Orders</div>
+      <div class="right">
+        <a href="#" class="link icon-only panel-toggle" data-panel="left">
+          <i class="icon f7-icons if-not-md">menu</i>
+          <i class="icon material-icons if-md">menu</i>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-content">
+    <div class="block no-margin-vertical no-margin-horizontal no-padding-vertical roundHolder no-padding-horizontal">
+      <div id="orders-list" class="customList">
+        <div class="text-align-center">
+          <!--<input class="search" placeholder="search">-->
+          <!-- Additional "searchbar-inline" class -->
+          <div class="searchbar searchbar-inline">
+            <div class="searchbar-input-wrap">
+              <input type="search" placeholder="Search" class="search">
+              <i class="searchbar-icon"></i>
+              <span class="input-clear-button"></span>
+            </div>
+          </div>
+
+          <div class="margin-vertical-half padding-vertical-half sortTextPar">
+            <span class="sortText display-none">Sort By:</span>
+            <!--<span class="sort" data-sort="name">Name</span>
+            <span class="sort" data-sort="cost">Cost</span>-->
+          </div>
+        </div>
+        <div class="row margin-top-half myToolbar">
+          <div class="col-50 no-padding-vertical">
+            <span class="margin-left-half">You have {{totalOrders}} {{js "this.totalOrders == 1 ? 'order' : 'orders'"}}</span>
+          </div>
+          <div class="col-50 no-padding-vertical text-align-right display-none">
+            <span class="display-inline-flex margin-right-half">
+              <span class="item-title float-right">Show Deleted</span>
+              <span class="item-after float-right margin-left-half">
+                  <label class="toggle toggle-init color-red showInactiveIngs">
+                  <input type="checkbox">
+                  <span class="toggle-icon"></span>
+                  </label>
+              </span>
+              </span>
+          </div>
+        </div>
+        <div class="orders-table data-table margin-vertical-half">
+          <table>
+              <thead>
+                <tr>
+                  <th>Customer Email</th>
+                  <th class="sort" data-sort="amount"><i class="icon f7-icons">arrow_up_down</i> Amount</th>
+                  <th class="sort" data-sort="payment_date"><i class="icon f7-icons">arrow_up_down</i> Payment Date</th>
+                  <th class="sort" data-sort="is_fulfilled"><i class="icon f7-icons">arrow_up_down</i> Is Fulfilled</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody class="list sortList">
+
+              </tbody>
+          </table>
+        </div>
+        <ul class="list sortList margin-vertical-half">
+          
+        </ul>
+        <!--<ul class="pagination"></ul>-->
+      </div>
+    </div>
+  </div>
+
+  <!--pop up-->
+  <div class="popup showOrderProducts popup-tablet-fullscreen">
+    <div class="view">
+      <div class="page">
+        <div class="navbar">
+          <div class="navbar-bg"></div>
+          <div class="navbar-inner">
+            <div class="title">Order Products</div>
+            <div class="right">
+              <!-- Link to close popup -->
+              <a class="link" @click="closePopUp"><i class="icon f7-icons">multiply</i></a>
+            </div>
+          </div>
+        </div>
+        <div class="page-content">
+
+          <div class="padding-horizontal">
+            <div class="orderCustomerDetails margin-bottom-half"></div>
+
+              <div class="margin-top-half display-flex align-items-baseline">
+                <div class="margin-right-half">Total Price:</div>
+                <h2 class="orderAfterTax no-margin-vertical"></h2>
+              </div>
+          </div>
+
+          <div id="order-product-list" class="customList">
+            <ul class="list sortList margin-top margin-bottom-half">
+              
+            </ul>
+            <!--<ul class="pagination"></ul>-->
+          </div>
+
+          <div class="row padding-horizontal-half margin-bottom-half"><div class="col-100">
+            <a class="col button mainButton margin-bottom-half" @click="saveOrderProductFulfillment">Save Fulfillment</a>
+          </div>
+        </div>
+
+        </div>
+      </div>
+    </div>
+  
+  </div>
+  <!--Pop -up-->
+
+</div>
+</template>
+<script>
+import * as moment from 'moment';
+export default {
+  test: 5,
+  data: function () {
+      // Must return an object
+      return {
+        orders:null,
+        totalOrders:0,
+        currentOrder:null,
+        settingsID: 'settings'
+      }
+    },
+  methods:{
+    fakeAlert: function(){
+        var self = this;
+        self.$app.dialog.alert("hey");
+    },
+    showToast: function(text, position, icon = false){
+        var self = this;
+        self.$app.toast.create({
+          icon: icon ? '<i class="f7-icons">checkmark_alt_circle</i>' : '',
+          text: text,
+          position: position,
+          closeTimeout: 2000,
+          }).open();
+    },
+    openPopUp: function(id){
+        var self = this;
+        var popup = self.$app.popup.open('.showOrderProducts', true);
+    },
+    closePopUp: function(){
+        var self = this;
+        var popup = self.$app.popup.close('.showOrderProducts', true);
+        popup.once("closed", function(){
+          self.getData();
+        });
+    },
+    saveOrderProductFulfillment:function(){
+      var self = this;
+      var bigData = {};
+      var listOfObjs = [];
+      var allFulfilled = true;
+      $.each($(".eachOrderProduct"), function(ind, elem){
+        var obj = {};
+        obj.id = parseInt($(elem).find(".productOrderID").val());
+        obj.isFulfilled = $(elem).find(".productFilfilled").is(":checked");
+        
+        if(obj.isFulfilled == false){
+          allFulfilled = false;
+        }
+        listOfObjs.push(obj);
+      });
+      bigData.products = listOfObjs;
+      bigData.allFulfilled = allFulfilled;
+      bigData.id = self.currentOrder.id;
+      bigData.cartid = self.currentOrder.cartGroupId;
+      //console.log("bigData", bigData);
+
+      self.$app.preloader.show();
+      $.when(self.$app.methods.postDataAPI("orders/FulfilOrder", bigData, true)).then(function( data, textStatus, jqXHR ) {
+          self.$app.preloader.hide();
+            console.log("when fulfil backed ", data); 
+            if(data == true){
+              self.showToast("Fulfillment Saved.", "center", true);
+            }else{
+              self.showToast("Error occured during saving", "center");
+            }
+        })
+      .catch((err) => {
+        self.$app.preloader.hide();
+        self.showToast("Error occured during saving", "center");
+      });
+    },
+    saveData: function(){
+      //var $$ = this.Dom7;
+      var self = this;
+      var elem = $$("input:required");
+      var err = self.$app.input.validateInputs(".ingForm");
+      if(err){
+        var obj = {
+                name: $$("input.name").val(), 
+                unitSize: $$("input.unit_size").val(), 
+                unit: $$("input.unit").val(), 
+                costPerUnit: $$("input.cost_per_unit").val(), 
+                status:true
+              };
+            if(self.currentIng != null){
+              obj.id = self.currentIng.id;
+            }
+
+            $.when(self.$app.methods.postDataAPI("ingredients/SaveIngredient", obj, true)).then(function( data, textStatus, jqXHR ) {
+              self.$app.preloader.hide();
+                //console.log("when data ings save ", data); // JSON data parsed by `data.json()` call
+                if(data == true){
+                  self.$app.methods.showToast("Ingredient saved", "center", true);
+                  $$("input.name,input.unit_size,input.unit,input.cost_per_unit").val("");
+                }
+                
+            }).catch((data, textStatus, jqXHR) => {
+                //console.log(data, textStatus, jqXHR);
+                self.$app.preloader.hide();
+                self.$app.methods.showToast("An error occurred", "center");
+            })
+          }
+    },
+    formatMoney:function(val){   
+      var self = this;   
+      var ret = self.$app.methods.formatMoney(val);
+      return ret;
+    },
+    getOrderProducts: function(cartid){
+      var self = this;
+      self.$app.preloader.show();
+
+      //console.log("current order",currentOrder);
+      $.when(self.$app.methods.getDataAPI("orders/GetOrderItems?id=" + cartid)).then(function( data, textStatus, jqXHR ) {
+        self.$app.preloader.hide();
+
+        var currentOrder = self.orders.find(x => x.cartGroupId == cartid);
+        self.$setState({
+          currentOrder: currentOrder
+        });
+
+        var custDets = "";
+        if(currentOrder.customerName != null){
+          custDets += "<h4 class='margin-vertical-half'>Customer Details</h4>";
+          custDets += "<div>" + currentOrder.customerName + "</div>";
+        }
+        if(currentOrder.customerEmail != null){
+          custDets += "<div>" + currentOrder.customerEmail + "</div>";
+        }
+        if(currentOrder.customerStreet != null){
+          custDets += "<h4 class='margin-vertical-half'>Customer Address</h4>";
+            custDets += "<div>" + currentOrder.customerStreet + "</div>";
+
+            if(currentOrder.customerCity != null){
+                custDets += "<div>" + currentOrder.customerCity + "</div>";
+              }
+
+              if(currentOrder.customerProvince != null){
+                var custProv = currentOrder.customerPostalCode == null ? "" : ", " + currentOrder.customerPostalCode;
+                custDets += "<div>" + currentOrder.customerProvince + custProv + "</div>";
+              }
+
+              if(currentOrder.customerCountry != null){
+                custDets += "<div>" + currentOrder.customerCountry + "</div>";
+              }
+
+              custDets += "<div class='margin-top-half'><span class='margin-right-half'>Delivery Cost (Before Tax):</span><span>" + self.formatMoney(currentOrder.deliveryCost) + "</span></div>";
+        }
+
+        $(".orderCustomerDetails").html(custDets);
+
+        $(".orderAfterTax").text(self.formatMoney(currentOrder.amountTotal));
+
+        $("#order-product-list .sortList").empty();
+
+        //console.log("order parent", currentOrder);
+        //console.log("order prods", data);
+
+
+        if(data != null && data.length > 0){
+          for(var i = 0; i < data.length; i++){
+            var select = data[i];
+            var name = select.product == null ? "" : select.product.name;
+            var price = select.sellingPrice;  
+            var quantity = select.quantity == null ? 1 : select.quantity;
+            var totalPrice = select.totalPrice;
+            var afterTaxPrice = select.afterTaxPrice;
+            var productID = select.productId;
+
+                var html = '<li class="eachOrderProduct margin-vertical"><div class="card myCard"><div class="card-content padding-horizontal padding-vertical">';
+                  html += '<div class="row"><div class="col-50"><div class="labelName">Product Name </div><input class="productName" type="text" value="';
+                  html +=  name + '" disabled/></div>';
+                  html += '<div class="col-50"><div class="labelName">Selling Price</div><input class="productCost" type="text" value="' + price + '" disabled/></div>';
+                  html += '</div>';
+
+                  html += '<input type="hidden" class="productOrderID" value="' + productID + '">';
+                  html += '<input type="hidden" class="hiddenQuantity" value="' + select.stock + '">';
+                  html += '<div class="row margin-top-half"><div class="col-50"><div class="labelName">Quantity</div><input class="productOrderQuantity" type="text" placeholder="Product Quantity" value="' + quantity + '" disabled/></div>';
+                  html += '<div class="col-50"><div class="labelName">Price Before Tax</div><input class="totalOrderPrice" type="text" value="' + totalPrice + '" disabled/></div>';
+                  html += '</div>';
+
+                  html += '<div class="row margin-top-half"><div class="col-50"><div class="labelName">Price After Tax: </div><input class="totalproductprice" type="text" placeholder="After Tax Price" value="';
+                  html +=  afterTaxPrice + '" disabled/></div>';
+
+                  var checkFulfilled = '<input type="checkbox" class="productFilfilled no-margin-left" id="orderProduct-' + productID + '">';
+                  if(select.isFulfilled == true){
+                    checkFulfilled = '<input type="checkbox" class="productFilfilled no-margin-left" id="orderProduct-' + productID + '" checked>';
+                  }
+
+                  html += '<div class="col-50"><div class="labelName">Mark If Product Is Fulfilled</div>' + checkFulfilled + '</div>';
+                  html += '</div>';
+                html += '</div></div></li>';
+
+                $("#order-product-list .sortList").append(html);
+          }
+
+          self.openPopUp();
+        }
+
+        
+
+      }).catch((data, textStatus, jqXHR) => {
+            self.$app.preloader.hide();
+              if(data != null && data.status == 404){
+               // console.log("orders not found"); 
+                return;
+              }
+              self.$app.methods.showToast("An error occurred", "center");
+          })
+    },
+    getData: function(){
+      var self = this;
+      self.$app.preloader.show();
+          $.when(self.$app.methods.getDataAPI("orders/GetOrders")).then(function( data, textStatus, jqXHR ) {
+            self.$app.preloader.hide();
+              self.$setState({
+                orders: data,
+                totalOrders:data.length
+              }, function(){
+                self.$app.preloader.hide();
+                      $("#orders-list .list").empty();
+                      $("#orders-list .pagination").remove();
+                      //$(".sort").removeClass("asc").removeClass("desc");
+                      if(self.orders != null && self.orders.length > 0){
+                        
+                        var pagination = "<ul class='pagination padding-left-half margin-vertical-half'><ul>";
+                        $(pagination).insertAfter($("#orders-list .list"));
+                        
+
+                        var isDesktop = self.$app.methods.isDesktop();
+                        if(isDesktop){
+                          $("#orders-list ul.list").remove();
+                          for(var i = 0; i < self.orders.length; i++){
+                              var row = self.orders[i];
+                              var html = "<tr>";
+                                html += '<td class="id" style="display:none;">' + row.id + '</td>';
+                                html += "<td>" + row.customerEmail + "</td>";
+                                html += "<td><div class='amount display-none'>" + row.amountTotal + "</div>" + self.formatMoney(row.amountTotal)  + "</td>";
+                                html += "<td><div class='payment_date display-none'>" + moment(row.paymentDate).format("LLL") + "</div>" + moment(row.paymentDate).format("LLL") + "</td>";
+                                var isFulfilled = row.fullyFulfilled == true ? '<span class="badge color-green padding-horizontal">Yes</span>' : '<span class="badge color-red paid padding-horizontal">No</span>';
+                                var fulfilledNo = row.fullyFulfilled == true ? 1 : 0;
+                                html += "<td class='is_fulfilled'><div class='is_fulfilled display-none'>" + fulfilledNo + '</div>' + isFulfilled + "</td>";
+
+                                var pops = '<a href="#" data-popover=".orders-popover-' + i + '" class="popover-open"><i class="f7-icons">ellipsis_vertical</i></a>'
+                                pops += '<div class="popover my-popover orders-popover orders-popover-' + i + '" data-close-on-escape="true" data-backdrop="false">'; 
+                                pops += '<div class="popover-angle"></div><div class="popover-inner padding-half">';
+                                  pops += '<a class="button popover-close getOrderProducts" data-id="' + row.cartGroupId + '">View Order</a>';
+                                  /*if(row.status == 0){
+                                    pops += '<a class="button popover-close permDelButton" data-id="' + row._id + '">Delete</a>';
+                                  }*/
+
+                                pops += '</div></div>';
+                                html += "<td>" + pops + "</td>";
+
+                              html += "</tr>";
+                              $("#orders-list tbody.list").append(html);
+                          }
+
+                        }else{
+                          $("#orders-list .data-table").remove();
+                          $(".sortTextPar").removeClass("display-none");
+                          $(".sort").remove();
+                        var sorter = '<span class="sort" data-sort="amount">Amount Paid</span><span class="sort" data-sort="payment_date">Payment Date</span><span class="sort" data-sort="is_fulfilled">Is Fulfilled</span>';
+                        $(sorter).insertAfter($(".sortText"));
+                        $(".sortText").removeClass("display-none");
+
+                          for(var i = 0; i < self.orders.length; i++){
+                              var row = self.orders[i];
+                              var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
+                              html += '<div class="name cardName">' + row.customerEmail + '</div><div class="id display-none">' + row.id + '</div><div class="amount display-none">' + row.amountTotal + '</div>';
+                              html += '<div class=""><span>Amount Paid: </span><span class="valueName">' + self.formatMoney(row.amountTotal) + '</span></div>';
+
+                              html += '<div class="payment_date display-none">' + moment(row.paymentDate).format("LLL") + '</div>';
+                              
+                              html += '<div class=""><span>Payment Date: </span><span class="valueName">' + moment(row.paymentDate).format("LLL") + '</span></div>';
+                              var isFulfilled = row.fullyFulfilled == true ? '<span class="badge color-green padding-horizontal">Yes</span>' : '<span class="badge color-red paid padding-horizontal">No</span>';
+                              var fulfilledNo = row.fullyFulfilled == true ? 1 : 0;
+                              html += '<div class="is_fulfilled display-none">' + fulfilledNo + '</div>';
+
+                              html += '<div class=""><span>Is Fulfilled: </span><span class="valueName">' + isFulfilled + '</span></div>';
+
+                              html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
+                              html += '<a class="button button-small getOrderProducts" data-id="' + row.cartGroupId + '">View Order</a>';
+                              html += '</p></div></div>';
+                              html += '</li>';
+                              $("#orders-list ul.list").append(html);
+                              //return html;
+                          }
+                      }
+                        var options = {
+                            valueNames: ['id','amount','payment_date','is_fulfilled'],
+                            page: 10,
+                            pagination: [{outerWindow:2}]
+                        };
+
+                        var ordersList = new List('orders-list', options);
+
+                        $(".sort").off("click").on("click", function(){
+                          $("#orders-list").find(".sort").find(".asc").remove();
+                          $("#orders-list").find(".sort").find(".desc").remove();
+                            if($(this).hasClass("asc")){
+                              $(this).append("<i class='icon f7-icons asc text-color-red'>arrowtriangle_up_fill</i>");
+                            }
+                            if($(this).hasClass("desc")){
+                              $(this).append("<i class='icon f7-icons desc text-color-red'>arrowtriangle_down_fill</i>");
+                            }
+                        })
+                        //materialList.reIndex();
+                          $('#orders-list, .orders-popover').off("click").on('click','.button', function () {
+                              var data = $(this).attr("data-id");
+                              if($(this).hasClass("getOrderProducts")){
+                                self.getOrderProducts(data);
+                              }
+                          });
+                        }else{
+                          $(".sortTextPar").addClass("display-none");
+                        }
+                      });
+              
+          }).catch((data, textStatus, jqXHR) => {
+            self.$app.preloader.hide();
+              if(data != null && data.status == 404){
+                console.log("orders not found"); 
+                return;
+              }
+              self.$app.methods.showToast("An error occurred", "center");
+          })
+
+    }
+  },
+  on: {
+    pageAfterIn: function(e, page) {
+        var self = this;
+        //trackIngPage();
+      },
+      pageInit: function(e, page) {
+        var self = this;
+        self.getData();
+      },
+      pageReinit: function(e, page) {
+        var self = this;
+        self.getData();
+      }
+  }
+
+} 
+</script>

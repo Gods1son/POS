@@ -562,12 +562,23 @@
                       <div class="item-input-wrap">
                         <input type="file" name="photos" id="productPhotos" accept="image/x-png,image/gif,image/jpeg,image/jpg,image/png" @change="checkFilesPhoto" multiple>
                             
-                        <div class="swiper-container demo-swiper margin-top">
+                        <div class="swiper-container demo-swiper margin-top display-none">
                               <div class="swiper-pagination"></div>
                               <div class="swiper-wrapper productsWrapper">
                 
                               </div>
                             </div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content item-input" id="digitalAssetHolder">
+                      <div class="item-inner">
+                        <div class="item-title">Upload Digital Product</div>
+                      <div class="item-input-wrap">
+                        <input type="file" name="digitalAsset" id="digitalAsset" accept="media_type">
+                        <div id="digitalAssetLink"></div>
                       </div>
                     </div>
                   </div>
@@ -862,13 +873,7 @@
         <div class="display-inline-flex"><div class="totalAmount">0</div></div>
       </div>
 
-      <!--<div class="row padding-horizontal-half margin-bottom-half"><div class="col-50">
-        <a class="col button button-outline button-raised mainButton calculateTotalButton" @click="CalculateTotal">Calculate</a>
-      </div>
-      <div class="col-100">
-            <a class="col button button-outline button-raised mainButton saveTotalButton" @click="SaveTotal">Save</a>
-      </div>
-    </div>-->
+    
     <div class="row padding-horizontal-half margin-vertical-half">
       <div class="col-100">
         <a class="col button mainButton saveTotalButton" @click="SaveTotal">Save Raw Materials</a>
@@ -1417,21 +1422,6 @@ export default {
         var sus = select.select_unit_size == undefined ? 0 : select.select_unit_size; 
         var val2 = select.select_cost != undefined ? select.select_cost : 0;
         var stat = select.status == true ? "display-none" : "";
-        /*var html = '<li class="eachCostParent"><div class="card myCard"><div class="card-content padding-horizontal-half">';
-        html += '<div class="name cardName">' + select.name + '</div>';
-        html += '<div class=""><span class="labelName">Unit Cost: </span><span class="valueName">' + self.formatMoney(cpu) + " for " + select.unitSize + select.unit + '</span></div>';
-        html += '<div><span class="labelName">Quantity To Use: </span><div class="display-inline-flex align-items-center"><input class="margin-horizontal-half costvalue" type="text" placeholder="Enter Quantity" ';
-        html += 'data-cost="' + cpu +'" data-unit="' + select.unitSize + '" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" '; 
-                //var val = sus != undefined ? select.select_unit_size : 0;
-        html +=  'value="' + sus + '"><span>' + select.unit + '</span></div></div>';
-        var val2 = select.select_cost != undefined ? select.select_cost : 0;
-        var stat = select.status == true ? "display-none" : "";
-        html += '<div class=""><span class="labelName">Cost of Material: </span><span class="valueName eachCost">' + val2 + '</span></div>';
-        html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName">Deleted</span></div>';
-        html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
-          html += '<a class="button button-small button-raised removeCost" data-id="' + select.id + '">Delete</a>';
-        html += '</p></div></div>'
-        html += '</li>';*/
 
         
         var html = '<li class="eachCostParent"><div class="card myCard"><div class="card-content padding-horizontal-half"><div class="row">';
@@ -1608,6 +1598,7 @@ export default {
                     //makePub = makePub == null ? true : makePub;
                     $(".showToPublic").prop("checked", item.showToPublic);
                     $(".productCategory").val(item.productCategory == null ? "" : item.productCategory);
+                    $("#digitalAssetLink").text(item.assetLink == null ? "" : item.assetLink);
                     $("#productType").val(item.typeOfProduct == null ? "physicalProduct" : item.typeOfProduct).change();
                     if(item.images != null){
                         var images = item.images.split(";");
@@ -1637,6 +1628,7 @@ export default {
             } else{
               $(".isUnlimited, .showToPublic").prop("checked", true);
               $("input.nameProduct,input.selling_price,.cost_price, .stock_quantity, .productCategory").val("");
+              $("#digitalAssetLink").text("");
               $("#productType").val("physicalProduct").change();
               //$(".stock_quantity, .isUnlimited").prop("disabled", false);
               var popup = self.$app.popup.open('.popup.newProduct', true);
@@ -2437,22 +2429,6 @@ export default {
           html += '<input type="hidden" class="discount" value="' + discount + '"><input type="hidden" class="productQuantity" value="' + quantity + '"><input type="hidden" class="totalproductprice" value="'+ totalPrice + '">';
           html += "</div></div></li>"; //closing
 
-
-
-          /*html += '<div class="row"><div class="col-50"><div class="item-content item-input no-padding-left"><div class="item-inner no-padding-right"><div class="labelName">Product Cost</div>';
-          html += '<div class="item-input-wrap"><input class="productCost" type="text" placeholder="Product Cost" value="' + cost + '">';
-          html +=  '<span class="input-clear-button"></span></div></div></div></div>';
-          html += '<div class="col-50"><div class="item-content item-input no-padding-left"><div class="item-inner no-padding-right"><div class="labelName">Quantity</div>';
-          html += '<div class="item-input-wrap"><input class="productQuantity" type="text" placeholder="Product Quantity" value="' + quantity + '">';
-          html +=  '<span class="input-clear-button"></span></div></div></div></div></div>';
-          html += '<div><span class="labelName">Discount: </span><div class="display-inline-flex"><input class="discount" type="text" placeholder="Discount" value="';
-          html +=  discount + '"></div></div>';
-          html += '<div><span class="labelName">Total Price: </span><div class="display-inline-flex"><input class="totalproductprice" type="text" placeholder="Total Price" value="';
-          html += totalPrice + '"></div></div>';
-        html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
-          html += '<a class="button button-small button-raised removeProduct">Delete</a>';
-        html += '</p></div></div>'
-        html += '</li>';*/
         $("#productsOther-list .sortList").append(html);
         $(".eachSaleParentOther .removeProduct").off("click").on("click", function(){
                   //var id = $(this).attr("data-itemid");
@@ -2523,8 +2499,11 @@ export default {
       var textEditor = self.$app.textEditor.get('.desc_of_product');
       textEditor.setValue("");
       self.$app.swiper.destroy('.swiper-container');
+      $(".swiper-container").addClass("display-none");
       $(".productsWrapper, .swiper-pagination").empty();
       document.getElementById("productPhotos").value = "";
+      document.getElementById("digitalAsset").value = "";
+      $("#digitalAssetLink").text("");
       var popup = self.$app.popup.close('.newProduct', true);
       popup.once("closed", function(){
             self.getData();
@@ -2607,7 +2586,7 @@ export default {
             
             //saveStock.created_date = moment().format("X");
             
-            self.$app.preloader.show();
+            
             var bigSave = {};
             bigSave.product = obj;
             if((self.currentProduct == null) || (self.currentProduct.stock != finalStock)){
@@ -2636,7 +2615,34 @@ export default {
                 }
               }
             //console.log("product form_data", form_data);
+
+            //check if it is digital and it is uploaded
+            if($("#productType").val() == "digitalProduct"){
+              if(self.currentProduct == null && $("#digitalAsset").get(0).files.length == 0){
+                self.showToast("Please upload digital product", "center");
+                return false;
+              }
+
+              if(self.currentProduct != null && self.currentProduct.assetLink == null && $("#digitalAsset").get(0).files.length == 0){
+                self.showToast("Please upload digital product", "center");
+                return false;
+              }
+
+              //add asset 
+              var fileAssetUpload = $("#digitalAsset").get(0);
+              var assetfiles = fileAssetUpload.files;
+              if(assetfiles.length > 0){
+                // if there are multiple files , loop through each files
+                //var id = self.currentExpense == null ? 0 : self.currentExpense.id;
+                //form_data.append("id", id);
+                for (var i = 0; i < assetfiles.length; i++) {
+                  form_data.append("assetUpload", assetfiles[i]);
+                }
+              }
+            }
             
+
+            self.$app.preloader.show();
             $.when(self.$app.methods.postFormDataAPI("products/SaveProdForm", form_data, true)).then(function( data, textStatus, jqXHR ) {
               self.$app.preloader.hide();
                 if(data){
@@ -2644,11 +2650,18 @@ export default {
                     self.showToast("Product saved.", "center", true);
                     $("input.nameProduct,input.selling_price,.cost_price, .stock_quantity, .productCategory").val("");
                     $(".isUnlimited, .showToPublic").prop("checked", true);
+                    $("#digitalAssetLink").text("");
                     var textEditor = self.$app.textEditor.get('.desc_of_product');
                     textEditor.setValue("");
                     self.$app.swiper.destroy('.swiper-container');
+                    $(".swiper-container").addClass("display-none");
                     $(".productsWrapper, .swiper-pagination").empty();
                     document.getElementById("productPhotos").value = "";
+                    document.getElementById("digitalAsset").value = "";
+
+                    self.$setState({
+                      currentProduct:null
+                  });
                 } 
               }).catch((data, textStatus, jqXHR) => {
                 self.$app.preloader.hide();
@@ -2712,6 +2725,7 @@ export default {
           centeredSlides: true,
           pagination: {"el": ".swiper-pagination"}
       });
+      $(".swiper-container").removeClass("display-none");
     },
     resetSalePopUp: function(){
       var self = this;
@@ -2972,16 +2986,16 @@ export default {
                             html += '<div class="' + stat + '"><span>Status: </span><span class="valueName">Deleted</span></div>';
                             html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
                             //var page_link = row.product_link_id == undefined ? null : row.product_link_id;
-                            html += '<a class="button button-small button-raised sellProduct" data-id="' + row.id + '">Sell</a>';
-                            html += '<a class="button button-small button-raised editProduct" data-id="' + row.id + '">Edit</a>';
-                            html += '<a class="button button-small button-raised restockProduct" data-id="' + row.id + '">Restock</a>';
-                            html += '<a class="button button-small button-raised addIngredients" data-id="' + row.id + '">Raw Materials</a>';
-                            html += '<a class="button button-small button-raised linkProduct" data-busid="' + row.businessId + '" data-id="' + row.slug + '">Share Link</a>';
-                            html += '<a class="button button-small button-raised deleteProduct" data-id="' + row.id + '">';
+                            html += '<a class="button button-small sellProduct" data-id="' + row.id + '">Sell</a>';
+                            html += '<a class="button button-small editProduct" data-id="' + row.id + '">Edit</a>';
+                            html += '<a class="button button-small restockProduct" data-id="' + row.id + '">Restock</a>';
+                            html += '<a class="button button-small addIngredients" data-id="' + row.id + '">Raw Materials</a>';
+                            html += '<a class="button button-small linkProduct" data-busid="' + row.businessId + '" data-id="' + row.slug + '">Share Link</a>';
+                            html += '<a class="button button-small deleteProduct" data-id="' + row.id + '">';
                             html +=  row.status == true ? 'Delete' : 'Activate';
                             html += '</a>';
                             /*if(row.status == false){
-                              html += '<a class="button button-small button-raised permDelButton" data-id="' + row.id + '">Delete</a>';
+                              html += '<a class="button button-small permDelButton" data-id="' + row.id + '">Delete</a>';
                             }*/
                             html += '</p></div></div></li>';
                             $("#product-list ul.list").append(html);
@@ -3234,17 +3248,6 @@ export default {
     },
     AddNewCost: function(e){
       var self = this;
-      /*var html = '<li class="extraCostRow"><div class="card myCard"><div class="card-content padding-horizontal-half">';
-        html += '<div><span class="labelName">Enter Name: </span><div class="display-inline-flex"><input class="extraName" type="text" placeholder="Enter Name" ';
-        html += '></div></div>';
-        html += '<input type="hidden" class="productID" value="0">';
-        html += '<div class="margin-top-half"><span class="labelName">Enter Cost: </span><div class="display-inline-flex"><input class="eachCost" type="text" placeholder="Enter Cost" ';
-        html += '></div></div>';
-        html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
-          html += '<a class="button button-small button-raised removeRow">Delete</a>';
-        html += '</p></div></div>'
-        html += '</li>';*/
-
 
         var html = '<li class="extraCostRow"><div class="card myCard"><div class="card-content padding-horizontal-half"><div class="row">';
         html += '<div class="col-50"><div class="labelName">Name</div><input class="extraName" type="text" placeholder="e.g transport fare" value="';
@@ -3378,6 +3381,14 @@ export default {
       pageInit: function(e, page) {
         var self = this;
         registerUpload();
+
+        $("#productType").on("change", function(){
+          $("#digitalAssetHolder").addClass("display-none");
+          if($("#productType").val() == "digitalProduct"){
+            $("#digitalAssetHolder").removeClass("display-none");
+          }
+        })
+
         self.createActionSheet();
         var iconTooltip = self.$app.tooltip.create({
           targetEl: '.estimateExplain',

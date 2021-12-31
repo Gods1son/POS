@@ -54,6 +54,10 @@ body {
     display: none;
 }
 
+.productFilfilled{
+    zoom: 2;
+}
+
 /* stripe */
 .StripeElement {
     box-sizing: border-box;
@@ -220,6 +224,15 @@ body {
 .data-table table{
     margin-top:10px;
     
+}
+
+.tab-link{
+    color: var(--main-color) !important;
+    text-transform: capitalize !important;
+}
+
+.tab-link-active{
+    border-top: 2px solid var(--main-color);
 }
 
 
