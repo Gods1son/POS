@@ -997,7 +997,6 @@ export default {
                             pagination: [{outerWindow:2}]
                         };
 
-                        var clientsList = new List('clients-list', options);
 
                         $("#clients-list").find(".sort").off("click").on("click", function(){
                           $("#clients-list").find(".sort").find(".asc").remove();
@@ -1027,6 +1026,8 @@ export default {
                               }
                               //return false;
                           });
+
+                          var clientsList = new List('clients-list', options);
                         }else{
                           $("#clients-list").find(".sortTextPar").addClass("display-none");
                         }

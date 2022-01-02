@@ -3008,7 +3008,7 @@ export default {
                             pagination: [{outerWindow:2}]
                         };
 
-                        var productList = new List('product-list', options);
+                        //var productList = new List('product-list', options);
 
                         $(".sort").off("click").on("click", function(){
                           $(".sort").find(".asc").remove();
@@ -3048,6 +3048,9 @@ export default {
                               
                               //return false;
                           });
+
+                          var productList = new List('product-list', options);
+
                         }else{
                           $(".sortTextPar").addClass("display-none");
                         }

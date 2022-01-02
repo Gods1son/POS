@@ -833,8 +833,6 @@ export default {
                     pagination: [{outerWindow:2}]
                 };
 
-                expenseList = new List('expenses-list', options);
-
                 $(".sort").off("click").on("click", function(){
                   $("#expenses-list").find(".sort").find(".asc").remove();
                   $("#expenses-list").find(".sort").find(".desc").remove();
@@ -864,6 +862,8 @@ export default {
                       //openReceiptImages
                       //return false;
                   });
+
+                  expenseList = new List('expenses-list', options);
                   self.calculateTotalMoneyExpense();
                 }else{
                   //var html = "<li><div class='card myCard'><div class='card-content text-align-center'>No result found</div></div></li>";

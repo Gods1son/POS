@@ -423,8 +423,6 @@ export default {
                             pagination: [{outerWindow:2}]
                         };
 
-                        var ordersList = new List('orders-list', options);
-
                         $(".sort").off("click").on("click", function(){
                           $("#orders-list").find(".sort").find(".asc").remove();
                           $("#orders-list").find(".sort").find(".desc").remove();
@@ -442,6 +440,9 @@ export default {
                                 self.getOrderProducts(data);
                               }
                           });
+
+                          
+                        var ordersList = new List('orders-list', options);
                         }else{
                           $(".sortTextPar").addClass("display-none");
                         }

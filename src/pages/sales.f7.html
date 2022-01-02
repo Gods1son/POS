@@ -2383,8 +2383,6 @@ export default {
                             pagination: [{outerWindow:2}]
                         };
 
-                        salesList = new List('sales-list', options);
-
                         $(".sort").off("click").on("click", function(){
                           $("#sales-list").find(".sort").find(".asc").remove();
                           $("#sales-list").find(".sort").find(".desc").remove();
@@ -2428,6 +2426,8 @@ export default {
                               }
                               //return false;
                           });
+
+                          salesList = new List('sales-list', options);
                           self.calculateTotalMoney();
                         }else{
                           //var html = "<li><div class='card myCard'><div class='card-content text-align-center'>No result found</div></div></li>";

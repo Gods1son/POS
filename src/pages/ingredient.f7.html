@@ -655,7 +655,6 @@ export default {
                             pagination: [{outerWindow:2}]
                         };
 
-                        var materialList = new List('material-list', options);
 
                         $(".sort").off("click").on("click", function(){
                           $("#material-list").find(".sort").find(".asc").remove();
@@ -681,6 +680,8 @@ export default {
                               }
                               //return false;
                           });
+
+                          var materialList = new List('material-list', options);
                         }else{
                           $(".sortTextPar").addClass("display-none");
                         }

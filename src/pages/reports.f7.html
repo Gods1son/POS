@@ -34,11 +34,12 @@
       </div>
       <div class="block no-margin text-align-center"> 
         <p class="display-inline-flex margin-vertical-half reportAllButtons">
-          <a class="button button-outline" @click="getProductSales">Product Sold and Amount Paid</a>
-          <a class="button button-outline" @click="productSales">Unique Product Sales</a>
+          <!--<a class="button button-outline" @click="getProductSales">Product Sold and Amount Paid</a>
+          
           <a class="button button-outline" @click="customerPurchases">Customer Purchases</a>
-          <a class="button button-outline" @click="dailySales">Daily Sales</a>
-          <a class="button button-outline" @click="getProfitStart">Cost and Amount Received</a>
+          <a class="button button-outline" @click="dailySales">Daily Sales</a>-->
+          <a class="button button-outline" @click="productSales">Unique Product Sales</a>
+          <a class="button button-outline" @click="getProfitStart">Performance Summary</a>
         </p>
       </div>
       <div>
@@ -480,11 +481,11 @@
                   html += "<div>Total Cost: " + self.formatMoney(cost) + "</div>";
                   html += "<div>Total Received: " + self.formatMoney(sold) + "</div>";
                   html += "<div>Amount Owed To You: " + self.formatMoney(owed) + "</div>";
-                  var text = sold >= cost ? "Profit: " : "Loss: ";
+                  var text = sold >= cost ? "Gross Profit: " : "Loss: ";
                   var diff = sold - cost;
                   html += "<div>" + text + self.formatMoney(diff) + "</div>";
                   html += "</div>";
-                  html += "<div class='block-header no-margin-vertical'>*This doesn't factor your expenses and estimates.</div>";
+                  html += "<div class='block-header no-margin-vertical'>*This does not factor your expenses and estimates.</div>";
                   $("#allTables").append(html);
                   self.$app.preloader.hide();
                 }catch(err){
