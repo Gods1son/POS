@@ -350,28 +350,30 @@
                             </div>
                           </div>
                         </div>
-                        <div class="block-header no-margin-vertical margin-horizontal-half no-padding-horizontal text-align-center">Your revenue is automatically deposited in your registered account within 2 to 3 business days. Please note that the first deposit will take 7 days</div>
+                        <div class="block-header no-margin-vertical margin-horizontal-half no-padding-horizontal text-align-center text-90">Your revenue is automatically deposited in your registered account within 2 to 3 business days. Please note that the first deposit will take 7 days</div>
 
-                        <div class="list no-hairlines-md" id="payoutParent">
-                          <ul>
-                              <li class="item-content item-input">
+                        <div id="payoutParent">
+                          <div class="list no-hairlines-md no-margin-bottom">
+                            <ul>
+                                <li class="item-content item-input">
+                                  <div class="item-inner">
+                                    <div class="item-input-wrap">
+                                      <input id="payOutAmount" type="number" class="settingsInput" placeholder="Enter amount to payout">
+                                    </div>
+                                </div>
+                              </li>
+                              <li class="item-content">
                                 <div class="item-inner">
                                   <div class="item-input-wrap">
-                                    <input id="payOutAmount" type="number" class="settingsInput" placeholder="Enter amount to payout">
+                                    <a id="payoutNow" class="button button-outline button-raised mainButton" @click="payoutmoney">Pay Out</a>
                                   </div>
                               </div>
                             </li>
-                            <li class="item-content">
-                              <div class="item-inner">
-                                <div class="item-input-wrap">
-                                  <a id="payoutNow" class="button button-outline button-raised mainButton" @click="payoutmoney">Pay Out</a>
-                                </div>
-                            </div>
-                          </li>
-                          </ul>
-
-                          <div class="block-header no-margin-vertical margin-horizontal-half no-padding-horizontal text-align-center">You can also receive payment instantly with our pay out button (a charge of 1.2% of the withdrawn amount applies)</div>
+                            </ul>
+                          </div>
+                          <div class="block-header no-margin-vertical margin-horizontal-half no-padding-horizontal text-align-center text-90">You can also receive payment instantly with our pay out button (a charge of 1.2% of the withdrawn amount applies)</div>
                         </div>
+                        
                   </div>
 
                   <div class="no-margin-vertical padding-horizontal-half setUpPaymentHolder">
@@ -379,7 +381,7 @@
                       <a id="setPayment" class="button button-outline button-raised mainButton" @click="setPayment">Set Up Payment</a>
                       <a class="link external display-none openStripeLink" target="_blank" href="#">Open Stripe</a>
                     </div>
-                    <div class="block-header no-margin-vertical margin-horizontal-half no-padding-horizontal">Set up payment and start receiving money from 150+ countries</div>
+                    <div class="block-header no-margin-vertical margin-horizontal-half no-padding-horizontal text-90">Set up payment and start receiving money from 150+ countries</div>
                   </div>
 
                     
@@ -872,9 +874,17 @@
                     self.$app.methods.showToast("Your payment settings is all set", "center", true);
                     return false;
                   }
-                  console.log("stripe url", data);
-                  $(".openStripeLink").attr("href", data);
-                  $(".openStripeLink").click();
+                  //console.log("stripe url", data);
+                  //$(".openStripeLink").attr("href", data);
+                  //$(".openStripeLink").click();
+                  var win = window.open(data, '_blank');
+                  if (win) {
+                      //Browser has allowed it to be opened
+                      win.focus();
+                  } else {
+                      //Browser has blocked it
+                      alert('Please allow popups for this website');
+                  }
                 }
             }).catch(function(err){
               self.$app.preloader.hide();

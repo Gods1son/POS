@@ -308,6 +308,10 @@ button.text-editor-button.active{
     width:100%;
 }
 
+.text-90{
+    font-size: 90%;
+}
+
 .roundBox{
     background: white;
     padding: 3px 20px;
