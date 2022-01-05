@@ -604,28 +604,18 @@
         
         //popup.once("opened", function(){
           if(id != null || id != undefined){
-            self.$app.preloader.show();
-              $.when(self.$app.methods.getDataAPI("ingredients/GetIngredientByID?id=" + id)).then(function( item, textStatus, jqXHR ) {
-                self.$app.preloader.hide();
-                  item = self.delivery.find(x => x.id == id);
-                  //console.log("when data ing get ", item); // JSON data parsed by `data.json()` call
+            var item = self.delivery.find(x => x.id == id);
+            if(item != null){
                   self.$setState({
-                      currentDeliveryOption: item
-                    });
-                    
-                    $(".delivery_location").val(item.location);
-                    $(".delivery_cost").val(item.cost);
-
-                    var popup = self.$app.popup.open('.newDeliveryOption', true);
-                  
-              }).catch((data, textStatus, jqXHR) => {
-                self.$app.preloader.hide();
-                  if(data != null && data.status == 404){
-                    self.$app.methods.showToast("Delivery option not found", "center");
-                    return;
-                  }
-                  self.$app.methods.showToast("An error occurred", "center");
-              })
+                  currentDeliveryOption: item
+                });
+                        
+                $(".delivery_location").val(item.location);
+                $(".delivery_cost").val(item.cost);
+            }else{
+              self.showToast("Delivery option not found", "center");
+            }
+            var popup = self.$app.popup.open('.newDeliveryOption', true);
             } else{
               var popup = self.$app.popup.open('.newDeliveryOption', true);
               self.$setState({

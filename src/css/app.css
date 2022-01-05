@@ -354,6 +354,7 @@ button.text-editor-button.active{
     top: 35px;
     left: 75px;
     position: absolute;
+    width: 130px;
 }
 
 .fab a{

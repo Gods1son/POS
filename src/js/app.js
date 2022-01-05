@@ -84,7 +84,8 @@ setTimeout(function(){
         app.dialog.alert('Hello World');
       },
       resaveSettings:function(newData){
-        app.data.settings = newData;
+        //app.data.settings = newData;
+        app.methods.getBusinessProfile();
       },
       consoling: function(){
         console.log("master page");
