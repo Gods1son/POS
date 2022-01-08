@@ -340,6 +340,24 @@ export default {
     },
     getData: function(){
       var self = this;
+      if(self.$app.data.settings != null){
+        self.getDataFetch();
+        return;
+      }
+      
+      $.when(self.$app.methods.getDataAPI("business/GetBusinessProfile")).then(function(data){
+          if(data != null){
+            self.$app.methods.refetchSettings(data);
+          }
+
+          self.getDataFetch();
+      }).catch(function(err){
+        self.getDataFetch();
+      });
+      
+    },
+    getDataFetch: function(){
+      var self = this;
       self.$app.preloader.show();
           $.when(self.$app.methods.getDataAPI("orders/GetOrders")).then(function( data, textStatus, jqXHR ) {
             self.$app.preloader.hide();
@@ -397,7 +415,7 @@ export default {
                           for(var i = 0; i < self.orders.length; i++){
                               var row = self.orders[i];
                               var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
-                              html += '<div class="name cardName">' + row.customerEmail + '</div><div class="id display-none">' + row.id + '</div><div class="amount display-none">' + row.amountTotal + '</div>';
+                              html += '<div class="name cardName">' + row.customerName + "'s order" + '</div><div class="id display-none">' + row.id + '</div><div class="amount display-none">' + row.amountTotal + '</div>';
                               html += '<div class=""><span>Amount Paid: </span><span class="valueName">' + self.formatMoney(row.amountTotal) + '</span></div>';
 
                               html += '<div class="payment_date display-none">' + moment(row.paymentDate).format("LLL") + '</div>';

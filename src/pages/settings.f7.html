@@ -262,7 +262,7 @@
                           <li>
                             <div class="item-content item-input">
                               <div class="item-inner">
-                                <div class="item-title">Terms and Conditions (shown on invoices)</div>
+                                <div class="item-title item-label">Terms and Conditions (shown on invoices)</div>
                                 <div class="item-input-wrap">
                                   <div class="text-editor terms_condition margin-top-half" data-placeholder="Terms and Conditions" 
                                     data-buttons='[["bold", "italic", "underline", "strikeThrough"], ["orderedList", "unorderedList"]]'>
@@ -838,7 +838,7 @@
                 console.log("profile not found"); 
                 return;
               }
-              self.$app.methods.showToast("An error occurred", "center");
+              self.$app.methods.showToast(data.responseText, "center");
           })
         },
         getData: function(){
@@ -856,6 +856,10 @@
         },
         setPayment: function(){
           var self = this;
+          if(self.$app.data.settings == null || self.$app.data.settings.name == null){
+            self.$app.methods.showToast("Complete setting your profile first", "center");
+            return;
+          }
           self.$app.preloader.show();
           $.when(self.$app.methods.getDataAPI("business/StartStripeOnboard")).then(function( data, textStatus, jqXHR ) {
                 self.$app.preloader.hide();
@@ -1052,8 +1056,10 @@
             })
 
             /* payment page*/
-
-            self.getProfile();
+            if(self.$app.views.main.router.previousRoute?.path != "/signup/"){
+              self.getProfile();
+            };
+            
             $("#logo").change(function(){
                 self.getBase64(this, "logo");
             });
@@ -1066,7 +1072,10 @@
                 }
             });
             $("#companyurl").on("blur", function(){
-              self.checkUrl();
+              var url = $("#companyurl").val().trim();
+              if(url != ""){
+                self.checkUrl();
+              }
             });
 
             $("#companyCountry").on("change", function(){

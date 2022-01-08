@@ -82,7 +82,7 @@
         <div class="row margin-top-half myToolbar">
           <div class="col-100 medium-50 no-padding-vertical text-align-right sellingButtonsTab">
             <!--<span class="display-inline-flex margin-right-half display-none">
-              <span class="item-title float-right">Show Deleted</span>
+              <span class="item-title item-label float-right">Show Deleted</span>
               <span class="item-after float-right margin-left-half display-none">
                   <label class="toggle toggle-init color-red showInactive">
                   <input type="checkbox">
@@ -173,7 +173,7 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Company Name</div>
+                      <div class="item-title item-label">Company Name</div>
                       <div class="item-input-wrap">
                         <input type="text" class="compNameLink" placeholder="Company name" required validate/>
                         <span class="input-clear-button"></span>
@@ -184,7 +184,7 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Company Email Address</div>
+                      <div class="item-title item-label">Company Email Address</div>
                       <div class="item-input-wrap">
                         <input type="email" class="email compEmailLink" placeholder="Company email address"/>
                         <span class="input-clear-button"></span>
@@ -195,7 +195,7 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Company Contact number</div>
+                      <div class="item-title item-label">Company Contact number</div>
                       <div class="item-input-wrap">
                         <input type="text" class="phone compPhoneLink" placeholder="Company contact number"/>
                         <span class="input-clear-button"></span>
@@ -206,7 +206,7 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Product Name</div>
+                      <div class="item-title item-label">Product Name</div>
                       <div class="item-input-wrap">
                         <input type="text" class="nameLink" placeholder="Product name" required validate/>
                         <span class="input-clear-button"></span>
@@ -217,7 +217,7 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Product Description</div>
+                      <div class="item-title item-label">Product Description</div>
                       <div class="item-input-wrap">
                         <!--<input type="text" class="desc_of_product" placeholder="Description of product"/>
                         <span class="input-clear-button"></span>-->
@@ -232,7 +232,7 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Selling Price</div>
+                      <div class="item-title item-label">Selling Price</div>
                       <div class="item-input-wrap">
                         <input type="number" class="selling_priceLink" placeholder="Selling price of product"/>
                       </div>
@@ -242,7 +242,7 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Other notes</div>
+                      <div class="item-title item-label">Other notes</div>
                       <div class="item-input-wrap">
                         <textarea class="other_notesLink" placeholder="Any additional info you wish to add"></textarea>
                       </div>
@@ -252,7 +252,7 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Upload Images. Max 3</div>
+                      <div class="item-title item-label">Upload Images. Max 3</div>
                       <div class="item-input-wrap">
                         <input type="file" name="photos" id="myPhotosProducts" accept="image/x-png,image/gif,image/jpeg,image/jpg,image/png" @change="checkFilesProducts" multiple>
                       </div>
@@ -366,7 +366,7 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Product Name:</div>
+                      <div class="item-title item-label">Product Name:</div>
                       <div class="restockProductName block-title-medium"></div>
                     </div>
                   </div>
@@ -374,7 +374,7 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Current Stock:</div>
+                      <div class="item-title item-label">Current Stock:</div>
                       <div class="currentStock block-title-medium"></div>
                     </div>
                   </div>
@@ -382,13 +382,13 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Restock Quantity</div>
+                      <div class="item-title item-label">Restock Quantity</div>
                       <div class="item-input-wrap">
                         <input type="text" class="restock_quantity" placeholder="Quantity of product to restock" @keyup="stockInputRestock" @keypress="onlyDecimal"/>
                         <span class="input-clear-button"></span>
                       </div>
 
-                      <div class="item-title padding-top-half">
+                      <div class="item-title item-label padding-top-half">
                         <span>Stock is Unlimited</span>
                         <label class="checkbox vertical-align-super padding-left-half">
                           <!-- checkbox input -->
@@ -403,7 +403,7 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Total Stock:</div>
+                      <div class="item-title item-label">Total Stock:</div>
                       <div class="totalStock block-title-medium"></div>
                     </div>
                   </div>
@@ -411,7 +411,7 @@
                 <li>
                   <div class="item-content item-input">
                       <div class="item-inner">
-                        <div class="item-title">Date of Restocking</div>
+                        <div class="item-title item-label">Date of Restocking</div>
                       <div class="item-input-wrap">
                           <input type="text" placeholder="Date of restocking" id="restock-calendar-modal" required validate data-error-message="Select date of purchase please!"/>
                           <span class="input-clear-button"></span>
@@ -455,7 +455,7 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Product Type</div>
+                      <div class="item-title item-label">Product Type</div>
                       <div class="item-input-wrap">
                         <select id="productType">
                           <option value="physicalProduct" selected>Physical Product</option>
@@ -469,7 +469,7 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Product Name</div>
+                      <div class="item-title item-label">Product Name</div>
                       <div class="item-input-wrap">
                         <input type="text" class="nameProduct" placeholder="Product name" required validate/>
                         <span class="input-clear-button"></span>
@@ -480,7 +480,7 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Product Description</div>
+                      <div class="item-title item-label">Product Description</div>
                       <div class="item-input-wrap">
                         <!--<input type="text" class="desc_of_product" placeholder="Description of product"/>
                         <span class="input-clear-button"></span>-->
@@ -495,7 +495,7 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Product Category</div>
+                      <div class="item-title item-label">Product Category</div>
                       <div class="item-input-wrap">
                         <input type="text" class="productCategory" placeholder="Add product into a category"/>
                         <span class="input-clear-button"></span>
@@ -506,7 +506,7 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Cost Price</div>
+                      <div class="item-title item-label">Cost Price</div>
                       <div class="item-input-wrap">
                         <input type="number" class="cost_price" placeholder="Cost price of product" required step=".01"/>
                       </div>
@@ -516,7 +516,7 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Selling Price</div>
+                      <div class="item-title item-label">Selling Price</div>
                       <div class="item-input-wrap">
                         <input type="number" class="selling_price" placeholder="Selling price of product" required step=".01"/>
                         <span class="input-clear-button"></span>
@@ -527,12 +527,12 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">In Stock</div>
+                      <div class="item-title item-label">In Stock</div>
                       <div class="item-input-wrap">
                         <input type="number" class="stock_quantity" placeholder="Quantity of product in stock" @keyup="stockInput" @keypress="onlyDecimal"/>
                       </div>
 
-                      <div class="item-title padding-top-half">
+                      <div class="item-title item-label padding-top-half">
                         <span>Stock is Unlimited</span>
                         <label class="checkbox vertical-align-super padding-left-half">
                           <!-- checkbox input -->
@@ -542,7 +542,7 @@
                         </label>
                       </div>
 
-                      <div class="item-title padding-top-half">
+                      <div class="item-title item-label padding-top-half">
                         <span>Show to public</span>
                         <label class="checkbox vertical-align-super padding-left-half">
                           <!-- checkbox input -->
@@ -558,7 +558,7 @@
                 <li>
                   <div class="item-content item-input">
                       <div class="item-inner">
-                        <div class="item-title">Upload Images</div>
+                        <div class="item-title item-label">Upload Images (maximum of 5 images, with square aspect ratio and size less than 2MB)</div>
                       <div class="item-input-wrap">
                         <input type="file" name="photos" id="productPhotos" accept="image/x-png,image/gif,image/jpeg,image/jpg,image/png" @change="checkFilesPhoto" multiple>
                             
@@ -575,7 +575,7 @@
                 <li>
                   <div class="item-content item-input" id="digitalAssetHolder">
                       <div class="item-inner">
-                        <div class="item-title">Upload Digital Product</div>
+                        <div class="item-title item-label">Upload Digital Product</div>
                       <div class="item-input-wrap">
                         <input type="file" name="digitalAsset" id="digitalAsset" accept="media_type">
                         <div id="digitalAssetLink"></div>
@@ -621,7 +621,7 @@
                     <div class="col-50">
                       <div class="item-content item-input">
                         <div class="item-inner">
-                          <div class="item-title">Product Name</div>
+                          <div class="item-title item-label">Product Name</div>
                           <div class="item-input-wrap">
                             <input type="text" class="name_sell" placeholder="Product name" required/>
                             <span class="input-clear-button"></span>
@@ -632,7 +632,7 @@
                     <div class="col-50">
                       <div class="item-content item-input">
                         <div class="item-inner">
-                          <div class="item-title">Selling Price</div>
+                          <div class="item-title item-label">Selling Price</div>
                           <div class="item-input-wrap">
                             <input type="number" class="cost_sell" @keyup="calculateQuantity" placeholder="selling price" required disabled validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                           </div>
@@ -649,7 +649,7 @@
                       <div class="col-50">
                         <div class="item-content item-input">
                           <div class="item-inner">
-                            <div class="item-title">Quantity</div>
+                            <div class="item-title item-label">Quantity</div>
                             <div class="item-input-wrap">
                               <input type="number" class="quantity_sell" @keyup="calculateQuantity" placeholder="Quantity" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                             </div>
@@ -660,7 +660,7 @@
                       <div class="col-50">
                         <div class="item-content item-input">
                           <div class="item-inner">
-                            <div class="item-title">Discount</div>
+                            <div class="item-title item-label">Discount</div>
                             <div class="item-input-wrap">
                               <input type="number" class="discount_sell" @keyup="calculateQuantity" value="0" placeholder="Discount" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                             </div>
@@ -673,7 +673,7 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Total Price</div>
+                      <div class="item-title item-label">Total Price</div>
                       <div class="item-input-wrap">
                         <input type="number" class="total_sell" @keyup="calculateQuantity2" placeholder="Total Price" disabled required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                       </div>
@@ -685,7 +685,7 @@
                       <div class="col-50">
                         <div class="item-content item-input">
                           <div class="item-inner">
-                            <div class="item-title">Taxes in %</div>
+                            <div class="item-title item-label">Taxes in %</div>
                             <div class="item-input-wrap">
                               <input type="number" class="taxes" @keyup="calculateQuantity" placeholder="Taxes in %" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                             </div>
@@ -696,7 +696,7 @@
                       <div class="col-50">
                         <div class="item-content item-input">
                           <div class="item-inner">
-                            <div class="item-title">After Tax Price</div>
+                            <div class="item-title item-label">After Tax Price</div>
                             <div class="item-input-wrap">
                               <input type="text" class="afterTax" placeholder="After Tax Price" disabled/>
                               <span class="input-clear-button"></span>
@@ -710,7 +710,7 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Buyer's Name</div>
+                      <div class="item-title item-label">Buyer's Name</div>
                       <div class="item-input-wrap">
                         <input type="text" class="buyer_sell" id="buyer_sell" placeholder="Buyer's name" required/>
                         <span class="input-clear-button"></span>
@@ -723,7 +723,7 @@
                     <div class="col-50">
                       <div class="item-content item-input">
                         <div class="item-inner">
-                          <div class="item-title" style="width: 100%;">
+                          <div class="item-title item-label" style="width: 100%;">
                             <span>Amount Paid</span>
                             <p class="display-inline-flex" style="float: right;margin: 0;">
                                 <a class="button button-small button-outline text-color-white button-green bg-color-green no-margin padding-horizontal-half" @click="recordPaidFully">Paid fully</a>
@@ -739,7 +739,7 @@
                     <div class="col-50">
                       <div class="item-content item-input">
                         <div class="item-inner">
-                          <div class="item-title">It's an Estimate<i class="icon f7-icons icon-tooltip estimateExplain color-black">info_circle_fill</i></div>
+                          <div class="item-title item-label">It's an Estimate<i class="icon f7-icons icon-tooltip estimateExplain color-black">info_circle_fill</i></div>
                           <div class="item-input-wrap">
                             <label class="checkbox">
                               <!-- checkbox input -->
@@ -758,7 +758,7 @@
                     <div class="col-50">
                       <div class="item-content item-input">
                         <div class="item-inner">
-                          <div class="item-title">Date Buyer Paid</div>
+                          <div class="item-title item-label">Date Buyer Paid</div>
                         <div class="item-input-wrap">
                             <input type="text" placeholder="Date buyer paid" id="paid-calendar-modal-prods"/>
                             <span class="input-clear-button"></span>
@@ -770,7 +770,7 @@
                     <div class="col-50">
                       <div class="item-content item-input">
                         <div class="item-inner">
-                          <div class="item-title">Date of Purchase</div>
+                          <div class="item-title item-label">Date of Purchase</div>
                         <div class="item-input-wrap">
                             <input type="text" placeholder="Date of purchase" id="purchase-calendar-modal" required validate data-error-message="Select date of purchase please!"/>
                             <span class="input-clear-button"></span>
@@ -819,7 +819,7 @@
         <div class="list margin-bottom-half margin-top">
           <div class="row justify-content-center">
             <a class="col-50 button tealBgButton" href="#" id="autocomplete-standalone-multiple">
-            <div class="item-title text-color-white">Add Raw Materials</div>
+            <div class="item-title item-label text-color-white">Add Raw Materials</div>
           </a>
         </div>
           <!--<ul>
@@ -827,7 +827,7 @@
               <a class="item-link item-content bg-color-orange myOrange" href="#" id="autocomplete-standalone-multiple">
                 <input type="hidden">
                 <div class="item-inner">
-                  <div class="block-title item-title no-margin text-color-white">Add Raw Materials</div>
+                  <div class="block-title item-title item-label no-margin text-color-white">Add Raw Materials</div>
                   <div class="item-after"></div>
                 </div>
               </a>
@@ -2870,6 +2870,24 @@ export default {
       return ret;
     },
     getData: function(){
+      var self = this;
+      if(self.$app.data.settings != null){
+        self.getDataFetch();
+        return;
+      }
+
+      $.when(self.$app.methods.getDataAPI("business/GetBusinessProfile")).then(function(data){
+          if(data != null){
+            self.$app.methods.refetchSettings(data);
+          }
+
+          self.getDataFetch();
+      }).catch(function(err){
+        self.getDataFetch();
+      });
+      
+    },
+    getDataFetch: function(){
       var self = this;
       var checked = true;
       /*var toggle = self.$app.toggle.get(".showInactive");

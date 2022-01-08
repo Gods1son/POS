@@ -101,7 +101,7 @@
 
             <div class="col-33 no-padding-vertical text-align-right display-none">
               <span class="display-inline-flex margin-right-half display-none">
-                <span class="item-title float-right">Show Deleted</span>
+                <span class="item-title item-label float-right">Show Deleted</span>
                 <span class="item-after float-right margin-left-half">
                     <label class="toggle toggle-init color-red showInactiveExpenses">
                     <input type="checkbox">
@@ -206,7 +206,7 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Expense Name</div>
+                      <div class="item-title item-label">Expense Name</div>
                       <div class="item-input-wrap">
                         <input type="text" class="name" placeholder="expense name" required validate/>
                         <span class="input-clear-button"></span>
@@ -217,7 +217,7 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Amount to be Paid</div>
+                      <div class="item-title item-label">Amount to be Paid</div>
                       <div class="item-input-wrap">
                         <input type="text" class="amount_to_pay" placeholder="Amount to pay" value="0" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                         <span class="input-clear-button"></span>
@@ -228,7 +228,7 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Amount Paid</div>
+                      <div class="item-title item-label">Amount Paid</div>
                       <div class="item-input-wrap">
                         <input type="text" class="amount_paid" placeholder="Amount Paid" value="0" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                         <span class="input-clear-button"></span>
@@ -239,7 +239,7 @@
                 <li>
                   <div class="item-content item-input">
                       <div class="item-inner">
-                        <div class="item-title">Date expense got paid</div>
+                        <div class="item-title item-label">Date expense got paid</div>
                       <div class="item-input-wrap">
                           <input type="text" placeholder="Date expense got paid" id="paid-calendar-modal"/>
                           <span class="input-clear-button"></span>
@@ -250,7 +250,7 @@
                 <li>
                   <div class="item-content">
                     <div class="item-inner-1">
-                      <span class="item-title">Recurring Payment</span>
+                      <span class="item-title item-label">Recurring Payment</span>
                       <!--<div class="item-after">-->
                         <label class="toggle toggle-init recurring margin-left-half">
                           <input type="checkbox">
@@ -263,7 +263,7 @@
                 <li>
                   <div class="item-content item-input">
                       <div class="item-inner">
-                        <div class="item-title">Date of Expense</div>
+                        <div class="item-title item-label">Date of Expense</div>
                       <div class="item-input-wrap">
                           <input type="text" placeholder="Date of purchase" id="expense-calendar-modal"/>
                           <span class="input-clear-button"></span>
@@ -274,7 +274,7 @@
                 <li>
                   <div class="item-content item-input">
                       <div class="item-inner">
-                        <div class="item-title">Upload Receipts</div>
+                        <div class="item-title item-label">Upload Receipts (maximum of 5 images and size less than 2MB)</div>
                       <div class="item-input-wrap">
                         <input type="file" name="photos" id="myPhotos" accept="image/x-png,image/gif,image/jpeg,image/jpg,image/png" @change="checkFiles" multiple>
                             
@@ -869,7 +869,10 @@ export default {
                   //var html = "<li><div class='card myCard'><div class='card-content text-align-center'>No result found</div></div></li>";
                   //$("#expenses-list .list").append(html);
                   self.calculateTotalMoneyExpense();
-                  expenseList.clear();
+                  if(expenseList != null){
+                    expenseList.clear();
+                  }
+                  
                   
                   $(".sortTextPar").addClass("display-none");
                 }
@@ -879,6 +882,24 @@ export default {
           self.getData();
       },
     getData: function(){
+    var self = this;
+    if(self.$app.data.settings != null){
+      self.getDataFetch();
+      return;
+    }
+    
+    $.when(self.$app.methods.getDataAPI("business/GetBusinessProfile")).then(function(data){
+          if(data != null){
+            self.$app.methods.refetchSettings(data);
+          }
+
+          self.getDataFetch();
+      }).catch(function(err){
+        self.getDataFetch();
+      });
+    
+  },
+    getDataFetch: function(){
       var self = this;
       self.$app.preloader.show();
           $.when(self.$app.methods.getDataAPI("expenses/GetExpenses")).then(function( data, textStatus, jqXHR ) {

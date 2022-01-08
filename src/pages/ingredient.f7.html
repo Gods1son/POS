@@ -76,7 +76,7 @@
           </div>
           <div class="col-50 no-padding-vertical text-align-right display-none">
             <span class="display-inline-flex margin-right-half">
-              <span class="item-title float-right">Show Deleted</span>
+              <span class="item-title item-label float-right">Show Deleted</span>
               <span class="item-after float-right margin-left-half">
                   <label class="toggle toggle-init color-red showInactiveIngs">
                   <input type="checkbox">
@@ -158,7 +158,7 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Raw Material Name</div>
+                      <div class="item-title item-label">Raw Material Name</div>
                       <div class="item-input-wrap">
                         <input type="text" class="name" placeholder="name" required validate/>
                         <span class="input-clear-button"></span>
@@ -169,7 +169,7 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Number of unit</div>
+                      <div class="item-title item-label">Number of unit</div>
                       <div class="item-input-wrap">
                         <input type="number" class="unit_size" placeholder="how many?" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                         <span class="input-clear-button"></span>
@@ -180,7 +180,7 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Unit measurement</div>
+                      <div class="item-title item-label">Unit measurement</div>
                       <div class="item-input-wrap">
                         <input type="text" class="unit" placeholder="e.g. kg, lb, ltr" required validate/>
                         <span class="input-clear-button"></span>
@@ -191,7 +191,7 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Cost per unit size</div>
+                      <div class="item-title item-label">Cost per unit size</div>
                       <div class="item-input-wrap">
                         <input type="number" class="cost_per_unit" placeholder="how much per unit?" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                         <span class="input-clear-button"></span>
@@ -566,6 +566,24 @@ export default {
       return ret;
     },
     getData: function(){
+      var self = this;
+      if(self.$app.data.settings != null){
+        self.getDataFetch();
+        return;
+      }
+      
+      $.when(self.$app.methods.getDataAPI("business/GetBusinessProfile")).then(function(data){
+          if(data != null){
+            self.$app.methods.refetchSettings(data);
+          }
+
+          self.getDataFetch();
+      }).catch(function(err){
+        self.getDataFetch();
+      });
+      
+    },
+    getDataFetch: function(){
       var self = this;
       var checked = true;
       var toggle = self.$app.toggle.get(".showInactiveIngs");

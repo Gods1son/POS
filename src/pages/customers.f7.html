@@ -75,7 +75,7 @@
           </div>
           <div class="col-50 no-padding-vertical text-align-right">
             <span class="display-inline-flex margin-right-half display-none">
-              <span class="item-title float-right">Show Deleted</span>
+              <span class="item-title item-label float-right">Show Deleted</span>
               <span class="item-after float-right margin-left-half">
                   <label class="toggle toggle-init color-red showInactiveClients">
                   <input type="checkbox">
@@ -196,7 +196,7 @@
 
               <!--<div class="col-33 no-padding-vertical text-align-right">
                 <span class="display-inline-flex margin-right-half display-none">
-                  <span class="item-title float-right">Show Deleted</span>
+                  <span class="item-title item-label float-right">Show Deleted</span>
                   <span class="item-after float-right margin-left-half">
                       <label class="toggle toggle-init color-red showInactiveClientPurchases">
                       <input type="checkbox">
@@ -273,7 +273,7 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Customer Name</div>
+                      <div class="item-title item-label">Customer Name</div>
                       <div class="item-input-wrap">
                         <input type="text" class="clientname" placeholder="Customer name" required validate/>
                         <span class="input-clear-button"></span>
@@ -284,7 +284,7 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Email Address</div>
+                      <div class="item-title item-label">Email Address</div>
                       <div class="item-input-wrap">
                         <input type="email" class="email settingsInput" placeholder="Customer email address"/>
                         <span class="input-clear-button"></span>
@@ -295,7 +295,7 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Contact number</div>
+                      <div class="item-title item-label">Contact number</div>
                       <div class="item-input-wrap">
                         <input type="text" class="phone" placeholder="Customer number"/>
                         <span class="input-clear-button"></span>
@@ -306,7 +306,7 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Address</div>
+                      <div class="item-title item-label">Address</div>
                       <div class="item-input-wrap">
                         <textarea class="address settingsInput" placeholder="Customer Address"></textarea>
                         <span class="input-clear-button"></span>
@@ -317,7 +317,7 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Customer's Birthday</div>
+                      <div class="item-title item-label">Customer's Birthday</div>
                       <div class="item-input-wrap">
                         <input type="text" placeholder="Customer's birth date" readonly="readonly" id="client_bday" class="client_bday"/>
                       </div>
@@ -327,7 +327,7 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Other Notes</div>
+                      <div class="item-title item-label">Other Notes</div>
                       <div class="item-input-wrap">
                         <textarea class="otherNotes settingsInput" placeholder="other information about customer"></textarea>
                         <span class="input-clear-button"></span>
@@ -886,6 +886,24 @@ export default {
           //calendarDefault.update()
     },
     getData: function(){
+      var self = this;
+      if(self.$app.data.settings != null){
+        self.getDataFetch();
+        return;
+      }
+
+      $.when(self.$app.methods.getDataAPI("business/GetBusinessProfile")).then(function(data){
+          if(data != null){
+            self.$app.methods.refetchSettings(data);
+          }
+
+          self.getDataFetch();
+      }).catch(function(err){
+        self.getDataFetch();
+      });
+      
+    },
+    getDataFetch: function(){
       var self = this;
       var checked = true;
       /*var toggle = self.$app.toggle.get(".showInactiveClients");

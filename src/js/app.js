@@ -73,7 +73,7 @@ setTimeout(function(){
       return {
         openedPanel: true,
         isDesktop: false,
-        apiUrl: "https://localhost:44383/api/", //"https://tryomni.co/api/", // 
+        apiUrl: "https://tryomni.co/api/", //"https://localhost:44383/api/", // 
         siteUrl: "https://tryomni.co/", //"https://localhost:44383/", //"https://flexmoni.com/",
         settings: null,
         fetchedSettings: false
@@ -226,7 +226,7 @@ setTimeout(function(){
         console.log("Log out");
         app.views.main.router.navigate('/login/');
       },
-      getBusinessProfile: function() {
+      getBusinessProfile: async function() {
         $.when(app.methods.getDataAPI("business/GetBusinessProfile")).then(function( data, textStatus, jqXHR ) {
           if(data != null){
             app.data.settings = data;
@@ -236,6 +236,12 @@ setTimeout(function(){
             }
           }
         });
+      },
+      refetchSettings:function(newData){
+        app.data.settings = newData;
+        if(app.data.settings != null && app.data.settings.name != null){
+          $(".businessNameLabel").text(app.data.settings.name);
+        }
       },
       showToast: function(text, position, icon = false){
         //var self = this;
@@ -310,7 +316,9 @@ setTimeout(function(){
 
         if(token != null && app.data.settings == null){
           //console.log("get profile from home");
-          app.methods.getBusinessProfile();
+          
+          //app.methods.getBusinessProfile();
+          
           //console.log("fetched settings");
           //app.data.fetchedSettings = true;
         }

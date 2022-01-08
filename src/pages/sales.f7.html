@@ -125,7 +125,7 @@
 
             <div class="col-33 no-padding-vertical text-align-right display-none">
               <span class="display-inline-flex margin-right-half display-none">
-                <span class="item-title float-right">Show Deleted</span>
+                <span class="item-title item-label float-right">Show Deleted</span>
                 <span class="item-after float-right margin-left-half">
                     <label class="toggle toggle-init color-red showInactiveSales">
                     <input type="checkbox">
@@ -164,6 +164,7 @@
                     <th>Amount Paid</th>
                     <th class="sort" data-sort="isPaid"><i class="icon f7-icons">arrow_up_down</i> Fully Paid</th>
                     <th class="sort" data-sort="created_date"><i class="icon f7-icons">arrow_up_down</i> Date of Purchase</th>
+                    <th>Online purchase</th>
                     <th>Action</th>
                   </tr>
                 </thead>
@@ -204,7 +205,7 @@
                     <div class="col-50">
                       <div class="item-content item-input">
                         <div class="item-inner">
-                          <div class="item-title">Product Name</div>
+                          <div class="item-title item-label">Product Name</div>
                           <div class="item-input-wrap">
                             <input type="hidden" id="productID_sell">
                             <input type="text" id="name_sell_sales" class="name_sell_sales" placeholder="Product name" required/>
@@ -217,7 +218,7 @@
                     <div class="col-50">
                       <div class="item-content item-input">
                         <div class="item-inner">
-                          <div class="item-title">Selling Price</div>
+                          <div class="item-title item-label">Selling Price</div>
                           <div class="item-input-wrap">
                             <input type="number" class="cost_sell_sales" @keyup="calculateQuantity" placeholder="selling price" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                           </div>
@@ -234,7 +235,7 @@
                       <div class="col-50">
                         <div class="item-content item-input">
                           <div class="item-inner">
-                            <div class="item-title">Quantity</div>
+                            <div class="item-title item-label">Quantity</div>
                             <div class="item-input-wrap">
                               <input type="hidden" class="hiddenQuantitySingle">
                               <input type="number" class="quantity_sell_sales" @keyup="calculateQuantity" placeholder="Quantity" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
@@ -246,7 +247,7 @@
                       <div class="col-50">
                         <div class="item-content item-input">
                           <div class="item-inner">
-                            <div class="item-title">Discount</div>
+                            <div class="item-title item-label">Discount</div>
                             <div class="item-input-wrap">
                               <input type="number" class="discount_sell_sales" @keyup="calculateQuantity" value="0" placeholder="Discount" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                             </div>
@@ -259,7 +260,7 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Total Price</div>
+                      <div class="item-title item-label">Total Price</div>
                       <div class="item-input-wrap">
                         <input type="number" class="total_sell_sales" @keyup="calculateQuantity2" placeholder="Total Price" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                       </div>
@@ -271,7 +272,7 @@
                       <div class="col-50">
                         <div class="item-content item-input">
                           <div class="item-inner">
-                            <div class="item-title">Taxes in %</div>
+                            <div class="item-title item-label">Taxes in %</div>
                             <div class="item-input-wrap">
                               <input type="number" class="taxes-sales" @keyup="calculateQuantity" placeholder="Taxes in %" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                             </div>
@@ -282,7 +283,7 @@
                       <div class="col-50">
                         <div class="item-content item-input">
                           <div class="item-inner">
-                            <div class="item-title">After Tax Price</div>
+                            <div class="item-title item-label">After Tax Price</div>
                             <div class="item-input-wrap">
                               <input type="text" class="afterTax_sales" placeholder="After Tax Price"/>
                               <span class="input-clear-button"></span>
@@ -296,7 +297,7 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
-                      <div class="item-title">Buyer's Name</div>
+                      <div class="item-title item-label">Buyer's Name</div>
                       <div class="item-input-wrap">
                         <input type="text" id="buyer_sell_sales" class="buyer_sell_sales" placeholder="Buyer name" required/>
                         <span class="input-clear-button"></span>
@@ -309,7 +310,7 @@
                     <div class="col-50">
                       <div class="item-content item-input">
                         <div class="item-inner">
-                          <div class="item-title" style="width: 100%;">
+                          <div class="item-title item-label" style="width: 100%;">
                             <span>Amount Paid</span>
                             <p class="display-inline-flex" style="float: right;margin: 0;">
                                 <a class="button button-small button-outline text-color-white button-green bg-color-green no-margin padding-horizontal-half" @click="recordPaidFullySales">Paid fully</a>
@@ -325,7 +326,7 @@
                     <div class="col-50">
                       <div class="item-content item-input">
                         <div class="item-inner">
-                          <div class="item-title">This is an Estimate<i class="icon f7-icons icon-tooltip estimateExplain color-black">info_circle_fill</i></div>
+                          <div class="item-title item-label">This is an Estimate<i class="icon f7-icons icon-tooltip estimateExplain color-black">info_circle_fill</i></div>
                           <div class="item-input-wrap">
                             <label class="checkbox">
                               <!-- checkbox input -->
@@ -344,7 +345,7 @@
                     <div class="col-50">
                       <div class="item-content item-input">
                         <div class="item-inner">
-                          <div class="item-title">Date Buyer Paid</div>
+                          <div class="item-title item-label">Date Buyer Paid</div>
                         <div class="item-input-wrap">
                             <input type="text" placeholder="Date buyer paid" id="paid-calendar-modal-sales"/>
                             <span class="input-clear-button"></span>
@@ -356,7 +357,7 @@
                     <div class="col-50">
                       <div class="item-content item-input">
                         <div class="item-inner">
-                          <div class="item-title">Date of Purchase</div>
+                          <div class="item-title item-label">Date of Purchase</div>
                         <div class="item-input-wrap">
                             <input type="text" placeholder="Date of purchase" id="purchase-calendar-modal-sales" required validate data-error-message="Select date of purchase please!"/>
                             <span class="input-clear-button"></span>
@@ -2280,6 +2281,7 @@ export default {
                         var afterTax = row.afterTaxPrice == null ? total : row.afterTaxPrice;
                         var type = row.isEstimate == true ? "Estimate" : (row.isPaid ? "Receipt" : "Invoice");
                         var paidInFull = row.isPaid == true ? '<span class="badge color-green paid padding-horizontal">Yes</span>' : '<span class="badge color-red paid padding-horizontal">No</span>';
+                        var onlinePurchase = row.orderId != null ? '<span class="badge color-green padding-horizontal">Yes</span>' : '<span class="badge color-red padding-horizontal">No</span>';
                     var html = "<tr>";
                         html += '<td class="id" style="display:none;">' + row.id + '</td>';
                         html += "<td class='name'>" + row.productName + "</td>";
@@ -2289,6 +2291,7 @@ export default {
                         html += "<td>" + self.formatMoney(row.amountPaid) + "</td>";
                         html += "<td class='isPaid'>" + paidInFull + "</td>";
                         html += "<td class='created_date'>" + moment(row.createdDate).format("LLL") + "</td>";
+                        html += "<td>" + onlinePurchase + "</td>";
                         var pops = '<a href="#" data-popover=".sales-popover-' + i + '" class="popover-open"><i class="f7-icons">ellipsis_vertical</i></a>'
                                 pops += '<div class="popover my-popover sales-popover sales-popover-' + i + '" data-close-on-escape="true" data-backdrop="false">'; 
                                 pops += '<div class="popover-angle"></div><div class="popover-inner padding-half">';
@@ -2354,11 +2357,13 @@ export default {
                             var stat = row.status == true ? "display-none" : "";
                             var hidden =  "display-none";//row.isPaid == 1 ? "" : "display-none";
                             var checkbox = row.isPaid == true ? '<span class="badge color-green paid padding-horizontal">Yes</span>' : '<span class="badge color-red paid padding-horizontal">No</span>';
+                            var onlinePurchase = row.orderId != null ? '<span class="badge color-green padding-horizontal">Yes</span>' : '<span class="badge color-red padding-horizontal">No</span>';
                             //var checkbox = row.isPaid == 1 ? '<i class="icon f7-icons text-color-green paid">checkmark_circle_fill</i>' : '<i class="icon f7-icons text-color-red paid">multiply_circle_fill</i>';
                             html += '<div class=""><span>Fully Paid: </span>' + checkbox + '</div>' + '<div class="display-none created_date">' + row.createdDate + '</div>';
                             html += '<div class="' + hidden + '"><span class="labelName">Date Fully Paid: </span><span class="valueName">' + moment(row.datePaid).format("LLL") + '</span></div>';
                             html += '<div class="display-none"><span class="labelName">Purchase Date: </span><span class="valueName">' + moment(row.createdDate).format("LLL") + '</span></div>';
                             html += '<div class="' + stat + '"><span class="labelName">Status: </span><span class="valueName">Deleted</span></div>';
+                            html += '<div class=""><span>Online purchase: </span>' + onlinePurchase + '</div>';
                             html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
                             html += '<a class="button invoice button-small" data-id="' + row.id + '">' + type +'</a>';
                             html += sellToOther;
@@ -2491,6 +2496,24 @@ export default {
           });        
     },
     getData: function(){
+      var self = this;
+      if(self.$app.data.settings != null){
+        self.getDataFetch();
+        return;
+      }
+      
+      $.when(self.$app.methods.getDataAPI("business/GetBusinessProfile")).then(function(data){
+          if(data != null){
+            self.$app.methods.refetchSettings(data);
+          }
+
+          self.getDataFetch();
+      }).catch(function(err){
+        self.getDataFetch();
+      });
+      
+    },
+    getDataFetch: function(){
       var self = this;
       var data = $(".switchEstimate").attr("data-estimate");
       var sales_estimate = Number(data);

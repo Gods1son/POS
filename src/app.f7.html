@@ -214,7 +214,8 @@
       },
       copystorelink(){
         var self = this;
-        if(self.$app.data.settings != null && self.$app.data.settings.businessUrl){
+
+        if(self.$app.data.settings != null && self.$app.data.settings.businessUrl != null){
           var share = self.$app.data.siteUrl + "shop/" + self.$app.data.settings.businessUrl;
           copy(share);
           self.$app.dialog.alert("Link copied to clipboard", "Omni");

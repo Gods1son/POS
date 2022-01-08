@@ -46,6 +46,10 @@ body {
     font-weight: 300;
 }
 
+html {
+    scroll-behavior: smooth;
+  }
+
 .navbar-bg:before {
     background: none;
 }
@@ -1022,9 +1026,13 @@ input[type="password"]::placeholder, input[type="number"]::placeholder, textarea
   }
 
   .expenseWrapper .images, .productsWrapper .images{
-    width: 60%;
-    max-width: 100%;
+    width: 100%;
+    max-width: 400px;
     margin: auto;
+  }
+
+  #showPwdSignInButton, #showPwdSignUpButton{
+      cursor: pointer;
   }
 
   .holderSwiper{
