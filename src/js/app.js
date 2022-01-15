@@ -360,7 +360,7 @@ setTimeout(function(){
         var name = $$(page).data("name");
         
         var panel = app.panel.get('.panel-left');
-        if(name == "home" || name == "login" || name == "signup"){
+        if(name == "home" || name == "login" || name == "signup" || name == "resetpassword"){
 
           if(panel.opened){
             panel.toggle(false);

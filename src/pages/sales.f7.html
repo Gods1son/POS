@@ -310,11 +310,11 @@
                     <div class="col-50">
                       <div class="item-content item-input">
                         <div class="item-inner">
-                          <div class="item-title item-label" style="width: 100%;">
-                            <span>Amount Paid</span>
-                            <p class="display-inline-flex" style="float: right;margin: 0;">
-                                <a class="button button-small button-outline text-color-white button-green bg-color-green no-margin padding-horizontal-half" @click="recordPaidFullySales">Paid fully</a>
-                              </p>
+                          <div class="row" style="width:100%;">
+                            <div class="col-100 medium-33"><div class="item-title item-label">Amount Paid</div></div>
+                            <div class="col-100 medium-66">
+                              <a class="button button-small button-outline text-color-white button-green bg-color-green no-margin padding-horizontal-half" @click="recordPaidFullySales">Paid fully</a>
+                            </div>
                           </div>
                           <div class="item-input-wrap">
                             <input type="number" class="amountpaid_sell_sales" placeholder="Amount customer paid" value="0" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
@@ -328,7 +328,7 @@
                         <div class="item-inner">
                           <div class="item-title item-label">This is an Estimate<i class="icon f7-icons icon-tooltip estimateExplain color-black">info_circle_fill</i></div>
                           <div class="item-input-wrap">
-                            <label class="checkbox">
+                            <label class="checkbox" style="margin: 10px 0;">
                               <!-- checkbox input -->
                               <input type="checkbox" class="isEstimateSales">
                               <!-- checkbox icon -->
@@ -575,8 +575,8 @@
               <div class="row margin-top-half">
                 <div class="col-50">
                   <div class="row">
-                    <div class="col-33 labelName">Amount Paid</div>
-                        <div class="col-66">
+                    <div class="col-100 medium-33 labelName">Amount Paid</div>
+                        <div class="col-100 medium-66">
                           <a class="button button-small text-color-white button-green bg-color-green" @click="recordPaidFullyMultipleSales">Paid fully</a>
                         </div>
                     </div>
@@ -587,7 +587,7 @@
                     <div class="labelName">This is an estimate<i class="icon f7-icons icon-tooltip estimateExplain color-black">info_circle_fill</i></div>
                     <div>
                       <div class="item-input-wrap" style="position: relative;">
-                        <label class="checkbox" style="position: absolute;bottom: 4px;">
+                        <label class="checkbox" style="margin: 10px 0;">
                           <input type="checkbox" class="isEstimateMultipleSales">
                           <i class="icon-checkbox"></i>
                         </label>
@@ -1089,7 +1089,7 @@ export default {
         var html = '<li class="eachSaleParentOther_sales eachProduct_sales margin-vertical"><div class="card myCard"><div class="card-content padding-horizontal padding-vertical">';
           html += '<div class="row"><div class="col-50"><div class="labelName">Name</div><input class="productName" type="text" placeholder="e.g delivery" value="';
           html +=  name + '"></div><div class="col-50"><div class="labelName">Amount</div><input class="productCost_sales" type="text" placeholder="Amount" value="' + cost + '"></div></div>';
-          html += '<div class="row margin-top-half"><div class="col-50"></div><div class="col-50"><a class="button button-small removeProduct">Remove Charge</a></div></div>';
+          html += '<div class="row margin-top-half"><div class="col-50"></div><div class="col-50"><a class="button button-small removeProduct margin-horizontal-half">Remove Charge</a></div></div>';
           html += '<input type="hidden" class="discount" value="' + discount + '"><input type="hidden" class="productQuantity_sales" value="' + quantity + '"><input type="hidden" class="totalproductprice-sales" value="'+ totalPrice + '">';
           html += "</div></div></li>"; 
 
@@ -2201,7 +2201,7 @@ export default {
 
           html += '<div class="row margin-top-half"><div class="col-50"><div class="labelName">Total Price: </div><input class="totalproductprice-sales" type="text" placeholder="Total Price" value="';
           html +=  totalPrice + '" disabled></div>';
-          html += '<div class="col-50"><div>&nbsp</div><a class="button button-small removeProduct margin-top-half" data-id="' + select.id + '">Remove Product</a></div>';
+          html += '<div class="col-50"><div>&nbsp</div><a class="button button-small removeProduct margin-top-half margin-horizontal-half" data-id="' + select.id + '">Remove Product</a></div>';
           html += '</div>';
         html += '</div></div></li>';
 
@@ -2415,7 +2415,7 @@ export default {
                                 self.invoice(data);
                               }
                               if($(this).hasClass("deleteSale")){
-                                self.deleteSale(sales, data);
+                                self.deleteSale(salesList, data);
                               }
                               /*if($(this).hasClass("permDelButton")){
                                 self.permDeleteSale(sales, data);

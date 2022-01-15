@@ -221,7 +221,7 @@
 import * as moment from 'moment';
 import * as XLSX from 'xlsx';
 var db = null, dbSettings = null;
-var dataToUpload = null, eachBatch = 50, uploaded = 0;
+var dataToUpload = null, eachBatch = 50, uploaded = 0, materialList = null;
 export default {
   test: 5,
   data: function () {
@@ -699,7 +699,7 @@ export default {
                               //return false;
                           });
 
-                          var materialList = new List('material-list', options);
+                          materialList = new List('material-list', options);
                         }else{
                           $(".sortTextPar").addClass("display-none");
                         }

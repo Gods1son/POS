@@ -108,6 +108,10 @@ html {
     overflow: auto !important;
 }
 
+.w-100{
+    width: 100%;
+}
+
 /*.page-content .navbar{
     width: calc(100% + 20px);
     margin-left: -10px;
@@ -365,6 +369,10 @@ button.text-editor-button.active{
     background: var(--main-color);
 }
 
+.attributeRow{
+    align-items: end;
+}
+
 .sortTextPar{
     white-space: nowrap;
     overflow-x: auto;
@@ -451,7 +459,7 @@ button.text-editor-button.active{
     padding: 0 !important;
 }
 
-.deleteProduct, .deleteButton, .deleteSale, .deleteExpense, .removeCost, .removeProduct, .removeRow{
+.deleteProduct, .deleteButton, .deleteSale, .deleteExpense, .removeCost, .removeProduct, .removeRow, .deleteDelivery{
     color:red !important;
 }
 
@@ -498,6 +506,7 @@ button.text-editor-button.active{
     color: var(--omni-red-color);
     border: 1px solid var(--omni-red-color);
     text-transform: none;
+    margin-right: 2px;
 }
 
 .sellMultiple{
@@ -1026,9 +1035,11 @@ input[type="password"]::placeholder, input[type="number"]::placeholder, textarea
   }
 
   .expenseWrapper .images, .productsWrapper .images{
-    width: 100%;
-    max-width: 400px;
+    width: auto;
+    height: auto;
     margin: auto;
+    max-height: 300px;
+    object-fit: fill;
   }
 
   #showPwdSignInButton, #showPwdSignUpButton{
@@ -1036,11 +1047,14 @@ input[type="password"]::placeholder, input[type="number"]::placeholder, textarea
   }
 
   .holderSwiper{
-      height: 80%;
-      overflow: auto;
+    width: 100%;
+    padding-bottom: 20px;
+    height: 80%;
+    max-height: 400px;
+    overflow: auto;
     justify-content: center;
     display: flex;
-      
+    flex-direction: column;
   }
 
   .item-media{

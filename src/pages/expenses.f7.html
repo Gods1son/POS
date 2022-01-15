@@ -249,10 +249,10 @@
                 </li>
                 <li>
                   <div class="item-content">
-                    <div class="item-inner-1">
-                      <span class="item-title item-label">Recurring Payment</span>
+                    <div class="item-inner-1 padding-top-half">
+                      <div class="item-title item-label">Recurring Payment</div>
                       <!--<div class="item-after">-->
-                        <label class="toggle toggle-init recurring margin-left-half">
+                        <label class="toggle toggle-init recurring">
                           <input type="checkbox">
                           <span class="toggle-icon"></span>
                         </label>
@@ -485,7 +485,7 @@ export default {
             });
         }, null);
     },
-    deleteExpense: function(list, id){
+    deleteExpense: function(id){
         var self = this;
         var checked = false;
         var text = "delete"
@@ -512,7 +512,7 @@ export default {
                       totalMat:self.expenses.length
                   }, function(){
                       self.showToast("Expense " + text + "d!", "center", true);
-                      list.remove("id", id);
+                      //list.remove("id", id);
                       self.setDataTable();
                     self.calculateTotalMoneyExpense();
                   });
@@ -567,9 +567,10 @@ export default {
                         //var imgName = Object.keys(obj)[0];
                         //var imgSrc = Object.values(obj)[0];
                         var html = "<div class='swiper-slide'>";
-                          html += "<div class='holderSwiper'><img class='images' src='" + obj + "'></div>";
-                          html += "<div class='display-inline-flex margin-vertical padding-bottom' style='width:100%'><a class='button button-small tealBgButton link external margin-right' target='_blank' href='" + obj + "' download>Download Receipt</a><a class='button button-small deleteImage' data-name='" + obj + "'>Delete Receipt</a></div></div>";
-                        $(".expenseWrapper").append(html); 
+                          html += "<div class='holderSwiper'><div style='margin: auto;'><img class='images' src='" + obj + "'></div>";
+                          html += "<div class='display-inline-flex margin-vertical' style='width:100%'><a class='button button-small tealBgButton link external margin-right' target='_blank' href='" + obj + "' download>Download Receipt</a><a class='button button-small deleteImage' data-name='" + obj + "'>Delete Receipt</a></div></div>";
+                          html += "</div>";
+                          $(".expenseWrapper").append(html); 
                       }
                       $('.expenseWrapper').off("click").on('click','.button', function (e) {
                           var name = $(this).attr("data-name");
@@ -774,9 +775,9 @@ export default {
                           pops += '<a class="button popover-close deleteExpense" data-id="' + row.id + '">';
                           pops += row.status == 1 ? 'Delete' : 'Activate';
                           pops += '</a>';
-                          if(row.status == false){
+                          /*if(row.status == false){
                             pops += '<a class="button popover-close permDelButton" data-id="' + row.id + '">Delete</a>';
-                          }
+                          }*/
 
                         pops += '</div></div>';
                         html += "<td>" + pops + "</td>";
@@ -811,14 +812,15 @@ export default {
                         html += '<div class="' + stat + '"><span>Status: </span><span class="valueName">Deleted</span></div>';
                         html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
                         html += '<a class="button button-small editExpense" data-id="' + row.id + '">View / Edit</a>';
-                        html += '<a class="button button-small receiptButton" data-id="' + row.id + '">Receipt</a>';
+                        //html += '<a class="button button-small receiptButton" data-id="' + row.id + '">Receipt</a>';
                         html += '<a class="button button-small deleteExpense" data-id="' + row.id + '">';
                         html +=  row.status == true ? 'Delete' : 'Activate'; 
                         html += '</a>';
                         
-                        if(row.status == false){
+                        /*if(row.status == false){
                           html += '<a class="button button-small permDelButton" data-id="' + row.id + '">Delete</a>';
-                        }
+                        }*/
+
                         html += '</p></div></div>';
                         html += '</li>';
                         $("#expenses-list ul.list").append(html);
@@ -851,10 +853,10 @@ export default {
                         self.openPopUp(data);
                       }
                       if($(this).hasClass("deleteExpense")){
-                        self.deleteExpense(expense, data);
+                        self.deleteExpense(data);
                       }
                       if($(this).hasClass("permDelButton")){
-                        self.permdeleteExpense(expense, data);
+                        self.permdeleteExpense(data);
                       }
                       if($(this).hasClass("receiptButton")){
                         self.openReceiptImages(data);

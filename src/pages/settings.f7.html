@@ -427,7 +427,7 @@
                                       <li>
                                         <div class="item-content item-input">
                                           <div class="item-inner">
-                                            <div class="item-title">Location</div>
+                                            <div class="item-title item-label">Location</div>
                                             <div class="item-input-wrap">
                                               <input type="text" class="delivery_location" placeholder="Location" required validate/>
                                               <span class="input-clear-button"></span>
@@ -439,7 +439,7 @@
                                       <li>
                                         <div class="item-content item-input">
                                           <div class="item-inner">
-                                            <div class="item-title">Delivery Cost</div>
+                                            <div class="item-title item-label">Delivery Cost</div>
                                             <div class="item-input-wrap">
                                               <input type="number" class="delivery_cost" placeholder="delivery cost" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
                                               <span class="input-clear-button"></span>
@@ -485,8 +485,8 @@
                                           <a href="#" data-popover=".orders-popover-{{id}}" class="popover-open"><i class="f7-icons">ellipsis_vertical</i></a>
                                           <div class="popover my-popover orders-popover orders-popover-{{id}}" data-close-on-escape="true" data-backdrop="false">
                                           <div class="popover-angle"></div><div class="popover-inner padding-half">
-                                            <a class="button popover-close" data-id="{{id}}" @click="openPopUpDelivery({{id}})">View / Edit</a>
-                                            <a class="button popover-close color-red" data-id="{{id}}" @click="DeleteDelivery({{id}})">Delete</a>
+                                            <a class="button popover-close margin-bottom-half" data-id="{{id}}" @click="openPopUpDelivery({{id}})">View / Edit</a>
+                                            <a class="button popover-close deleteDelivery" data-id="{{id}}" @click="DeleteDelivery({{id}})">Delete</a>
                                           </div>
                                         </div>
                                     </td>

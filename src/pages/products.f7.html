@@ -388,7 +388,7 @@
                         <span class="input-clear-button"></span>
                       </div>
 
-                      <div class="item-title item-label padding-top-half">
+                      <div class="item-title item-label padding-top">
                         <span>Stock is Unlimited</span>
                         <label class="checkbox vertical-align-super padding-left-half">
                           <!-- checkbox input -->
@@ -527,12 +527,23 @@
                 <li>
                   <div class="item-content item-input">
                     <div class="item-inner">
+                      <div class="item-title item-label">Comparable Price (this price will be crossed out beside your selling price, like sale)</div>
+                      <div class="item-input-wrap">
+                        <input type="number" class="comparable_price" placeholder="Comparable price of product" step=".01"/>
+                        <span class="input-clear-button"></span>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
                       <div class="item-title item-label">In Stock</div>
                       <div class="item-input-wrap">
                         <input type="number" class="stock_quantity" placeholder="Quantity of product in stock" @keyup="stockInput" @keypress="onlyDecimal"/>
                       </div>
 
-                      <div class="item-title item-label padding-top-half">
+                      <div class="item-title item-label padding-top">
                         <span>Stock is Unlimited</span>
                         <label class="checkbox vertical-align-super padding-left-half">
                           <!-- checkbox input -->
@@ -541,8 +552,23 @@
                           <i class="icon-checkbox"></i>
                         </label>
                       </div>
-
-                      <div class="item-title item-label padding-top-half">
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-title item-label">Low Stock Alert (you will be alerted when stock drops below this number)</div>
+                      <div class="item-input-wrap">
+                        <input type="number" class="low_stock_alert" placeholder="Low stock alert" @keypress="onlyDecimal"/>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="item-content item-input">
+                    <div class="item-inner">
+                      <div class="item-title item-label padding-top">
                         <span>Show to public</span>
                         <label class="checkbox vertical-align-super padding-left-half">
                           <!-- checkbox input -->
@@ -559,7 +585,7 @@
                   <div class="item-content item-input">
                       <div class="item-inner">
                         <div class="item-title item-label">Upload Images (maximum of 5 images, with square aspect ratio and size less than 2MB)</div>
-                      <div class="item-input-wrap">
+                      <div class="item-input-wrap padding-vertical-half">
                         <input type="file" name="photos" id="productPhotos" accept="image/x-png,image/gif,image/jpeg,image/jpg,image/png" @change="checkFilesPhoto" multiple>
                             
                         <div class="swiper-container demo-swiper margin-top display-none">
@@ -572,13 +598,53 @@
                     </div>
                   </div>
                 </li>
-                <li>
-                  <div class="item-content item-input" id="digitalAssetHolder">
+                <li id="digitalAssetHolder">
+                  <div class="item-content item-input">
                       <div class="item-inner">
                         <div class="item-title item-label">Upload Digital Product</div>
                       <div class="item-input-wrap">
                         <input type="file" name="digitalAsset" id="digitalAsset" accept="media_type">
                         <div id="digitalAssetLink"></div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <!--Add variants-->
+                <li id="variantsHolder">
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <!--<button class="button col addVariantsButton">Add Variants</button>-->
+                      <div class="item-input-wrap">
+                        <div id="variantCreator">
+                        <div class="item-title item-label">Add Variants</div>
+                        <div class="card myCard">
+                          <div class="card-content padding-horizontal padding-vertical attributeRowParent">
+                            <div class="row attributeRow">
+                              <div class="col-50">
+                                <div class="labelName">Attribute</div>
+                                <input class="AttributeKey" type="text" placeholder="e.g color" value="">
+                              </div>
+                              <div class="col-50">
+                                <div class="labelName">Values (comma separated)</div>
+                                <input class="AttributeValue" type="text" placeholder="e.g red,blue,white" value="">
+                              </div>
+                            </div>
+                            <div class="row margin-top-half">
+                              <div class="col-50">
+                                <a class="button button-small no-margin-left button-fill color-gray text-color-white" @click="addNewAttribute">Add New Attribute</a>
+                              </div>
+                              <div class="col-50">
+                                <a class="button button-small no-margin-left button-fill color-green text-color-white" @click="createArrayOfArray">Create Variants</a>
+                              </div>
+                            </div>
+                            </div>
+                          </div>
+                        </div>
+
+                          <div id="allVariantCreatedPar" class="display-none">
+                            <div class="item-title item-label">All Variants</div>
+                            <div id="allVariantCreated"></div>
+                          </div>
                       </div>
                     </div>
                   </div>
@@ -723,11 +789,11 @@
                     <div class="col-50">
                       <div class="item-content item-input">
                         <div class="item-inner">
-                          <div class="item-title item-label" style="width: 100%;">
-                            <span>Amount Paid</span>
-                            <p class="display-inline-flex" style="float: right;margin: 0;">
-                                <a class="button button-small button-outline text-color-white button-green bg-color-green no-margin padding-horizontal-half" @click="recordPaidFully">Paid fully</a>
-                              </p>
+                          <div class="row" style="width:100%;">
+                            <div class="col-100 medium-33"><div class="item-title item-label">Amount Paid</div></div>
+                            <div class="col-100 medium-66">
+                              <a class="button button-small button-outline text-color-white button-green bg-color-green no-margin padding-horizontal-half" @click="recordPaidFully">Paid fully</a>
+                            </div>
                           </div>
                           <div class="item-input-wrap">
                             <input type="number" class="amountpaid_sell" placeholder="Amount customer paid" value="0" required validate pattern="[0-9]+(\.[0-9][0-9]?)?" data-error-message="Only numbers and decimals please!"/>
@@ -741,7 +807,7 @@
                         <div class="item-inner">
                           <div class="item-title item-label">It's an Estimate<i class="icon f7-icons icon-tooltip estimateExplain color-black">info_circle_fill</i></div>
                           <div class="item-input-wrap">
-                            <label class="checkbox">
+                            <label class="checkbox" style="margin: 10px 0;">
                               <!-- checkbox input -->
                               <input type="checkbox" class="isEstimate">
                               <!-- checkbox icon -->
@@ -972,8 +1038,8 @@
               <div class="row margin-top-half">
                 <div class="col-50">
                   <div class="row">
-                    <div class="col-33 labelName">Amount Paid</div>
-                        <div class="col-66">
+                    <div class="col-100 medium-33 labelName">Amount Paid</div>
+                        <div class="col-100 medium-66">
                           <a class="button button-small text-color-white button-green bg-color-green" @click="recordPaidFullyMultiple">Paid fully</a>
                         </div>
                     </div>
@@ -984,7 +1050,7 @@
                     <div class="labelName">This is an estimate<i class="icon f7-icons icon-tooltip estimateExplain color-black">info_circle_fill</i></div>
                     <div>
                       <div class="item-input-wrap" style="position: relative;">
-                        <label class="checkbox" style="position: absolute;bottom: 4px;">
+                        <label class="checkbox" style="margin: 10px 0;">
                           <input type="checkbox" class="isEstimateMultiple">
                           <i class="icon-checkbox"></i>
                         </label>
@@ -1031,7 +1097,7 @@ import * as XLSX from 'xlsx';
 import copy from 'copy-to-clipboard';
 var selectedUserName = null, selectedUserID = null, myActionSheet = null, mogulsheetdb = null;
 var dbProducts = null, dbProdIngs = null, dbProdOthers = null, dbSales = null, dbIngs = null, dbSettings = null, dbClients = null;
-var dbRestock = null, dataToUpload = null, eachBatch = 50, uploaded = 0, allImages = undefined;
+var dbRestock = null, dataToUpload = null, eachBatch = 50, uploaded = 0, allImages = undefined, productList = null;
 //var $$ = Dom7;
 export default {
   data: function () {
@@ -1053,6 +1119,7 @@ export default {
         settings: null,
         settingsID: 'settings',
         clients:null,
+        createdVariants:[],
         backendUrl: 'https://posbackend.herokuapp.com/',   //  'http://localhost:3000/'
       }
     },
@@ -1060,6 +1127,264 @@ export default {
     calculateprofit: function(){
       var self = this;
         self.CalculateTotal();
+    },
+    addNewAttribute: function(){
+      var row = '<div class="row attributeRow margin-top-half"> \
+                              <div class="col-50"> \
+                                <input class="AttributeKey" type="text" placeholder="e.g color" value=""> \
+                              </div> \
+                              <div class="col-50"> \
+                                <input class="AttributeValue" type="text" placeholder="e.g red,blue,white" value=""> \
+                              </div> \
+                            </div>';
+        var len = $(".attributeRow").length;
+        $(row).insertAfter($(".attributeRow").eq(len - 1));
+    },
+    renderProductVariant: function(arr){
+      var self = this;
+      $("#variantCreator").addClass("display-none");
+      $("#allVariantCreatedPar").removeClass("display-none");
+      $("#allVariantCreated").empty();
+      $.each(arr, function(ind, val){
+        var text = "";
+        $.each(val.variantAttributes, function(ind2, val2){
+            text += "<div class='row margin-top-half'><div class='col-100'>";
+              text += "<div class='labelName text-color-red'><span class='variantAttributeKey'>" + val2["attribute"] + "</span>: <span class='variantAttributeValue'>" + val2["value"] + "</span></div>";
+              text += "</div></div>";
+        })
+        
+      
+        var template = '<div class="card myCard eachProductVariant">\
+                          <div class="card-content padding-horizontal padding-vertical">\
+                            <div class="row">\
+                              <input type="hidden" class="variantProductID" value="' + val.id + '"/>\
+                              <div class="col-50">\
+                                <div class="labelName">Cost Price</div>\
+                                <input class="variantCostPrice" type="number" placeholder="Cost Price" value="' + val.costPrice + '" required>\
+                              </div>\
+                              <div class="col-50">\
+                                <div class="labelName">Selling Price</div>\
+                                <input class="variantSellingPrice" type="number" placeholder="Selling Price" value="' + val.sellingPrice + '" required>\
+                              </div>\
+                            </div>\
+                            <div class="row margin-top-half">\
+                              <div class="col-50">\
+                                <div class="labelName">Comparable Price</div>\
+                                <input class="variantComparablePrice" type="number" placeholder="Comparable Price" value="' + (val.comparablePrice == null ? "" : val.comparablePrice) + '">\
+                              </div>\
+                              <div class="col-50">\
+                                <div class="labelName">In Stock</div>\
+                                <input class="variantInStock" type="number" placeholder="Quantity In Stock" value="' + (val.stock != "Unlimited" ? val.stock : "") + '">\
+                              </div>\
+                            </div>\
+                            <div class="row margin-top-half">\
+                              <div class="col-50">\
+                                <span class="labelName">Show to public</span>\
+                                <input class="showVariantToPublic margin-left-half" type="checkbox">\
+                              </div>\
+                              <div class="col-50">\
+                                <span class="labelName">Stock is Unlimited</span>\
+                                <input class="stockUnlimited margin-left-half" type="checkbox">\
+                              </div>\
+                            </div>';
+              
+              template += text;
+                            
+              template += '<div class="row margin-top-half">\
+                              <div class="col-50"></div>\
+                              <div class="col-50">\
+                                <a class="button button-small button-fill color-red margin-horizontal-half text-color-white deleteVariant">Delete Variant</a>\
+                              </div>\
+                            </div>\
+                            </div>\
+                          </div>';
+          template = $(template);
+          if(val.stock == "Unlimited"){
+            $(template).find(".stockUnlimited").prop("checked", true);
+          }
+          if(val.showToPublic == true){
+            $(template).find(".showVariantToPublic").prop("checked", true);
+          }
+          $("#allVariantCreated").append(template);
+      });
+      //bind events
+      $(".deleteVariant").on("click", function(e){
+        var deleteParent = $(this).parents(".eachProductVariant").eq(0);
+        var idToDelete = parseInt($(this).parents(".eachProductVariant").eq(0).find(".variantProductID").val());
+        self.$app.preloader.show();
+        $.when(self.$app.methods.getDataAPI("products/DeleteActivateProd?id=" + idToDelete + "&stat=" + false)).then(function( data, textStatus, jqXHR ) {
+          self.$app.preloader.hide();
+          $(deleteParent).remove();
+        }).catch((err) => {
+          self.$app.preloader.hide();
+          self.$app.methods.showToast("An error occurred", "center");
+        });
+      });
+      //switch btw unlimited and stock
+      $(".stockUnlimited").on("change", function(e){
+        if($(".stockUnlimited").is(":checked")){
+          $(this).parents(".eachProductVariant").eq(0).find(".variantInStock").val("");
+        }else{
+          if($(this).parents(".eachProductVariant").eq(0).find(".variantInStock").val() == ""){
+            $(this).attr("checked", true);
+          }
+        }
+      })
+      //in stock press
+      $(".variantInStock").on("keyup", function(e){
+        if($(this).val() == ""){
+          $(this).parents(".eachProductVariant").eq(0).find(".stockUnlimited").attr("checked", true);
+        }else{
+          $(this).parents(".eachProductVariant").eq(0).find(".stockUnlimited").attr("checked", false);
+        }
+      })
+    },
+    createProductVariant: function(arr){
+      $("#allVariantCreatedPar").removeClass("display-none");
+      $("#allVariantCreated").empty();
+      $.each(arr, function(ind, val){
+        var text = "";
+        for(var obj in val){
+          text += "<div class='row margin-top-half'><div class='col-100'>";
+            text += "<div class='labelName text-color-red'><span class='variantAttributeKey'>" + obj + "</span>: <span class='variantAttributeValue'>" + val[obj] + "</span></div>";
+            text += "</div></div>";
+        }
+      
+        var template = '<div class="card myCard eachProductVariant">\
+                          <div class="card-content padding-horizontal padding-vertical">\
+                            <div class="row">\
+                              <input type="hidden" class="variantProductID" value="0"/>\
+                              <div class="col-50">\
+                                <div class="labelName">Cost Price</div>\
+                                <input class="variantCostPrice" type="number" placeholder="Cost Price" value="" required>\
+                              </div>\
+                              <div class="col-50">\
+                                <div class="labelName">Selling Price</div>\
+                                <input class="variantSellingPrice" type="number" placeholder="Selling Price" value="" required>\
+                              </div>\
+                            </div>\
+                            <div class="row margin-top-half">\
+                              <div class="col-50">\
+                                <div class="labelName">Comparable Price</div>\
+                                <input class="variantComparablePrice" type="number" placeholder="Comparable Price" value="">\
+                              </div>\
+                              <div class="col-50">\
+                                <div class="labelName">In Stock</div>\
+                                <input class="variantInStock" type="number" placeholder="Quantity In Stock" value="">\
+                              </div>\
+                            </div>\
+                            <div class="row margin-top-half">\
+                              <div class="col-50">\
+                                <span class="labelName">Show to public</span>\
+                                <input class="showVariantToPublic margin-left-half" type="checkbox">\
+                              </div>\
+                              <div class="col-50">\
+                                <span class="labelName">Stock is Unlimited</span>\
+                                <input class="stockUnlimited margin-left-half" type="checkbox">\
+                              </div>\
+                            </div>';
+              
+              template += text;
+                            
+              template += '<div class="row margin-top-half">\
+                              <div class="col-50"></div>\
+                              <div class="col-50">\
+                                <a class="button button-small button-fill color-red margin-horizontal-half text-color-white deleteVariant">Delete Variant</a>\
+                              </div>\
+                            </div>\
+                            </div>\
+                          </div>';
+          $("#allVariantCreated").append(template);
+      })
+      $(".variantCostPrice").val($(".cost_price").val());
+      $(".variantSellingPrice").val($(".selling_price").val());
+      $(".variantComparablePrice").val($(".comparable_price").val());
+      $(".variantInStock").val($(".stock_quantity").val());
+      $(".stockUnlimited").attr("checked", $(".isUnlimited").is(":checked"));
+      $(".showVariantToPublic").attr("checked", $(".showToPublic").is(":checked"));
+      $(".deleteVariant").on("click", function(e){
+        $(this).parents(".eachProductVariant").eq(0).remove();
+      });
+      //switch btw unlimited and stock
+      $(".stockUnlimited").on("change", function(e){
+        if($(".stockUnlimited").is(":checked")){
+          $(this).parents(".eachProductVariant").eq(0).find(".variantInStock").val("");
+        }else{
+          if($(this).parents(".eachProductVariant").eq(0).find(".variantInStock").val() == ""){
+            $(this).attr("checked", true);
+          }
+        }
+      })
+      //in stock press
+      $(".variantInStock").on("keyup", function(e){
+        if($(this).val() == ""){
+          $(this).parents(".eachProductVariant").eq(0).find(".stockUnlimited").attr("checked", true);
+        }else{
+          $(this).parents(".eachProductVariant").eq(0).find(".stockUnlimited").attr("checked", false);
+        }
+      })
+    },
+    getPermutation: function(arrayOfarray, prefix){
+      var self = this;
+      prefix = prefix || '';
+      if (!arrayOfarray.length) {
+          return prefix;
+      }
+    
+      var result = arrayOfarray[0].reduce(function (result, value) {
+          return result.concat(self.getPermutation(arrayOfarray.slice(1), prefix + value));
+      }, []);
+      return result;
+    },
+    createArrayOfArray: function(){
+      var self = this;
+      var bigData = [];
+      var keys = [];
+      $.each($(".AttributeKey"), function(ind, val){
+        var key = $(val).val().trim();
+        var opts = $(".AttributeValue").eq(ind).val().trim();
+        if(key != "" && opts != ""){
+          var sep = opts.split(",").filter(x => x != "");
+          sep = [...new Set(sep)];
+          var simps = [];
+          keys.push(key);
+          for(var i =0; i < sep.length; i++){
+            var opt = sep[i].trim() + ";";
+            simps.push(opt);
+          }
+          bigData.push(simps);
+        }
+      })
+      //console.log(bigData);
+      if(bigData.length > 0){
+        var fullTable = self.getPermutation(bigData);
+        //console.log("keys", keys);
+        //console.log("table:", fullTable);
+        var finalTable = [];
+        $.each(fullTable, function(ind, val){
+          var allOpts = val.split(";").filter(x => x != "");
+          var obj = {};
+          $.each(allOpts, function(ind2, val2){
+            obj[keys[ind2]] = val2;
+          });
+          finalTable.push(obj);
+        })
+        
+        //console.log("full variants:", finalTable);
+        //createdVariants
+        /*self.$setState({
+          createdVariants: finalTable
+        })*/
+        self.createProductVariant(finalTable);
+      }
+    },
+    clearVariantCreator: function(){
+      var self = this;
+      $(".attributeRow").not(':first').remove();
+      $(".AttributeKey, .AttributeValue").val("");
+      $("#allVariantCreated").empty();
+      $("#allVariantCreatedPar").addClass("display-none");
+      //$("#variantCreator").removeClass("display-none");
     },
     uploadImagesProducts: function(){
        var self = this; 
@@ -1570,9 +1895,23 @@ export default {
       var popup = self.$app.popup.close('.uploadProducts', true);
       self.getData();
     },
+    fetchVariants: function(id){
+      var self = this;
+      self.$app.preloader.show();
+      $.when(self.$app.methods.getDataAPI("products/GetProductVariants?id=" + id)).then(function( data, textStatus, jqXHR ) {
+        self.$app.preloader.hide(); 
+        if(data != null && data.length > 0){
+          //reuse product variant templates
+          //console.log(data);
+          self.renderProductVariant(data);
+        }
+      }).catch((err) => {
+        self.$app.preloader.hide(); 
+      })
+    },
     openPopUp: function(id){
         var self = this;
-        
+        $("#variantCreator").addClass("display-none");
         //popup.once("opened", function(){
           if(id != null || id != undefined){
             var item = self.products.find(function(e){ 
@@ -1594,6 +1933,12 @@ export default {
                       $(".isUnlimited").prop("checked", false);
                       $(".stock_quantity").val(item.stock);
                     }
+                    if(item.comparablePrice != null){
+                      $(".comparable_price").val(item.comparablePrice);
+                    }
+                    if(item.lowStockAlert != null){
+                      $(".low_stock_alert").val(item.lowStockAlert);
+                    }
                     //var makePub = $(".showToPublic").is(":checked");
                     //makePub = makePub == null ? true : makePub;
                     $(".showToPublic").prop("checked", item.showToPublic);
@@ -1608,8 +1953,9 @@ export default {
                           //var imgName = Object.keys(obj)[0];
                           //var imgSrc = Object.values(obj)[0];
                           var html = "<div class='swiper-slide'>";
-                            html += "<div class='holderSwiper'><img class='images' src='" + obj + "'></div>";
-                            html += "<div class='display-inline-flex margin-vertical padding-bottom' style='width:100%'><a class='button button-small tealBgButton link external margin-right' target='_blank' href='" + obj + "' download>Download Image</a><a class='button button-small deleteImage' data-name='" + obj + "'>Delete Image</a></div></div>";
+                            html += "<div class='holderSwiper'><div style='margin:auto;'><img class='images' src='" + obj + "'></div>";
+                            html += "<div class='display-inline-flex margin-vertical' style='width:100%'><a class='button button-small tealBgButton link external margin-right' target='_blank' href='" + obj + "' download>Download Image</a><a class='button button-small deleteImage' data-name='" + obj + "'>Delete Image</a></div></div>";
+                            html += "</div>";
                           $(".productsWrapper").append(html); 
                         }
                         $('.productsWrapper').off("click").on('click','.button', function (e) {
@@ -1625,9 +1971,15 @@ export default {
 
                     //$(".stock_quantity, .isUnlimited").prop("disabled", true);
                     var popup = self.$app.popup.open('.popup.newProduct', true);
+                    if(item.hasVariant == true){
+                      self.fetchVariants(id);
+                    }else{
+                      $("#variantCreator").removeClass("display-none");
+                    }
             } else{
+              $("#variantCreator").removeClass("display-none");
               $(".isUnlimited, .showToPublic").prop("checked", true);
-              $("input.nameProduct,input.selling_price,.cost_price, .stock_quantity, .productCategory").val("");
+              $("input.nameProduct,input.selling_price,.cost_price, .stock_quantity, .productCategory, .comparable_price, .low_stock_alert").val("");
               $("#digitalAssetLink").text("");
               $("#productType").val("physicalProduct").change();
               //$(".stock_quantity, .isUnlimited").prop("disabled", false);
@@ -1926,7 +2278,7 @@ export default {
 
           html += '<div class="row margin-top-half"><div class="col-50"><div class="labelName">Total Price: </div><input class="totalproductprice" type="text" placeholder="Total Price" value="';
           html +=  totalPrice + '" disabled></div>';
-          html += '<div class="col-50"><div>&nbsp</div><a class="button button-small removeProduct margin-top-half" data-id="' + select.id + '">Remove Product</a></div>';
+          html += '<div class="col-50"><div>&nbsp</div><a class="button button-small removeProduct margin-top-half margin-horizontal-half" data-id="' + select.id + '">Remove Product</a></div>';
           html += '</div>';
         html += '</div></div></li>';
         $("#products-list .sortList").append(html);
@@ -2425,7 +2777,7 @@ export default {
         var html = '<li class="eachSaleParentOther eachProduct margin-vertical"><div class="card myCard"><div class="card-content padding-horizontal padding-vertical">';
           html += '<div class="row"><div class="col-50"><div class="labelName">Name</div><input class="productName" type="text" placeholder="e.g delivery" value="';
           html +=  name + '"></div><div class="col-50"><div class="labelName">Amount</div><input class="productCost" type="text" placeholder="Amount" value="' + cost + '"></div></div>';
-          html += '<div class="row margin-top-half"><div class="col-50"></div><div class="col-50"><a class="button button-small removeProduct">Remove Charge</a></div></div>';
+          html += '<div class="row margin-top-half"><div class="col-50"></div><div class="col-50"><a class="button button-small removeProduct margin-horizontal-half">Remove Charge</a></div></div>';
           html += '<input type="hidden" class="discount" value="' + discount + '"><input type="hidden" class="productQuantity" value="' + quantity + '"><input type="hidden" class="totalproductprice" value="'+ totalPrice + '">';
           html += "</div></div></li>"; //closing
 
@@ -2494,7 +2846,7 @@ export default {
     },
     closeEditProdPopUp: function(){
       var self = this;
-      $$("input.name,input.selling_price,.cost_price, .stock_quantity, .productCategory").val("");
+      $$("input.name,input.selling_price,.cost_price, .stock_quantity, .productCategory, .comparable_price, .low_stock_alert").val("");
       $(".isUnlimited, .showToPublic").prop("checked", true);
       var textEditor = self.$app.textEditor.get('.desc_of_product');
       textEditor.setValue("");
@@ -2504,6 +2856,7 @@ export default {
       document.getElementById("productPhotos").value = "";
       document.getElementById("digitalAsset").value = "";
       $("#digitalAssetLink").text("");
+      self.clearVariantCreator();
       var popup = self.$app.popup.close('.newProduct', true);
       popup.once("closed", function(){
             self.getData();
@@ -2525,13 +2878,38 @@ export default {
             self.getData();
         });
     },
+    verifyVariants: function(){
+      var self = this;
+      if($(".eachProductVariant").length > 0){
+        var correct = true;
+        $.each($(".eachProductVariant"), function(ind, val){
+
+            $.each($(val).find("input:required"), function(ind2, val2){
+              if($(val2).val() == ""){
+                correct = false;
+              }
+            });
+        });
+        return correct;
+      }
+      return true;
+    },
     saveData: function(){
       //var $$ = this.Dom7;
       var self = this;
       var elem = $$("input:required");
-      var err = self.$app.input.validateInputs(".productForm");
+      var noErr = self.$app.input.validateInputs(".productForm");
+      var hasVariant = false;
+      if($(".eachProductVariant").length > 0){
+        hasVariant = true;
+        var variantCorrect = self.verifyVariants();
+        if(!variantCorrect){
+          self.$app.dialog.alert("Required information from variants are not filled", "Omni");
+          return;
+        }
+      }
       
-      if(err){
+      if(noErr){
         var stock = $(".stock_quantity").val();
         var unlimited = $(".isUnlimited").is(":checked");
         var makePub = $(".showToPublic").is(":checked");
@@ -2542,6 +2920,15 @@ export default {
         var finalStock = stock != "" ? stock : "Unlimited";
         var textEditor = self.$app.textEditor.get('.desc_of_product');
         var desc = textEditor.value;
+        var comparable_price = $("input.comparable_price").val();
+        if(comparable_price == "" || comparable_price == 0){
+          comparable_price = null;
+        };
+
+        var low_stock = $("input.low_stock_alert").val();
+        if(low_stock == "" || low_stock == 0 || unlimited == true){
+          low_stock = null;
+        };
 
         //add stocking to dbRestocking
         var saveStock = {};
@@ -2555,8 +2942,16 @@ export default {
                 status:true,
                 showToPublic: makePub,
                 typeOfProduct: $("#productType").val(),
-                productCategory: $(".productCategory").val()
+                productCategory: $(".productCategory").val(),
+                HasVariant: hasVariant
               };
+
+              if(low_stock != null){
+                obj.LowStockAlert = low_stock;
+              }
+              if(comparable_price != null){
+                obj.ComparablePrice = comparable_price;
+              }
 
             if(self.currentProduct != null){
               obj.id = self.currentProduct.id;
@@ -2645,10 +3040,71 @@ export default {
             self.$app.preloader.show();
             $.when(self.$app.methods.postFormDataAPI("products/SaveProdForm", form_data, true)).then(function( data, textStatus, jqXHR ) {
               self.$app.preloader.hide();
-                if(data){
+                if(data != null){
                     //self.$app.dialog.alert("Item saved.");
-                    self.showToast("Product saved.", "center", true);
-                    $("input.nameProduct,input.selling_price,.cost_price, .stock_quantity, .productCategory").val("");
+                    if($(".eachProductVariant").length > 0){
+                      //save variants
+                      self.saveVariants(data);
+                    }else{
+                      self.showToast("Product saved.", "center", true);
+                      self.resetSaveProductFields();
+                    }
+                    
+                  
+                } 
+              }).catch((data, textStatus, jqXHR) => {
+                self.$app.preloader.hide();
+                self.$app.methods.showToast("An error occurred", "center");
+            })
+          }
+    },
+    saveVariants: function(parent){
+      var self = this;
+      var totalObjs = [];
+      $.each($(".eachProductVariant"), function(ind, val){
+        var obj = Object.assign({}, parent);
+        obj.id = parseInt($(val).find(".variantProductID").val());
+        obj.parentId = parent.id;
+        obj.costPrice = $(val).find(".variantCostPrice").val();
+        obj.sellingPrice = $(val).find(".variantSellingPrice").val();
+        obj.comparablePrice = $(val).find(".variantComparablePrice").val();
+        obj.stock = $(val).find(".stockUnlimited").is(":checked") ? "Unlimited" : $(val).find(".variantInStock").val();
+        obj.showToPublic = $(val).find(".showVariantToPublic").is(":checked");
+        obj.variantAttributes = [];
+        obj.hasVariant = false;
+        //find attr
+        if(obj.id == 0){
+          //only add atrributes for newly created
+            $.each($(val).find(".variantAttributeKey"), function(ind2, attr){
+              var attribute = {};
+              attribute.attribute = $(attr).text();
+              attribute.value = $(val).find(".variantAttributeValue").eq(ind2).text();
+              attribute.productId = parent.id;
+              attribute.businessId = obj.businessId;
+              obj.variantAttributes.push(attribute);
+          });
+        }
+        
+        //push variant into array
+        totalObjs.push(obj);
+      })
+      if(totalObjs.length > 0){
+        self.$app.preloader.show();
+        $.when(self.$app.methods.postDataAPI("products/SaveProdVariants", totalObjs, true)).then(function( data, textStatus, jqXHR ) {
+          //alert("saved");
+          self.$app.preloader.hide();
+          self.showToast("Product saved.", "center", true);
+          self.resetSaveProductFields();
+        }).catch((data, textStatus, jqXHR) => {
+                //console.log("stock error", data);
+                self.$app.preloader.hide();
+                self.$app.methods.showToast("An error occurred", "center");
+            })
+      }
+    },
+    resetSaveProductFields: function(){
+      var self = this;
+      $("input.nameProduct,input.selling_price,.cost_price, .stock_quantity, .productCategory, .comparable_price, .low_stock_alert").val("");
                     $(".isUnlimited, .showToPublic").prop("checked", true);
                     $("#digitalAssetLink").text("");
                     var textEditor = self.$app.textEditor.get('.desc_of_product');
@@ -2658,16 +3114,10 @@ export default {
                     $(".productsWrapper, .swiper-pagination").empty();
                     document.getElementById("productPhotos").value = "";
                     document.getElementById("digitalAsset").value = "";
-
+                    self.clearVariantCreator();
                     self.$setState({
                       currentProduct:null
                   });
-                } 
-              }).catch((data, textStatus, jqXHR) => {
-                self.$app.preloader.hide();
-                self.$app.methods.showToast("An error occurred", "center");
-            })
-          }
     },
     saveStockAfterProd: function(obj){
       var self = this;
@@ -3054,7 +3504,7 @@ export default {
                                 self.openPopUpIngredients(data);
                               }
                               if($(this).hasClass("deleteProduct")){
-                                self.DeleteItem(productList,data); //done
+                                self.DeleteItem(productList, data); //done
                               }
                               if($(this).hasClass("permDelButton")){
                                 self.permDeleteItem(productList, data);
@@ -3067,7 +3517,7 @@ export default {
                               //return false;
                           });
 
-                          var productList = new List('product-list', options);
+                          productList = new List('product-list', options);
 
                         }else{
                           $(".sortTextPar").addClass("display-none");

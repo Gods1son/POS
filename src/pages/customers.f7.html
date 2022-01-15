@@ -358,7 +358,7 @@ import * as moment from 'moment';
 import * as XLSX from 'xlsx';
 var db = null, dbSales = null, dbSettings = null, calendarBday = null, mogulsheetdb = null;
 var dataToUpload = null, eachBatch = 50, uploaded = 0;
-var clientPurchasesList = null;
+var clientPurchasesList = null, clientsList = null;
 export default {
   test: 5,
   data: function () {
@@ -1045,7 +1045,7 @@ export default {
                               //return false;
                           });
 
-                          var clientsList = new List('clients-list', options);
+                          clientsList = new List('clients-list', options);
                         }else{
                           $("#clients-list").find(".sortTextPar").addClass("display-none");
                         }

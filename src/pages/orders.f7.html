@@ -304,7 +304,7 @@ export default {
                   html += '</div>';
 
                   html += '<input type="hidden" class="productOrderID" value="' + productID + '">';
-                  html += '<input type="hidden" class="hiddenQuantity" value="' + select.stock + '">';
+                  html += '<input type="hidden" class="hiddenQuantity" value="' + select.product.stock + '">';
                   html += '<div class="row margin-top-half"><div class="col-50"><div class="labelName">Quantity</div><input class="productOrderQuantity" type="text" placeholder="Product Quantity" value="' + quantity + '" disabled/></div>';
                   html += '<div class="col-50"><div class="labelName">Price Before Tax</div><input class="totalOrderPrice" type="text" value="' + totalPrice + '" disabled/></div>';
                   html += '</div>';
