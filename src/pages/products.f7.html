@@ -1911,6 +1911,11 @@ export default {
     },
     openPopUp: function(id){
         var self = this;
+        var subs = self.$app.methods.checkUserSubscription();
+        if(!subs){
+          self.$app.methods.showToast("Please subscribe first", "center");
+          return;
+        }
         $("#variantCreator").addClass("display-none");
         //popup.once("opened", function(){
           if(id != null || id != undefined){
@@ -3388,9 +3393,13 @@ export default {
 
                           for(var i = 0; i < arr.length; i++){
                             var row = arr[i];
+                            var prodname = row.name;
+                            if(row.parentId == null && row.hasVariant == true){
+                              prodname = "<b>" + prodname + "</b>";
+                            }
                               var html = "<tr>";
                                 html += '<td class="id" style="display:none;">' + row.id + '</td>';
-                                html += "<td class='name'>" + row.name + "</td>";
+                                html += "<td class='name'>" + prodname + "</td>";
                                 //html += "<td>" + (row.description != undefined && row.description != "" ? row.description : "--")+ "</td>";
                                 html += "<td class='cost'>" + self.formatMoney(row.sellingPrice) + "</td>";
                                 var stock = "Unlimited";
@@ -3409,9 +3418,9 @@ export default {
                                   //var page_link = row.product_link_id == undefined ? null : row.product_link_id;
 
                                   pops += '<a class="button popover-close sellProduct" data-id="' + row.id + '">Sell</a>';
-                                  pops += '<a class="button popover-close editProduct" data-id="' + row.id + '">Edit</a>';
+                                  if(row.parentId == null) pops += '<a class="button popover-close editProduct" data-id="' + row.id + '">Edit</a>';
                                   pops += '<a class="button popover-close restockProduct" data-id="' + row.id + '">Restock</a>';
-                                  pops += '<a class="button popover-close addIngredients" data-id="' + row.id + '">Raw Materials</a>';
+                                  if(row.parentId == null) pops += '<a class="button popover-close addIngredients" data-id="' + row.id + '">Raw Materials</a>';
                                   pops += '<a class="button popover-close linkProduct" data-busid="' + row.businessId + '" data-id="' + row.slug + '">Share Link</a>';
                                   pops += '<a class="button popover-close deleteProduct" data-id="' + row.id + '">';
                                   pops += row.status == true ? 'Delete' : 'Activate';
@@ -3435,8 +3444,12 @@ export default {
 
                         for(var i = 0; i < arr.length; i++){
                             var row = arr[i];
+                            var prodname = row.name;
+                            if(row.parentId == null && row.hasVariant == true){
+                              prodname = "<b>" + prodname + "</b>";
+                            }
                             var html = '<li><div class="card myCard"><div class="card-content padding-horizontal-half">';
-                            html += '<div class="name cardName">' + row.name + '</div><div class="id display-none">' + row.id + '</div><div class="cost display-none">' + row.selling_price + '</div>';
+                            html += '<div class="name cardName">' + prodname + '</div><div class="id display-none">' + row.id + '</div><div class="cost display-none">' + row.selling_price + '</div>';
                             /*if(row.description != null && row.description != ""){
                               html += '<div class=""><span>Description: </span><span class="">' + row.description + '</span></div>';
                             }*/
@@ -3455,9 +3468,9 @@ export default {
                             html += '</div><div class="card-footerMine padding-horizontal-half padding-bottom-half"><p class="display-inline-flex no-margin-vertical">';
                             //var page_link = row.product_link_id == undefined ? null : row.product_link_id;
                             html += '<a class="button button-small sellProduct" data-id="' + row.id + '">Sell</a>';
-                            html += '<a class="button button-small editProduct" data-id="' + row.id + '">Edit</a>';
+                            if(row.parentId == null) html += '<a class="button button-small editProduct" data-id="' + row.id + '">Edit</a>';
                             html += '<a class="button button-small restockProduct" data-id="' + row.id + '">Restock</a>';
-                            html += '<a class="button button-small addIngredients" data-id="' + row.id + '">Raw Materials</a>';
+                            if(row.parentId == null) html += '<a class="button button-small addIngredients" data-id="' + row.id + '">Raw Materials</a>';
                             html += '<a class="button button-small linkProduct" data-busid="' + row.businessId + '" data-id="' + row.slug + '">Share Link</a>';
                             html += '<a class="button button-small deleteProduct" data-id="' + row.id + '">';
                             html +=  row.status == true ? 'Delete' : 'Activate';

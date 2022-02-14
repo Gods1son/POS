@@ -73,7 +73,7 @@ setTimeout(function(){
       return {
         openedPanel: true,
         isDesktop: false,
-        apiUrl: "https://tryomni.co/api/", //"https://localhost:44383/api/", // 
+        apiUrl: "https://localhost:44383/api/", //"https://tryomni.co/api/", // 
         siteUrl: "https://tryomni.co/", //"https://localhost:44383/", //"https://flexmoni.com/",
         settings: null,
         fetchedSettings: false
@@ -236,6 +236,13 @@ setTimeout(function(){
             }
           }
         });
+      },
+      checkUserSubscription: function(){
+        var sub = false;
+        if(app.data.settings && app.data.settings.storeSubscribed){
+          sub = true;
+        }
+        return sub;
       },
       refetchSettings:function(newData){
         app.data.settings = newData;

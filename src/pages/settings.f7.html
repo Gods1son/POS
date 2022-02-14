@@ -23,6 +23,7 @@
           <div class="toolbar tabbar toolbar-bottom">
             <div class="toolbar-inner">
               <a href="#company-details" class="tab-link tab-link-active">Profile</a>
+              <a href="#plan-pricing" class="tab-link">Plan and Pricing</a>
               <a href="#payment-settings" class="tab-link">Payment</a>
               <a href="#delivery-settings" class="tab-link">Delivery</a>
             </div>
@@ -324,75 +325,92 @@
                     </div>
                   </div>
                   
-                  
                   <!-- Tab 2 -->
-                  <div id="payment-settings" class="page-content tab">
-                    
-                    
-                      <div class="no-margin-vertical padding-horizontal-half display-none" id="stripepaymentdashboard">
-                        <div class="">
-                          <div class="block no-margin-vertical no-padding">
-                            <div class="row no-gap dash">
+                  <div id="plan-pricing" class="page-content tab">  
+                    <div class="no-margin-vertical padding-horizontal-half" id="">
+                      <div class="">
+                        <div class="block no-margin-vertical no-padding">
+                          <div class="text-align-center" id="SubscribePage">
+                            <h2>Start your business on Omni with a 30-day free trial</h2>
+                            <h3>Enjoy 50% discount for another 6 months ($8 per month)</h3>
+                            <h3>And it's $16 moving forward</h3>
 
-                                <div class="col-100 medium-50">
-                                  <div class="card card-outline padding-vertical-half totalSales">
-                                    <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder text-color-white">Available Balance</div>
-                                    <div class="card-content text-color-white" id="availableBalance"></div>
-                                  </div>
-                                </div>
-                      
-                                <div class="col-100 medium-50">
-                                  <div class="card card-outline padding-vertical-half">
-                                    <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">Pending Balance</div>
-                                    <div class="card-content" id="pendingBalance"></div>
-                                  </div>
-                                </div>
+                            <div class="margin-top">
+                              <a href="#" class="col button button-outline button-raised mainButton" @click="StartFreeTrial">Start Free Trial</a>
                             </div>
                           </div>
+                          <div class="display-none text-align-center" id="UserIsSubscribed">
+                              <h3 class="text-color-green">You are an active subscription</h3>
+                              <div class="margin-top">
+                                <a href="#" class="col button button-outline button-raised mainButton" @click="ManageSubscription">Manage your subscription</a>
+                              </div>
+                          </div>
                         </div>
-                        <div class="block-header no-margin-vertical margin-horizontal-half no-padding-horizontal text-align-center text-90">Your revenue is automatically deposited in your registered account within 2 to 3 business days. Please note that the first deposit will take 7 days</div>
+                      </div>
+                      
+                </div>
+              </div>
+                  
+                  <!-- Tab 3 -->
+                  <div id="payment-settings" class="page-content tab">  
+                        <div class="no-margin-vertical padding-horizontal-half display-none" id="stripepaymentdashboard">
+                          <div class="">
+                            <div class="block no-margin-vertical no-padding">
+                              <div class="row no-gap dash">
 
-                        <div id="payoutParent">
-                          <div class="list no-hairlines-md no-margin-bottom">
-                            <ul>
-                                <li class="item-content item-input">
+                                  <div class="col-100 medium-50">
+                                    <div class="card card-outline padding-vertical-half totalSales">
+                                      <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder text-color-white">Available Balance</div>
+                                      <div class="card-content text-color-white" id="availableBalance"></div>
+                                    </div>
+                                  </div>
+                        
+                                  <div class="col-100 medium-50">
+                                    <div class="card card-outline padding-vertical-half">
+                                      <div class="block-title no-padding-vertical text-align-left no-margin ruleUnder">Pending Balance</div>
+                                      <div class="card-content" id="pendingBalance"></div>
+                                    </div>
+                                  </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="block-header no-margin-vertical margin-horizontal-half no-padding-horizontal text-align-center text-90">Your revenue is automatically deposited in your registered account within 2 to 3 business days. Please note that the first deposit will take 7 days</div>
+
+                          <div id="payoutParent">
+                            <div class="list no-hairlines-md no-margin-bottom">
+                              <ul>
+                                  <li class="item-content item-input">
+                                    <div class="item-inner">
+                                      <div class="item-input-wrap">
+                                        <input id="payOutAmount" type="number" class="settingsInput" placeholder="Enter amount to payout">
+                                      </div>
+                                  </div>
+                                </li>
+                                <li class="item-content">
                                   <div class="item-inner">
                                     <div class="item-input-wrap">
-                                      <input id="payOutAmount" type="number" class="settingsInput" placeholder="Enter amount to payout">
+                                      <a id="payoutNow" class="button button-outline button-raised mainButton" @click="payoutmoney">Pay Out</a>
                                     </div>
                                 </div>
                               </li>
-                              <li class="item-content">
-                                <div class="item-inner">
-                                  <div class="item-input-wrap">
-                                    <a id="payoutNow" class="button button-outline button-raised mainButton" @click="payoutmoney">Pay Out</a>
-                                  </div>
-                              </div>
-                            </li>
-                            </ul>
+                              </ul>
+                            </div>
+                            <div class="block-header no-margin-vertical margin-horizontal-half no-padding-horizontal text-align-center text-90">You can also receive payment instantly with our pay out button (a charge of 1.2% of the withdrawn amount applies)</div>
                           </div>
-                          <div class="block-header no-margin-vertical margin-horizontal-half no-padding-horizontal text-align-center text-90">You can also receive payment instantly with our pay out button (a charge of 1.2% of the withdrawn amount applies)</div>
-                        </div>
-                        
-                  </div>
-
-                  <div class="no-margin-vertical padding-horizontal-half setUpPaymentHolder">
-                    <div class="">
-                      <a id="setPayment" class="button button-outline button-raised mainButton" @click="setPayment">Set Up Payment</a>
-                      <a class="link external display-none openStripeLink" target="_blank" href="#">Open Stripe</a>
+                          
                     </div>
-                    <div class="block-header no-margin-vertical margin-horizontal-half no-padding-horizontal text-90">Set up payment and start receiving money from 150+ countries</div>
-                  </div>
 
-                    
-                    <!--<div>
-                      <a id="getBalance" class="button button-outline button-raised mainButton" @click="getBalance">Get Your Balance</a>
-                    </div>-->
-                  
-                  
+                    <div class="no-margin-vertical padding-horizontal-half setUpPaymentHolder">
+                      <div class="">
+                        <a id="setPayment" class="button button-outline button-raised mainButton" @click="setPayment">Set Up Payment</a>
+                        <a class="link external display-none openStripeLink" target="_blank" href="#">Open Stripe</a>
+                      </div>
+                      <div class="block-header no-margin-vertical margin-horizontal-half no-padding-horizontal text-90">Set up payment and start receiving money from 150+ countries</div>
+                    </div>
+
                   </div>
                   
-                  <!-- Tab 3 -->
+                  <!-- Tab 4 -->
                   <div id="delivery-settings" class="page-content tab">
 
                       <!--fab-->
@@ -598,6 +616,43 @@
                 self.$app.methods.showToast("An error occurred", "center");
             })
           }
+        },
+        StartFreeTrial: function(){
+          var self = this;
+          var sett = self.$app.data.settings;
+          if(sett == null || sett.name == null || sett.currency == null){
+            self.$app.methods.showToast("Please complete filling your business profile first", "center");
+            return;
+          }
+          self.$app.preloader.show();
+            $.when(self.$app.methods.getDataAPI("Subscription/Subscribe")).then(function( data, textStatus, jqXHR ) {
+                self.$app.preloader.hide();
+                if(data != null){
+                  window.open(data.url, "_blank");
+                }
+                //self.$app.methods.showToast("Payout was successful", "center", true);
+
+            }).catch((data, textStatus, jqXHR) => {
+            console.log(data, textStatus, jqXHR);
+            self.$app.preloader.hide();
+            self.$app.methods.showToast("An error occurred", "center");
+            })
+        },
+        ManageSubscription: function(){
+          var self = this;
+          self.$app.preloader.show();
+            $.when(self.$app.methods.getDataAPI("Subscription/CreateCustomerPortal")).then(function( data, textStatus, jqXHR ) {
+                self.$app.preloader.hide();
+                if(data != null){
+                  window.open(data, "_blank");
+                }
+                //self.$app.methods.showToast("Payout was successful", "center", true);
+
+            }).catch((data, textStatus, jqXHR) => {
+            console.log(data, textStatus, jqXHR);
+            self.$app.preloader.hide();
+            self.$app.methods.showToast("An error occurred", "center");
+            })
         },
         openPopUpDelivery: function(id){
           var self = this;
@@ -856,8 +911,8 @@
         },
         setPayment: function(){
           var self = this;
-          if(self.$app.data.settings == null || self.$app.data.settings.name == null){
-            self.$app.methods.showToast("Complete setting your profile first", "center");
+          if(self.$app.data.settings == null || self.$app.data.settings.name == null || self.$app.data.settings.currency == null){
+            self.$app.methods.showToast("Please complete filling your business profile first", "center");
             return;
           }
           self.$app.preloader.show();
@@ -1055,11 +1110,21 @@
                 }
             })
 
+            //plans and subscription page
+            $("#plan-pricing").on('tab:show', function() { 
+                if(self.settings.storeSubscribed == true){
+                  $("#SubscribePage").addClass("display-none");
+                  $("#UserIsSubscribed").removeClass("display-none");
+                }
+            })
+
             /* payment page*/
-            if(self.$app.views.main.router.previousRoute?.path != "/signup/"){
+            /*if(self.$app.views.main.router.previousRoute?.path != "/signup/"){
               self.getProfile();
-            };
+            };*/
             
+            self.getProfile();
+
             $("#logo").change(function(){
                 self.getBase64(this, "logo");
             });
