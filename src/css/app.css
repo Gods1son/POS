@@ -154,6 +154,13 @@ html {
     color: #8C8C8C;
 }
 
+.btn-primary{
+    border: 1px solid var(--main-color) !important;
+    background: var(--main-color);
+    color: white;
+    text-transform: none;
+}
+
 .quicklinks div.active .item-title{
     color: var(--main-color);
     font-weight: 600;
@@ -603,7 +610,7 @@ button.text-editor-button.active{
     vertical-align: bottom !important;
 }
 
-#passwordSignUp, #passwordSignIn, #firstNameSignUp, #lastNameSignUp{
+#passwordSignUp, #passwordSignIn, #firstNameSignUp, #lastNameSignUp, .no-border{
     border:none !important;
 }
 
@@ -617,7 +624,7 @@ button.text-editor-button.active{
 
 .settingsInput, .myCard input[type="text"], .myCard input[type="number"], .item-input-wrap select, 
 .item-input-wrap input[type="text"]:not(.specSearch),
-.item-input-wrap input[type="number"]:not(.specSearch){
+.item-input-wrap input[type="number"]:not(.specSearch), select:not(.no-border){
     border: 1px solid #626262 !important;
     padding: 2px 5px !important;
     margin-top: 2px !important;
@@ -1134,9 +1141,27 @@ input[type="password"]::placeholder, input[type="number"]::placeholder, textarea
     text-align: left;
 }
 
-  .border-bottom{
+.border-bottom{
     border-bottom: 1px solid #dee2e6;
-  }
+}
+
+.subscribeText{
+    font-size: 2em;
+    font-family: 'AvenirBlack';
+}
+
+.subscribeCard{
+    margin: auto;
+    padding: 5px;
+    background: #F7F7FF;
+    border-radius: 4px;
+    box-shadow: 0px 0px 20px 3px rgb(0 0 0 / 20%);
+}
+
+.subscribeCost{
+    font-size: 3.5em;
+    font-family: 'AvenirBlack';
+}
 
   @media only screen and (max-width: 768px) {
 

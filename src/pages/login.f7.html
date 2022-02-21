@@ -142,7 +142,7 @@ export default {
               localStorage.setItem("FlexBusinessToken", data);
               self.$app.views.main.router.navigate('/products/');
           }).catch((data, textStatus, jqXHR) => {
-              console.log(data, textStatus, jqXHR);
+              
               self.$app.preloader.hide();
               self.$app.methods.showToast(data?.responseText, "center");
           })

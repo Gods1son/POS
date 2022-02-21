@@ -73,7 +73,7 @@ setTimeout(function(){
       return {
         openedPanel: true,
         isDesktop: false,
-        apiUrl: "https://localhost:44383/api/", //"https://tryomni.co/api/", // 
+        apiUrl: "https://tryomni.co/api/", //"https://localhost:44383/api/", // 
         siteUrl: "https://tryomni.co/", //"https://localhost:44383/", //"https://flexmoni.com/",
         settings: null,
         fetchedSettings: false
@@ -223,7 +223,6 @@ setTimeout(function(){
         if(token != null){
           localStorage.removeItem("FlexBusinessToken");
         }
-        console.log("Log out");
         app.views.main.router.navigate('/login/');
       },
       getBusinessProfile: async function() {
@@ -240,9 +239,26 @@ setTimeout(function(){
       checkUserSubscription: function(){
         var sub = false;
         if(app.data.settings && app.data.settings.storeSubscribed){
-          sub = true;
+          return true;
         }
-        return sub;
+        if($(".modal-in").length > 0){
+          app.popup.close('.popup.modal-in', false);
+        }
+        app.methods.showToast("Please subscribe first to perform the action", "center");
+        app.views.main.router.navigate('/settings/plan-pricing/');
+        throw new Error("Subscribe first");
+      },
+      checkUserProfileComplete: function(){
+        var sub = false;
+        if(app.data.settings && app.data.settings.name != null && app.data.settings.currency != null){
+          return true;
+        }
+        if($(".modal-in").length > 0){
+          app.popup.close('.popup.modal-in', false);
+        }
+        app.methods.showToast("Please complete your company profile first", "center");
+        app.views.main.router.navigate('/settings/company-details/');
+        throw new Error("Complete profile first");
       },
       refetchSettings:function(newData){
         app.data.settings = newData;
@@ -323,18 +339,16 @@ setTimeout(function(){
 
         if(token != null && app.data.settings == null){
           //console.log("get profile from home");
-          
-          //app.methods.getBusinessProfile();
-          
-          //console.log("fetched settings");
-          //app.data.fetchedSettings = true;
-        }
+        };
       },
       pageInit: function () {
         //var self = this;
-        
-        //app.methods.alert();
-        //self.$app.alert();
+        $('.popup.popup-tablet-fullscreen').on('popup:open', function (e, popup) {
+          // my code
+          console.log('About popup open');
+          app.methods.checkUserProfileComplete();
+          app.methods.checkUserSubscription();
+        });
       },
       pageAfterIn: function (event, page) {
         var self = this;
@@ -408,8 +422,7 @@ setTimeout(function(){
       opened = 1;
     }
   }
-  
-      
+
   function onBackKeyDown() {
     // Handle the back button
     console.log("back button");
@@ -417,7 +430,7 @@ setTimeout(function(){
       exitApp();
       e.preventDefault();
     } else if($(".modal-in").length > 0){
-      app.dialog.close(true);
+      app.popup.close('.popup.modal-in', false);
     }
     else {
       

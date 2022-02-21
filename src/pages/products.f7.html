@@ -456,7 +456,7 @@
                   <div class="item-content item-input">
                     <div class="item-inner">
                       <div class="item-title item-label">Product Type</div>
-                      <div class="item-input-wrap">
+                      <div class="item-input-wrap input input-dropdown">
                         <select id="productType">
                           <option value="physicalProduct" selected>Physical Product</option>
                           <option value="digitalProduct">Digital Product</option>
@@ -1886,6 +1886,7 @@ export default {
     },
     openPopUpExcel: function(){
       var self = this;
+      //self.$app.methods.checkUserSubscription();
       var popup = self.$app.popup.open('.uploadProducts', true);
     },
     closePopUpExcel: function(){
@@ -1911,11 +1912,7 @@ export default {
     },
     openPopUp: function(id){
         var self = this;
-        var subs = self.$app.methods.checkUserSubscription();
-        if(!subs){
-          self.$app.methods.showToast("Please subscribe first", "center");
-          return;
-        }
+        //var subs = self.$app.methods.checkUserSubscription();
         $("#variantCreator").addClass("display-none");
         //popup.once("opened", function(){
           if(id != null || id != undefined){
@@ -2902,6 +2899,7 @@ export default {
     saveData: function(){
       //var $$ = this.Dom7;
       var self = this;
+      //var subs = self.$app.methods.checkUserSubscription();
       var elem = $$("input:required");
       var noErr = self.$app.input.validateInputs(".productForm");
       var hasVariant = false;

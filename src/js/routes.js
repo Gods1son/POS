@@ -168,6 +168,33 @@ var routes = [
     path: '/settings/',
     component: SettingsPage,
     beforeEnter: checkAuth,
+    tabs: [
+      {
+        path: '/',
+        id: 'company-details',
+        content: document.querySelector("#company-details")
+      },
+      {
+        path: '/company-details/',
+        id: 'company-details',
+        content: document.querySelector("#company-details")
+      },
+      {
+        path: '/plan-pricing/',
+        id: 'plan-pricing',
+        content: document.querySelector("#plan-pricing")
+      },
+      {
+        path: '/payment-settings/',
+        id: 'payment-settings',
+        content: document.querySelector("#payment-settings")
+      },
+      {
+        path: '/delivery-settings/',
+        id: 'delivery-settings',
+        content: document.querySelector("#delivery-settings")
+      }
+    ]
   },
 
   {
@@ -237,7 +264,8 @@ var routes = [
   },
   {
     path: '(.*)',
-    component: HomePage,
+    component: ProductsPage,
+    beforeEnter: checkAuth
   },
 ];
 

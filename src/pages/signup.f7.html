@@ -87,6 +87,19 @@
                             </div>
                           </div>
                         </li>
+                        <li class="item-content item-input">
+                          <div class="item-inner">
+                            <div class="item-title">Country</div>
+                            <div class="w-100 input input-dropdown">
+                              <select id="country" class="no-border">
+                                <option value="">Select One</option>
+                                {{#each countries}}
+                                  <option value="{{isoCode}}">{{name}}</option>
+                                {{/each}}
+                              </select>
+                            </div>
+                          </div>
+                        </li>
                       </ul>
                     </div>
                     <div class="">
@@ -111,12 +124,13 @@
 <script>
 //import Dexie from 'dexie';
 import {fakeAlert} from '../js/myscript.js';
-
+import countryList from '../js/countries.js';
+import stateList from '../js/states.js';
 
 export default {
   data() {
         return {
-
+          countries: [],
         };
       },
   methods: {
@@ -152,7 +166,8 @@ export default {
           var pwd = $("#passwordSignUp").val().trim();
           var firstName = $("#firstNameSignUp").val().trim();
           var lastName = $("#lastNameSignUp").val().trim();
-          if(email == "" || pwd == "" || firstName == "" || lastName == ""){
+          var country = $("#country").val().trim();
+          if(email == "" || pwd == "" || firstName == "" || lastName == "" || country == ""){
             self.$app.methods.showToast("All required fields need to be filled", "center");
             return;
           }
@@ -162,6 +177,8 @@ export default {
             pwd: pwd,
             firstName: firstName,
             lastName: lastName,
+            countryName: $("#country option:selected").text().trim(),
+            countryTwoDigit: country
           };
           $.when(self.$app.methods.postDataAPI("user/Register", obj, false)).then(function( data, textStatus, jqXHR ) {
             self.$app.preloader.hide();
@@ -182,6 +199,9 @@ export default {
       },
       pageInit: function(e, page) {
         var self = this;
+        self.$setState({
+          countries: countryList.map(x => ({"isoCode":x.iso2,"name":x.name})),
+        });
               /*onAuthUIStateChange((state, user) => {
             //create a new account
             if(state == AuthState.SignUp){
